@@ -4,15 +4,15 @@ This project is a comprehensive application designed to streamline the process o
 
 The platform offers various features for different user roles, including upcoming event notifications, tour registrations, guide rankings, and tour-related data management.
 
-Table of Contents
-Tech Stack
-Features
-User Roles
-Setup
-Usage
-Contributing
-License
-Tech Stack
+Table of Contents, 
+Tech Stack, 
+Features, 
+User Roles, 
+Setup, 
+Usage, 
+Contributing, 
+License, 
+Tech Stack, 
 This project is built using the following technologies:
 
 Spring Boot
