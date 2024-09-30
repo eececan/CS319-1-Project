@@ -45,10 +45,34 @@ This project is built using the following technologies:
 
 ### 3. User Roles 
 There are several user roles within the system, each with different permissions:
-1. Admin: Full control over the system, able to manage users, events, and system configurations. 
-2. Vice Admin (Öğretim Yardımcısı): Assists with admin tasks. 
-3. Coordinator (Koordinatör): Manages tours and assigns guides. 
-4. Advisor (Danışman): Provides guidance for prospective students during tours. 
-5. Guide: Leads tours for prospective students and provides information about the university. 
-6. Prospective Student: The user visiting the university for a tour. 
-7. School Counselor: Coordinates students' visit schedules from specific high schools. 
+1. Head of the Office (Örsan Örge):
+	- Coordinates the university fairs.
+	- Has a dashboard for high school statistics.
+	- Views the performance of the guides.
+2. Secretary (Dilek Yıldız):
+	- Sends the acceptance e-mails to the high schools (school counselors) **after advisors accept a tour application**.
+3. Coordinator: 
+	- Coordinates the university fairs and notifies guides about the university fairs.
+	- Views all the guides and their performance.
+	- Has a dashboard for high school statistics.
+	- Manages individual tours.
+	- Views all the events.
+4. Advisor: 
+	- Advisors accept the applications made by school counselors. 
+	- **Maybe** manually selects guides for acceptep tours. 
+	- Each advisor is responsible for managing all tours **scheduled for a specific day**.
+	- Advisors must consider the priorities while accepting high school applications.
+5. Guide: 
+	- Chooses an accepted tour for guidance if they are available.
+	- Logs their work hours for tours, individual tours, or university fairs (For monthly payment). Note that this log system might be unnecessary as the system might also record the guides working hours. 
+	- Leads tours for prospective students and provides information about the university. 
+	- **Note:** Prospective guides in training might be added as another user.
+6. Prospective Student:
+	- Applies for individual visits.
+	- Has to enter **additional details**. For example his/her major of interest.
+7. School Counselor: 
+	- Represents their high school for school tours.
+	- Applies to a specific period for a visit.
+	- Also invites Tanıtım Ofisi for university fairs in the high school.
+8. Admin: 
+	- The need for an admin user will be discussed and implemented if necessary.
