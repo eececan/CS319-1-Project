@@ -1,7 +1,7 @@
 
 # CS319-1-Project
 ## University Tour Management System
-This project is a comprehensive application designed to streamline the process of prospective students visiting our university. It enables users to schedule and attend campus tours, while also providing management tools for guides, coordinators etc. The project also allows schools to invite Bilkent to their fairs.
+This project is a comprehensive application designed to streamline the process of prospective students visiting our university. It enables users to schedule and attend campus tours, while also providing management tools for guides, coordinators etc. The project also allows schools to invite Bilkent Tanıtım Ofisi to their fairs.
 
 The platform offers various features for different user roles, including upcoming event notifications, tour registrations, guide rankings, and tour-related data management.
 
