@@ -9,10 +9,6 @@ The platform offers various features for different user roles, including upcomin
 1. Tech Stack
 2. Features
 3. User Roles
-4. Setup
-5. Usage
-6. Contributing
-7. License
 
 ### 1. Tech Stack
 This project is built using the following technologies:
