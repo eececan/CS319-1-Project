@@ -1,7 +1,7 @@
 
 # CS319-1-Project
 ## University Tour Management System
-This project is a comprehensive application designed to streamline the process of prospective students visiting our university. It enables users to schedule and attend campus tours, while also providing management tools for guides, coordinators etc.
+This project is a comprehensive application designed to streamline the process of prospective students visiting our university. It enables users to schedule and attend campus tours, while also providing management tools for guides, coordinators etc. The project also allows schools to invite Bilkent to their fairs.
 
 The platform offers various features for different user roles, including upcoming event notifications, tour registrations, guide rankings, and tour-related data management.
 
@@ -39,8 +39,7 @@ This project is built using the following technologies:
 - Dashboard: A customized dashboard for each type of user (coordinator, guide, admin). 
 - Guide Attendance: Track attendance for guides assigned to specific tours. 
 - School Selection: Schools can be selected and linked to specific tours. 
-- Individual Tours: Support for one-on-one tours between a student and a guide. 
-- School Pairs: Manage and create pairs of schools for combined tours. 
+- Individual Tours: Support for one-on-one tours between a student and a guide.  
 - Feedback Forms: Collect feedback from students about their tour experience. 
 
 ### 3. User Roles 
@@ -55,16 +54,15 @@ There are several user roles within the system, each with different permissions:
 	- Coordinates the university fairs and notifies guides about the university fairs.
 	- Views all the guides and their performance.
 	- Has a dashboard for high school statistics.
-	- Manages individual tours.
 	- Views all the events.
 4. Advisor: 
-	- Advisors accept the applications made by school counselors. 
-	- **Maybe** manually selects guides for acceptep tours. 
+	- Advisors manage the applications made by school counselors or individual students. 
+	- **Maybe** manually selects guides for accepted tours. 
 	- Each advisor is responsible for managing all tours **scheduled for a specific day**.
 	- Advisors must consider the priorities while accepting high school applications.
 5. Guide: 
 	- Chooses an accepted tour for guidance if they are available.
-	- Logs their work hours for tours, individual tours, or university fairs (For monthly payment). Note that this log system might be unnecessary as the system might also record the guides working hours. 
+	- Logs their work hours for tours, individual tours, or university fairs (For monthly payment). Note that this log system might be unnecessary as the system might also record the guides' working hours. 
 	- Leads tours for prospective students and provides information about the university. 
 	- **Note:** Prospective guides in training might be added as another user.
 6. Prospective Student:
@@ -73,6 +71,6 @@ There are several user roles within the system, each with different permissions:
 7. School Counselor: 
 	- Represents their high school for school tours.
 	- Applies to a specific period for a visit.
-	- Also invites Tanıtım Ofisi for university fairs in the high school.
+	- Also invites Tanıtım Ofisi to university fairs in the high school.
 8. Admin: 
 	- The need for an admin user will be discussed and implemented if necessary.
