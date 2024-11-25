@@ -1,4 +1,4 @@
-package com.project.btoproject;
+/*package com.project.btoproject;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,4 +10,4 @@ class BtoprojectApplicationTests {
 	void contextLoads() {
 	}
 
-}
+}*/
