@@ -1,5 +1,6 @@
 package com.project.btoproject.common;
 
+import com.project.btoproject.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +27,8 @@ public class UserTask {
 
     @Column(name = "task_deadline", nullable = false)
     private LocalDate taskDeadline;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

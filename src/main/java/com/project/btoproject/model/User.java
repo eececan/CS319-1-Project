@@ -1,13 +1,7 @@
 package com.project.btoproject.model;
 
 import com.project.btoproject.common.UserTask;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User {
 
     @Id
