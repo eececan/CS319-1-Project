@@ -1,5 +1,6 @@
 package com.project.btoproject.model;
 
+import com.project.btoproject.common.DateType;
 import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import lombok.*;
@@ -18,8 +19,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*@Column(name = "date")
-    private DateType date;*/
+    //@Column(name = "date")
+    //private DateType date;
 
     @Column(name = "status")
     private Status status;
