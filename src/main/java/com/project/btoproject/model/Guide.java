@@ -11,11 +11,10 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "guides")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-//@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "users")
+@DiscriminatorValue("GUIDE")
 public class Guide extends User {
 
     @Column(name = "schedule")
@@ -27,9 +26,9 @@ public class Guide extends User {
     @Column(name = "grade")
     private int grade;
 
-//    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<PointRecord> points;
-//
+    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PointRecord> points;
+
 //    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<Event> events;
 }
