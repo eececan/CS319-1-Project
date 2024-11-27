@@ -1,8 +1,8 @@
 package com.project.btoproject.controller;
 
-import com.project.btoproject.Dto.AuthResponseDTO;
-import com.project.btoproject.Dto.LoginDto;
-import com.project.btoproject.Dto.RegisterDto;
+import com.project.btoproject.dto.AuthResponseDTO;
+import com.project.btoproject.dto.LoginDto;
+import com.project.btoproject.dto.RegisterDto;
 import com.project.btoproject.model.Role;
 import com.project.btoproject.model.UserEntity;
 import com.project.btoproject.repository.RoleRepository;
