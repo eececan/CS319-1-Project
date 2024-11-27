@@ -6,6 +6,8 @@ import com.project.btoproject.enums.Status;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Data
 @Entity
 @Getter
@@ -34,4 +36,11 @@ public class Event {
     @Column(name = "event_type")
     private EventType eventType;
 
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> participants;
 }
