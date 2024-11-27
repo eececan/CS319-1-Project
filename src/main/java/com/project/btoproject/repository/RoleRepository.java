@@ -1,6 +1,6 @@
 package com.project.btoproject.repository;
 
-import com.project.btoproject.model;
+import com.project.btoproject.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
