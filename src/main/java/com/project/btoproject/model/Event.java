@@ -5,6 +5,7 @@ import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import lombok.*;
 import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Builder
 @Table(name = "event")
 public class Event {
