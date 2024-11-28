@@ -1,9 +1,9 @@
-package com.project.btoproject.Dto;
+package com.project.btoproject.dto;
 
 import lombok.Data;
 
 @Data
-public class LoginDto {
+public class RegisterDto {
     private String username;
     private String password;
 }

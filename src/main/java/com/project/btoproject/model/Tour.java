@@ -19,8 +19,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Tour extends Event {
 
-
-
     @CollectionTable(name = "tour", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "hour")
     private String availableHour;

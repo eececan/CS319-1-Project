@@ -1,7 +1,6 @@
-// src/main/java/com/project/btoproject/model/IndividualTour.java
-
 package com.project.btoproject.model;
 import com.project.btoproject.enums.Hour;
+import com.project.btoproject.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,7 +21,7 @@ public class IndividualTour extends Event {
 
     @CollectionTable(name = "individual_tour", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "hour")
-    private String availableHour;
+    private String availableHour; //discuss
 
     @Column(name = "people_count")
     private int peopleCount;
@@ -38,9 +37,9 @@ public class IndividualTour extends Event {
     @JoinColumn(name = "advisor_id")
     private Advisor advisor;
 
-    /*@OneToMany
+    @OneToMany
     @JoinColumn(name = "individual_tour_id")
-    private List<Student> participants;*/
+    private List<Student> studentParticipants;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tour_info_id")

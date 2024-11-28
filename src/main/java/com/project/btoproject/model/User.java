@@ -20,7 +20,7 @@ import java.util.List;
 public class User {
 
     @Id
-    private int id;
+    private Long id;
 
     @Column(name = "password", nullable = false)
     private String password;

@@ -1,14 +1,11 @@
 package com.project.btoproject.service;
 
-import com.project.btoproject.model.Advisor;
-import com.project.btoproject.model.Event;
-import com.project.btoproject.model.IndividualTour;
-import com.project.btoproject.model.Tour;
+import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IGuideRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,28 +14,25 @@ public class GuideService implements IGuideService
     private final IGuideRepository guideRepository;
 
     public Event[] seeAssignedEvents() {
-        //TODO
+        //TODO 28.11
         return null;
     }
 
-    public void setStatusOfTour(Tour t) {
-        //TODO
-    }
-
-    public void changeTourInformation(Tour t) {
-        //TODO
-    }
-
     public Advisor seeAdvisorOfDay() {
-        //TODO
+        //TODO 28.11
         return null;
     }
 
     public void selfAssignTour(Tour t) {
-        //TODO
+        //TODO 28.11
     }
 
     public void selfAssignIndividualTour(IndividualTour t) {
-        //TODO
+        //TODO 28.11
+    }
+
+    public int seeCurrentPoints(Guide g) {
+        //TODO 28.11
+        return 0;
     }
 }
