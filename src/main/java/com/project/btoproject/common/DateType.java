@@ -3,7 +3,6 @@ package com.project.btoproject.common;
 import com.project.btoproject.enums.Hour;
 import com.project.btoproject.model.Advisor;
 import com.project.btoproject.model.Event;
-import jakarta.persistence.Embeddable;
 import lombok.*;
 import java.time.LocalDate;
 
