@@ -2,6 +2,7 @@
 
 package com.project.btoproject.model;
 
+import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Hour;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @DiscriminatorValue("TOUR")
-@NoArgsConstructor
+// @NoArgsConstructor // I needed a specific empty constructor so I commented this
 @AllArgsConstructor
 @SuperBuilder
 @Builder
@@ -20,8 +21,11 @@ import java.util.List;
 public class Tour extends Event {
 
     @CollectionTable(name = "tour", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "hour")
-    private String availableHour;
+    @Column(name = "hour", nullable = false)
+    @Enumerated(EnumType.STRING) // Store as a string in the database
+    private Hour hour;
+    //private String availableHour; // Why is this string and what available hour means? Shouldn't we just use Hour enum?
+
 
     @Column(name = "people_count")
     private int peopleCount;
@@ -38,11 +42,17 @@ public class Tour extends Event {
     @JoinColumn(name = "advisor_id")
     private Advisor advisor;
 
-    /*@OneToOne
-    @JoinColumn(name = "school_id")
-    private School school;*/
+    @ManyToOne
+    @JoinColumn(name = "school_id", nullable = true)
+    private School school;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tour_info_id")
     private TourInfo tourInformation;
+
+    // Constructor that sets eventType to TOUR
+    public Tour() {
+        this.setEventType(EventType.TOUR);
+    }
+
 }

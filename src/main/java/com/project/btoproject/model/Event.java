@@ -7,6 +7,7 @@ import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -26,14 +27,31 @@ public class Event {
     //@Column(name = "date")
     //private DateType date;
 
+    @Column(name = "date", nullable = false)
+    @Temporal(TemporalType.DATE) // Store as a DATE type in the database
+    private Date date;
+
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "contact_person")
-    private String contactPerson;
+    // -----
+    // For now I am making all fields string for contact person we might consider it as another class?
+    @Column(name = "contact_person_name")
+    private String contactPersonName;
 
-    @Column(name= "event_description")
-    private String eventDescription;
+    @Column(name = "contact_person_role")
+    private String contactPersonRole;
+
+    @Column(name = "contact_person_phone")
+    private String contactPersonPhone;
+
+    @Column(name = "contact_person_email")
+    private String contactPersonEmail;
+    // -----
+
+    // Changin event_description to visitor_notes
+    @Column(name= "visitor_notes")
+    private String visitorNotes;
 
     @Column(name = "event_type")
     private EventType eventType;
@@ -45,4 +63,9 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> participants;
+
+    // Timestamp field that is set manually
+    @Column(name = "applicationTimeStamp", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date applicationTimeStamp;
 }

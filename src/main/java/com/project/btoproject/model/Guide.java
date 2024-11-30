@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Entity
-@NoArgsConstructor
+// @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "all_users")
 @DiscriminatorValue("GUIDE")
