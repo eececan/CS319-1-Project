@@ -16,15 +16,18 @@ public class GuideService implements IGuideService
 {
     private final IGuideRepository guideRepository;
 
+    @Override
     public void saveGuide(Guide guide) {
         guideRepository.save(guide);
     }
 
+    @Override
     public List<Event> seeAssignedEvents(Guide guide) {
         List<Event> events = guide.getEvents();
         return events;
     }
 
+    @Override
     @Transactional
     public void selfAssignTour(Guide guide, Tour tour) {
         if (!tour.getGuides().contains(guide)) {
@@ -32,8 +35,10 @@ public class GuideService implements IGuideService
             guide.getEvents().add(tour);
             guideRepository.save(guide);
         }
+        //maybe add error message later
     }
 
+    @Override
     @Transactional
     public void selfAssignIndividualTour(Guide guide, IndividualTour individualTour) {
         if(individualTour.getGuide()!=null) {
@@ -44,6 +49,7 @@ public class GuideService implements IGuideService
         guideRepository.save(guide);
     }
 
+    @Override
     public int seeCurrentPoints(Guide guide) {
         int totalPoints = 0;
         for(PointRecord pointRecord : guide.getPoints()) {
@@ -52,6 +58,7 @@ public class GuideService implements IGuideService
         return totalPoints;
     }
 
+    @Override
     public Advisor seeAdvisorOfDay() {
         //TODO
         return null;
