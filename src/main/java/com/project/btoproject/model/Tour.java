@@ -26,7 +26,6 @@ public class Tour extends Event {
     private Hour hour;
     //private String availableHour; // Why is this string and what available hour means? Shouldn't we just use Hour enum?
 
-
     @Column(name = "people_count")
     private int peopleCount;
 
@@ -49,6 +48,10 @@ public class Tour extends Event {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tour_info_id")
     private TourInfo tourInformation;
+
+    @ManyToOne
+    @JoinColumn(name = "school_counselor_id", nullable = false)
+    private SchoolCounselor schoolCounselor;
 
     // Constructor that sets eventType to TOUR
     public Tour() {
