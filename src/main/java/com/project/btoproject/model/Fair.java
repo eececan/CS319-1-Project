@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.project.btoproject.model.School;
 import lombok.experimental.SuperBuilder;
+import java.util.Date;
 
 @Data
 @Entity
-@DiscriminatorValue("EVENT")
+@DiscriminatorValue("FAIR")
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -15,18 +16,23 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class Fair extends Event {
 
-//    @Column(name = "school")
-//    private School school;
+    @ManyToOne
+    @JoinColumn(name = "school_id", nullable = true)
+    private School school;
 
     @Column(name = "address")
     private String address;
 
-//    @Column(name = "responsible_members")
-//    private User[] responsibleMembers;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User[] responsibleMembers;
 
     @Column(name = "fair_info")
     private String fairInfo;
 
     @Column(name = "hour")
     private String hour;
+
+    @Column(name = "date")
+    private Date date;
 }
