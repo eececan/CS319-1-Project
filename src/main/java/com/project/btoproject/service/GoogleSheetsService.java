@@ -9,6 +9,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.project.btoproject.enums.Hour;
 import com.project.btoproject.model.School;
+import com.project.btoproject.model.SchoolCounselor;
 import com.project.btoproject.model.Tour;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ public class GoogleSheetsService {
     // Use SchoolService for database operations
     private SchoolService schoolService;
 
+    // Use SchoolCounselorService for database operations
+    private SchoolCounselorService schoolCounselorService;
+
     // Tour-specific Google Sheet attributes
     private static final String TOUR_SPREADSHEET_ID = "1FHzTMk7yby8Y2eKa2uNWtnTWs1s4tCnItCmvAnBQLwc";
     private static final String TOUR_SPREADSHEET_RANGE = "A2:K";
@@ -48,9 +52,10 @@ public class GoogleSheetsService {
      * @param tourService The service to handle Tour-related operations.
      */
     @Autowired
-    public GoogleSheetsService(TourService tourService, SchoolService schoolService) {
+    public GoogleSheetsService(TourService tourService, SchoolService schoolService, SchoolCounselorService schoolCounselorService) {
         this.tourService = tourService;
         this.schoolService = schoolService;
+        this.schoolCounselorService = schoolCounselorService;
 
         // Initialize the Sheets API client
         try {
@@ -186,17 +191,27 @@ public class GoogleSheetsService {
         // Map Column F: Number of People
         tour.setPeopleCount(Integer.parseInt(row.get(5).toString()));
 
-        // Map Column G: Contact Person Name
+        /*// Map Column G: Contact Person Name
         tour.setContactPersonName(row.get(6).toString());
 
         // Map Column H: Contact Person Role
         tour.setContactPersonRole(row.get(7).toString());
 
-        // Map Column I: Contact Person Role
+        // Map Column I: Phone Number
         tour.setContactPersonPhone(row.get(8).toString());
 
-        // Map Column J: Contact Person Role
-        tour.setContactPersonEmail(row.get(9).toString());
+        // Map Column J: Email
+        tour.setContactPersonEmail(row.get(9).toString());*/
+
+        // Map School Counselor (Columns G: Name, H: Role, I: Phone Number, J: Email, K: Comment)
+        String counselorName = row.get(6).toString();
+        String counselorRole = row.get(7).toString();
+        String counselorPhone = row.get(8).toString();
+        String counselorEmail = row.get(9).toString();
+
+        SchoolCounselor schoolCounselor = schoolCounselorService.findOrCreateCounselor(
+                counselorName, counselorRole, counselorPhone, counselorEmail, school);
+        tour.setSchoolCounselor(schoolCounselor);
 
         // Map Column K: Contact Person Role
         tour.setVisitorNotes(row.get(10).toString());

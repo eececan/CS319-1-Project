@@ -36,7 +36,7 @@ public class Event {
 
     // -----
     // For now I am making all fields string for contact person we might consider it as another class?
-    @Column(name = "contact_person_name")
+    /*@Column(name = "contact_person_name")
     private String contactPersonName;
 
     @Column(name = "contact_person_role")
@@ -46,10 +46,10 @@ public class Event {
     private String contactPersonPhone;
 
     @Column(name = "contact_person_email")
-    private String contactPersonEmail;
+    private String contactPersonEmail;*/
     // -----
 
-    // Changin event_description to visitor_notes
+    // Changing event_description to visitor_notes
     @Column(name= "visitor_notes")
     private String visitorNotes;
 

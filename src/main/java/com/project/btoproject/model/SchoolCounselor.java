@@ -15,11 +15,12 @@ public class SchoolCounselor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+    // Name of School Counselor is a single field in the forms so I've made this only name
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Column(name = "role", nullable = false)
+    private String role;
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
