@@ -191,18 +191,6 @@ public class GoogleSheetsService {
         // Map Column F: Number of People
         tour.setPeopleCount(Integer.parseInt(row.get(5).toString()));
 
-        /*// Map Column G: Contact Person Name
-        tour.setContactPersonName(row.get(6).toString());
-
-        // Map Column H: Contact Person Role
-        tour.setContactPersonRole(row.get(7).toString());
-
-        // Map Column I: Phone Number
-        tour.setContactPersonPhone(row.get(8).toString());
-
-        // Map Column J: Email
-        tour.setContactPersonEmail(row.get(9).toString());*/
-
         // Map School Counselor (Columns G: Name, H: Role, I: Phone Number, J: Email, K: Comment)
         String counselorName = row.get(6).toString();
         String counselorRole = row.get(7).toString();

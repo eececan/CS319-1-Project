@@ -18,10 +18,10 @@ public class SchoolCounselorService {
 
     /**
      * Finds an existing SchoolCounselor by email or creates a new one if not found.
-     * Uses `email` as a unique identifier, and ensures the counselor belongs to the given school.
+     * Uses `name` and school as a unique identifier, and ensures the counselor belongs to the given school.
      */
     public SchoolCounselor findOrCreateCounselor(String name, String role, String phoneNumber, String email, School school) {
-        return schoolCounselorRepository.findByEmailAndSchool(email, school)
+        return schoolCounselorRepository.findByNameAndSchool(name, school)
                 .orElseGet(() -> {
                     // Create a new SchoolCounselor
                     SchoolCounselor newCounselor = new SchoolCounselor();
