@@ -21,13 +21,14 @@ public class School {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "city", nullable = false) // Add this field
+    @Column(name = "city", nullable = false)
     private String city;
+
+    @Column(name = "address", nullable = false)
+    private String address;
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tour> tours = new ArrayList<>();
-
-
 
     // We might also need to add fairs
 }

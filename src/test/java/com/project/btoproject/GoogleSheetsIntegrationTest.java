@@ -27,4 +27,20 @@ public class GoogleSheetsIntegrationTest {
             fail("Failed to save new tours: " + e.getMessage());
         }
     }
+
+    @Test
+    public void testSaveNewFairs() {
+        String spreadsheetId = "1E6i3VIJuqoVcsQ4iaZkipwhNt6f9LlcHenf1YRLGYmU";
+        String range = "A2:L";
+
+        try {
+            googleSheetsService.saveNewFairs();
+            System.out.println("New fairs fetched and saved successfully if there are!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Failed to save new fairs: " + e.getMessage());
+        }
+    }
+
+
 }

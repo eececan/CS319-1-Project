@@ -23,7 +23,7 @@ public class SchoolService {
      * @param schoolName The name of the school.
      * @return A School object.
      */
-    public School findOrCreateSchool(String schoolName, String city) {
+    public School findOrCreateSchool(String schoolName, String city, String address) {
         // Check if the school already exists in the database
         Optional<School> existingSchool = schoolRepository.findByName(schoolName);
 
@@ -35,6 +35,7 @@ public class SchoolService {
         School newSchool = new School();
         newSchool.setName(schoolName);
         newSchool.setCity(city);
+        newSchool.setAddress(address);
         return schoolRepository.save(newSchool); // Save and return the new School
     }
 }
