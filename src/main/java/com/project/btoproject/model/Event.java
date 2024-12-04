@@ -34,21 +34,6 @@ public class Event {
     @Column(name = "status")
     private Status status;
 
-    // -----
-    // For now I am making all fields string for contact person we might consider it as another class?
-    /*@Column(name = "contact_person_name")
-    private String contactPersonName;
-
-    @Column(name = "contact_person_role")
-    private String contactPersonRole;
-
-    @Column(name = "contact_person_phone")
-    private String contactPersonPhone;
-
-    @Column(name = "contact_person_email")
-    private String contactPersonEmail;*/
-    // -----
-
     // Changing event_description to visitor_notes
     @Column(name= "visitor_notes")
     private String visitorNotes;

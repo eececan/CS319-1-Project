@@ -1,5 +1,6 @@
 package com.project.btoproject.model;
 
+import com.project.btoproject.enums.EventType;
 import jakarta.persistence.*;
 import lombok.*;
 import com.project.btoproject.model.School;
@@ -7,26 +8,32 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
-@DiscriminatorValue("EVENT")
-@NoArgsConstructor
+@DiscriminatorValue("FAIR")
+//@NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class Fair extends Event {
 
-//    @Column(name = "school")
-//    private School school;
+    @CollectionTable(name = "fair", joinColumns = @JoinColumn(name = "event_id"))
 
-    @Column(name = "address")
-    private String address;
+    @ManyToOne
+    @JoinColumn(name = "school_id", nullable = true)
+    private School school;
 
-//    @Column(name = "responsible_members")
-//    private User[] responsibleMembers;
-
-    @Column(name = "fair_info")
-    private String fairInfo;
+    @ManyToOne
+    @JoinColumn(name = "school_counselor_id", nullable = false)
+    private SchoolCounselor schoolCounselor;
 
     @Column(name = "hour")
     private String hour;
+
+    @Column(name = "people_count")
+    private int peopleCount;
+
+    // Constructor that sets eventType to FAIR
+    public Fair() {
+        this.setEventType(EventType.FAIR);
+    }
 }

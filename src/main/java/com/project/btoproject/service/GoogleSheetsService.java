@@ -8,6 +8,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.project.btoproject.enums.Hour;
+import com.project.btoproject.model.Fair;
 import com.project.btoproject.model.School;
 import com.project.btoproject.model.SchoolCounselor;
 import com.project.btoproject.model.Tour;
@@ -46,14 +47,17 @@ public class GoogleSheetsService {
     private static final String TOUR_SPREADSHEET_ID = "1FHzTMk7yby8Y2eKa2uNWtnTWs1s4tCnItCmvAnBQLwc";
     private static final String TOUR_SPREADSHEET_RANGE = "A2:K";
 
-    /**
-     * Constructor to inject TourService and initialize the Sheets API client.
-     *
-     * @param tourService The service to handle Tour-related operations.
-     */
+    // Use TourService for database operations
+    private FairService fairService;
+
+    // Google Sheet attributes
+    private static final String FAIR_SPREADSHEET_ID = "1E6i3VIJuqoVcsQ4iaZkipwhNt6f9LlcHenf1YRLGYmU";
+    private static final String FAIR_SPREADSHEET_RANGE = "A2:L";
+
     @Autowired
-    public GoogleSheetsService(TourService tourService, SchoolService schoolService, SchoolCounselorService schoolCounselorService) {
+    public GoogleSheetsService(TourService tourService, FairService fairService, SchoolService schoolService, SchoolCounselorService schoolCounselorService) {
         this.tourService = tourService;
+        this.fairService = fairService;
         this.schoolService = schoolService;
         this.schoolCounselorService = schoolCounselorService;
 
@@ -67,13 +71,6 @@ public class GoogleSheetsService {
         }
     }
 
-    /**
-     * Initializes the Google Sheets API client using the provided credentials.
-     *
-     * @return Sheets API client instance.
-     * @throws IOException               if the credentials file cannot be read.
-     * @throws GeneralSecurityException  if a security error occurs during initialization.
-     */
     private Sheets initializeSheetsService() throws IOException, GeneralSecurityException {
         // Load service account credentials from the JSON file
         try (FileInputStream credentialsStream = new FileInputStream(CREDENTIALS_FILE_PATH)) {
@@ -91,24 +88,21 @@ public class GoogleSheetsService {
         }
     }
 
-    /**
-     * Fetch data for tours from the predefined Google Sheet and range.
-     * @return List of rows, where each row is a list of cell values.
-     * @throws IOException if the API call fails.
-     */
     public List<List<Object>> fetchTourData() throws IOException {
         // Call the Sheets API to retrieve values and return the rows as a list of lists
-        return sheetsService.spreadsheets().values()
+        ValueRange response = sheetsService.spreadsheets().values()
                 .get(TOUR_SPREADSHEET_ID, TOUR_SPREADSHEET_RANGE)
-                .execute()
-                .getValues();
+                .execute();
+
+        // Handle null or empty data
+        if (response.getValues() == null || response.getValues().isEmpty()) {
+            System.out.println("No data found in the Google Sheet.");
+            return Collections.emptyList();
+        }
+
+        return response.getValues();
     }
 
-    /**
-     * Fetches data from Google Sheets, maps it to Tour objects, and saves only new tours.
-     *
-     * @throws IOException If the Google Sheets API fails.
-     */
     public void saveNewTours() throws IOException {
         // Get the latest applicationTimeStamp from the database
         Date latestTimestamp = tourService.findLatestApplicationTimeStamp();
@@ -155,13 +149,6 @@ public class GoogleSheetsService {
         }
     }
 
-    /**
-     * Maps a row from Google Sheets to a Tour object.
-     *
-     * @param row A single row of data from Google Sheets.
-     * @return A Tour object populated with data from the row.
-     * @throws ParseException If the timestamp format is invalid.
-     */
     private Tour mapRowToTour(List<Object> row) throws ParseException {
         Tour tour = new Tour();
 
@@ -174,7 +161,7 @@ public class GoogleSheetsService {
         // Parse the school name from Column B and city from Column C
         String schoolName = row.get(1).toString();
         String city = row.get(2).toString();
-        School school = schoolService.findOrCreateSchool(schoolName, city); // Delegate to SchoolService
+        School school = schoolService.findOrCreateSchool(schoolName, city, "");
         tour.setSchool(school);
 
         // Map Requested Visit Date (Column D)
@@ -199,6 +186,10 @@ public class GoogleSheetsService {
 
         SchoolCounselor schoolCounselor = schoolCounselorService.findOrCreateCounselor(
                 counselorName, counselorRole, counselorPhone, counselorEmail, school);
+
+        // In case counselor already exists by name and school, but he changed his phone and email, update those
+        schoolCounselor.setPhoneNumber(counselorPhone);
+        schoolCounselor.setEmail(counselorEmail);
         tour.setSchoolCounselor(schoolCounselor);
 
         // Map Column K: Contact Person Role
@@ -223,4 +214,112 @@ public class GoogleSheetsService {
                 throw new IllegalArgumentException("Invalid hour value: " + time);
         }
     }
+
+    public List<List<Object>> fetchFairData() throws IOException {
+        // Call the Sheets API to retrieve values and return the rows as a list of lists
+        ValueRange response = sheetsService.spreadsheets().values()
+                .get(FAIR_SPREADSHEET_ID, FAIR_SPREADSHEET_RANGE)
+                .execute();
+
+        // Handle null or empty data
+        if (response.getValues() == null || response.getValues().isEmpty()) {
+            System.out.println("No data found in the Google Sheet.");
+            return Collections.emptyList();
+        }
+
+        return response.getValues();
+    }
+
+    public void saveNewFairs() throws IOException {
+        // Get the latest applicationTimeStamp from the database (implement in FairService)
+        Date latestTimestamp = fairService.findLatestApplicationTimeStamp();
+
+        // Fetch all rows from Google Sheets
+        List<List<Object>> rows = fetchFairData();
+
+        // Prepare a list for new Fair objects
+        List<Fair> newFairs = new ArrayList<>();
+
+        // Iterate through the rows and filter only new applications
+        for (List<Object> row : rows) {
+            if (!row.isEmpty()) {
+                try {
+                    // Parse the timestamp from the row
+                    String timestampString = row.get(0).toString(); // Column A: Timestamp
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                    Date rowTimestamp = dateFormat.parse(timestampString);
+
+                    // Skip rows with timestamps earlier or equal to the latest processed timestamp
+                    if (latestTimestamp != null && !rowTimestamp.after(latestTimestamp)) {
+                        continue;
+                    }
+
+                    // Map the row to a Fair object
+                    Fair fair = mapRowToFair(row);
+
+                    // Add the new fair to the list
+                    newFairs.add(fair);
+                } catch (ParseException e) {
+                    // Handle date parsing issues
+                    System.err.println("Error parsing timestamp for row: " + row);
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Save all new fairs to the database
+        if (!newFairs.isEmpty()) {
+            fairService.saveAll(newFairs);
+            System.out.println("Saved " + newFairs.size() + " new fairs to the database.");
+        } else {
+            System.out.println("No new fairs to save.");
+        }
+    }
+
+    private Fair mapRowToFair(List<Object> row) throws ParseException {
+        Fair fair = new Fair();
+
+        // Parse the timestamp from Column A
+        String timestampString = row.get(0).toString(); // Column A: Timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Date applicationTimeStamp = dateFormat.parse(timestampString);
+        fair.setApplicationTimeStamp(applicationTimeStamp);
+
+        // Parse school name and address (Column B: School Name, Column C: Address, Column D: City)
+        String schoolName = row.get(1).toString();
+        String schoolAddress = row.get(2).toString();
+        String city = row.get(3).toString();
+        School school = schoolService.findOrCreateSchool(schoolName, city, schoolAddress);
+        fair.setSchool(school);
+
+        // Do the same as the tour
+        // Parse contact person details (Columns E-H)
+        String counselorName = row.get(4).toString(); // Column E: Counselor Name
+        String counselorRole = row.get(5).toString(); // Column F: Counselor Role
+        String counselorPhone = row.get(6).toString(); // Column G: Counselor Phone
+        String counselorEmail = row.get(7).toString(); // Column H: Counselor Email
+
+        SchoolCounselor schoolCounselor = schoolCounselorService.findOrCreateCounselor(
+                counselorName, counselorRole, counselorPhone, counselorEmail, school);
+        fair.setSchoolCounselor(schoolCounselor);
+
+        // Parse preferred date and time (Columns I, J)
+        String preferredDateString = row.get(8).toString();
+        SimpleDateFormat preferredDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Date preferredDate = preferredDateFormat.parse(preferredDateString);
+        fair.setDate(preferredDate);
+
+        String preferredTime = row.get(9).toString();
+        fair.setHour(preferredTime);
+
+        // Parse estimated student count (Column K)
+        fair.setPeopleCount(Integer.parseInt(row.get(10).toString()));
+
+        // Parse event details or additional notes (Column L)
+        fair.setVisitorNotes(row.get(11).toString());
+
+
+        return fair;
+    }
+
 }
