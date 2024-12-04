@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.project.btoproject.model.School;
 import lombok.experimental.SuperBuilder;
+import java.util.Date;
 
 @Data
 @Entity
@@ -31,6 +32,13 @@ public class Fair extends Event {
 
     @Column(name = "people_count")
     private int peopleCount;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User[] responsibleMembers;
+
+    @Column(name = "fair_info")
+    private String fairInfo;
 
     // Constructor that sets eventType to FAIR
     public Fair() {
