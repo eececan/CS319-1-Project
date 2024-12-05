@@ -64,15 +64,17 @@ public class GuideService implements IGuideService
         return null;
     }
 
+    @Override
     public List<Guide> getAllGuides() {
         return guideRepository.findAll();
     }
 
+    @Override
     public Guide getGuideByName(String firstName, String lastName) {
         return guideRepository.findByFirstNameAndLastName(firstName, lastName)
                 .orElseThrow(() -> new IllegalArgumentException("Guide not found with name: " + firstName + " " + lastName));
     }
-
+    @Override
     public Guide getGuideById(long id) {
         return guideRepository.getGuideById(id);
     }
