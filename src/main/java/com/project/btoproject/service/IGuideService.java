@@ -11,5 +11,7 @@ public interface IGuideService {
     void selfAssignTour(Guide guide, Tour tour);
     void selfAssignIndividualTour(Guide guide, IndividualTour tour);
     int seeCurrentPoints(Guide g);
-
+    Guide getGuideByName(String firstName, String lastName);
+    Guide getGuideById(long id);
+    List<Guide> getAllGuides();
 }
