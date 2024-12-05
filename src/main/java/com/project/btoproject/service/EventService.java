@@ -1,11 +1,9 @@
 package com.project.btoproject.service;
 
 import com.project.btoproject.enums.Status;
-import com.project.btoproject.model.Event;
-import com.project.btoproject.model.Fair;
-import com.project.btoproject.model.Tour;
-import com.project.btoproject.model.TourInfo;
+import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IEventRepository;
+import com.project.btoproject.repository.TourRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class EventService implements IEventService {
 
     private IEventRepository eventRepository;
-
+    private TourRepository tourRepository;
     public void setStatusOfTour(Tour t, Status status) {
         Optional<Tour> tourOptional = eventRepository.findById(t.getId())
                 .filter(event -> event instanceof Tour)
@@ -31,6 +29,39 @@ public class EventService implements IEventService {
         }
         else {
             throw new IllegalArgumentException("Tour not found.");
+        }
+    }
+    public void setStatusOfEvent(Event e, Status status) {
+        Optional <Event> eventOptional = eventRepository.findById(e.getId());
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            if (event instanceof Tour) {
+                Tour tour = (Tour) event;
+                tour.setStatus(status);
+                //Save using TourRepository if specific actions are needed
+                tourRepository.save(tour);
+            } else if (event instanceof IndividualTour) {
+                IndividualTour individualTour = (IndividualTour) event;
+                individualTour.setStatus(status);
+            } else if (event instanceof Fair) {
+                Fair fair = (Fair) event;
+                fair.setStatus(status);
+
+            }
+            eventRepository.save(event);
+        } else {
+
+            throw new IllegalArgumentException("Event not found.");
+        }
+    }
+    public Status getStatusOfEvent(Event e) {
+        Optional <Event> eventOptional = eventRepository.findById(e.getId());
+
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            return event.getStatus();
+        } else {
+            throw new IllegalArgumentException("Event not found.");
         }
     }
 
