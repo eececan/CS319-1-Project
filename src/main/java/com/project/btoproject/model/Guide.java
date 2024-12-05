@@ -12,23 +12,23 @@ import java.util.List;
 
 @Data
 @Entity
-// @NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "all_users")
 @DiscriminatorValue("GUIDE")
 public class Guide extends User {
 
     @Column(name = "schedule")
-    private String schedule; // assuming Hour[] is mapped as a string
+    private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
 
     @Column(name = "department", nullable = false)
-    private String department;
+    private String department = "default_department";
 
     @Column(name = "grade")
-    private int grade;
+    private Integer grade = 100;
 
     @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PointRecord> points;
+    private List<PointRecord> points = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "guide_id")
