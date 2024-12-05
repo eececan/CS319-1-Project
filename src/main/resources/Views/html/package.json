@@ -1,0 +1,40 @@
+{
+    "name": "epic-hr",
+    "version": "1.0.0",
+    "description": "Premium admin dashboard template with responsive and high quality UI",
+    "main": "Gruntfile.js",
+    "directories": {
+        "doc": "doc"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "css",
+        "sass",
+        "mobile-first",
+        "responsive",
+        "front-end",
+        "framework",
+        "admin",
+        "dashboard",
+        "admin panel"
+    ],
+    "author": "puffintheme.com",
+    "license": "ISC",
+    "dependencies": {
+        "connect-livereload": "^0.6.1",
+        "grunt": "^1.6.1",
+        "grunt-contrib-jshint": "^3.2.0",
+        "grunt-contrib-uglify": "^5.2.2",
+        "grunt-css": "^0.4.1",
+        "grunt-sass": "^3.1.0",
+        "gulp": "^5.0.0",
+        "gulp-autoprefixer": "^8.0.0",
+        "gulp-rename": "^2.0.0",
+        "gulp-rtlcss": "^2.0.0",
+        "gulp-sass": "^5.1.0",
+        "node-sass": "^9.0.0",
+        "npm-run-all": "^4.1.3"
+    }
+}
