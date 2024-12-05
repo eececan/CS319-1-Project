@@ -25,7 +25,7 @@ public class Guide extends User {
     private String department = "default_department";
 
     @Column(name = "grade")
-    private Integer grade = 100;
+    private Integer grade = 2;
 
     @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PointRecord> points = new ArrayList<>();

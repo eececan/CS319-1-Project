@@ -20,7 +20,7 @@ import java.util.List;
 public class User {
 
     @Id
-    private Long id;
+    private Long id; //is this school id or automatically generated id
 
     @Column(name = "password", nullable = false)
     private String password;

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>All Guides</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-guides {
+      text-align: center;
+      color: #888;
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    .guide-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .guide-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+    }
+
+    .guide-item h2 {
+      margin-top: 0;
+      color: #555;
+    }
+
+    .guide-details p {
+      margin: 5px 0;
+    }
+
+    .events ul {
+      margin: 10px 0;
+      padding-left: 20px;
+      list-style-type: circle;
+    }
+
+    .events ul li {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    .hr-divider {
+      border: 0;
+      height: 1px;
+      background: #ddd;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+<h1>All Guides</h1>
+
+<div class="container">
+
+  <!-- Check if guides list is empty -->
+  <div th:if="${#lists.isEmpty(guides)}" class="no-guides">
+    <p>No guides found.</p>
+  </div>
+
+  <!-- Check if guides list is not empty -->
+  <ul th:if="${!#lists.isEmpty(guides)}" class="guide-list">
+    <li th:each="guide : ${guides}" class="guide-item">
+      <h2 th:text="${guide.firstName + ' ' + guide.lastName}"></h2>
+      <div class="guide-details">
+        <p><strong>Department:</strong> <span th:text="${guide.department}"></span></p>
+        <p><strong>Grade:</strong> <span th:text="${guide.grade}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${guide.email}"></span></p>
+        <p><strong>ID:</strong> <span th:text="${guide.id}"></span></p>
+        <p><strong>Phone Number:</strong> <span th:text="${guide.phoneNumber}"></span></p>
+        <p><strong>Schedule:</strong> <span th:text="${guide.schedule}"></span></p>
+        <p><strong>Description:</strong> <span th:text="${guide.description}"></span></p>
+      </div>
+      <div class="events">
+        <p><strong>Events:</strong></p>
+        <ul>
+          <li th:each="event : ${guide.events}">
+            <span th:text="${event.name}"></span>
+          </li>
+        </ul>
+      </div>
+      <hr class="hr-divider" />
+    </li>
+  </ul>
+</div>
+</body>
+</html>

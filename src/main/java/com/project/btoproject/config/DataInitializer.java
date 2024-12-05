@@ -1,19 +1,25 @@
 package com.project.btoproject.config;
 
+import com.project.btoproject.model.Guide;
 import com.project.btoproject.model.Role;
+import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Configuration
 public class DataInitializer {
 
     private final RoleRepository roleRepository;
+    private final IGuideRepository guideRepository;
 
-    public DataInitializer(RoleRepository _roleRepository) {
+    public DataInitializer(RoleRepository _roleRepository, IGuideRepository _guideRepository) {
         this.roleRepository = _roleRepository;
+        this.guideRepository = _guideRepository;
     }
 
     @Bean
@@ -50,6 +56,28 @@ public class DataInitializer {
                 Role director = new Role();
                 director.setName("DIRECTOR");
                 roleRepository.save(director);
+            }
+        };
+    }
+
+    @Bean
+    @Transactional
+    public ApplicationRunner initializeGuides() {
+        return args -> {
+            if(guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()){
+                Guide guide = new Guide();
+                guide.setStartDate(LocalDate.now());
+                guide.setDepartment("CS");
+                guide.setEmail("candan.atac@ug.bilkent.edu.tr");
+                guide.setFirstName("Ayca");
+                guide.setLastName("Atac");
+                guide.setSchedule("example schedule");
+                guide.setGrade(3);
+                guide.setPassword("password");
+                guide.setId(22203501L);
+                guide.setDescription("Ayca added as a guide for an example.");
+                guide.setPhoneNumber("05370527736");
+                guideRepository.save(guide);
             }
         };
     }
