@@ -27,7 +27,7 @@ import java.util.Locale;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    /*private final AuthService authService;
 
     @Autowired
     public AuthController(AuthService _authService) {
@@ -45,5 +45,5 @@ public class AuthController {
         String response = authService.register(registerDto);
         HttpStatus status = response.equals("Username is taken!") ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
         return new ResponseEntity<>(response, status);
-    }
+    }*/
 }
