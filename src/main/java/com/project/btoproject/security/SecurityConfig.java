@@ -59,7 +59,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/api/auth/**", "/getAllGuides", "/").permitAll()
+                                .requestMatchers("/api/auth/**", "/getAllGuides", "/", "assets/**", "/bilkent.png").permitAll()
 
                         .anyRequest().authenticated()
                 )
