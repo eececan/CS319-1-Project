@@ -59,8 +59,20 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/api/auth/**", "/getAllGuides", "/", "assets/**", "/bilkent.png").permitAll()
-
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/getAllGuides",
+                                "/",
+                                "/assets/**",
+                                "/bilkent.png",
+                                "/ui/auth/login",
+                                "/ui/assets/**",
+                                "/ui/assets/plugins/**",
+                                "/ui/assets/css/**",
+                                "/ui/assets/images/**",
+                                "/ui/assets/js/**"
+                        ).permitAll()
+                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
