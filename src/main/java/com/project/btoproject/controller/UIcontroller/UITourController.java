@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-public class TourController {
+public class UITourController {
 
     private final EventService eventService;
 
     @Autowired
-    public TourController(EventService eventService) {
+    public UITourController(EventService eventService) {
         this.eventService = eventService;
     }
 
