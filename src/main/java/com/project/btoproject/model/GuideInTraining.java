@@ -1,6 +1,5 @@
 package com.project.btoproject.model;
 
-import com.project.btoproject.common.PointRecord;
 import jakarta.persistence.*;
 import lombok.*;
 

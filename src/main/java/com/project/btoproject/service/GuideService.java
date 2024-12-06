@@ -1,6 +1,5 @@
 package com.project.btoproject.service;
 
-import com.project.btoproject.common.PointRecord;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IGuideRepository;
 import jakarta.transaction.Transactional;

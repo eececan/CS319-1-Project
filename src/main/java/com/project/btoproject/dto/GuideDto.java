@@ -1,6 +1,6 @@
 package com.project.btoproject.dto;
 
-import com.project.btoproject.common.PointRecord;
+import com.project.btoproject.model.PointRecord;
 import com.project.btoproject.common.UserTask;
 import com.project.btoproject.model.Event;
 import jakarta.persistence.*;
