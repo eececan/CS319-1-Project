@@ -27,6 +27,4 @@ public class FairController {
         List<Fair> fairs = fairservice.getAllFairs();
         return new ResponseEntity<>(fairs, HttpStatus.OK);
     }
-
-
 }
