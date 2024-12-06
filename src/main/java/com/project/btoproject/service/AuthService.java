@@ -1,6 +1,7 @@
 package com.project.btoproject.service;
 
 import com.project.btoproject.dto.AuthResponseDTO;
+import com.project.btoproject.dto.ErrorResponseDto;
 import com.project.btoproject.dto.LoginDto;
 import com.project.btoproject.dto.RegisterDto;
 import com.project.btoproject.model.Role;
@@ -42,14 +43,33 @@ public class AuthService {
         this.jwtGenerator = jwtGenerator;
     }
 
-    public AuthResponseDTO login(@RequestBody LoginDto loginDto){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getUsername(),
-                        loginDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtGenerator.generateToken(authentication);
-        return new AuthResponseDTO(token);
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+        try {
+            // Authenticate the user
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getUsername(),
+                            loginDto.getPassword()));
+
+            // Set the security context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Generate JWT token
+            String token = jwtGenerator.generateToken(authentication);
+
+            // Return success response
+            return ResponseEntity.ok(new AuthResponseDTO(token));
+        } catch (Exception e) {
+            // Handle specific exceptions and return meaningful messages
+            if (e instanceof org.springframework.security.authentication.BadCredentialsException) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ErrorResponseDto("Invalid username or password"));
+            } else {
+                // For other exceptions, return a generic error message
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ErrorResponseDto("Authentication failed. Please try again."));
+            }
+        }
     }
 
     public String register(@RequestBody RegisterDto registerDto) {

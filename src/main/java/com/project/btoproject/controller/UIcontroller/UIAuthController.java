@@ -4,6 +4,8 @@ import com.project.btoproject.dto.AuthResponseDTO;
 import com.project.btoproject.dto.LoginDto;
 import com.project.btoproject.model.Guide;
 import com.project.btoproject.service.AuthService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,10 +36,15 @@ public class UIAuthController {
     public String login(LoginDto loginDto, Model model) {
         System.out.println(loginDto.getPassword());
         System.out.println(loginDto.getUsername());
-        AuthResponseDTO resp = authService.login(loginDto);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("auth", auth);
-        return "Director-Dashboard";
+        ResponseEntity<?> response = authService.login(loginDto);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            AuthResponseDTO authResponseDTO = (AuthResponseDTO) response.getBody();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            model.addAttribute("auth", auth);
+            return "Director-Dashboard";
+        }
+        model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
+        return "login";
     }
 
 
