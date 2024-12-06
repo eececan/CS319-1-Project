@@ -158,6 +158,10 @@ public class EventService implements IEventService {
         return eventRepository.findAllFairs();
     }
 
+    public List<IndividualTour> getAllIndividualTours() {
+        return eventRepository.findAllIndividualTours();
+    }
+
 }
 
 

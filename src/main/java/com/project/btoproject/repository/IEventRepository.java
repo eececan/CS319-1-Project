@@ -2,6 +2,7 @@ package com.project.btoproject.repository;
 
 import com.project.btoproject.model.Event;
 import com.project.btoproject.model.Fair;
+import com.project.btoproject.model.IndividualTour;
 import com.project.btoproject.model.Tour;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +29,9 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE TYPE(e) = Fair")
     List<Fair> findAllFairs();
+
+    @Query("SELECT e FROM Event e WHERE TYPE(e) = IndividualTour ")
+    List<IndividualTour> findAllIndividualTours();
 
 
 }
