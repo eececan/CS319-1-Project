@@ -1,5 +1,6 @@
 package com.project.btoproject.security;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JWTGenerator {
-	private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+	private static final String SECRET_KEY = "secret-key-for-319-ayca-ceren-ece-ece-ceren-aycayoursecurekeythatissufficientlylongandsecuretousehs512";
+	private static final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
 	public String generateToken(Authentication authentication) {
 		String username = authentication.getName();
