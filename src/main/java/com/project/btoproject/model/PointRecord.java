@@ -1,4 +1,4 @@
-package com.project.btoproject.common;
+package com.project.btoproject.model;
 
 import com.project.btoproject.model.Event;
 import com.project.btoproject.model.Guide;
@@ -14,7 +14,7 @@ public class PointRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "guide_id", nullable = false)
