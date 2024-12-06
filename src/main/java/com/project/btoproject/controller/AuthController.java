@@ -35,9 +35,14 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){
-        AuthResponseDTO response = authService.login(loginDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
+        ResponseEntity<?> response = authService.login(loginDto);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            AuthResponseDTO authResponseDTO = (AuthResponseDTO) response.getBody();
+            return new ResponseEntity<>(authResponseDTO, HttpStatus.OK);
+        }
+        return ResponseEntity.status(response.getStatusCode())
+                .body(response.getBody());
     }
 
     @PostMapping("register")

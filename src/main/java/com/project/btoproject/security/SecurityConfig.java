@@ -42,37 +42,31 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .cors(cors -> cors.configurationSource(request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(List.of("*")); // Or specify the allowed origin
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            config.setAllowedHeaders(List.of("*"));
-            config.setExposedHeaders(List.of("Authorization"));
-            return config;
-        }))
-
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("*"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setExposedHeaders(List.of("Authorization"));
+                    return config;
+                }))
                 .csrf(csrf -> csrf.disable())
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(authEntryPoint)
-                )
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(authorize -> authorize
+                .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/getAllGuides",
                                 "/",
+                                "/ui/auth/login",
                                 "/assets/**",
                                 "/bilkent.png",
-                                "/ui/auth/login",
                                 "/ui/assets/**",
                                 "/ui/assets/plugins/**",
                                 "/ui/assets/css/**",
                                 "/ui/assets/images/**",
                                 "/ui/assets/js/**"
                         ).permitAll()
-                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
