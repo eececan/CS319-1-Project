@@ -150,6 +150,14 @@ public class EventService implements IEventService {
         eventRepository.saveAll(fairs); // Save fairs as they are also events
     }
 
+    public List<Tour> getAllTours() {
+        return eventRepository.findAllTours();
+    }
+
+    public List<Tour> getAllFairs() {
+        return eventRepository.findAllFairs();
+    }
+
 }
 
 
