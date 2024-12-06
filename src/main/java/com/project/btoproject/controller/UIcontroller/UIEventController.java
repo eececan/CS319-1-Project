@@ -1,5 +1,6 @@
 package com.project.btoproject.controller.UIcontroller;
 
+import com.project.btoproject.model.IndividualTour;
 import com.project.btoproject.model.Tour;
 import com.project.btoproject.model.Fair;
 import com.project.btoproject.service.EventService;
@@ -25,8 +26,9 @@ public class UIEventController {
         // Fetch both tours and fairs
         List<Tour> tours = eventService.getAllTours();
         List<Fair> fairs = eventService.getAllFairs();
-
+        List<IndividualTour> individualTours = eventService.getAllIndividualTours();
         // Add both lists to the model
+        model.addAttribute("individualTours", individualTours);
         model.addAttribute("tours", tours);
         model.addAttribute("fairs", fairs);
 
