@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-public class FairController {
+public class UIFairController {
 
     private final EventService eventService;
 
     @Autowired
-    public FairController(EventService eventService) {
+    public UIFairController(EventService eventService) {
         this.eventService = eventService;
     }
 
