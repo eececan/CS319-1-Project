@@ -11,20 +11,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/fairs")
-public class FairController {
+@RequestMapping("/api/events")
+public class EventController {
 
-    private final EventService fairservice;
+    private final EventService eventservice;
 
     @Autowired
-    public FairController(EventService tourService) {
-        this.fairservice = tourService;
+    public EventController(EventService eventService) {
+        this.eventservice = eventService;
     }
 
     // Endpoint to get all fairs
-    @GetMapping("getAllFairs")
+    @GetMapping("getAllEvents")
     public ResponseEntity<List<Fair>> getAllFairs() {
-        List<Fair> fairs = fairservice.getAllFairs();
+        List<Fair> fairs = eventservice.getAllFairs();
+        List<Tour> tours = eventservice.getAllTours();
         return new ResponseEntity<>(fairs, HttpStatus.OK);
     }
 }
