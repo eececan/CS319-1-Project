@@ -28,14 +28,12 @@ import java.util.List;
 @Service
 public class GoogleSheetsService {
 
+    private final EventService eventService;
     // Sheets API client
     private Sheets sheetsService;
 
     // Path to the credentials JSON file
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/credentials.json";
-
-    // Use TourService for database operations
-    private TourService tourService;
 
     // Use SchoolService for database operations
     private SchoolService schoolService;
@@ -47,17 +45,12 @@ public class GoogleSheetsService {
     private static final String TOUR_SPREADSHEET_ID = "1FHzTMk7yby8Y2eKa2uNWtnTWs1s4tCnItCmvAnBQLwc";
     private static final String TOUR_SPREADSHEET_RANGE = "A2:K";
 
-    // Use TourService for database operations
-    private FairService fairService;
-
     // Google Sheet attributes
     private static final String FAIR_SPREADSHEET_ID = "1E6i3VIJuqoVcsQ4iaZkipwhNt6f9LlcHenf1YRLGYmU";
     private static final String FAIR_SPREADSHEET_RANGE = "A2:L";
 
     @Autowired
-    public GoogleSheetsService(TourService tourService, FairService fairService, SchoolService schoolService, SchoolCounselorService schoolCounselorService) {
-        this.tourService = tourService;
-        this.fairService = fairService;
+    public GoogleSheetsService(SchoolService schoolService, SchoolCounselorService schoolCounselorService, EventService eventService) {
         this.schoolService = schoolService;
         this.schoolCounselorService = schoolCounselorService;
 
@@ -69,6 +62,7 @@ public class GoogleSheetsService {
             e.printStackTrace(); // For debugging
             throw new RuntimeException("Failed to initialize Google Sheets Service", e);
         }
+        this.eventService = eventService;
     }
 
     private Sheets initializeSheetsService() throws IOException, GeneralSecurityException {
@@ -105,7 +99,7 @@ public class GoogleSheetsService {
 
     public void saveNewTours() throws IOException {
         // Get the latest applicationTimeStamp from the database
-        Date latestTimestamp = tourService.findLatestApplicationTimeStamp();
+        Date latestTimestamp = eventService.findLatestTourApplicationTimeStamp();
 
         // Fetch all rows from Google Sheets
         List<List<Object>> rows = fetchTourData();
@@ -142,7 +136,7 @@ public class GoogleSheetsService {
 
         // Save all new tours to the database
         if (!newTours.isEmpty()) {
-            tourService.saveAll(newTours);
+            eventService.saveAllTours(newTours);
             System.out.println("Saved " + newTours.size() + " new tours to the database.");
         } else {
             System.out.println("No new tours to save.");
@@ -232,7 +226,7 @@ public class GoogleSheetsService {
 
     public void saveNewFairs() throws IOException {
         // Get the latest applicationTimeStamp from the database (implement in FairService)
-        Date latestTimestamp = fairService.findLatestApplicationTimeStamp();
+        Date latestTimestamp = eventService.findLatestFairApplicationTimeStamp();
 
         // Fetch all rows from Google Sheets
         List<List<Object>> rows = fetchFairData();
@@ -269,7 +263,7 @@ public class GoogleSheetsService {
 
         // Save all new fairs to the database
         if (!newFairs.isEmpty()) {
-            fairService.saveAll(newFairs);
+            eventService.saveAllFairs(newFairs);
             System.out.println("Saved " + newFairs.size() + " new fairs to the database.");
         } else {
             System.out.println("No new fairs to save.");

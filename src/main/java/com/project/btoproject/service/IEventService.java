@@ -6,6 +6,7 @@ import com.project.btoproject.model.Fair;
 import com.project.btoproject.model.Tour;
 import com.project.btoproject.model.TourInfo;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IEventService {
@@ -15,4 +16,6 @@ public interface IEventService {
     List<Fair> seeUpcomingFairs();
     void sendFairReminderToResponsibleMembers();
     String seeRemainingTimeUntilEvent(Event e);
+    public Date findLatestFairApplicationTimeStamp();
+    public Date findLatestTourApplicationTimeStamp();
 }

@@ -3,11 +3,10 @@ package com.project.btoproject.service;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IEventRepository;
-import com.project.btoproject.repository.TourRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class EventService implements IEventService {
 
     private IEventRepository eventRepository;
-    private TourRepository tourRepository;
+
+    @Autowired
+    public EventService(IEventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
     public void setStatusOfTour(Tour t, Status status) {
         Optional<Tour> tourOptional = eventRepository.findById(t.getId())
                 .filter(event -> event instanceof Tour)
@@ -39,7 +42,7 @@ public class EventService implements IEventService {
                 Tour tour = (Tour) event;
                 tour.setStatus(status);
                 //Save using TourRepository if specific actions are needed
-                tourRepository.save(tour);
+                //tourRepository.save(tour); // TOUR_REPOSITORY DELETED
             } else if (event instanceof IndividualTour) {
                 IndividualTour individualTour = (IndividualTour) event;
                 individualTour.setStatus(status);
@@ -128,4 +131,25 @@ public class EventService implements IEventService {
         String remainingTime = String.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes, seconds);
         return ("Remaining time until the event: " + remainingTime);
     }
+
+    @Override
+    public Date findLatestFairApplicationTimeStamp() {
+        return eventRepository.findLatestFairApplicationTimeStamp();
+    }
+
+    @Override
+    public Date findLatestTourApplicationTimeStamp() {
+        return eventRepository.findLatestTourApplicationTimeStamp();
+    }
+
+    public void saveAllTours(List<Tour> tours) {
+        eventRepository.saveAll(tours); // Save tours as they are also events
+    }
+
+    public void saveAllFairs(List<Fair> fairs) {
+        eventRepository.saveAll(fairs); // Save fairs as they are also events
+    }
+
 }
+
+
