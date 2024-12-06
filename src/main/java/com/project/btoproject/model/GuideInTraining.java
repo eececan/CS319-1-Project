@@ -26,8 +26,8 @@ public class GuideInTraining extends User {
     @Column(name = "grade", nullable = false)
     private Integer grade;
 
-    @Column(name = "training_complete", nullable = false)
-    private boolean trainingComplete;
+    @Column(name = "training_complete", nullable = true)
+    private boolean trainingComplete = false;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "guide_id")
