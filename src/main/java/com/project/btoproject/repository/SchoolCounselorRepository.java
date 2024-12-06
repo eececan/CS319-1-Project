@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface SchoolCounselorRepository extends JpaRepository<SchoolCounselor, Long> {
     Optional<SchoolCounselor> findByNameAndSchool(String name, School school);
+
+    Optional<SchoolCounselor> findByName(String name);
 }
 
