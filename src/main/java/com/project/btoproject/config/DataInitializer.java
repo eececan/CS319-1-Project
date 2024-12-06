@@ -26,35 +26,29 @@ public class DataInitializer {
     @Transactional
     public ApplicationRunner initializeRoles() {
         return args -> {
-            if (roleRepository.findByName("USER").isPresent()) {
-                roleRepository.deleteByName("USER");
-            }
-            if (roleRepository.findByName("ADMIN").isPresent()) {
-                roleRepository.deleteByName("ADMIN");
-            }
-            if (roleRepository.findByName("GUIDE").isEmpty()) {
+            if (roleRepository.findByName("ROLE_GUIDE").isEmpty()) {
                 Role user = new Role();
-                user.setName("GUIDE");
+                user.setName("ROLE_GUIDE");
                 roleRepository.save(user);
             }
-            if (roleRepository.findByName("ADVISOR").isEmpty()) {
+            if (roleRepository.findByName("ROLE_ADVISOR").isEmpty()) {
                 Role advisor = new Role();
-                advisor.setName("ADVISOR");
+                advisor.setName("ROLE_ADVISOR");
                 roleRepository.save(advisor);
             }
-            if (roleRepository.findByName("COORDINATOR").isEmpty()) {
+            if (roleRepository.findByName("ROLE_COORDINATOR").isEmpty()) {
                 Role coordinator = new Role();
-                coordinator.setName("COORDINATOR");
+                coordinator.setName("ROLE_COORDINATOR");
                 roleRepository.save(coordinator);
             }
-            if (roleRepository.findByName("HEAD_SECRETARY").isEmpty()) {
+            if (roleRepository.findByName("ROLE_HEAD_SECRETARY").isEmpty()) {
                 Role headSecretary = new Role();
-                headSecretary.setName("HEAD_SECRETARY");
+                headSecretary.setName("ROLE_HEAD_SECRETARY");
                 roleRepository.save(headSecretary);
             }
-            if (roleRepository.findByName("DIRECTOR").isEmpty()) {
+            if (roleRepository.findByName("ROLE_DIRECTOR").isEmpty()) {
                 Role director = new Role();
-                director.setName("DIRECTOR");
+                director.setName("ROLE_DIRECTOR");
                 roleRepository.save(director);
             }
         };
