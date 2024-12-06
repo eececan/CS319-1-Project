@@ -26,7 +26,7 @@ import java.util.Locale;
 @Service
 //@RequiredArgsConstructor
 public class AuthService {
-    /*
+
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     private RoleRepository roleRepository;
@@ -68,5 +68,5 @@ public class AuthService {
 
         return ("User registered success!");
     }
-    */
+
 }
