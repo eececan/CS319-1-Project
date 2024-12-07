@@ -55,6 +55,59 @@ public class EventService implements IEventService {
         }
     }
 
+    public void approveTourBySecretary(Long tourId) {
+        Optional<Event> eventOptional = eventRepository.findById(tourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
+            Tour tour = (Tour) eventOptional.get();
+            if (!tour.getStatus().equals(Status.BTO_ACCEPTED)) {
+                throw new IllegalStateException("Tour is not in a state to be approved.");
+            }
+
+            tour.setStatus(Status.UPCOMING_TOUR); // Set status to advisor approved
+            eventRepository.save(tour);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
+        }
+    }
+
+    public void rejectTourBySecretary(Long tourId) {
+        Optional<Event> eventOptional = eventRepository.findById(tourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
+            Tour tour = (Tour) eventOptional.get();
+            if (!tour.getStatus().equals(Status.BTO_ACCEPTED)) {
+                throw new IllegalStateException("Tour is not in a state to be rejected.");
+            }
+
+            tour.setStatus(Status.CANCELED_TOUR); // Set status to advisor rejected
+            eventRepository.save(tour);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
+        }
+    }
+
+
+    public void cancelTourBySecretary(Long tourId) {
+        Optional<Event> eventOptional = eventRepository.findById(tourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
+            Tour tour = (Tour) eventOptional.get();
+            if (!tour.getStatus().equals(Status.UPCOMING_TOUR)) {
+                throw new IllegalStateException("Tour is not in a state to be canceled.");
+            }
+
+            tour.setStatus(Status.CANCELED_TOUR); // Set status to canceled
+            eventRepository.save(tour);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
+        }
+    }
+
+
+
+
+
 
     public void setStatusOfTour(Tour t, Status status) {
         Optional<Tour> tourOptional = eventRepository.findById(t.getId())
@@ -68,6 +121,7 @@ public class EventService implements IEventService {
             throw new IllegalArgumentException("Tour not found.");
         }
     }
+
     public void setStatusOfEvent(Event e, Status status) {
         Optional <Event> eventOptional = eventRepository.findById(e.getId());
         if (eventOptional.isPresent()) {
