@@ -4,6 +4,7 @@ package com.project.btoproject.model;
 
 import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Hour;
+import com.project.btoproject.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -56,6 +57,7 @@ public class Tour extends Event {
     // Constructor that sets eventType to TOUR
     public Tour() {
         this.setEventType(EventType.TOUR);
+        this.setStatus(Status.NEW_TOUR_APPLICATION);
     }
 
 }

@@ -22,6 +22,40 @@ public class EventService implements IEventService {
     public EventService(IEventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
+
+    public void approveTourByAdvisor(Long tourId) {
+        Optional<Event> eventOptional = eventRepository.findById(tourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
+            Tour tour = (Tour) eventOptional.get();
+            if (!tour.getStatus().equals(Status.NEW_TOUR_APPLICATION)) {
+                throw new IllegalStateException("Tour is not in a state to be approved.");
+            }
+
+            tour.setStatus(Status.BTO_ACCEPTED); // Set status to advisor approved
+            eventRepository.save(tour);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
+        }
+    }
+
+    public void rejectTourByAdvisor(Long tourId) {
+        Optional<Event> eventOptional = eventRepository.findById(tourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
+            Tour tour = (Tour) eventOptional.get();
+            if (!tour.getStatus().equals(Status.NEW_TOUR_APPLICATION)) {
+                throw new IllegalStateException("Tour is not in a state to be rejected.");
+            }
+
+            tour.setStatus(Status.BTO_REJECTED); // Set status to advisor rejected
+            eventRepository.save(tour);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
+        }
+    }
+
+
     public void setStatusOfTour(Tour t, Status status) {
         Optional<Tour> tourOptional = eventRepository.findById(t.getId())
                 .filter(event -> event instanceof Tour)

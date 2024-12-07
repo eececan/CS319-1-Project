@@ -66,7 +66,8 @@ public class SecurityConfig {
                                 "/ui/assets/css/**",
                                 "/ui/assets/images/**",
                                 "/ui/assets/js/**",
-                                "/ui/auth/project-list-advisor"
+                                "/ui/auth/advisor-tables",
+                                "/api/tours/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
