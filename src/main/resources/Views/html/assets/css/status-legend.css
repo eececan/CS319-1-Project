@@ -1,0 +1,63 @@
+.status-legend-container {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.status-legend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    background-color: #f8f9fa;
+}
+
+.legend-item {
+    flex: 1; /* Ensures equal width */
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 4px;
+    margin: 0 5px;
+}
+
+.legend-item.new {
+    color: black;
+}
+
+table.table.table-hover.table-striped tr.approved-tour > td {
+    background-color: #11bf3b !important;
+}
+
+table.table.table-hover.table-striped tr.bto-approved-tour > td {
+    background-color: #F99E44 !important;
+}
+
+table.table.table-hover.table-striped tr.bto-rejected-tour > td {
+    background-color: #ED1C24 !important;
+}
+table.table.table-hover.table-striped tr.canceled-tour > td {
+    background-color: #AC0B12 !important;
+}
+
+.approved-tour{
+    background-color: #11bf3b !important;
+}
+
+.bto-approved-tour{
+    background-color: #F99E44 !important;
+}
+
+.bto-rejected-tour{
+    background-color: #ED1C24 !important;
+}
+
+.canceled {
+    background-color: #AC0B12 !important;
+}
+
+
+
+
+
