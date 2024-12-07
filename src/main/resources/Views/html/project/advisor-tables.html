@@ -13,8 +13,10 @@
     <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
 
     <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/status-legend.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+
 
 </head>
 
@@ -331,12 +333,13 @@
             <div class="container-fluid">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="table-responsive" style="overflow-x: auto;">
-                                            <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                                        <div class="status-legend table-responsive" style="overflow-x: auto;">
+                                            <table class=" table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                     <tr>
                                                         <th style="width: 1%;">Date</th>
@@ -353,10 +356,9 @@
                                                 <tbody>
                                                 <tr id="row-${tour.id}" th:each="tour : ${tours}"
                                                     th:classappend="
-                                                    ${tour.status.name() == 'BTO_ACCEPTED'} ? 'table-warning' :
-                                                    (${tour.status.name() == 'BTO_REJECTED'} ? 'table-danger' :
-                                                    (${tour.status.name() == 'NEW_TOUR_APPLICATION'} ? 'table-light' :
-                                                    (${tour.status.name() == 'UPCOMING_TOUR'} ? 'table-success' : '')))">
+                                                    ${tour.status.name() == 'BTO_ACCEPTED'} ? 'bto-approved-tour' :
+                                                    (${tour.status.name() == 'BTO_REJECTED'} ? 'bto-rejected-tour' :
+                                                    (${tour.status.name() == 'UPCOMING_TOUR'} ? 'bg-upcoming' : ''))">
                                                     <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
                                                     <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
                                                     <td th:switch="${tour.hour.name()}">
@@ -393,7 +395,19 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">New</li>
+                                <li class="legend-item approved-tour">Approved</li>
+                                <li class="legend-item bto-approved-tour">BTO Approved</li>
+                                <li class="legend-item bto-rejected-tour">BTO Rejected</li>
+                                <li class="legend-item canceled">Canceled</li>
+                            </ul>
+                        </div>
+
                     </div>
+
                     <div class="tab-pane fade" id="Tours" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
