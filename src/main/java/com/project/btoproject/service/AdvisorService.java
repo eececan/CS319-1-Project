@@ -23,4 +23,11 @@ public class AdvisorService implements IAdvisorService {
         return advisor.getResponsibleDay();
     }
 
+    public Advisor saveAdvisor(Advisor advisor) {
+        return advisorRepository.save(advisor);
+    }
+    @Override
+    public Advisor findAdvisorsByResponsibleDay(DayOfWeek day) {
+        return advisorRepository.findByResponsibleDay(day);
+    }
 }
