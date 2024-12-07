@@ -61,11 +61,11 @@ public class UIAuthController {
         return "login";
     }
 
-    @GetMapping("/project-list-advisor")
+    @GetMapping("/advisor-tables")
     public String showProjectListAdvisor(Model model) {
 
         model.addAttribute("tours", eventService.getAllTours());
-        return "project-list-advisor";
+        return "advisor-tables";
     }
 
 }
