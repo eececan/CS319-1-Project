@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
 
-<title>Bilkent Tours</title>
+    <title>Bilkent Tours</title>
 
-<!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <!-- Bootstrap Core and Vendor -->
+    <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
 
-<!-- Core css -->
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/theme1.css"/>
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+
 </head>
 
 <body class="font-montserrat">
@@ -369,113 +370,34 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                     <tr>
-                                                        <th>Date</th>
-                                                        <th>Day</th>
-                                                        <th class="w100">Hour</th>
-                                                        <th class="w100">High School</th>
-                                                        <th>City</th>
-                                                        <th>#</th>
-                                                        <th>Counselor Name</th>
-                                                        <th>Contact</th>
-                                                        <th>Action</th>
+                                                        <th style="width: 1%;">Date</th>
+                                                        <th style="width: 1%;">Day</th>
+                                                        <th style="width: 1%;">Hour</th>
+                                                        <th style="width: 1%;">High School</th>
+                                                        <th style="width: 1%;">City</th>
+                                                        <th style="width: 1%;">People Count</th>
+                                                        <th style="width: 1%;">Counselor Name</th>
+                                                        <th style="width: 1%;">Contact</th>
+                                                        <th style="width: 1%;">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                       
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                       
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
+                                                <tr th:each="tour : ${tours}">
+                                                    <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
+                                                    <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
+                                                    <td th:switch="${tour.hour.name()}">
+                                                        <span th:case="'NINE'">09:00</span>
+                                                        <span th:case="'ELEVEN'">11:00</span>
+                                                        <span th:case="'THIRTEEN_THIRTY'">13:30</span>
+                                                        <span th:case="'SIXTEEN'">16:00</span>
+                                                        <span th:case="*">Unknown</span>
+                                                    </td>
+                                                    <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
+                                                    <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">High School</td>
+                                                    <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
+                                                    <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
+                                                    <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -508,76 +430,6 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
                                                     <tr>
                                                         <td>INPUT</td>
                                                         <td>INPUT</td>
@@ -858,8 +710,8 @@
 </div>
 
 
-<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
 
-<script src="../assets/js/core.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.project.btoproject.dto.AuthResponseDTO;
 import com.project.btoproject.dto.LoginDto;
 import com.project.btoproject.model.Guide;
 import com.project.btoproject.service.AuthService;
+import com.project.btoproject.service.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,15 +15,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("ui/auth")
 public class UIAuthController {
     private final AuthService authService;
+    private final EventService eventService;
 
-    public UIAuthController(AuthService _authService) {
+    public UIAuthController(AuthService _authService, EventService eventService) {
         this.authService = _authService;
+        this.eventService = eventService;
     }
 
     @GetMapping("/login")
@@ -41,12 +46,26 @@ public class UIAuthController {
             AuthResponseDTO authResponseDTO = (AuthResponseDTO) response.getBody();
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             model.addAttribute("auth", auth);
-            return "Director-Dashboard";
+            // Check user roles and return appropriate page
+            if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                return "Director-Dashboard"; // Director's page
+            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+                return "Advisor-Dashboard"; // Advisor's page
+            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+                return "Guide-taskboard"; // Guide's page
+            } else {
+                return "page-empty"; // Default page for unrecognized roles
+            }
         }
         model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
         return "login";
     }
 
+    @GetMapping("/project-list-advisor")
+    public String showProjectListAdvisor(Model model) {
 
+        model.addAttribute("tours", eventService.getAllTours());
+        return "project-list-advisor";
+    }
 
 }
