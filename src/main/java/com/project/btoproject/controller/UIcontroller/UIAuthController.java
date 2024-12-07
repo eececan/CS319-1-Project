@@ -49,10 +49,15 @@ public class UIAuthController {
             // Check user roles and return appropriate page
             if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
                 return "Director-Dashboard"; // Director's page
-            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            }
+            else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
                 return "Advisor-Dashboard"; // Advisor's page
-            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+            }
+            else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
                 return "Guide-taskboard"; // Guide's page
+            }
+            else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+                return "Head-Secretary-Dashboard"; // Guide's page
             } else {
                 return "page-empty"; // Default page for unrecognized roles
             }
@@ -62,10 +67,17 @@ public class UIAuthController {
     }
 
     @GetMapping("/advisor-tables")
-    public String showProjectListAdvisor(Model model) {
+    public String showEventListAdvisor(Model model) {
 
         model.addAttribute("tours", eventService.getAllTours());
         return "advisor-tables";
+    }
+
+    @GetMapping("/head-secretary-tables")
+    public String showEventListHeadSecretary(Model model) {
+
+        model.addAttribute("tours", eventService.getAllTours());
+        return "head-secretary-tables";
     }
 
 }

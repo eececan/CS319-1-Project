@@ -55,8 +55,10 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+
                                 "/api/auth/**",
                                 "/getAllGuides",
+                                "/getAllEvents",
                                 "/",
                                 "/ui/auth/login",
                                 "/assets/**",
@@ -67,6 +69,7 @@ public class SecurityConfig {
                                 "/ui/assets/images/**",
                                 "/ui/assets/js/**",
                                 "/ui/auth/advisor-tables",
+                                "/ui/auth/head-secretary-tables",
                                 "/api/tours/**"
                         ).permitAll()
                         .anyRequest().authenticated()
