@@ -27,5 +27,7 @@ public class Advisor extends User {
 
     @OneToMany(mappedBy = "advisor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Tour> approvedTours = new ArrayList<>();
-
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "advisor_id")
+    private List<Event> events = new ArrayList<>();
 }
