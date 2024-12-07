@@ -33,4 +33,31 @@ public class UIAdvisorController {
         eventService.rejectTourByAdvisor(id);
         return ResponseEntity.ok().build();
     }
+
+    // Approve tour by Head Secretary
+    @PostMapping("/{id}/secretary/approve")
+    public ResponseEntity<Void> approveTourBySecretary(@PathVariable Long id) {
+        // Logic for Head Secretary approval
+        System.out.println("Received ID for Approval by Secretary: " + id);
+        eventService.approveTourBySecretary(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // Reject tour by Head Secretary
+    @PostMapping("/{id}/secretary/reject")
+    public ResponseEntity<Void> rejectTourBySecretary(@PathVariable Long id) {
+        // Logic for Head Secretary rejection
+        System.out.println("Received ID for Rejection by Secretary: " + id);
+        eventService.rejectTourBySecretary(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // Cancel tour by Head Secretary
+    @PostMapping("/{id}/secretary/cancel")
+    public ResponseEntity<Void> cancelTourBySecretary(@PathVariable Long id) {
+        // Logic for Head Secretary cancellation
+        System.out.println("Received ID for Cancellation by Secretary: " + id);
+        eventService.cancelTourBySecretary(id);
+        return ResponseEntity.ok().build();
+    }
 }
