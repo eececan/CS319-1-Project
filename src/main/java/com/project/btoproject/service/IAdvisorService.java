@@ -9,4 +9,5 @@ public interface IAdvisorService {
     DayOfWeek getResponsibleDay(Long advisorId);
     Advisor saveAdvisor(Advisor advisor);
     Advisor findAdvisorsByResponsibleDay(DayOfWeek day);
+
 }

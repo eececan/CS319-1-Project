@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -240,6 +241,20 @@ public class EventService implements IEventService {
 
     public List<Tour> getAllTours() {
         return eventRepository.findAllTours();
+    }
+    public List<Event> getEventsByDay(String day) {
+        DayOfWeek dayOfWeek;
+        try {
+            dayOfWeek = DayOfWeek.valueOf(day.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid day: " + day);
+        }
+        int dayNumber = dayOfWeek.getValue(); // 1 (Monday) to 7 (Sunday)
+        return eventRepository.findAllByDayOfWeek(dayNumber);
+    }
+
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
     }
 
     public List<Fair> getAllFairs() {
