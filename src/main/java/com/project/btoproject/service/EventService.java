@@ -196,6 +196,7 @@ public class EventService implements IEventService {
         return eventRepository.findAllIndividualTours();
     }
 
-}
+   }
+
 
 

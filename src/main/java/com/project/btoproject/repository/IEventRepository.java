@@ -1,11 +1,14 @@
 package com.project.btoproject.repository;
 
+import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.Event;
 import com.project.btoproject.model.Fair;
 import com.project.btoproject.model.IndividualTour;
 import com.project.btoproject.model.Tour;
+import com.project.btoproject.model.Advisor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -32,6 +35,5 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE TYPE(e) = IndividualTour ")
     List<IndividualTour> findAllIndividualTours();
-
 
 }
