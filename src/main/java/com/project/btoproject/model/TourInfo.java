@@ -2,7 +2,6 @@ package com.project.btoproject.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
@@ -15,6 +14,7 @@ public class TourInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "duration")
     private double duration;
 
@@ -23,4 +23,5 @@ public class TourInfo {
 
     @Column(name = "feedback")
     private String feedback;
+
 }

@@ -38,7 +38,7 @@ public class Tour extends Event {
     )
     private List<Guide> guides;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "advisor_id")
     private Advisor advisor;
 
