@@ -33,6 +33,6 @@ public class UIEventController {
         model.addAttribute("fairs", fairs);
 
         // Render a single template
-        return "project-list"; // Thymeleaf template
+        return "guide-tables"; // Thymeleaf template
     }
 }
