@@ -15,11 +15,17 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @SuperBuilder
 @Builder
 @Table(name = "event")
 public class Event {
+
+    // Constructor that sets eventType to TOUR
+    public Event() {
+        this.setGuideCount(0);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,4 +59,8 @@ public class Event {
     @Column(name = "applicationTimeStamp", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date applicationTimeStamp;
+
+    // Number of guides needed for the event
+    @Column(nullable = false)
+    private Integer guideCount;
 }

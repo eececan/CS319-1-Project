@@ -37,6 +37,7 @@ table.table.table-hover.table-striped tr.bto-approved-tour > td {
 table.table.table-hover.table-striped tr.bto-rejected-tour > td {
     background-color: #ED1C24 !important;
 }
+
 table.table.table-hover.table-striped tr.canceled-tour > td {
     background-color: #7e080d !important;
 }
@@ -55,6 +56,14 @@ table.table.table-hover.table-striped tr.canceled-tour > td {
 
 .canceled-tour {
     background-color: #7e080d !important;
+}
+
+table.table.table-hover.table-striped tr.completed-tour > td {
+    background-color: #11bf3b !important;
+}
+
+.completed-tour{
+    background-color: #11bf3b !important;
 }
 
 

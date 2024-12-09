@@ -58,6 +58,7 @@ public class Tour extends Event {
     public Tour() {
         this.setEventType(EventType.TOUR);
         this.setStatus(Status.NEW_TOUR_APPLICATION);
+        this.setGuideCount(0);
     }
 
 }

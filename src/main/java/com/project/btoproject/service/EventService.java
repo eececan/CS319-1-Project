@@ -3,6 +3,8 @@ package com.project.btoproject.service;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IEventRepository;
+import com.project.btoproject.repository.IGuideRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,12 @@ import java.util.concurrent.TimeUnit;
 public class EventService implements IEventService {
 
     private IEventRepository eventRepository;
+    private IGuideRepository guideRepository;
 
     @Autowired
-    public EventService(IEventRepository eventRepository) {
+    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository) {
         this.eventRepository = eventRepository;
+        this.guideRepository = guideRepository;
     }
 
     public void approveTourByAdvisor(Long tourId) {
@@ -263,6 +267,44 @@ public class EventService implements IEventService {
 
     public List<IndividualTour> getAllIndividualTours() {
         return eventRepository.findAllIndividualTours();
+    }
+
+    public List<Tour> getTourApplications() {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR,
+                Status.CANCELED_TOUR
+        );
+        return eventRepository.findToursByStatuses(applicationStatuses);
+    }
+
+    public List<Tour> getTours() {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_TOUR,
+                Status.CANCELED_TOUR,
+                Status.COMPLETED_TOUR
+        );
+        return eventRepository.findToursByStatuses(tourStatuses);
+    }
+
+    @Transactional
+    public void assignGuideToTour(Long eventId, Long guideId) {
+        // Use EventRepository to fetch the event
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Event ID"));
+
+        // Use GuideRepository to fetch the guide
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Guide ID"));
+
+        // Add the guide to the event's list of guides
+        ((Tour) event).getGuides().add(guide);
+        guide.getEvents().add(event);
+
+        // Save the updated event back to the repository
+        eventRepository.save(event);
     }
 
    }

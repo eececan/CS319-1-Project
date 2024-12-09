@@ -171,6 +171,9 @@ public class GoogleSheetsService {
 
         // Map Column F: Number of People
         tour.setPeopleCount(Integer.parseInt(row.get(5).toString()));
+        int guideCount = (int) Math.ceil(Integer.parseInt(row.get(5).toString()) / 50.0); // Calculate guide count
+        if(guideCount > 3)  guideCount = 3; // Limit guide count to 3
+        tour.setGuideCount(guideCount);
 
         // Map School Counselor (Columns G: Name, H: Role, I: Phone Number, J: Email, K: Comment)
         String counselorName = row.get(6).toString();

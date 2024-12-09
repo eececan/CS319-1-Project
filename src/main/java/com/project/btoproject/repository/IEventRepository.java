@@ -38,4 +38,9 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e WHERE FUNCTION('DAYOFWEEK', e.date) = :day")
     List<Event> findAllByDayOfWeek(@Param("day") int day);
 
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses")
+    List<Tour> findToursByStatuses(@Param("statuses") List<Status> statuses);
+
+
+
 }
