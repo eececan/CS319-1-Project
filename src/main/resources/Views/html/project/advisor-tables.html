@@ -461,15 +461,19 @@
                                                                 <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
-                                                                <select class="form-select guide-dropdown"
+                                                                <select
+                                                                        class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-1'"
-                                                                        th:name="'guide-' + ${tour.id} + '-1'">
+                                                                        th:name="'guide-' + ${tour.id} + '-1'"
+                                                                        th:data-highschoolname="${tour.school.name}"
+                                                                        th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
+                                                                        th:data-tourhour="${tour.hour}">
                                                                     <option value="" disabled selected>Select Guide</option>
-                                                                    <!-- Dropdown options -->
                                                                     <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+
                                                             </div>
                                                         </td>
 
@@ -485,14 +489,19 @@
                                                                 <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
-                                                                <select class="form-select guide-dropdown"
+                                                                <select
+                                                                        class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-2'"
-                                                                        th:name="'guide-' + ${tour.id} + '-2'">
+                                                                        th:name="'guide-' + ${tour.id} + '-2'"
+                                                                        th:data-highschoolname="${tour.school.name}"
+                                                                        th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
+                                                                        th:data-tourhour="${tour.hour}">
                                                                     <option value="" disabled selected>Select Guide</option>
                                                                     <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+
                                                             </div>
                                                         </td>
 
@@ -508,14 +517,19 @@
                                                                 <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
-                                                                <select class="form-select guide-dropdown"
+                                                                <select
+                                                                        class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-3'"
-                                                                        th:name="'guide-' + ${tour.id} + '-3'">
+                                                                        th:name="'guide-' + ${tour.id} + '-3'"
+                                                                        th:data-highschoolname="${tour.school.name}"
+                                                                        th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
+                                                                        th:data-tourhour="${tour.hour}">
                                                                     <option value="" disabled selected>Select Guide</option>
                                                                     <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+
                                                             </div>
                                                         </td>
 
@@ -678,6 +692,28 @@
         </div>
     </div>    
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Assignment</h5>
+                <button type="button" id="closeModalLabelButton"class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmButton">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelButton">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 <!-- Include jQuery -->
 <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>

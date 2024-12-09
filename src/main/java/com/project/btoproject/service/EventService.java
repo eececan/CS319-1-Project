@@ -291,23 +291,35 @@ public class EventService implements IEventService {
 
     @Transactional
     public void assignGuideToTour(Long eventId, Long guideId) {
-        // Use EventRepository to fetch the event
+
+
+        // Fetch the tour and guide from the database
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Event ID"));
-
-        // Use GuideRepository to fetch the guide
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
         Guide guide = guideRepository.findById(guideId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Guide ID"));
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
 
-        // Add the guide to the event's list of guides
+        // Check if the guide is already assigned to this tour
+        if (((Tour) event).getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is already assigned to the tour.");
+        }
+
+        // Check if the guide has another tour on the same date and hour
+        boolean hasConflict = guide.getEvents().stream()
+                .anyMatch(existingTour -> existingTour.getDate().equals(event.getDate())
+                        && ((Tour) existingTour).getHour().equals(((Tour) event).getHour()));
+        if (hasConflict) {
+            throw new IllegalArgumentException("This guide is already assigned to another tour at the same time.");
+        }
+
+        System.out.println("Guide assigned to tour: " + guide.getFirstName() + " " + guide.getLastName());
+        // Add the guide to the tour
         ((Tour) event).getGuides().add(guide);
-        guide.getEvents().add(event);
+        eventRepository.save(event); // Save the updated tour
 
-        // Save the updated event back to the repository
-        eventRepository.save(event);
     }
 
-   }
+}
 
 
 

@@ -28,7 +28,11 @@ public class Guide extends User {
     @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PointRecord> points = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "guide_id")
+    @ManyToMany
+    @JoinTable(
+            name = "tour_guides",
+            joinColumns = @JoinColumn(name = "guide_id"),
+            inverseJoinColumns = @JoinColumn(name = "tour_id")
+    )
     private List<Event> events = new ArrayList<>();
 }
