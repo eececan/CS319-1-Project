@@ -480,28 +480,30 @@
                 </td>
             </tr>
 
-            <!-- Populate rows dynamically if users list is not empty -->
+            <!-- Populate rows dynamically if the users list is not empty -->
             <tr th:each="user : ${all_users}">
                 <td class="width35 hidden-xs"></td>
                 <td class="text-center width40">
                     <div class="avatar d-block">
-                        <img class="avatar" th:src="${all_users.picture != null ? all_users.picture : '/assets/images/default-avatar.png'}"
+                        <img class="avatar"
+                             th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
                              alt="avatar" style="border-radius: 50%; width: 50px; height: 50px;">
                     </div>
                 </td>
                 <td>
                     <div>
-                        <a href="javascript:void(0);" th:text="${all_users.firstName}"></a>
-                        <a href="javascript:void(0);" th:text="${all_users.lastName}"></a>
+                        <a href="javascript:void(0);" th:text="${user.firstName}"></a>
+                        <a href="javascript:void(0);" th:text="${user.lastName}"></a>
                     </div>
-                    <div class="text-muted" th:text="${all_users.phoneNumber != null ? all_users.phoneNumber : 'N/A'}"></div>
+                    <div class="text-muted" th:text="${user.phoneNumber != null ? user.phoneNumber : 'N/A'}"></div>
                 </td>
                 <td class="hidden-xs">
-                    <div class="text-muted" th:text="${all_users.email != null ? all_users.email : 'N/A'}"></div>
+                    <div class="text-muted" th:text="${user.email != null ? user.email : 'N/A'}"></div>
                 </td>
             </tr>
             </tbody>
         </table>
+
     </div>
 </div>
 
