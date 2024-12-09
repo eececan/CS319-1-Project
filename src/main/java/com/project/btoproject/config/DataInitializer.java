@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Configuration
 public class DataInitializer {
@@ -65,7 +65,7 @@ public class DataInitializer {
         return args -> {
             if(guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()){
                 Guide guide = new Guide();
-                guide.setStartDate(LocalDate.now());
+                guide.setStartDate(new Date());
                 guide.setDepartment("CS");
                 guide.setEmail("candan.atac@ug.bilkent.edu.tr");
                 guide.setFirstName("Ayca");
@@ -80,7 +80,7 @@ public class DataInitializer {
             }
             if(guideRepository.findByFirstNameAndLastName("Mustafa", "Ir").isEmpty()){
                 Guide guide = new Guide();
-                guide.setStartDate(LocalDate.now());
+                guide.setStartDate(new Date());
                 guide.setDepartment("CS");
                 guide.setEmail("ozkan.ir@ug.bilkent.edu.tr");
                 guide.setFirstName("Mustafa");
@@ -96,7 +96,7 @@ public class DataInitializer {
             if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
                 Advisor advisor = new Advisor();
                 advisor.setDepartment("CS");
-                advisor.setStartDate(LocalDate.now());
+                advisor.setStartDate(new Date());
                 advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
                 advisor.setFirstName("Furkan");
                 advisor.setLastName("Akyol");

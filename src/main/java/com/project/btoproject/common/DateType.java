@@ -4,7 +4,7 @@ import com.project.btoproject.enums.Hour;
 import com.project.btoproject.model.Advisor;
 import com.project.btoproject.model.Event;
 import lombok.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,5 +21,5 @@ public class DateType {
 
     private Hour[] timeSlots;
 
-    private LocalDate date;
+    private Date date;
 }

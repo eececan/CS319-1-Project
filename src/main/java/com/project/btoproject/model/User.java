@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -41,7 +41,7 @@ public class User {
     private String picture;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private Date startDate;
 
     @Column(name = "description")
     private String description;
