@@ -73,6 +73,21 @@ public class DataInitializer {
                 guide.setPhoneNumber("05370527736");
                 guideRepository.save(guide);
             }
+            if(guideRepository.findByFirstNameAndLastName("Mustafa", "Ir").isEmpty()){
+                Guide guide = new Guide();
+                guide.setStartDate(LocalDate.now());
+                guide.setDepartment("CS");
+                guide.setEmail("ozkan.ir@ug.bilkent.edu.tr");
+                guide.setFirstName("Mustafa");
+                guide.setLastName("IR");
+                guide.setSchedule("example schedule");
+                guide.setGrade(3);
+                guide.setPassword("password");
+                guide.setId(22103267L);
+                guide.setDescription("Mustafa added as a guide for an example.");
+                guide.setPhoneNumber("05326589878");
+                guideRepository.save(guide);
+            }
         };
     }
 }

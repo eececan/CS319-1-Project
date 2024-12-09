@@ -17,7 +17,6 @@
     <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
 
-
 </head>
 
 <body class="font-montserrat">
@@ -353,7 +352,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr id="row-${tour.id}" th:each="tour : ${tours}"
+                                                <tr id="tourApplications-row-${tour.id}" th:each="tour : ${tourApplications}"
                                                     th:classappend="
                                                                     ${tour.status.name() == 'BTO_ACCEPTED'} ? 'bto-approved-tour' :
                                                                     (${tour.status.name() == 'BTO_REJECTED'} ?  'bto-rejected-tour' :
@@ -417,34 +416,120 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                     <tr>
-                                                        <th>Date</th>
-                                                        <th>Day</th>
-                                                        <th class="w100">Hour</th>
-                                                        <th class="w100">High School</th>
-                                                        <th>City</th>
-                                                        <th>#</th>
-                                                        <th>Guide #</th>
-                                                        <th>Guide 1</th>
-                                                        <th>Guide 2</th>
-                                                        <th>Guide 3</th>
-                                                        <th>Counselor Name</th>
-                                                        <th>Contact</th>
+                                                        <th style="width: 1%;">Date</th>
+                                                        <th style="width: 1%;">Day</th>
+                                                        <th style="width: 1%;">Hour</th>
+                                                        <th style="width: 1%;">High School</th>
+                                                        <th style="width: 1%;">City</th>
+                                                        <th style="width: 1%;">People Count</th>
+                                                        <th style="width: 1%;">Guide #</th>
+                                                        <th style="width: 1%;">Guide 1</th>
+                                                        <th style="width: 1%;">Guide 2</th>
+                                                        <th style="width: 1%;">Guide 3</th>
+                                                        <th style="width: 1%;">Counselor Name</th>
+                                                        <th style="width: 1%;">Contact</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
+                                                    <tr id="tours-row-${tour.id}" th:each="tour : ${tours}"
+                                                        th:classappend="
+                                                                        ${tour.status.name() == 'COMPLETED_TOUR'} ? 'completed-tour' :
+                                                                        (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')">
+                                                        <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
+                                                        <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
+                                                        <td th:switch="${tour.hour.name()}">
+                                                            <span th:case="'NINE'">09:00</span>
+                                                            <span th:case="'ELEVEN'">11:00</span>
+                                                            <span th:case="'THIRTEEN_THIRTY'">13:30</span>
+                                                            <span th:case="'SIXTEEN'">16:00</span>
+                                                            <span th:case="*">Unknown</span>
+                                                        </td>
+                                                        <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
+                                                        <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">High School</td>
+                                                        <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
+                                                        <td style="text-align: center; vertical-align: middle;" th:text="${tour.guideCount}"></td>
+
+                                                        <!-- Logic for Guide 1 -->
+                                                        <td>
+                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
+                                                                <span>-</span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 1}">
+                                                                <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1}">
+                                                                <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
+                                                                <select class="form-select guide-dropdown"
+                                                                        th:id="'guide-' + ${tour.id} + '-1'"
+                                                                        th:name="'guide-' + ${tour.id} + '-1'">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <!-- Dropdown options -->
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+
+                                                        <!-- Logic for Guide 2 -->
+                                                        <td>
+                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount < 2}">
+                                                                <span>-</span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 2}">
+                                                                <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() >= 2}">
+                                                                <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
+                                                                <select class="form-select guide-dropdown"
+                                                                        th:id="'guide-' + ${tour.id} + '-2'"
+                                                                        th:name="'guide-' + ${tour.id} + '-2'">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+
+                                                        <!-- Logic for Guide 3 -->
+                                                        <td>
+                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount < 3}">
+                                                                <span>-</span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 3}">
+                                                                <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() >= 3}">
+                                                                <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                                            </div>
+                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
+                                                                <select class="form-select guide-dropdown"
+                                                                        th:id="'guide-' + ${tour.id} + '-3'"
+                                                                        th:name="'guide-' + ${tour.id} + '-3'">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+
+
+
+
+
+
+
+
+
+
+                                                        <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
+                                                        <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -452,6 +537,14 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">Completed</li>
+                                <li class="legend-item canceled-tour">Canceled</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="Fairs" role="tabpanel">
@@ -586,8 +679,14 @@
     </div>    
 </div>
 
+<!-- Include jQuery -->
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/all-event-actions.js}"></script>
+
+
+
 </body>
 </html>

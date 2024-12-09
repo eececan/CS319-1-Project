@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/tours")
@@ -59,5 +62,16 @@ public class UIAdvisorController {
         System.out.println("Received ID for Cancellation by Secretary: " + id);
         eventService.cancelTourBySecretary(id);
         return ResponseEntity.ok().build();
+    }
+
+    // Assign guide to tour
+    @PostMapping("/{tourId}/assign-guide")
+    public ResponseEntity<String> assignGuideToTour(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Long> request) {
+
+        Long guideId = request.get("guideId");
+        eventService.assignGuideToTour(tourId, guideId);
+        return ResponseEntity.ok("Guide assigned successfully");
     }
 }

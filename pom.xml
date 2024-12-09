@@ -125,6 +125,11 @@
 			<version>1.5.5.Final</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>select2</artifactId>
+			<version>4.0.13</version>
+		</dependency>
 
 	</dependencies>
 
