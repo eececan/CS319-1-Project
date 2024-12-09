@@ -4,7 +4,7 @@ import com.project.btoproject.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Entity
@@ -26,7 +26,7 @@ public class UserTask {
     private String taskDescription;
 
     @Column(name = "task_deadline", nullable = false)
-    private LocalDate taskDeadline;
+    private Date taskDeadline;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

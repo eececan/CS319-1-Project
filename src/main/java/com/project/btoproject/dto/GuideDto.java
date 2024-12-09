@@ -5,8 +5,8 @@ import com.project.btoproject.common.UserTask;
 import com.project.btoproject.model.Event;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GuideDto {
@@ -20,7 +20,7 @@ public class GuideDto {
     public String phoneNumber;
     public String email;
     public String picture;
-    public LocalDate startDate;
+    public Date startDate;
     public String description;
     public List<UserTask> tasks;
 }
