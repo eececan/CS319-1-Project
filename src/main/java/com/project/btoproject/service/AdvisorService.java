@@ -1,6 +1,7 @@
 package com.project.btoproject.service;
 
 import com.project.btoproject.model.Advisor;
+import com.project.btoproject.model.Guide;
 import com.project.btoproject.repository.IAdvisorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,9 @@ public class AdvisorService implements IAdvisorService {
     @Override
     public Advisor findAdvisorsByResponsibleDay(DayOfWeek day) {
         return advisorRepository.findByResponsibleDay(day);
+    }
+    public Advisor getAdvisorByName(String firstName, String lastName) {
+        return advisorRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new IllegalArgumentException("Advisor not found with name: " + firstName + " " + lastName));
     }
 }

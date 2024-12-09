@@ -1,7 +1,9 @@
 package com.project.btoproject.config;
 
+import com.project.btoproject.model.Advisor;
 import com.project.btoproject.model.Guide;
 import com.project.btoproject.model.Role;
+import com.project.btoproject.repository.IAdvisorRepository;
 import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
 import org.springframework.boot.ApplicationRunner;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Configuration
@@ -16,10 +19,12 @@ public class DataInitializer {
 
     private final RoleRepository roleRepository;
     private final IGuideRepository guideRepository;
+    private final IAdvisorRepository advisorRepository;
 
-    public DataInitializer(RoleRepository _roleRepository, IGuideRepository _guideRepository) {
+    public DataInitializer(RoleRepository _roleRepository, IGuideRepository _guideRepository, IAdvisorRepository advisorRepository) {
         this.roleRepository = _roleRepository;
         this.guideRepository = _guideRepository;
+        this.advisorRepository = advisorRepository;
     }
 
     @Bean
@@ -87,6 +92,21 @@ public class DataInitializer {
                 guide.setDescription("Mustafa added as a guide for an example.");
                 guide.setPhoneNumber("05326589878");
                 guideRepository.save(guide);
+            }
+            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
+                Advisor advisor = new Advisor();
+                advisor.setDepartment("CS");
+                advisor.setStartDate(LocalDate.now());
+                advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
+                advisor.setFirstName("Furkan");
+                advisor.setLastName("Akyol");
+                advisor.setGrade(5);
+                advisor.setPassword("asd");
+                advisor.setId(12345678L);
+                advisor.setDescription("Furkan Akyol added as an advisor for an example.");
+                advisor.setPhoneNumber("0123456789");
+                advisor.setResponsibleDay(DayOfWeek.WEDNESDAY);
+                advisorRepository.save(advisor);
             }
         };
     }
