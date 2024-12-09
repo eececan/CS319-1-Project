@@ -1,7 +1,27 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
+    <style>
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc; /* Optional border for better aesthetics */
+            display: block;
+            margin: 0 auto; /* Centers the image */
+        }
+
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* Ensures it matches the table row height */
+            overflow: hidden;
+        }
+    </style>
+
+    <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
@@ -484,10 +504,10 @@
             <tr th:each="user : ${all_users}">
                 <td class="width35 hidden-xs"></td>
                 <td class="text-center width40">
-                    <div class="avatar d-block">
+                    <div class="avatar-container">
                         <img class="avatar"
                              th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                             alt="avatar" style="border-radius: 50%; width: 50px; height: 50px;">
+                             alt="avatar">
                     </div>
                 </td>
                 <td>
