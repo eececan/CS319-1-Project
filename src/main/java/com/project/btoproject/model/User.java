@@ -1,6 +1,6 @@
 package com.project.btoproject.model;
 
-import com.project.btoproject.common.UserTask;
+import com.project.btoproject.model.UserTask;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
