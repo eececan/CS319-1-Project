@@ -7,7 +7,6 @@ import java.util.List;
 public interface IUserTaskService {
     void saveTask(UserTask userTask);
     void deleteTask(int taskId);
-    void updateTask(int taskId);
     List<UserTask> getTasks();
     UserTask getTask(int taskId);
     void deleteTasks();

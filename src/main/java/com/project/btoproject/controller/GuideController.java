@@ -32,18 +32,18 @@ public class GuideController {
     }
 
     @GetMapping("/getGuideById")
-    public GuideDto getGuideById(@RequestParam long id) {
+    public GuideDto getGuideById(@RequestParam Long id) {
         return mapper.guideToGuideDto(guideService.getGuideById(id));
     }
 
     @GetMapping("/getEventsOfGuide")
-    public List<Event> getEventsOfGuide(@RequestParam long guideId) {
+    public List<Event> getEventsOfGuide(@RequestParam Long guideId) {
         Guide guide = guideService.getGuideById(guideId);
         return guideService.seeAssignedEvents(guide);
     }
 
     @PostMapping("/selfAssignTourToGuide")
-    public void selfAssignTourToGuide(@RequestParam long guideId, @RequestParam Tour tour) { //can change this to tour id
+    public void selfAssignTourToGuide(@RequestParam Long guideId, @RequestParam Tour tour) { //can change this to tour id
         Guide guide = guideService.getGuideById(guideId);
         guideService.selfAssignTour(guide, tour);
     }

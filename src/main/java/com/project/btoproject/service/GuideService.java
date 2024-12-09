@@ -74,7 +74,7 @@ public class GuideService implements IGuideService
                 .orElseThrow(() -> new IllegalArgumentException("Guide not found with name: " + firstName + " " + lastName));
     }
     @Override
-    public Guide getGuideById(long id) {
+    public Guide getGuideById(Long id) {
         return guideRepository.getGuideById(id);
     }
 }
