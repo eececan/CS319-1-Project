@@ -17,10 +17,13 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class IndividualTour extends Event {
 
-
+    @CollectionTable(name = "tour", joinColumns = @JoinColumn(name = "event_id"))
+    @Column(name = "hour", nullable = false)
+    @Enumerated(EnumType.STRING) // Store as a string in the database
+    private Hour hour;
 
     @CollectionTable(name = "individual_tour", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "hour")
+    @Column(name = "available_hours")
     private String availableHour; //discuss
 
     @Column(name = "people_count")
@@ -44,4 +47,13 @@ public class IndividualTour extends Event {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tour_info_id")
     private TourInfo tourInformation;
+
+    @Column(name = "contact_email")
+    private String contactEmail;
+
+    @Column(name = "contact_phone")
+    private String contactPhone;
+
+    @Column(name = "contact_person")
+    private String contactPerson;
 }
