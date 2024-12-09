@@ -31,4 +31,8 @@ public class UserTask {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    //completed or uncompleted
+    @Column(name="state",nullable = true)
+    private boolean state;
 }
