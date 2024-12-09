@@ -1,4 +1,4 @@
-package com.project.btoproject.common;
+package com.project.btoproject.model;
 
 import com.project.btoproject.model.User;
 import jakarta.persistence.*;
