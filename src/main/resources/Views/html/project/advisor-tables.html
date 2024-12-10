@@ -459,6 +459,12 @@
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1}">
                                                                 <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                                                <button
+                                                                        class="btn ms-2 remove-guide"
+                                                                        th:data-tour-id="${tour.id}"
+                                                                        th:data-guide-id="${tour.guides[0].id}">
+                                                                    -
+                                                                </button>
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
                                                                 <select
@@ -495,8 +501,14 @@
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() >= 2}">
                                                                 <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                                                <button
+                                                                        class="btn ms-2 remove-guide"
+                                                                        th:data-tour-id="${tour.id}"
+                                                                        th:data-guide-id="${tour.guides[0].id}">
+                                                                    -
+                                                                </button>
                                                             </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
+                                                            <div class="guide-slot-wrapper" th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
                                                                 <select
                                                                         class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-2'"
@@ -509,6 +521,14 @@
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+                                                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 1}">
+                                                                    <button
+                                                                            class="btn btn-danger btn-sm remove-guide-slot"
+                                                                            th:data-tour-id="${tour.id}"
+                                                                            th:data-guide-index="2">
+                                                                        -
+                                                                    </button>
+                                                                </div>
 
                                                             </div>
                                                         </td>
@@ -530,8 +550,14 @@
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() >= 3}">
                                                                 <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                                                <button
+                                                                        class="btn ms-2 remove-guide"
+                                                                        th:data-tour-id="${tour.id}"
+                                                                        th:data-guide-id="${tour.guides[0].id}">
+                                                                    -
+                                                                </button>
                                                             </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
+                                                            <div class="guide-slot-wrapper" th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
                                                                 <select
                                                                         class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-3'"
@@ -544,6 +570,14 @@
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+                                                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 2}">
+                                                                    <button
+                                                                            class="btn btn-danger btn-sm remove-guide-slot"
+                                                                            th:data-tour-id="${tour.id}"
+                                                                            th:data-guide-index="2">
+                                                                        -
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </td>
 

@@ -66,6 +66,55 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     background-color: #11bf3b !important;
 }
 
+.guide-slot-wrapper {
+    display: inline-flex; /* Align items horizontally */
+    align-items: center; /* Vertically center align items */
+    gap: 8px; /* Add some space between the dropdown and button */
+}
+
+.guide-slot-wrapper .remove-guide-slot{
+    padding: 0.25rem 0.5rem; /* Smaller padding for a compact button */
+    font-size: 0.875rem; /* Smaller font size */
+    line-height: 1; /* Compact height */
+    border-radius: 4px; /* Rounded corners for the button */
+    height: 100%; /* Ensures it aligns properly with the height of the dropdown */
+    background-color: #dc3545; /* Bootstrap's danger color (red) */
+    color: #fff; /* White text for better visibility */
+    border: 1px solid #dc3545; /* Add a border to match the button color */
+    cursor: pointer; /* Pointer cursor for better UX */
+    display: inline-flex; /* Aligns properly next to the dropdown */
+    align-items: center; /* Centers text/icon vertically */
+    justify-content: center; /* Centers text/icon horizontally */
+
+}
+
+.remove-guide-slot, .remove-guide {
+    padding: 0.25rem 0.5rem; /* Smaller padding for a compact button */
+    font-size: 0.875rem; /* Smaller font size */
+    line-height: 1; /* Compact height */
+    border-radius: 4px; /* Rounded corners for the button */
+    height: 100%; /* Ensures it aligns properly with the height of the dropdown */
+    background-color: #dc3545; /* Bootstrap's danger color (red) */
+    color: #fff; /* White text for better visibility */
+    border: 1px solid #dc3545; /* Add a border to match the button color */
+    cursor: pointer; /* Pointer cursor for better UX */
+    display: inline-flex; /* Aligns properly next to the dropdown */
+    align-items: center; /* Centers text/icon vertically */
+    justify-content: center; /* Centers text/icon horizontally */
+}
+
+
+.remove-guide-slot:hover, .remove-guide:hover {
+    background-color: #b02a37; /* Darker red on hover */
+    border-color: #b02a37; /* Match border to hover color */
+}
+
+.guide-info {
+    flex: 1; /* Take up remaining space */
+    text-align: left; /* Align guide name to the left */
+}
+
+
 
 
 
