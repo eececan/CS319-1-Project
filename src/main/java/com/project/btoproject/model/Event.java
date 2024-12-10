@@ -5,16 +5,27 @@ import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import lombok.*;
 import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
+
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
+@SuperBuilder
 @Builder
 @Table(name = "event")
 public class Event {
+
+    // Constructor that sets eventType to TOUR
+    public Event() {
+        this.setGuideCount(0);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +33,34 @@ public class Event {
     //@Column(name = "date")
     //private DateType date;
 
+    @Column(name = "date", nullable = false)
+    @Temporal(TemporalType.DATE) // Store as a DATE type in the database
+    private Date date;
+
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "contact_person")
-    private String contactPerson;
-
-    @Column(name= "event_description")
-    private String eventDescription;
+    // Changing event_description to visitor_notes
+    @Column(name= "visitor_notes")
+    private String visitorNotes;
 
     @Column(name = "event_type")
     private EventType eventType;
 
+    @ManyToMany
+    @JoinTable(
+            name = "event_guides",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "guide_id")
+    )
+    private List<Guide> guides;
+
+    // Timestamp field that is set manually
+    @Column(name = "applicationTimeStamp", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date applicationTimeStamp;
+
+    // Number of guides needed for the event
+    @Column(nullable = false)
+    private Integer guideCount;
 }

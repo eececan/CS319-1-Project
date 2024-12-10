@@ -1,35 +1,38 @@
 package com.project.btoproject.model;
 
-import com.project.btoproject.common.PointRecord;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "guides")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-//@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "all_users")
+@Getter
+@Setter
+@DiscriminatorValue("GUIDE")
 public class Guide extends User {
 
     @Column(name = "schedule")
-    private String schedule; // assuming Hour[] is mapped as a string
+    private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
 
     @Column(name = "department", nullable = false)
-    private String department;
+    private String department = "default_department";
 
     @Column(name = "grade")
-    private int grade;
+    private Integer grade = 2;
 
-//    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<PointRecord> points;
-//
-//    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Event> events;
+    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PointRecord> points = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_guides",
+            joinColumns = @JoinColumn(name = "guide_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    private List<Event> events = new ArrayList<>();
 }
