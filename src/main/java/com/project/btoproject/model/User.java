@@ -1,31 +1,26 @@
 package com.project.btoproject.model;
 
-import com.project.btoproject.common.UserTask;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.CascadeType;
+import com.project.btoproject.model.UserTask;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "all_users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User {
 
     @Id
-    private int id;
+    private Long id; //is this school id or automatically generated id
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -46,7 +41,7 @@ public class User {
     private String picture;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private Date startDate;
 
     @Column(name = "description")
     private String description;

@@ -1,0 +1,260 @@
+function handleAdvisorApproval(tourId) {
+    console.log("Approving tour with ID:", tourId);
+    fetch(`/api/tours/${tourId}/advisor/approve`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ID ${tourId} approved successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error approving tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+function handleAdvisorRejection(tourId) {
+    fetch(`/api/tours/${tourId}/advisor/reject`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ID ${tourId} rejected successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error rejecting tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+function handleSecretaryApproval(tourId) {
+    fetch(`/api/tours/${tourId}/secretary/approve`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ID ${tourId} approved successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error approving tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+function handleSecretaryRejection(tourId) {
+    fetch(`/api/tours/${tourId}/secretary/reject`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ID ${tourId} rejected successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error rejecting tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+function handleTourCancellation(tourId) {
+    fetch(`/api/tours/${tourId}/secretary/cancel`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ID ${tourId} canceled successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error canceling tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const guideDropdowns = document.querySelectorAll('.guide-dropdown');
+    let selectedTourId = null;
+    let selectedGuideId = null;
+    let selectedDropdown = null; // Keep track of the specific dropdown
+
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Handle dropdown change and show confirmation modal
+    guideDropdowns.forEach((dropdown) => {
+        dropdown.addEventListener('change', function () {
+            selectedTourId = this.id.split('-')[1]; // Extract tourId from dropdown id
+            selectedGuideId = this.value; // Get the selected guideId
+            selectedDropdown = this; // Keep a reference to the specific dropdown
+
+            const highSchoolName = this.dataset.highschoolname;
+            const tourDate = this.dataset.tourdate;
+            const tourHour = this.dataset.tourhour;
+            const selectedOptionText = this.options[this.selectedIndex].text;
+
+            confirmMessage.textContent = `You are about to assign guide "${selectedOptionText}" to the tour for ${highSchoolName} on ${tourDate}. Are you sure?`;
+            confirmModal.show();
+        });
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener('click', function () {
+        if (selectedTourId && selectedGuideId) {
+            fetch(`/api/tours/${selectedTourId}/assign-guide`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ guideId: selectedGuideId }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert('Guide assigned successfully!');
+                        location.reload(); // Reload to reflect changes
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error assigning guide:', error);
+                    alert(`Error: ${error.message}`); // Display the backend error message
+                    resetDropdown(); // Reset dropdown in case of error
+                })
+                .finally(() => {
+                    resetSelections();
+                });
+
+            confirmModal.hide();
+        }
+    });
+
+    // Handle No button click
+    cancelButton.addEventListener('click', function () {
+        resetDropdown();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalLabelButton.addEventListener('click', function () {
+        resetDropdown();
+        resetSelections();
+    });
+
+    // Reset the dropdown to its initial state
+    function resetDropdown() {
+        if (selectedDropdown) {
+            selectedDropdown.value = ''; // Reset the dropdown to its initial state
+        }
+    }
+
+    // Reset all selection-related variables
+    function resetSelections() {
+        selectedTourId = null;
+        selectedGuideId = null;
+        selectedDropdown = null;
+        confirmModal.hide();
+    }
+});
+
+
+// Thanks to this function, when the page is refreshed user returns to same table
+document.addEventListener("DOMContentLoaded", function () {
+    // Save the active tab to localStorage
+    const tabs = document.querySelectorAll('.nav-tabs .nav-link');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            localStorage.setItem('activeTab', this.getAttribute('href'));
+        });
+    });
+
+    // Restore the active tab from localStorage
+    const activeTab = localStorage.getItem('activeTab');
+    if (activeTab) {
+        const tabToActivate = document.querySelector(`.nav-tabs .nav-link[href="${activeTab}"]`);
+        if (tabToActivate) {
+            tabToActivate.click();
+        }
+    }
+});
+
+// Increase the guide count
+document.addEventListener('DOMContentLoaded', function () {
+    const addGuideSlotButtons = document.querySelectorAll('.add-guide-slot');
+
+    addGuideSlotButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const tourId = this.dataset.tourId;
+
+            fetch(`/api/tours/${tourId}/increase-guide-count`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert('Guide slot added successfully!');
+                        location.reload(); // Reload to reflect changes
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    });
+});
+
+
+

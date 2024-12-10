@@ -1,7 +1,16 @@
 package com.project.btoproject.enums;
 
 public enum Status{
-    UPCOMING,
-    IN_PROGRESS,
-    COMPLETE
+    NEW_TOUR_APPLICATION,
+    BTO_ACCEPTED,
+    BTO_REJECTED,
+    UPCOMING_TOUR,
+    TOUR_IN_PROGRESS,
+    COMPLETED_TOUR,
+    CANCELED_TOUR,
+    NEW_FAIR_APPLICATION,
+    UPCOMING_FAIR,
+    REJECTED_FAIR,
+    CANCELED_FAIR,
+    COMPLETED_FAIR
 }
