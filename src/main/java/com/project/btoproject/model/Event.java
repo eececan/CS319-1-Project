@@ -49,11 +49,11 @@ public class Event {
 
     @ManyToMany
     @JoinTable(
-            name = "event_participants",
+            name = "event_guides",
             joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            inverseJoinColumns = @JoinColumn(name = "guide_id")
     )
-    private List<User> participants;
+    private List<Guide> guides;
 
     // Timestamp field that is set manually
     @Column(name = "applicationTimeStamp", nullable = false)
