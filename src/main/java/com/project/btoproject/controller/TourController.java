@@ -1,4 +1,4 @@
-package com.project.btoproject.controller.UIcontroller;
+package com.project.btoproject.controller;
 
 import com.project.btoproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,12 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/tours")
-public class UIAdvisorController {
+public class TourController {
 
     private final EventService eventService;
 
     @Autowired
-    public UIAdvisorController(EventService eventService) {
+    public TourController(EventService eventService) {
         this.eventService = eventService;
     }
 
