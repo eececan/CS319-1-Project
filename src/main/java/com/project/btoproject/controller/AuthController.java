@@ -10,6 +10,7 @@ import com.project.btoproject.security.JWTGenerator;
 import com.project.btoproject.service.AuthService;
 import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +42,8 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        ResponseEntity<?> response = authService.login(loginDto);
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto,  HttpServletRequest request) {
+        ResponseEntity<?> response = authService.login(loginDto, request);
         if (response.getStatusCode().is2xxSuccessful()) {
             AuthResponseDTO authResponseDTO = (AuthResponseDTO) response.getBody();
             return new ResponseEntity<>(authResponseDTO, HttpStatus.OK);
