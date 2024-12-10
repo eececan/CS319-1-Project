@@ -96,4 +96,26 @@ public class UIAdvisorController {
                     .body("Error: Could not increase guide count.");
         }
     }
+
+    @PostMapping("/{tourId}/decrease-guide-count")
+    public ResponseEntity<String> removeGuideSlot(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Integer> request) {
+
+        int guideIndex = request.get("guideIndex"); // Guide index (optional use case)
+        eventService.decreaseGuideCount(tourId);
+        return ResponseEntity.ok("Guide slot removed successfully");
+    }
+
+    @PostMapping("/{tourId}/remove-guide")
+    public ResponseEntity<String> removeGuideFromTour(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Long> request) {
+        Long guideId = request.get("guideId");
+        eventService.removeGuideFromTour(tourId, guideId);
+        return ResponseEntity.ok("Guide removed successfully");
+    }
+
+
+
 }

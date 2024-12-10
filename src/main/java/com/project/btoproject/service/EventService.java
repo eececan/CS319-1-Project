@@ -343,6 +343,46 @@ public class EventService implements IEventService {
         eventRepository.save(tour);
     }
 
+    @Transactional
+    public void decreaseGuideCount(Long tourId) {
+        // Fetch the tour from the database
+        Event event = eventRepository.findById(tourId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+
+        // Decrease guide count but ensure it doesn't go below 1
+        if (event.getGuideCount() > 1) {
+            event.setGuideCount(event.getGuideCount() - 1);
+            eventRepository.save(event); // Persist the changes
+        } else {
+            throw new IllegalArgumentException("Guide count cannot be less than 1");
+        }
+    }
+
+    @Transactional
+    public void removeGuideFromTour(Long eventId, Long guideId) {
+
+        // Fetch the tour and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is assigned to this tour
+        if (!event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is not assigned to this tour.");
+        }
+
+        // Remove the guide from the tour's guide list
+        event.getGuides().remove(guide);
+
+        // Save the updated tour (cascade will handle guide changes)
+        eventRepository.save(event);
+
+        System.out.println("Guide removed from tour: " + guide.getFirstName() + " " + guide.getLastName());
+    }
+
+
+
 
 }
 
