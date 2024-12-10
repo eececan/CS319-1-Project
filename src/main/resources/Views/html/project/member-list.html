@@ -1,7 +1,27 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
+    <style>
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc; /* Optional border for better aesthetics */
+            display: block;
+            margin: 0 auto; /* Centers the image */
+        }
+
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* Ensures it matches the table row height */
+            overflow: hidden;
+        }
+    </style>
+
+    <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
@@ -480,29 +500,29 @@
                 </td>
             </tr>
 
-            <!-- Populate rows dynamically if users list is not empty -->
+            <!-- Populate rows dynamically if the users list is not empty -->
             <tr th:each="user : ${all_users}">
                 <td class="width35 hidden-xs"></td>
                 <td class="text-center width40">
-                    <div class="avatar d-block">
-                        <img class="avatar" th:src="${all_users.avatar != null ? all_users.avatar : '/assets/images/default-avatar.png'}"
-                             alt="avatar" style="border-radius: 50%; width: 50px; height: 50px;">
+                    <div class="avatar-container">
+                        <img class="avatar"
+                             th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
+                             alt="avatar">
                     </div>
                 </td>
                 <td>
                     <div>
-                        <a href="javascript:void(0);" th:text="${all_users.first_name}"></a>
-                        <a href="javascript:void(0);" th:text="${all_users.last_name}"></a>
+                        <a href="javascript:void(0);" th:text="${user.firstName}"></a>
+                        <a href="javascript:void(0);" th:text="${user.lastName}"></a>
                     </div>
-                    <div class="text-muted" th:text="${all_users.phone != null ? all_users.phone : 'N/A'}"></div>
+                    <div class="text-muted" th:text="${user.phoneNumber != null ? user.phoneNumber : 'N/A'}"></div>
                 </td>
                 <td class="hidden-xs">
-                    <div class="text-muted" th:text="${all_users.email != null ? all_users.email : 'N/A'}"></div>
+                    <div class="text-muted" th:text="${user.email != null ? user.email : 'N/A'}"></div>
                 </td>
             </tr>
             </tbody>
         </table>
-
 
     </div>
 </div>
