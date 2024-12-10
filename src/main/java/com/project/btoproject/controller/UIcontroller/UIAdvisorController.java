@@ -2,6 +2,7 @@ package com.project.btoproject.controller.UIcontroller;
 
 import com.project.btoproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,7 +72,28 @@ public class UIAdvisorController {
             @RequestBody Map<String, Long> request) {
 
         Long guideId = request.get("guideId");
-        eventService.assignGuideToTour(tourId, guideId);
-        return ResponseEntity.ok("Guide assigned successfully");
+        try {
+            // Call the service method to assign the guide
+            eventService.assignGuideToTour(tourId, guideId);
+            return ResponseEntity.ok("Guide assigned successfully");
+        } catch (IllegalArgumentException e) {
+            // Handle specific IllegalArgumentException with a meaningful message
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Handle unexpected exceptions with a generic message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    @PostMapping("/{tourId}/increase-guide-count")
+    public ResponseEntity<String> increaseGuideCount(@PathVariable Long tourId) {
+        try {
+            eventService.increaseGuideCount(tourId);
+            return ResponseEntity.ok("Guide count increased successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: Could not increase guide count.");
+        }
     }
 }

@@ -30,9 +30,9 @@ public class Guide extends User {
 
     @ManyToMany
     @JoinTable(
-            name = "tour_guides",
+            name = "event_guides",
             joinColumns = @JoinColumn(name = "guide_id"),
-            inverseJoinColumns = @JoinColumn(name = "tour_id")
+            inverseJoinColumns = @JoinColumn(name = "event_id")
     )
     private List<Event> events = new ArrayList<>();
 }
