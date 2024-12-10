@@ -114,67 +114,31 @@ function handleTourCancellation(tourId) {
         });
 }
 
-/*document.addEventListener('DOMContentLoaded', function () {
-    const guideDropdowns = document.querySelectorAll('.guide-dropdown');
-
-    guideDropdowns.forEach((dropdown) => {
-        dropdown.addEventListener('change', function () {
-            const tourId = this.id.split('-')[1]; // Extract tourId from dropdown id
-            const guideId = this.value; // Get the selected guideId
-
-            // Send the data to the server
-            fetch(`/api/tours/${tourId}/assign-guide`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ guideId }),
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        alert('Guide assigned successfully!');
-                        location.reload(); // Reload the page to reflect changes
-                    } else {
-                        return response.text().then((message) => {
-                            throw new Error(message);
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error assigning guide:', error);
-                    alert(`Error: ${error.message}`);
-                });
-        });
-    });
-});*/
-
 document.addEventListener('DOMContentLoaded', function () {
+    const guideDropdowns = document.querySelectorAll('.guide-dropdown');
     let selectedTourId = null;
     let selectedGuideId = null;
-    const guideDropdowns = document.querySelectorAll('.guide-dropdown');
-    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    const confirmButton = document.getElementById('confirmButton');
-    const cancelButton = document.getElementById('cancelButton');
+    let selectedDropdown = null; // Keep track of the specific dropdown
 
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Handle dropdown change and show confirmation modal
     guideDropdowns.forEach((dropdown) => {
         dropdown.addEventListener('change', function () {
-            // Extract data from the dropdown
-            const tourId = this.id.split('-')[1];
-            const guideId = this.value;
-            const guideName = this.options[this.selectedIndex].text;
+            selectedTourId = this.id.split('-')[1]; // Extract tourId from dropdown id
+            selectedGuideId = this.value; // Get the selected guideId
+            selectedDropdown = this; // Keep a reference to the specific dropdown
+
             const highSchoolName = this.dataset.highschoolname;
             const tourDate = this.dataset.tourdate;
             const tourHour = this.dataset.tourhour;
+            const selectedOptionText = this.options[this.selectedIndex].text;
 
-            // Set up confirmation message
-            const modalMessage = `You are about to assign guide "${guideName}" to the tour for ${highSchoolName} on ${tourDate} at ${tourHour}. Are you sure?`;
-            document.getElementById('confirmMessage').textContent = modalMessage;
-
-            // Store selection data
-            selectedTourId = tourId;
-            selectedGuideId = guideId;
-
-            // Show the confirmation modal
+            confirmMessage.textContent = `You are about to assign guide "${selectedOptionText}" to the tour for ${highSchoolName} on ${tourDate}. Are you sure?`;
             confirmModal.show();
         });
     });
@@ -182,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle Yes button click
     confirmButton.addEventListener('click', function () {
         if (selectedTourId && selectedGuideId) {
-            // Perform the assignment
             fetch(`/api/tours/${selectedTourId}/assign-guide`, {
                 method: 'POST',
                 headers: {
@@ -202,51 +165,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch((error) => {
                     console.error('Error assigning guide:', error);
-                    alert(`Error: ${error.message}`);
+                    alert(`Error: ${error.message}`); // Display the backend error message
+                    resetDropdown(); // Reset dropdown in case of error
+                })
+                .finally(() => {
+                    resetSelections();
                 });
 
-            // Hide the modal
             confirmModal.hide();
         }
     });
 
     // Handle No button click
     cancelButton.addEventListener('click', function () {
-        // Simply hide the modal and reset the dropdown selection
-        const dropdown = document.querySelector(`#guide-${selectedTourId}-1`);
-        if (dropdown) {
-            dropdown.value = ''; // Reset the dropdown to its initial state
-        }
-
-        selectedTourId = null;
-        selectedGuideId = null;
-        // Hide the modal
-        confirmModal.hide();
+        resetDropdown();
+        resetSelections();
     });
 
-    // Handle No button click
-    cancelButton.addEventListener('click', function () {
-        // Simply hide the modal and reset the dropdown selection
-        const dropdown = document.querySelector(`#guide-${selectedTourId}-1`);
-        if (dropdown) {
-            dropdown.value = ''; // Reset the dropdown to its initial state
-        }
-
-        selectedTourId = null;
-        selectedGuideId = null;
-        // Hide the modal
-        confirmModal.hide();
-    });
-
+    // Handle Close (X) button click
     closeModalLabelButton.addEventListener('click', function () {
-        // Simply hide the modal and reset the dropdown selection
-        confirmModal.hide();
+        resetDropdown();
+        resetSelections();
     });
+
+    // Reset the dropdown to its initial state
+    function resetDropdown() {
+        if (selectedDropdown) {
+            selectedDropdown.value = ''; // Reset the dropdown to its initial state
+        }
+    }
+
+    // Reset all selection-related variables
+    function resetSelections() {
+        selectedTourId = null;
+        selectedGuideId = null;
+        selectedDropdown = null;
+        confirmModal.hide();
+    }
 });
-
-
-
-
 
 
 // Thanks to this function, when the page is refreshed user returns to same table
@@ -268,5 +224,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+// Increase the guide count
+document.addEventListener('DOMContentLoaded', function () {
+    const addGuideSlotButtons = document.querySelectorAll('.add-guide-slot');
+
+    addGuideSlotButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const tourId = this.dataset.tourId;
+
+            fetch(`/api/tours/${tourId}/increase-guide-count`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert('Guide slot added successfully!');
+                        location.reload(); // Reload to reflect changes
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    });
+});
+
 
 
