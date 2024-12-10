@@ -479,8 +479,16 @@
 
                                                         <!-- Logic for Guide 2 -->
                                                         <td>
-                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount < 2}">
+                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
                                                                 <span>-</span>
+                                                            </div>
+                                                            <div th:if="${tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                                <!-- Add guide slot button only when guideCount is less than 2 -->
+                                                                <button
+                                                                        class="btn btn-primary add-guide-slot"
+                                                                        th:data-tour-id="${tour.id}">
+                                                                    Add Guide Slot
+                                                                </button>
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 2}">
                                                                 <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
@@ -507,8 +515,15 @@
 
                                                         <!-- Logic for Guide 3 -->
                                                         <td>
-                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount < 3}">
+                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
                                                                 <span>-</span>
+                                                            </div>
+                                                            <div th:if="${tour.guideCount == 2 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                                <button
+                                                                        class="btn btn-primary add-guide-slot"
+                                                                        th:data-tour-id="${tour.id}">
+                                                                    Add Guide Slot
+                                                                </button>
                                                             </div>
                                                             <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 3}">
                                                                 <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
@@ -529,9 +544,9 @@
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
-
                                                             </div>
                                                         </td>
+
 
 
 
@@ -707,6 +722,24 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="confirmButton">Yes</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelButton">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="errorModalMessage">
+                <!-- Error message will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

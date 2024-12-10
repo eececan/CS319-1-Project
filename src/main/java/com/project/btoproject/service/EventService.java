@@ -300,8 +300,8 @@ public class EventService implements IEventService {
                 .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
 
         // Check if the guide is already assigned to this tour
-        if (((Tour) event).getGuides().contains(guide)) {
-            throw new IllegalArgumentException("This guide is already assigned to the tour.");
+        if (event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is already assigned to this tour.");
         }
 
         // Check if the guide has another tour on the same date and hour
@@ -314,10 +314,35 @@ public class EventService implements IEventService {
 
         System.out.println("Guide assigned to tour: " + guide.getFirstName() + " " + guide.getLastName());
         // Add the guide to the tour
-        ((Tour) event).getGuides().add(guide);
+        (event.getGuides()).add(guide);
         eventRepository.save(event); // Save the updated tour
-
     }
+
+    @Transactional
+    public void increaseGuideCount(Long tourId) {
+        // Fetch the tour from the database
+        Event event = eventRepository.findById(tourId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+
+        // Ensure the event is a tour
+        if (!(event instanceof Tour)) {
+            throw new IllegalArgumentException("The specified event is not a tour.");
+        }
+
+        Tour tour = (Tour) event;
+
+        // Check the current guide count
+        if (tour .getGuideCount() >= 3) {
+            throw new IllegalStateException("The maximum number of guides (3) is already assigned.");
+        }
+
+        // Increment the guide count
+        tour.setGuideCount(tour.getGuideCount() + 1);
+
+        // Save the updated tour to the database
+        eventRepository.save(tour);
+    }
+
 
 }
 
