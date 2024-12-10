@@ -30,13 +30,13 @@ public class Tour extends Event {
     @Column(name = "people_count")
     private int peopleCount;
 
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(
             name = "tour_guides",
             joinColumns = @JoinColumn(name = "tour_id"),
             inverseJoinColumns = @JoinColumn(name = "guide_id")
     )
-    private List<Guide> guides;
+    private List<Guide> guides;*/
 
     @ManyToOne
     @JoinColumn(name = "advisor_id")
