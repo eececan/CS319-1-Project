@@ -39,9 +39,40 @@ public class AllUsersService implements IAllUsersService {
 
     @Override
     public void addTaskToUser(User user, UserTask newTask) {
-        user.getTasks().add(newTask);
-        repository.save(user);
         newTask.setUser(user);
         userTaskRepository.save(newTask);
+        user.getTasks().add(newTask);
+        repository.save(user);
+    }
+
+    @Override
+    public boolean updateTaskStatus(User user, Long taskId, boolean b) {
+        List<UserTask> tasks = user.getTasks();
+        UserTask taskToUpdate = tasks.stream()
+                .filter(task -> task.getTaskId().equals(taskId))
+                .findFirst()
+                .orElse(null);
+        if (taskToUpdate == null) {
+            return false;
+        }
+        taskToUpdate.setState(b);
+        userTaskRepository.save(taskToUpdate);
+        return true;
+    }
+
+    @Override
+    public boolean deleteTaskFromUser(User user, Long taskId) {
+        List<UserTask> tasks = user.getTasks();
+        UserTask taskToRemove = tasks.stream()
+                .filter(task -> task.getTaskId().equals(taskId))
+                .findFirst()
+                .orElse(null);
+        if (taskToRemove == null) {
+            return false;
+        }
+        tasks.remove(taskToRemove);
+        userTaskRepository.delete(taskToRemove);
+        repository.save(user);
+        return true;
     }
 }

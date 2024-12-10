@@ -17,7 +17,7 @@ import java.util.Date;
 public class UserTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int taskId;
+    private Long taskId;
 
     @Column(name = "task_name", nullable = false)
     private String taskName;

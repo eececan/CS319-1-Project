@@ -37,4 +37,44 @@ public class UserController {
         allUsersService.addTaskToUser(user, newTask);
         return ResponseEntity.status(HttpStatus.CREATED).body("Task created successfully.");
     }
+
+    @DeleteMapping("/delete-task")
+    public ResponseEntity<String> deleteTask(@RequestParam Long userId, @RequestParam Long taskId) {
+        User user = allUsersService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+        boolean taskDeleted = allUsersService.deleteTaskFromUser(user, taskId);
+        if (!taskDeleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found.");
+        }
+        return ResponseEntity.ok("Task deleted successfully.");
+    }
+
+    @PatchMapping("/mark-task-complete")
+    public ResponseEntity<String> markTaskAsComplete(@RequestParam Long userId, @RequestParam Long taskId) {
+        User user = allUsersService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+        boolean marked = allUsersService.updateTaskStatus(user, taskId, true);
+        if (!marked) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found.");
+        }
+        return ResponseEntity.ok("Task marked as complete.");
+    }
+
+    @PatchMapping("/mark-task-incomplete")
+    public ResponseEntity<String> markTaskAsIncomplete(@RequestParam Long userId, @RequestParam Long taskId) {
+        User user = allUsersService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+        boolean marked = allUsersService.updateTaskStatus(user, taskId, false);
+        if (!marked) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found.");
+        }
+        return ResponseEntity.ok("Task marked as incomplete.");
+    }
+
 }
