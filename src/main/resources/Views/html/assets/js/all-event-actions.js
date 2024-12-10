@@ -256,5 +256,84 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Select all "Remove Guide Slot" buttons
+    const removeGuideSlotButtons = document.querySelectorAll(".remove-guide-slot");
+
+    removeGuideSlotButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const tourId = this.dataset.tourId; // Extract tourId from button's data attribute
+            const guideIndex = this.dataset.guideIndex; // Extract the guide index
+
+            // Confirmation dialog (optional, can be skipped)
+            if (confirm("Are you sure you want to remove this guide slot?")) {
+                // Send the request to the backend to decrease the guide count
+                fetch(`/api/tours/${tourId}/decrease-guide-count`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ guideIndex: guideIndex }),
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            alert("Guide slot removed successfully!");
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            return response.text().then((message) => {
+                                throw new Error(message);
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error removing guide slot:", error);
+                        alert(`Error: ${error.message}`);
+                    });
+            }
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const removeGuideButtons = document.querySelectorAll('.remove-guide');
+
+    removeGuideButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const tourId = this.dataset.tourId; // Get tour ID
+            const guideId = this.dataset.guideId; // Get guide ID
+
+            // Confirmation dialog
+            if (!confirm("Are you sure you want to remove this guide from the tour?")) {
+                return; // Do nothing if the user cancels
+            }
+
+            // Send request to the server
+            fetch(`/api/tours/${tourId}/remove-guide`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ guideId: guideId }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert('Guide removed successfully!');
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error removing guide:', error);
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    });
+});
+
+
+
 
 

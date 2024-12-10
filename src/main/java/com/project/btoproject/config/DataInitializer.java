@@ -83,8 +83,8 @@ public class DataInitializer {
                 guide.setStartDate(new Date());
                 guide.setDepartment("CS");
                 guide.setEmail("ozkan.ir@ug.bilkent.edu.tr");
-                guide.setFirstName("Mustafa");
-                guide.setLastName("IR");
+                guide.setFirstName("Mustafa Özkan");
+                guide.setLastName("İr");
                 guide.setSchedule("example schedule");
                 guide.setGrade(3);
                 guide.setPassword("password");
@@ -93,6 +93,23 @@ public class DataInitializer {
                 guide.setPhoneNumber("05326589878");
                 guideRepository.save(guide);
             }
+
+            if(guideRepository.findByFirstNameAndLastName("Poyraz", "Karayel").isEmpty()){
+                Guide guide = new Guide();
+                guide.setStartDate(new Date());
+                guide.setDepartment("MAN");
+                guide.setEmail("poyraz.karayel@ug.bilkent.edu.tr");
+                guide.setFirstName("Poyraz");
+                guide.setLastName("Karayel");
+                guide.setSchedule("example schedule");
+                guide.setGrade(3);
+                guide.setPassword("password");
+                guide.setId(22103216L);
+                guide.setDescription("Poyraz is now Here.");
+                guide.setPhoneNumber("05326145462");
+                guideRepository.save(guide);
+            }
+
             if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
                 Advisor advisor = new Advisor();
                 advisor.setDepartment("CS");
