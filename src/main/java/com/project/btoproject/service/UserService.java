@@ -7,6 +7,7 @@ import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -18,10 +19,12 @@ import java.util.List;
 public class UserService implements IUserService {
     private final IAllUsersService allUsersService;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository) {
+    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.allUsersService = allUsersService;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -89,6 +92,20 @@ public class UserService implements IUserService {
         allUsersService.deleteUserById(Long.parseLong(user.getUsername()));
     }
 
+    @Transactional
+    @Override
+    public void changePassword(Long id, String password) {
+        UserEntity user = userRepository.findByUsername(id.toString())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        System.out.println("Changed password for user ID: " + user.getId());
+    }
+
+    @Override
+    public void forgotPassword(Long id) {
+
+    }
 
 
 }
