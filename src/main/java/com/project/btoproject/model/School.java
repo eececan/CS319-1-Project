@@ -30,7 +30,7 @@ public class School {
     @Column(name = "counselor_id")
     private Long counselorId;
 
-    @Column(name = "flag")
+    @Column(name = "flag", nullable = true)
     private boolean flag;
 
     @Column(name = "school_type", nullable = true)
