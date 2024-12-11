@@ -12,4 +12,6 @@ public interface IAllUsersService {
     User getUserById(Long userId);
     List<UserTask> seeAllTasks(User user);
     void addTaskToUser(User user, UserTask newTask);
+    boolean updateTaskStatus(User user, Long taskId, boolean b);
+    boolean deleteTaskFromUser(User user, Long taskId);
 }
