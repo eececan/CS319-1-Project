@@ -390,4 +390,10 @@ public class EventService implements IEventService {
 
         System.out.println("Guide removed from tour: " + guide.getFirstName() + " " + guide.getLastName());
     }
+
+
+
+
 }
+
+
