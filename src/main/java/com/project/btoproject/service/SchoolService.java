@@ -36,6 +36,7 @@ public class SchoolService {
         newSchool.setName(schoolName);
         newSchool.setCity(city);
         newSchool.setAddress(address);
+        newSchool.setFlag(false);
         return schoolRepository.save(newSchool); // Save and return the new School
     }
 }

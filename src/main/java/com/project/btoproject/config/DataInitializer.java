@@ -61,6 +61,28 @@ public class DataInitializer {
 
     @Bean
     @Transactional
+    public ApplicationRunner initializeAdvisors() {
+        return args -> {
+            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
+                Advisor advisor = new Advisor();
+                advisor.setDepartment("CS");
+                advisor.setStartDate(new Date());
+                advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
+                advisor.setFirstName("Furkan");
+                advisor.setLastName("Akyol");
+                advisor.setGrade(5);
+                advisor.setPassword("asd");
+                advisor.setId(12345678L);
+                advisor.setDescription("Furkan Akyol added as an advisor for an example.");
+                advisor.setPhoneNumber("0123456789");
+                advisor.setResponsibleDay(DayOfWeek.WEDNESDAY);
+                advisorRepository.save(advisor);
+            }
+        };
+    }
+
+    @Bean
+    @Transactional
     public ApplicationRunner initializeGuides() {
         return args -> {
             if(guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()){
@@ -83,8 +105,8 @@ public class DataInitializer {
                 guide.setStartDate(new Date());
                 guide.setDepartment("CS");
                 guide.setEmail("ozkan.ir@ug.bilkent.edu.tr");
-                guide.setFirstName("Mustafa");
-                guide.setLastName("IR");
+                guide.setFirstName("Mustafa Özkan");
+                guide.setLastName("İr");
                 guide.setSchedule("example schedule");
                 guide.setGrade(3);
                 guide.setPassword("password");
@@ -93,20 +115,21 @@ public class DataInitializer {
                 guide.setPhoneNumber("05326589878");
                 guideRepository.save(guide);
             }
-            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
-                Advisor advisor = new Advisor();
-                advisor.setDepartment("CS");
-                advisor.setStartDate(new Date());
-                advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
-                advisor.setFirstName("Furkan");
-                advisor.setLastName("Akyol");
-                advisor.setGrade(5);
-                advisor.setPassword("asd");
-                advisor.setId(12345678L);
-                advisor.setDescription("Furkan Akyol added as an advisor for an example.");
-                advisor.setPhoneNumber("0123456789");
-                advisor.setResponsibleDay(DayOfWeek.WEDNESDAY);
-                advisorRepository.save(advisor);
+
+            if(guideRepository.findByFirstNameAndLastName("Poyraz", "Karayel").isEmpty()){
+                Guide guide = new Guide();
+                guide.setStartDate(new Date());
+                guide.setDepartment("MAN");
+                guide.setEmail("poyraz.karayel@ug.bilkent.edu.tr");
+                guide.setFirstName("Poyraz");
+                guide.setLastName("Karayel");
+                guide.setSchedule("example schedule");
+                guide.setGrade(3);
+                guide.setPassword("password");
+                guide.setId(22103216L);
+                guide.setDescription("Poyraz is now Here.");
+                guide.setPhoneNumber("05326145462");
+                guideRepository.save(guide);
             }
         };
     }

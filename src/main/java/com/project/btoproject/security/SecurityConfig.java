@@ -52,7 +52,7 @@ public class SecurityConfig {
                 }))
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
 
@@ -69,9 +69,9 @@ public class SecurityConfig {
                                 "/ui/assets/css/**",
                                 "/ui/assets/images/**",
                                 "/ui/assets/js/**",
-                                "/ui/auth/advisor-tables",
                                 "/ui/auth/head-secretary-tables",
-                                "/api/tours/**"
+                                "/api/tours/**",
+                                "/deleteUser/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -98,6 +98,5 @@ public class SecurityConfig {
     public JWTAuthenticationFilter jwtAuthenticationFilter() {
         return new JWTAuthenticationFilter();
     }
-
 
 }
