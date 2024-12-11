@@ -43,6 +43,8 @@ public class School {
     private String address;
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Event> events = new ArrayList<>();
-    // We might also need to add fairs
+    private List<Tour> tours = new ArrayList<>();
+
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Fair> fairs = new ArrayList<>();
 }
