@@ -20,7 +20,7 @@ public class SchoolCounselor {
     private String name;
 
     @Column(name = "role", nullable = false)
-    private String role;
+    private String role;                  //questionable
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;

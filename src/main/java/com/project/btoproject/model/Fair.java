@@ -33,6 +33,7 @@ public class Fair extends Event {
     @Column(name = "people_count")
     private int peopleCount;
 
+    //implement this
     /*@ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User[] responsibleMembers;*/
