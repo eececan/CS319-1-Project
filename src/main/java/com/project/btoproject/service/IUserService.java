@@ -11,4 +11,6 @@ public interface IUserService {
     void enterPersonalInformationGuideInTraining(UserEntity user, UserGuideInTrainingDto userGuideInTrainingDto) ;
     void enterPersonalInformationAdvisor(UserEntity user, UserAdvisorDto userAdvisorDto) ;
     void deleteUserByUsername(Long id) ;
+    void changePassword(Long id, String password) ;
+    void forgotPassword(Long id) ;
 }
