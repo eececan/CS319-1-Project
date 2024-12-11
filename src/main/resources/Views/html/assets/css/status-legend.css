@@ -113,7 +113,11 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     flex: 1; /* Take up remaining space */
     text-align: left; /* Align guide name to the left */
 }
-
+.full-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
 
 
 
