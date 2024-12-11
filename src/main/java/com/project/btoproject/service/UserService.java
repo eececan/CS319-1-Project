@@ -75,19 +75,20 @@ public class UserService implements IUserService {
         UserEntity user = userRepository.findByUsername(id.toString())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Log and delete from user_roles
+        System.out.println("Clearing roles for user ID: " + user.getId());
+        user.getRoles().clear();
+        userRepository.save(user);
+
         System.out.println("Deleting user roles for user ID: " + user.getId());
         userRepository.deleteUserRolesByUserId(user.getId());
-        userRepository.flush(); // Force flush to commit the delete
 
-        // Delete the user itself
         System.out.println("Deleting user entity: " + user.getId());
         userRepository.delete(user);
 
-        // Delete additional user records if necessary
         System.out.println("Deleting user from all_users service: " + user.getUsername());
         allUsersService.deleteUserById(Long.parseLong(user.getUsername()));
     }
+
 
 
 }
