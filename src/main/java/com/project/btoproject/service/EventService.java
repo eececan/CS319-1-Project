@@ -392,8 +392,11 @@ public class EventService implements IEventService {
     }
 
 
+    public void approveFair(Long id) {
+    }
 
-
+    public void rejectFair(Long id) {
+    }
 }
 
 
