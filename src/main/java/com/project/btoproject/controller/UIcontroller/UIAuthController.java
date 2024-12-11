@@ -90,23 +90,30 @@ public class UIAuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity user = new UserEntity();
         Object principal = authentication.getPrincipal();
-
         UserDetails userDetails = (UserDetails) principal;
         String userId = userDetails.getUsername();
-
         long advisorId = Long.parseLong(userId);
         Advisor advisor = advisorService.getAdvisorById(advisorId);
         DayOfWeek responsibleDay = advisor.getResponsibleDay();
-
+        List<Guide> guides = guideService.getAllGuides();
         List<Tour> tours = eventService.getTours();
         List<Tour> tourApplications = eventService.getTourApplications();
-
+        // Create guideCounts map
+        Map<Long, List<Integer>> guideCounts = tours.stream()
+                .collect(Collectors.toMap(
+                        Tour::getId,
+                        tour -> IntStream.rangeClosed(1, tour.getGuideCount())
+                                .boxed()
+                                .collect(Collectors.toList())
+                ));
         model.addAttribute("tours", tours);
         model.addAttribute("tourApplications", tourApplications);
         model.addAttribute("responsibleDay", responsibleDay);
-        System.out.println("ASHGSYdgsydfewyhd");
+        model.addAttribute("guides", guides);
+        model.addAttribute("guideCounts", guideCounts);
+
         System.out.println(responsibleDay);
-        System.out.println("ASHGSYdgsydfewyhd");
+
         //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";
     }

@@ -373,7 +373,8 @@
                                                     <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
                                                     <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
                                                     <td>
-                                                        <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION'}">
+                                                        <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION'
+                 and #dates.format(tour.date, 'EEEE').toUpperCase().equals(responsibleDay) }">
                                                             <!-- Approve Button -->
                                                             <button class="btn btn-success"
                                                                     th:onclick="'handleAdvisorApproval(' + ${tour.id} + ')'">
