@@ -7,6 +7,9 @@ import com.project.btoproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,10 +19,13 @@ import java.util.List;
 public class UserController {
 
     private final AllUsersService allUsersService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(AllUsersService allUsersService) {
+    public UserController(AllUsersService allUsersService,
+                           UserService userService) {
         this.allUsersService = allUsersService;
+        this.userService = userService;
     }
 
     @GetMapping("/get-tasks")
@@ -75,6 +81,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found.");
         }
         return ResponseEntity.ok("Task marked as incomplete.");
+    }
+
+    @PostMapping("/changePassword")
+    public void changePassword(@RequestParam String password){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String userId = userDetails.getUsername();
+        userService.changePassword(Long.parseLong(userId), password);
     }
 
 }

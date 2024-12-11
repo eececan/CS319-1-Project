@@ -200,8 +200,18 @@ public class EventService implements IEventService {
     }
 
     @Override
+    public List<Tour> seeUpcomingTours() {
+        return List.of();
+    }
+
+    @Override
     public void sendFairReminderToResponsibleMembers() {
         //TODO
+    }
+
+    @Override
+    public void sendTourReminderToGuides() {
+
     }
 
     @Override
@@ -382,9 +392,11 @@ public class EventService implements IEventService {
     }
 
 
+    public void approveFair(Long id) {
+    }
 
-
+    public void rejectFair(Long id) {
+    }
 }
-
 
 
