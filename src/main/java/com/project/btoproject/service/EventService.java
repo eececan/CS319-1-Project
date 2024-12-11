@@ -27,7 +27,37 @@ public class EventService implements IEventService {
         this.eventRepository = eventRepository;
         this.guideRepository = guideRepository;
     }
+    public void approveFair(Long fairId) {
+        Optional<Event> eventOptional = eventRepository.findById(fairId);
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
+            Fair fair = (Fair) eventOptional.get();
+            if (!fair.getStatus().equals(Status.NEW_FAIR_APPLICATION)) {
+                throw new IllegalStateException("Fair is not in a state to be approved.");
+            }
+            fair.setStatus(Status.NEW_FAIR_APPLICATION);
+            eventRepository.save(fair);
+        }
 
+    else {
+            throw new IllegalArgumentException("Fair not found with ID: " + fairId);
+        }
+    }
+
+    public void rejectFair(Long fairId) {
+        Optional<Event> eventOptional = eventRepository.findById(fairId);
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
+            Fair fair = (Fair) eventOptional.get();
+            if (!fair.getStatus().equals(Status.NEW_FAIR_APPLICATION)) {
+                throw new IllegalStateException("Fair is not in a state to be rejected.");
+            }
+            fair.setStatus(Status.REJECTED_FAIR);
+            eventRepository.save(fair);
+        }
+
+        else {
+            throw new IllegalArgumentException("Fair not found with ID: " + fairId);
+        }
+    }
     public void approveTourByAdvisor(Long tourId) {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
@@ -392,11 +422,7 @@ public class EventService implements IEventService {
     }
 
 
-    public void approveFair(Long id) {
-    }
 
-    public void rejectFair(Long id) {
-    }
 }
 
 
