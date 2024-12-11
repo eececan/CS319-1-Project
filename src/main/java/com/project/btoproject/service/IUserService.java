@@ -10,4 +10,5 @@ public interface IUserService {
     void enterPersonalInformationGuide(UserEntity user, UserGuideDto userGuideDto) ;
     void enterPersonalInformationGuideInTraining(UserEntity user, UserGuideInTrainingDto userGuideInTrainingDto) ;
     void enterPersonalInformationAdvisor(UserEntity user, UserAdvisorDto userAdvisorDto) ;
+    void deleteUserByUsername(Long id) ;
 }

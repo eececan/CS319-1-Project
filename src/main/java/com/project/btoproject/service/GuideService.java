@@ -33,6 +33,7 @@ public class GuideService implements IGuideService
             tour.getGuides().add(guide);
             guide.getEvents().add(tour);
             guideRepository.save(guide);
+            //touru guncelle
         }
         //maybe add error message later
     }
@@ -55,12 +56,6 @@ public class GuideService implements IGuideService
             totalPoints += pointRecord.getPoint();
         }
         return totalPoints;
-    }
-
-    @Override
-    public Advisor seeAdvisorOfDay() {
-        //TODO
-        return null;
     }
 
     @Override

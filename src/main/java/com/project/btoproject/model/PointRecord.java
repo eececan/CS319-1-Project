@@ -14,7 +14,7 @@ public class PointRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long id; //change to Long
 
     @ManyToOne
     @JoinColumn(name = "guide_id", nullable = false)

@@ -200,8 +200,18 @@ public class EventService implements IEventService {
     }
 
     @Override
+    public List<Tour> seeUpcomingTours() {
+        return List.of();
+    }
+
+    @Override
     public void sendFairReminderToResponsibleMembers() {
         //TODO
+    }
+
+    @Override
+    public void sendTourReminderToGuides() {
+
     }
 
     @Override
@@ -380,11 +390,4 @@ public class EventService implements IEventService {
 
         System.out.println("Guide removed from tour: " + guide.getFirstName() + " " + guide.getLastName());
     }
-
-
-
-
 }
-
-
-

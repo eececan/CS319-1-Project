@@ -61,6 +61,28 @@ public class DataInitializer {
 
     @Bean
     @Transactional
+    public ApplicationRunner initializeAdvisors() {
+        return args -> {
+            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
+                Advisor advisor = new Advisor();
+                advisor.setDepartment("CS");
+                advisor.setStartDate(new Date());
+                advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
+                advisor.setFirstName("Furkan");
+                advisor.setLastName("Akyol");
+                advisor.setGrade(5);
+                advisor.setPassword("asd");
+                advisor.setId(12345678L);
+                advisor.setDescription("Furkan Akyol added as an advisor for an example.");
+                advisor.setPhoneNumber("0123456789");
+                advisor.setResponsibleDay(DayOfWeek.WEDNESDAY);
+                advisorRepository.save(advisor);
+            }
+        };
+    }
+
+    @Bean
+    @Transactional
     public ApplicationRunner initializeGuides() {
         return args -> {
             if(guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()){
@@ -108,22 +130,6 @@ public class DataInitializer {
                 guide.setDescription("Poyraz is now Here.");
                 guide.setPhoneNumber("05326145462");
                 guideRepository.save(guide);
-            }
-
-            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
-                Advisor advisor = new Advisor();
-                advisor.setDepartment("CS");
-                advisor.setStartDate(new Date());
-                advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
-                advisor.setFirstName("Furkan");
-                advisor.setLastName("Akyol");
-                advisor.setGrade(5);
-                advisor.setPassword("asd");
-                advisor.setId(12345678L);
-                advisor.setDescription("Furkan Akyol added as an advisor for an example.");
-                advisor.setPhoneNumber("0123456789");
-                advisor.setResponsibleDay(DayOfWeek.WEDNESDAY);
-                advisorRepository.save(advisor);
             }
         };
     }

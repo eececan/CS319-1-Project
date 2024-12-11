@@ -14,7 +14,13 @@ public interface IEventService {
     void changeTourInformation(Tour t, TourInfo tourInfo);
     void changeFairInformation(Fair f, String fairInfo);
     List<Fair> seeUpcomingFairs();
+
+    List<Tour> seeUpcomingTours();
+
     void sendFairReminderToResponsibleMembers();
+
+    void sendTourReminderToGuides();
+
     String seeRemainingTimeUntilEvent(Event e);
     public Date findLatestFairApplicationTimeStamp();
     public Date findLatestTourApplicationTimeStamp();

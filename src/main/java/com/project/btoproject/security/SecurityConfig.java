@@ -62,7 +62,6 @@ public class SecurityConfig {
                                 "/getAllEvents",
                                 "/",
                                 "/ui/auth/login",
-                                "/ui/auth/advisor-tables",
                                 "/assets/**",
                                 "/bilkent.png",
                                 "/ui/assets/**",
@@ -99,6 +98,5 @@ public class SecurityConfig {
     public JWTAuthenticationFilter jwtAuthenticationFilter() {
         return new JWTAuthenticationFilter();
     }
-
 
 }

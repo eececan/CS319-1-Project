@@ -5,6 +5,8 @@ import com.project.btoproject.dto.UserGuideDto;
 import com.project.btoproject.dto.UserGuideInTrainingDto;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
+import com.project.btoproject.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -15,9 +17,11 @@ import java.util.List;
 @Service
 public class UserService implements IUserService {
     private final IAllUsersService allUsersService;
+    private final UserRepository userRepository;
 
-    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository) {
+    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository) {
         this.allUsersService = allUsersService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -64,4 +68,26 @@ public class UserService implements IUserService {
         advisor.setPassword(userEntity.getPassword());
         allUsersService.addUser(advisor);
     }
+
+    @Transactional
+    @Override
+    public void deleteUserByUsername(Long id) {
+        UserEntity user = userRepository.findByUsername(id.toString())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Log and delete from user_roles
+        System.out.println("Deleting user roles for user ID: " + user.getId());
+        userRepository.deleteUserRolesByUserId(user.getId());
+        userRepository.flush(); // Force flush to commit the delete
+
+        // Delete the user itself
+        System.out.println("Deleting user entity: " + user.getId());
+        userRepository.delete(user);
+
+        // Delete additional user records if necessary
+        System.out.println("Deleting user from all_users service: " + user.getUsername());
+        allUsersService.deleteUserById(Long.parseLong(user.getUsername()));
+    }
+
+
 }

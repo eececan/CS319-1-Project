@@ -44,4 +44,11 @@ public class AllUsersService implements IAllUsersService {
         newTask.setUser(user);
         userTaskRepository.save(newTask);
     }
+
+    @Override
+    public void deleteUserById(Long id) {
+        User user = repository.findById(id).orElse(null);
+        repository.delete(user);
+    }
+
 }
