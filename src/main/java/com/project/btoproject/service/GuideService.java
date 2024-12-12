@@ -64,6 +64,16 @@ public class GuideService implements IGuideService
     }
 
     @Override
+    public void deleteGuide(Long guideId) {
+        guideRepository.deleteById(guideId);
+    }
+
+    @Override
+    public List<Guide> getGuidesByDepartment(String department) {
+        return guideRepository.findAllByDepartment(department);
+    }
+
+    @Override
     public Guide getGuideByName(String firstName, String lastName) {
         return guideRepository.findByFirstNameAndLastName(firstName, lastName)
                 .orElseThrow(() -> new IllegalArgumentException("Guide not found with name: " + firstName + " " + lastName));

@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface IGuideRepository extends JpaRepository<Guide, Long> {
     Optional<Guide> findByFirstNameAndLastName(String firstName, String lastName);
     Guide getGuideById(Long id);
+    List<Guide>findAllByDepartment(String department);
 }

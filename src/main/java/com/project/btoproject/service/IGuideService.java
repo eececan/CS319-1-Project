@@ -13,12 +13,12 @@ public interface IGuideService {
     Guide getGuideByName(String firstName, String lastName);
     Guide getGuideById(Long id);
     List<Guide> getAllGuides();
+    void deleteGuide(Long guideId);
+    List<Guide>getGuidesByDepartment(String department);
 
     /*
     guide related methods to be implemented
 
-    void deleteGuide(Long guideId);
-    void updateGuide(Long guideId);
     void unassignGuideFromTour(Long tourId, Long guideId);
     List<Long> getGuideRankings();
     int getGuideRanking(Long guideId);
