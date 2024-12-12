@@ -20,11 +20,7 @@ public class UniversityStudentForStatistics {
     @JoinColumn(name = "high_school_id")
     private HighSchoolForStatistics highSchool;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @Column(name = "department", nullable = false)
     private String department;
 
-    // Other student attributes...
 }
