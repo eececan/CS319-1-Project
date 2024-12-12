@@ -35,4 +35,7 @@ public class TourStatisticsService {
 
         return tourCounts;
     }
+    public List<Object[]> getTourCountsByState() {
+        return schoolRepository.getTourCountsByState();
+    }
 }

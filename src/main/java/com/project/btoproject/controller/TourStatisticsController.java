@@ -23,5 +23,9 @@ public class TourStatisticsController {
     public List<SchoolTourCountDTO> getSchoolTourCounts() {
         return tourStatisticsService.getSchoolTourCounts();
     }
+    @GetMapping("/schools/tour-counts-by-state")
+    public List<Object[]> getTourCountsByState() {
+        return tourStatisticsService.getTourCountsByState();
+    }
 
 }
