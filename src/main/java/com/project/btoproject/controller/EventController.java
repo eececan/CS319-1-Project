@@ -6,6 +6,7 @@ import com.project.btoproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,5 +28,11 @@ public class EventController {
         List<Fair> fairs = eventservice.getAllFairs();
         List<Tour> tours = eventservice.getAllTours();
         return new ResponseEntity<>(fairs, HttpStatus.OK);
+    }
+    @GetMapping("/eventsCount")
+    public String showEvents(Model model) {
+        long upcomingEventsCount = eventservice.getUpcomingEventsCount();
+        model.addAttribute("upcomingEventsCount", upcomingEventsCount);
+        return "events"; // Replace with your actual view name
     }
 }

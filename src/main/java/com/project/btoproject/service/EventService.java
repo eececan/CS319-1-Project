@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -421,8 +422,20 @@ public class EventService implements IEventService {
         System.out.println("Guide removed from tour: " + guide.getFirstName() + " " + guide.getLastName());
     }
 
+    public long getUpcomingEventsCount() {
+        List<Fair> upcomingFairs = getAllFairs().stream()
+                .filter(fair -> fair.getStatus() == Status.UPCOMING_FAIR)
+                .collect(Collectors.toList());
 
+        List<Tour> upcomingTours = getAllTours().stream()  // Get upcoming tours
+                .filter(tour -> tour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
+        List<IndividualTour> upcomingToursInd = getAllIndividualTours().stream()  // Get upcoming tours
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
 
+        return upcomingFairs.size() + upcomingTours.size() + upcomingToursInd.size();  // Sum up both
+    }
 }
 
 

@@ -10,14 +10,14 @@
   <title>Advisor-Dashboard</title>
 
   <!-- Bootstrap Core and vendor -->
-  <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+  <link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet"  >
 
   <!-- Plugins css -->
-  <link rel="stylesheet" th:href="@{/assets/plugins/charts-c3/c3.min.css}" />
+  <link  th:href="@{/assets/plugins/charts-c3/c3.min.css}"  rel="stylesheet">
 
   <!-- Core css -->
-  <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
-  <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+  <link th:href="@{/assets/css/main.css}" rel="stylesheet">
+  <link th:href="@{/assets/css/theme1.css}" rel="stylesheet" >
 
 </head>
 
@@ -214,7 +214,7 @@
       <a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a>
     </h5>
     <div class="card-body">
-      <a href="page-profile.html">
+      <a href="head-secretary-profile.html">
         <img class="card-profile-img" id="profile-image" src="" alt="User Image">
       </a>
       <h6 class="mb-0" id="user-name"></h6>
@@ -388,7 +388,7 @@
               <div class="dropdown d-flex">
                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                  <a class="dropdown-item" href="page-profile.html"><i class="dropdown-icon fe fe-user"></i> Profile</a>
+                  <a class="dropdown-item" href="head-secretary-profile.html"><i class="dropdown-icon fe fe-user"></i> Profile</a>
                   <a class="dropdown-item" href="app-setting.html"><i class="dropdown-icon fe fe-settings"></i> Settings</a>
                   <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
                   <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-send"></i> Message</a>
@@ -415,7 +415,7 @@
 
               <div class="card" style="border-radius: 16px; width: 300px; margin-bottom: 25px; background-color: white;">
                 <div class="card-header mt-12 d-flex justify-content-center" style="border-radius: 16px;background-color: white;">
-                  <h3 class="card-title">View Today's Advisor: <span style="color: #2f93ff;">Elif Güleç</span></h3>
+                  <h3 class="card-title">View Today's Advisor: <span style="color: #2f93ff;"  th:text="${advisor.firstName} + ' ' + ${advisor.lastName}"></span></h3>
                 </div>
               </div>
 
@@ -427,7 +427,7 @@
                   <div class="card" style="border-radius:16px; min-height: 200px; cursor: pointer;">
                     <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                       <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Tours and Fairs</h3>
-                      <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;">12</h5>
+                      <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;"  th:text="${tours.size() + fairs.size()}"></h5>
                       <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all tours and fairs</span>
                     </div>
                   </div>
@@ -439,7 +439,7 @@
                 <div class="card" style="border-radius:16px; min-height: 200px;">
                   <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Upcoming Events</h3>
-                    <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;">7</h5>
+                    <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${upComing}"></h5>
                     <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all scheduled events on the calendar</span>
                   </div>
                 </div>
@@ -448,23 +448,25 @@
 
             <div class="row clearfix row-deck">
               <!-- Members Card -->
+              <<!-- Members Card -->
               <div class="col-12 col-md-3">
                 <div class="card" style="border-radius:16px; min-height: 200px;">
                   <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Members</h3>
-                    <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;">58</h5>
+                    <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text ="${users.size()}"></h5>
                     <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all members of BTO</span>
                   </div>
                 </div>
               </div>
+
 
               <!-- Points Card -->
               <div class="col-12 col-md-3">
                 <div class="card" style="border-radius:16px; min-height: 200px;">
                   <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Point Records</h3>
-                    <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;">314</h5>
-                    <span class="font-12" style="color: #6e7687; margin-top: 5px;">View point records of members</span>
+                    <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text ="${sum}"></h5>
+                    <span class="font-12" style="color: #6e7687; margin-top: 5px;">View your point records</span>
                   </div>
                 </div>
               </div>
@@ -487,14 +489,24 @@
                     <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
 
                     <!-- To-Do List Items -->
-                    <div style="margin-top: 10px;">
-                      <div class="d-flex align-items-center" style="margin-bottom: 5px;">
-                        <input type="checkbox" id="task1" style="margin-right: 10px; vertical-align: middle;">
-                        <label for="task1" style="vertical-align: middle;">Review all tour applications</label>
-                      </div>
-                      <div class="d-flex align-items-center" style="margin-bottom: 5px;">
-                        <input type="checkbox" id="task2" style="margin-right: 10px; vertical-align: middle;">
-                        <label for="task2" style="vertical-align: middle;">Send email to guides</label>
+                    <div class="col-12 col-md-3">
+                      <div class="card" style="border-radius:16px; min-height: 200px;">
+                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
+                          <!-- To-Do List Title -->
+                          <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
+
+                          <!-- To-Do List Items -->
+                          <div th:each="tasks : ${tasks}">
+                            <div class="d-flex align-items-center" style="margin-bottom: 5px;">
+                              <!-- Dynamic checkbox for task completion -->
+                              <input type="checkbox" th:id="'task' + ${tasks.taskId}" th:checked="${tasks.state}" style="margin-right: 10px; vertical-align: middle;">
+                              <!-- Task label with dynamic description -->
+                              <label th:for="'task' + ${tasks.taskId}" style="vertical-align: middle;">
+                                <span th:text="${tasks.taskDescription}">Task Description</span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -520,15 +532,12 @@
     </div>
   </div>
 </div>
-
-  <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
-  <script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
-  <!-- <script th:src="@{/assets/bundles/counterup.bundle.js}"></script> -->
-  <script th:src="@{/assets/bundles/knobjs.bundle.js}"></script>
-  <script th:src="@{/assets/bundles/c3.bundle.js}"></script>
-
-  <script th:src="@{/assets/js/core.js}"></script>
-  <script th:src="@{/assets/js/page/project-index.js}"></script>
-
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
+<!-- <script th:src="@{/assets/bundles/counterup.bundle.js}"></script> -->
+<script th:src="@{/assets/bundles/knobjs.bundle.js}"></script>
+<script th:src="@{/assets/bundles/c3.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+<script th:src="@{/assets/js/page/project-index.js}"></script>
 </body>
 </html>
