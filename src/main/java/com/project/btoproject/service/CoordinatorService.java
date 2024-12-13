@@ -5,6 +5,8 @@ import com.project.btoproject.repository.ICoordinatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CoordinatorService implements ICoordinatorService {
@@ -24,5 +26,10 @@ public class CoordinatorService implements ICoordinatorService {
     @Override
     public Coordinator getCoordinatorById(Long CoordinatorId) {
         return coordinatorRepository.getCoordinatorById(CoordinatorId);
+    }
+
+    @Override
+    public List<Coordinator> getAllCoordinators() {
+        return coordinatorRepository.findAll();
     }
 }
