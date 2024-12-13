@@ -1,10 +1,13 @@
+
 package com.project.btoproject.controller.UIcontroller;
 
 import com.project.btoproject.model.User;
+import com.project.btoproject.service.AllUsersService;
 import com.project.btoproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,27 +15,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class UIUserProfileController {
 
-    @Autowired
-    private UserService userService;
+
+    private final AllUsersService allUsersService;
+
+    UIUserProfileController(AllUsersService allUsersService) {
+        this.allUsersService = allUsersService;
+    }
 
     @GetMapping("/profile")
     public String getProfile(Model model) {
         // Get the current authenticated user
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName(); // Get the username from the authentication object
-        User user = userService.getUserByUsername(username); // Fetch the user from the database
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+        }
+        User user = allUsersService.getUserById(Long.parseLong(username));
         // Add user to the model so that it's accessible in the view
         model.addAttribute("user", user);
 
         // Check user roles and return the respective profile page
-        if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
             return "director-profile"; // Director's profile page
-        } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
             return "advisor-profile"; // Advisor's profile page
-        } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
             return "guide-profile"; // Guide's profile page
-        } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
             return "head-secretary-profile"; // Head Secretary's profile page
         }
         else
