@@ -414,8 +414,19 @@
               </div>
 
               <div class="card" style="border-radius: 16px; width: 300px; margin-bottom: 25px; background-color: white;">
-                <div class="card-header mt-12 d-flex justify-content-center" style="border-radius: 16px;background-color: white;">
-                  <h3 class="card-title">View Today's Advisor: <span style="color: #2f93ff;"  th:text="${advisor.firstName} + ' ' + ${advisor.lastName}"></span></h3>
+                <div class="card-header mt-12 d-flex justify-content-center" style="border-radius: 16px; background-color: white;">
+                  <h3 class="card-title">
+                    View Today's Advisor:
+                    <!-- Display advisor's name if advisor is not null -->
+                    <span th:if="${advisor != null}" style="color: #2f93ff;"
+                          th:text="${advisor.firstName} + ' ' + ${advisor.lastName}">
+
+            </span>
+                    <!-- Display fallback message if advisor is null -->
+                    <span th:if="${advisor == null}" style="color: #ff0000;">
+                No Responsible Advisor is Assigned!
+            </span>
+                  </h3>
                 </div>
               </div>
 
