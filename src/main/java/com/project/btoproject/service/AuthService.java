@@ -10,6 +10,8 @@ import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.security.JWTGenerator;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,7 +45,7 @@ public class AuthService {
         this.jwtGenerator = jwtGenerator;
     }
 
-    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto, HttpServletRequest request) {
         try {
             // Authenticate the user
             Authentication authentication = authenticationManager.authenticate(
@@ -51,8 +53,12 @@ public class AuthService {
                             loginDto.getUsername(),
                             loginDto.getPassword()));
 
-            // Set the security context
+            // Set the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Explicitly store the SecurityContext in the session
+            HttpSession session = request.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
             // Generate JWT token
             String token = jwtGenerator.generateToken(authentication);
@@ -71,6 +77,7 @@ public class AuthService {
             }
         }
     }
+
 
     public String register(@RequestBody RegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername())) {

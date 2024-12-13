@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +32,7 @@ public class GuideService implements IGuideService
             tour.getGuides().add(guide);
             guide.getEvents().add(tour);
             guideRepository.save(guide);
+            //touru guncelle
         }
         //maybe add error message later
     }
@@ -58,14 +58,53 @@ public class GuideService implements IGuideService
     }
 
     @Override
-    public Advisor seeAdvisorOfDay() {
-        //TODO
-        return null;
+    public List<Guide> getAllGuides() {
+        return guideRepository.findAll();
     }
 
     @Override
-    public List<Guide> getAllGuides() {
-        return guideRepository.findAll();
+    public void deleteGuide(Long guideId) {
+        guideRepository.deleteById(guideId);
+    }
+
+    @Override
+    public List<Guide> getGuidesByDepartment(String department) {
+        return guideRepository.findAllByDepartment(department);
+    }
+
+    @Override
+    public List<Long> getGuideRankings() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted((g1, g2) -> Integer.compare(getTotalPoints(g2), getTotalPoints(g1)))
+                .map(Guide::getId)
+                .toList();
+    }
+
+    @Override
+    public Guide getGuideWithLowestPoints() {
+        List<Long> rankings = getGuideRankings();
+        Long guideId = rankings.get(rankings.size()-1);
+        return guideRepository.findById(guideId).orElse(null);
+    }
+
+    @Override
+    public Guide getGuideWithHighestPoints() {
+        List<Long> rankings = getGuideRankings();
+        Long guideId = rankings.get(0);
+        return guideRepository.findById(guideId).orElse(null);
+    }
+
+    @Override
+    public int getGuideRanking(Long guideId) {
+        List<Long> rankings = getGuideRankings();
+        //1st for highest points
+        return rankings.indexOf(guideId) +1;
+    }
+
+    @Override
+    public int getTotalPoints(Guide guide) {
+        return guide.getPoints().stream().mapToInt(PointRecord::getPoint).sum();
     }
 
     @Override

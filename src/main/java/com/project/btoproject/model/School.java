@@ -1,5 +1,7 @@
 package com.project.btoproject.model;
 
+import com.project.btoproject.enums.SchoolType;
+import com.project.btoproject.enums.Tier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +23,19 @@ public class School {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "tier")
+    private Tier tier = Tier.THIRD_TIER;
+
+    //link this to counselor tables
+    @Column(name = "counselor_id")
+    private Long counselorId;
+
+    @Column(name = "flag", nullable = true)
+    private boolean flag;
+
+    @Column(name = "school_type", nullable = true)
+    private SchoolType schoolType;
+
     @Column(name = "city", nullable = false)
     private String city;
 
@@ -30,5 +45,6 @@ public class School {
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tour> tours = new ArrayList<>();
 
-    // We might also need to add fairs
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Fair> fairs = new ArrayList<>();
 }

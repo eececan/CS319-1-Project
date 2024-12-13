@@ -75,4 +75,11 @@ public class AllUsersService implements IAllUsersService {
         repository.save(user);
         return true;
     }
+
+    @Override
+    public void deleteUserById(Long id) {
+        User user = repository.findById(id).orElse(null);
+        repository.delete(user);
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.project.btoproject.controller.UIcontroller;
+package com.project.btoproject.controller;
 
 import com.project.btoproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,12 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/tours")
-public class UIAdvisorController {
+public class TourController {
 
     private final EventService eventService;
 
     @Autowired
-    public UIAdvisorController(EventService eventService) {
+    public TourController(EventService eventService) {
         this.eventService = eventService;
     }
 
@@ -96,4 +96,26 @@ public class UIAdvisorController {
                     .body("Error: Could not increase guide count.");
         }
     }
+
+    @PostMapping("/{tourId}/decrease-guide-count")
+    public ResponseEntity<String> removeGuideSlot(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Integer> request) {
+
+        int guideIndex = request.get("guideIndex"); // Guide index (optional use case)
+        eventService.decreaseGuideCount(tourId);
+        return ResponseEntity.ok("Guide slot removed successfully");
+    }
+
+    @PostMapping("/{tourId}/remove-guide")
+    public ResponseEntity<String> removeGuideFromTour(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Long> request) {
+        Long guideId = request.get("guideId");
+        eventService.removeGuideFromTour(tourId, guideId);
+        return ResponseEntity.ok("Guide removed successfully");
+    }
+
+
+
 }

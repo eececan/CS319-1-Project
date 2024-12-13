@@ -7,11 +7,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AdvisorService implements IAdvisorService {
     private final IAdvisorRepository advisorRepository;
+
+    public List<Advisor> getAllAdvisors() {
+        return advisorRepository.findAll();
+    }
 
     @Override
     public Advisor getAdvisorById(Long advisorId) {
