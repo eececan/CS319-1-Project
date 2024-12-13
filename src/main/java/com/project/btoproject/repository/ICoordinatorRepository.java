@@ -7,6 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ICoordinatorRepository extends JpaRepository<Coordinator, Long> {
-    Optional<Coordinator> findByFirstNameAndLastName(String firstName, String lastName);
     Coordinator getCoordinatorById(Long id);
 }
