@@ -280,6 +280,7 @@ public class UIAuthController {
 
         // Add attributes to the model
         model.addAttribute("guide", currentGuide);
+        // model.addAttribute("guideId", currentGuide.getId());
         model.addAttribute("tours", tours);
         model.addAttribute("tourConflicts", tourConflicts); // Pass conflict information as a separate attribute
 

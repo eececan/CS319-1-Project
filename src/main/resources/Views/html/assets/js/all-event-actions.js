@@ -379,7 +379,84 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const joinTourButtons = document.querySelectorAll(".join-tour-button");
 
+    joinTourButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const tourId = this.dataset.tourId; // Get tour ID from button
+            const guideId = this.dataset.guideId; // Fetch guide ID from a hidden input or other source
 
+            // Ensure guideId is available
+            if (!guideId) {
+                alert("Guide ID is missing.");
+                return;
+            }
+
+            // Send POST request to join the tour
+            fetch(`/api/tours/${tourId}/join`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ guideId: guideId }), // Pass guideId in the body
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert("Successfully joined the tour!");
+                        location.reload(); // Reload the page
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error joining tour:", error);
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const leaveTourButtons = document.querySelectorAll(".leave-tour-button");
+
+    leaveTourButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const tourId = this.dataset.tourId; // Get tour ID from button
+            const guideId = this.dataset.guideId; // Fetch guide ID from button data attribute
+
+            // Ensure guideId is available
+            if (!guideId) {
+                alert("Guide ID is missing.");
+                return;
+            }
+
+            // Send POST request to leave the tour
+            fetch(`/api/tours/${tourId}/leave`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ guideId: guideId }), // Pass guideId in the body
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert("Successfully left the tour!");
+                        location.reload(); // Reload the page
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error leaving tour:", error);
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    });
+});
 
 

@@ -333,7 +333,6 @@ public class EventService implements IEventService {
     @Transactional
     public void assignGuideToTour(Long eventId, Long guideId) {
 
-
         // Fetch the tour and guide from the database
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
@@ -435,6 +434,39 @@ public class EventService implements IEventService {
                 .collect(Collectors.toList());
 
         return upcomingFairs.size() + upcomingTours.size() + upcomingToursInd.size();  // Sum up both
+    }
+
+    @Transactional
+    public void joinTour(Long tourId, Long guideId) {
+
+        // Fetch the tour and guide from the database
+        Event event = eventRepository.findById(tourId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is already assigned to this tour
+        if (event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("You are already assigned to this tour.");
+        }
+
+        // Check if the guide has a time conflict with another tour
+        boolean hasConflict = guide.getEvents().stream()
+                .filter(e -> e instanceof Tour) // Ensure we only check against Tours
+                .anyMatch(existingEvent ->
+                        existingEvent.getDate().equals(event.getDate()) &&
+                                ((Tour) existingEvent).getHour().equals(((Tour) event).getHour())
+                );
+
+        if (hasConflict) {
+            throw new IllegalArgumentException("Time conflict: You are already assigned to another tour at this time.");
+        }
+
+        // Add the guide to the tour
+        event.getGuides().add(guide);
+
+        // Persist the changes
+        eventRepository.save(event);
     }
 }
 

@@ -120,24 +120,24 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     color: inherit;
 }
 
-.self-assign-tour-button {
+.join-tour-button {
     background-color: #28a745; /* Green (success) color */
     border-color: #28a745;
     color: #fff;
 }
 
-.self-assign-tour-button:hover {
+.join-tour-button:hover {
     background-color: #218838; /* Darker green for hover effect */
     border-color: #218838;
 }
 
-.remove-self-assignment-tour-button {
+.leave-tour-button {
     background-color: #dc3545; /* Red (danger) color */
     border-color: #dc3545;
     color: #fff; /* White text for visibility */
 }
 
-.remove-self-assignment-tour-button:hover {
+.leave-tour-button:hover {
     background-color: #bd2130; /* Darker red for hover effect */
     border-color: #bd2130;
 }
