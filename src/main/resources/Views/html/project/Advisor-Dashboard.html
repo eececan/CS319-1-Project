@@ -494,36 +494,26 @@
 
               <!-- To-Do List Card -->
               <div class="col-12 col-md-3">
-                <div class="card" style="border-radius:16px; min-height: 200px;">
-                  <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
-                    <!-- To-Do List Title -->
-                    <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
+                <a th:href="@{/ui/task/todo}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                  <div class="card" style="border-radius:16px; min-height: 200px;">
+                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
+                      <!-- To-Do List Title -->
+                      <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
 
-                    <!-- To-Do List Items -->
-                    <div class="col-12 col-md-3">
-                      <div class="card" style="border-radius:16px; min-height: 200px;">
-                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
-                          <!-- To-Do List Title -->
-                          <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
-
-                          <!-- To-Do List Items -->
-                          <div th:each="tasks : ${tasks}">
-                            <div class="d-flex align-items-center" style="margin-bottom: 5px;">
-                              <!-- Dynamic checkbox for task completion -->
-                              <input type="checkbox" th:id="'task' + ${tasks.taskId}" th:checked="${tasks.state}" style="margin-right: 10px; vertical-align: middle;">
-                              <!-- Task label with dynamic description -->
-                              <label th:for="'task' + ${tasks.taskId}" style="vertical-align: middle;">
-                                <span th:text="${tasks.taskDescription}">Task Description</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
+                      <!-- To-Do List Items -->
+                      <div th:each="tasks : ${tasks}" class="d-flex align-items-center" style="margin-bottom: 5px;">
+                        <!-- Dynamic checkbox for task completion -->
+                        <input type="checkbox" th:id="'task' + ${tasks.taskId}" th:checked="${tasks.state}" style="margin-right: 10px; vertical-align: middle;">
+                        <!-- Task label with dynamic description -->
+                        <label th:for="'task' + ${tasks.taskId}" style="vertical-align: middle;">
+                          <span th:text="${tasks.taskDescription}">Task Description</span>
+                        </label>
                       </div>
                     </div>
-
                   </div>
-                </div>
+                </a>
               </div>
+
 
 
             </div>
