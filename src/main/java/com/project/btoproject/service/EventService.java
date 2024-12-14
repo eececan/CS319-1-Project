@@ -124,26 +124,38 @@ public class EventService implements IEventService {
     }
 
 
+    @Transactional
     public void cancelTourBySecretary(Long tourId) {
+        // Fetch the event and check if it is a tour
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
             Tour tour = (Tour) eventOptional.get();
+
+            // Ensure the tour is in a cancellable state
             if (!tour.getStatus().equals(Status.UPCOMING_TOUR)) {
                 throw new IllegalStateException("Tour is not in a state to be canceled.");
             }
 
-            tour.setStatus(Status.CANCELED_TOUR); // Set status to canceled
+            // Remove the tour from each guide's event list
+            List<Guide> assignedGuides = tour.getGuides();
+            for (Guide guide : assignedGuides) {
+                guide.getEvents().remove(tour); // Remove the tour from the guide's events
+                guideRepository.save(guide);   // Save the updated guide
+            }
+
+            // Clear the tour's guide list
+            tour.getGuides().clear();
+
+            // Set the tour's status to CANCELED_TOUR
+            tour.setStatus(Status.CANCELED_TOUR);
+
+            // Save the updated tour
             eventRepository.save(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
-
-
-
-
-
 
     public void setStatusOfTour(Tour t, Status status) {
         Optional<Tour> tourOptional = eventRepository.findById(t.getId())
@@ -181,6 +193,7 @@ public class EventService implements IEventService {
             throw new IllegalArgumentException("Event not found.");
         }
     }
+
     public Status getStatusOfEvent(Event e) {
         Optional <Event> eventOptional = eventRepository.findById(e.getId());
 
@@ -436,38 +449,6 @@ public class EventService implements IEventService {
         return upcomingFairs.size() + upcomingTours.size() + upcomingToursInd.size();  // Sum up both
     }
 
-    @Transactional
-    public void joinTour(Long tourId, Long guideId) {
-
-        // Fetch the tour and guide from the database
-        Event event = eventRepository.findById(tourId)
-                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
-        Guide guide = guideRepository.findById(guideId)
-                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
-
-        // Check if the guide is already assigned to this tour
-        if (event.getGuides().contains(guide)) {
-            throw new IllegalArgumentException("You are already assigned to this tour.");
-        }
-
-        // Check if the guide has a time conflict with another tour
-        boolean hasConflict = guide.getEvents().stream()
-                .filter(e -> e instanceof Tour) // Ensure we only check against Tours
-                .anyMatch(existingEvent ->
-                        existingEvent.getDate().equals(event.getDate()) &&
-                                ((Tour) existingEvent).getHour().equals(((Tour) event).getHour())
-                );
-
-        if (hasConflict) {
-            throw new IllegalArgumentException("Time conflict: You are already assigned to another tour at this time.");
-        }
-
-        // Add the guide to the tour
-        event.getGuides().add(guide);
-
-        // Persist the changes
-        eventRepository.save(event);
-    }
 }
 
 
