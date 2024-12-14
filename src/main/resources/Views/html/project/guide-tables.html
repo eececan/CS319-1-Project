@@ -6,75 +6,18 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="icon" th:href="favicon.ico" type="image/x-icon"/>
 
 <title>Bilkent Tours</title>
 
-<!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
-<!-- Core css -->
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/theme1.css"/>
+<!-- Bootstrap Core and Vendor -->
+<link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+
+<!-- Core CSS -->
+<link rel="stylesheet" th:href="@{/assets/css/status-legend.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
 </head>
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        text-align: left;
-        font-family: 'Arial', sans-serif;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-    td:nth-child(4),
-    th:nth-child(4) {
-        display: none;
-    }
-    /* Style for the table header */
-    th {
-        padding: 12px 15px;
-        background-color: #f2f2f2;
-        color: #333;
-        text-transform: uppercase;
-        font-size: 14px;
-        letter-spacing: 0.03em;
-        border-bottom: 2px solid #ccc;
-    }
-
-    /* Style for the table rows */
-    td {
-        padding: 12px 15px;
-        font-size: 12px;
-        color: #555;
-        border-bottom: 1px solid #eee;
-    }
-
-    /* Adjust alignment for certain columns */
-    td:nth-child(2), td:nth-child(3), td:nth-child(4) {
-        text-align: center;
-    }
-
-    /* Add hover effect for rows */
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    /* Add spacing for outer container if needed */
-    table {
-
-        width: 100%;
-        border-radius: 3px;
-        overflow: hidden;
-       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-tr.success {
-        background-color: #0cff43 !important;
-    }
-
-tr.fail {
-        background-color: #ff001a !important;
-    }
-</style>
-
 
 <body class="font-montserrat">
 <!-- Page Loader -->
@@ -402,15 +345,15 @@ tr.fail {
                             <ul class="nav nav-tabs page-header-tab" role="tablist">
                                 <!-- Tours Tab -->
                                 <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" href="#Project-OnGoing" role="tab">Tours</a>
+                                    <a class="nav-link active" data-toggle="tab" href="#Tours" role="tab">Tours</a>
                                 </li>
                                 <!-- Fairs Tab -->
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#Project-UpComing" role="tab">Fairs</a>
+                                    <a class="nav-link" data-toggle="tab" href="#Fairs" role="tab">Fairs</a>
                                 </li>
                                 <!-- Individual Tours Tab -->
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#Project-add" role="tab">Individual Tours</a>
+                                    <a class="nav-link" data-toggle="tab" href="#Individual-Tours" role="tab">Individual Tours</a>
                                 </li>
                             </ul>
                         </div>
@@ -424,32 +367,35 @@ tr.fail {
             <div class="container-fluid">
                 <div class="tab-content">
                     <!-- Tours Content -->
-                    <div class="tab-pane fade show active" id="Project-OnGoing" role="tabpanel">
+                    <div class="tab-pane fade show active" id="Tours" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="table-responsive" style="overflow-x: auto;">
-                                            <table class="table2">
+                                        <div class="status-legend table-responsive" style="overflow-x: auto;">
+                                            <table class=" table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Day</th>
-                                                    <th class="w100">Hour</th>
-                                                    <th class="w100">High School</th>
-                                                    <th>City</th>
-                                                    <th>#</th>
-                                                    <th>Guide #</th>
-                                                    <th>Guide 1</th>
-                                                    <th>Guide 2</th>
-                                                    <th>Guide 3</th>
-                                                    <th>Counselor Name</th>
-                                                    <th>Contact</th>
-                                                    <th>Assign</th>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">High School</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">People Count</th>
+                                                    <th style="width: 1%;">Counselor Name</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Guide Count</th>
+                                                    <th style="width: 1%;">Guide 1</th>
+                                                    <th style="width: 1%;">Guide 2</th>
+                                                    <th style="width: 1%;">Guide 3</th>
+                                                    <th style="width: 1%;">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:each="tour : ${tours}" id="tour-row-[[${tour.id}]]">
+                                                <tr id="tours-row-${tour.id}" th:each="tour : ${tours}"
+                                                    th:classappend="
+                                                                        ${tour.status.name() == 'COMPLETED_TOUR'} ? 'completed-tour' :
+                                                                        (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')">
                                                     <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
                                                     <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
                                                     <td th:switch="${tour.hour.name()}">
@@ -459,18 +405,82 @@ tr.fail {
                                                         <span th:case="'SIXTEEN'">16:00</span>
                                                         <span th:case="*">Unknown</span>
                                                     </td>
-                                                    <td th:text="${tour.status}"></td>
+                                                    <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
                                                     <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">High School</td>
                                                     <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td>TODO (cannot get for now)</td>
                                                     <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
                                                     <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
+                                                    <td style="text-align: center; vertical-align: middle;" th:text="${tour.guideCount}"></td>
+
+                                                    <!-- Guide 1 -->
                                                     <td>
-                                                        <button> assign</button>
+                                                        <div th:if="${tour.guides.size() >= 1}">
+                                                            <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                                        </div>
+                                                        <div th:if="${tour.guides.size() < 1}">
+                                                            <span>-</span>
+                                                        </div>
                                                     </td>
+
+                                                    <!-- Guide 2 -->
+                                                    <td>
+                                                        <div th:if="${tour.guides.size() >= 2}">
+                                                            <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                                        </div>
+                                                        <div th:if="${tour.guides.size() < 2}">
+                                                            <span>-</span>
+                                                        </div>
+                                                    </td>
+
+                                                    <!-- Guide 3 -->
+                                                    <td>
+                                                        <div th:if="${tour.guides.size() >= 3}">
+                                                            <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                                        </div>
+                                                        <div th:if="${tour.guides.size() < 3}">
+                                                            <span>-</span>
+                                                        </div>
+                                                    </td>
+                                                    <!-- Action Buttons -->
+                                                    <td>
+
+                                                        <!-- Show "Join Tour" Button if there's no conflict -->
+                                                        <div th:if="${tour.guides.size() < tour.guideCount
+                                                                        && tour.status.name() == 'UPCOMING_TOUR'
+                                                                        && !#lists.contains(guide.events, tour)
+                                                                        && !tourConflicts[tour.id]}">
+                                                            <button
+                                                                    class="btn btn-sm self-assign-tour-button"
+                                                                    th:data-tour-id="${tour.id}">
+                                                                Join Tour
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Leave Tour" Button if already assigned -->
+                                                        <div th:if="${#lists.contains(guide.events, tour) && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                            <button
+                                                                    class="btn btn-sm remove-self-assignment-tour-button"
+                                                                    th:data-tour-id="${tour.id}">
+                                                                Leave Tour
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Time Conflict" Message if there's a conflict -->
+                                                        <div th:if="${tour.guides.size() < tour.guideCount
+                                                                        && tour.status.name() == 'UPCOMING_TOUR'
+                                                                        && !#lists.contains(guide.events, tour)
+                                                                        && tourConflicts[tour.id]}">
+                                                            <span class="text-danger fw-bold">CONFLICT</span>
+                                                        </div>
+
+                                                        <!-- Show "No Guide Slot" Message if there's no slot -->
+                                                        <div th:if="${tour.guides.size() == tour.guideCount
+                                                                        && tour.status.name() == 'UPCOMING_TOUR'
+                                                                        && !#lists.contains(guide.events, tour)}">
+                                                            <span class="text-danger fw-bold">NO SLOT</span>
+                                                        </div>
+                                                    </td>
+
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -478,58 +488,43 @@ tr.fail {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item canceled-tour">CANCELED</li>
+                            </ul>
                         </div>
                     </div>
 
                     <!-- Fairs Content -->
-                    <div class="tab-pane fade" id="Project-UpComing" role="tabpanel">
+                    <div class="tab-pane fade" id="Fairs" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive" style="overflow-x: auto;">
-                                            <table class="table2">
+                                            <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Day</th>
-                                                    <th class="w100">Hour</th>
-                                                    <th class="w100">High School</th>
-                                                    <th>City</th>
-                                                    <th>#</th>
-                                                    <th>Guide #</th>
-                                                    <th>Guide 1</th>
-                                                    <th>Guide 2</th>
-                                                    <th>Guide 3</th>
-                                                    <th>Counselor Name</th>
-                                                    <th>Contact</th>
-                                                    <th>Responsibility</th>
-                                                    <th>Assign</th>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">High School</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">People Count</th>
+                                                    <th style="width: 1%;">Guide #</th>
+                                                    <th style="width: 1%;">Guide 1</th>
+                                                    <th style="width: 1%;">Guide 2</th>
+                                                    <th style="width: 1%;">Guide 3</th>
+                                                    <th style="width: 1%;">Counselor Name</th>
+                                                    <th style="width: 1%;">Contact</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:each="fair : ${fairs}" id="fair-row-[[${fair.id}]]">
-                                                    <td th:text="${#dates.format(fair.date, 'dd/MM/yyyy')}">Date</td>
-                                                    <td th:text="${#dates.format(fair.date, 'EEEE')}">Day</td>
-                                                    <td th:switch="${fair.hour.name()}">
-                                                        <span th:case="'NINE'">09:00</span>
-                                                        <span th:case="'ELEVEN'">11:00</span>
-                                                        <span th:case="'THIRTEEN_THIRTY'">13:30</span>
-                                                        <span th:case="'SIXTEEN'">16:00</span>
-                                                        <span th:case="*">Unknown</span>
-                                                    </td>
-                                                    <td th:text="${fair.status}"></td>
-                                                    <td th:text="${fair.school != null ? fair.school.city : 'Unknown'}">High School</td>
-                                                    <td style="text-align: center; vertical-align: middle;" th:text="${fair.peopleCount}"></td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td>TODO (cannot get for now)</td>
-                                                    <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
-                                                    <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
-                                                    <td>
-                                                        <button> assign</button>
-                                                    </td>
+                                                <tr>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -538,16 +533,23 @@ tr.fail {
                                 </div>
                             </div>
                         </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">Completed</li>
+                                <li class="legend-item canceled-tour">Canceled</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <!-- Individual Tours Content -->
-                    <div class="tab-pane fade" id="Project-add" role="tabpanel">
+                    <div class="tab-pane fade" id="Individual-Tours" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive" style="overflow-x: auto;">
-                                            <table class="table2">
+                                            <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
                                                     <th>Date</th>
@@ -557,32 +559,23 @@ tr.fail {
                                                     <th>Interested Field</th>
                                                     <th>High School Name</th>
                                                     <th>City</th>
-                                                    <th>Guide</th>
                                                     <th>Contact</th>
-                                                    <th>Assign</th>
+                                                    <th>Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:each="individualTour : ${individualTours}" id="individualTour-row-[[${individualTour.id}]]">
-                                                    <td th:text="${#dates.format(fair.date, 'dd/MM/yyyy')}">Date</td>
-                                                    <td th:text="${#dates.format(fair.date, 'EEEE')}">Day</td>
-                                                    <td th:switch="${fair.hour.name()}">
-                                                        <span th:case="'NINE'">09:00</span>
-                                                        <span th:case="'ELEVEN'">11:00</span>
-                                                        <span th:case="'THIRTEEN_THIRTY'">13:30</span>
-                                                        <span th:case="'SIXTEEN'">16:00</span>
-                                                        <span th:case="*">Unknown</span>
-                                                    </td>
-                                                    <td th:text="${individualTour.status}"></td>
-                                                    <td th:text="${individualTour.first_name}"></td>
-                                                    <td th:text="${individualTour.student.name}"></td>
-                                                    <td th:text="${individualTour.student.school.city}"></td>
-                                                    <td th:text="${individualTour.guide}"></td>
-                                                    <td th:text="${individualTour.student.phone_number}"></td>
-                                                    <td>
-                                                        <button> assign</button>
-                                                    </td>
+                                                <tr>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
+                                                    <td>INPUT</td>
                                                 </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -597,28 +590,12 @@ tr.fail {
     </div>
 </div>
 
+<!-- Include jQuery -->
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
 
-<!-- JS to dynamically change row color based on status -->
-<script src="../assets/bundles/lib.vendor.bundle.js"></script>
-<script src="../assets/js/core.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get all the rows in the table
-        const rows = document.querySelectorAll('table tbody tr');
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+<script th:src="@{/assets/js/all-event-actions.js}"></script>
 
-        rows.forEach(function(row) {
-            // Get the status text from the 4th column (index 3)
-            const status = row.cells[3].innerText.trim();
-
-            // Apply the corresponding background color based on status
-            if (status === 'COMPLETED_TOUR' || status === 'COMPLETED_FAIR' || status ==='BTO_ACCEPTED') {
-                row.classList.add('success');
-            } else if (status === 'CANCELED_TOUR' || status === 'REJECTED_FAIR'||status === 'BTO_REJECTED') {
-                row.classList.add('fail');
-            }
-        });
-
-    });
-</script>
 </body>
 </html>

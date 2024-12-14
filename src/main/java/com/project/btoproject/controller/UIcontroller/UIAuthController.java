@@ -162,7 +162,7 @@ public class UIAuthController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
-                return "Guide-taskboard"; // Guide's page
+                return "Guide-Dashboard"; // Guide's page
             } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
                 // Get the current authenticated user
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -171,30 +171,36 @@ public class UIAuthController {
                     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                     username = userDetails.getUsername();
                 }
-                User user = allUsersService.getUserById(Long.parseLong(username));
+                /*User user = allUsersService.getUserById(Long.parseLong(username));
                 // Add user to the model so that it's accessible in the view
-                model.addAttribute("user", user);
+                model.addAttribute("user", user);*/
                 // Fetch advisor of the day
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                 // Fetch associated tours and fairs
                 List<Tour> tours = eventService.getAllTours();
                 List<Fair> fairs = eventService.getAllFairs();
-                List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                //List<UserTask> tasks = allUsersService.seeAllTasks(user);
                 // Add advisor, tours, and fairs to the model
                 List<User> users = allUsersService.getAllUsers();
-                List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide((Guide) user);
-                int sum=0;
+                //List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide((Guide) user);
+                /*int sum=0;
                 for (int i = 0; i < pointRecords.size(); i++) {
                     sum+=pointRecords.get(0).getPoint();
-                }
+                }*/
                 long upComing = eventService.getUpcomingEventsCount();
                 model.addAttribute("upComing", upComing);
-                model.addAttribute("sum",sum);
+                //model.addAttribute("sum",sum);
                 model.addAttribute("users", users);
-                model.addAttribute("tasks", tasks);
+                //model.addAttribute("tasks", tasks);
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
+                /*List<User> users = allUsersService.getAllUsers();
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                model.addAttribute("users", users);*/
                 return "Head-Secretary-Dashboard"; // Head Secretary's page
             } else {
                 return "page-empty"; // Default page for unrecognized roles
@@ -233,9 +239,7 @@ public class UIAuthController {
         model.addAttribute("responsibleDay", responsibleDay);
         model.addAttribute("guides", guides);
         model.addAttribute("guideCounts", guideCounts);
-
         System.out.println(responsibleDay);
-
         //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";
     }
@@ -246,6 +250,40 @@ public class UIAuthController {
 
         model.addAttribute("tourApplications", eventService.getTourApplications());
         return "head-secretary-tables";
+    }
+
+    @GetMapping("/guide-tables")
+    public String showEventListGuide(Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = new UserEntity();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String userId = userDetails.getUsername();
+        long guideId = Long.parseLong(userId);
+        Guide currentGuide = guideService.getGuideById(guideId);
+
+        // Fetch all tours
+        List<Tour> tours = eventService.getTours();
+
+        // Create a map to store tour conflicts
+        Map<Long, Boolean> tourConflicts = new HashMap<>();
+
+        // Check conflicts for each tour
+        for (Tour tour : tours) {
+            boolean hasConflict = currentGuide.getEvents().stream()
+                    .anyMatch(e -> e.getDate().equals(tour.getDate()) &&
+                            e instanceof Tour &&
+                            ((Tour) e).getHour().equals(tour.getHour()));
+            tourConflicts.put(tour.getId(), hasConflict);
+        }
+
+        // Add attributes to the model
+        model.addAttribute("guide", currentGuide);
+        model.addAttribute("tours", tours);
+        model.addAttribute("tourConflicts", tourConflicts); // Pass conflict information as a separate attribute
+
+        return "guide-tables";
     }
 
 }

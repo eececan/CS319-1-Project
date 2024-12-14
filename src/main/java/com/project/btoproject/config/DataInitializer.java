@@ -110,7 +110,7 @@ public class DataInitializer {
                 guide.setSchedule("example schedule");
                 guide.setGrade(3);
                 guide.setPassword("password");
-                guide.setId(22103267L);
+                guide.setId(22103254L);
                 guide.setDescription("Mustafa added as a guide for an example.");
                 guide.setPhoneNumber("05326589878");
                 guideRepository.save(guide);
