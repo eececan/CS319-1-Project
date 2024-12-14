@@ -424,7 +424,7 @@
             </span>
                     <!-- Display fallback message if advisor is null -->
                     <span th:if="${advisor == null}" style="color: #ff0000;">
-                No Responsible Advisor is Assigned!
+                No Responsible Advisor assigned
             </span>
                   </h3>
                 </div>
@@ -434,7 +434,7 @@
             <div class="row clearfix row-deck mt-12">
               <!-- Tours and Fairs Card -->
               <div class="col-6">
-                <a th:href="@{/ui/auth/advisor-tables}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                <a th:href="@{/ui/auth/guide-tables}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
                   <div class="card" style="border-radius:16px; min-height: 200px; cursor: pointer;">
                     <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                       <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Tours and Fairs</h3>
@@ -458,7 +458,7 @@
             </div>
 
             <div class="row clearfix row-deck">
-              <<!-- Members Card -->
+              <!-- Members Card -->
               <div class="col-12 col-md-3">
                 <a th:href="@{/getAllUsers}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
                   <div class="card" style="border-radius:16px; min-height: 200px;">
@@ -475,7 +475,6 @@
                   </div>
                 </a>
               </div>
-
 
 
               <!-- Points Card -->
@@ -521,21 +520,9 @@
                 </a>
               </div>
 
-
-
             </div>
-
           </div>
-
         </div>
-      </div>
-      <div class="section-body">
-        <footer class="footer">
-          <div class="container-fluid">
-            <div class="row">
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
   </div>
