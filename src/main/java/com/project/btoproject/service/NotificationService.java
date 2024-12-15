@@ -21,11 +21,13 @@ public class NotificationService {
         Notification notification = Notification.builder()
                 .userId(userId)
                 .message(message)
+                .type(type)
                 .timestamp(LocalDateTime.now())
                 .read(false)
                 .build();
         notificationRepository.save(notification);
     }
+
     public void notifyNewTourApplication(Tour tour) {
         String message = String.format("New tour application from %s for date %s",
                 tour.getSchool().getName(),
