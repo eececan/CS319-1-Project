@@ -554,30 +554,90 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Day</th>
-                                                    <th class="w100">Hour</th>
-                                                    <th class="w100">Student Name</th>
-                                                    <th>Interested Field</th>
-                                                    <th>High School Name</th>
-                                                    <th>City</th>
-                                                    <th>Contact</th>
-                                                    <th>Action</th>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">Student Name</th>
+                                                    <th style="width: 1%;">High School Name</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">Interested Field</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Guide</th>
+                                                    <th style="width: 1%;">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                </tr>
+                                                <tr id="individual-tours-row-${individualTour.id}" th:each="individualTour : ${individualTours}"
+                                                    th:classappend="${individualTour.status.name() == 'COMPLETED_INDIVIDUAL_TOUR'} ? 'completed-tour' :
+                                                                    (${individualTour.status.name() == 'CANCELED_INDIVIDUAL_TOUR'} ? 'canceled-tour' : '')">
+                                                    <!-- Date -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
 
+                                                    <!-- Day -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                                                    <!-- Hour -->
+                                                    <td th:text="${individualTour.hour}">Hour</td>
+
+                                                    <!-- Student Name -->
+                                                    <td th:text="${individualTour.student.name}">Student Name</td>
+
+                                                    <!-- Interested Field -->
+                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                                                    <!-- High School Name -->
+                                                    <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                                                    <!-- City -->
+                                                    <td th:text="${individualTour.student.school.city}">City</td>
+
+                                                    <!-- Contact -->
+                                                    <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                                                    <!-- Guide -->
+                                                    <td>
+                                                        <div th:if="${individualTour.guides.isEmpty()}">
+                                                            <span>-</span>
+                                                        </div>
+                                                        <div th:if="${!individualTour.guides.isEmpty()}">
+                                                            <span th:text="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}"></span>
+                                                        </div>
+                                                    </td>
+
+                                                    <!-- Actions -->
+                                                    <td>
+                                                        <!-- Show "Join Tour" Button if there's no conflict -->
+                                                        <div th:if="${ individualTour.guides.isEmpty()
+                                                                        && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'
+                                                                        && !#lists.contains(guide.events, individualTour)
+                                                                        && !individualTourConflicts[individualTour.id]}">
+                                                            <button class="btn btn-sm join-individual-tour-button"
+                                                                    th:data-tour-id="${individualTour.id}"
+                                                                    th:data-guide-id="${guide.id}">
+                                                                Join Tour
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Leave Tour" Button if already assigned -->
+                                                        <div th:if="${#lists.contains(guide.events, individualTour) && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                            <button
+                                                                    class="btn btn-sm leave-individual-tour-button"
+                                                                    th:data-tour-id="${individualTour.id}"
+                                                                    th:data-guide-id="${guide.id}">
+                                                                Leave Tour
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Time Conflict" Message if there's a conflict -->
+                                                        <div th:if="${ individualTour.guides.isEmpty()
+                                                                        && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'
+                                                                        && !#lists.contains(guide.events, individualTour)
+                                                                        && individualTourConflicts[individualTour.id]}">
+                                                            <span class="text-danger fw-bold">CONFLICT</span>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -585,7 +645,16 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item canceled-tour">CANCELED</li>
+                            </ul>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -598,6 +667,7 @@
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/all-event-actions.js}"></script>
+<script th:src="@{/assets/js/all-individual-tour-actions.js}"></script>
 
 </body>
 </html>

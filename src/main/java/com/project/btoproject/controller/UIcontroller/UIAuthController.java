@@ -1,6 +1,7 @@
 package com.project.btoproject.controller.UIcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
 import com.project.btoproject.service.*;
@@ -34,7 +35,7 @@ public class UIAuthController {
     private final AllUsersService allUsersService;
     private final PointRecordService pointRecordService;
 
-    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService) {
+    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController) {
         this.authService = _authService;
         this.eventService = eventService;
         this.guideService = guideService;
@@ -283,11 +284,27 @@ public class UIAuthController {
             tourConflicts.put(tour.getId(), hasConflict);
         }
 
+        List<IndividualTour> individualTours = eventService.getIndividualTours();
+
+        // Create a map to store tour conflicts
+        Map<Long, Boolean> individualTourConflicts = new HashMap<>();
+
+        // Check conflicts for each tour
+        for (IndividualTour individualTour : individualTours) {
+            boolean hasConflict = currentGuide.getEvents().stream()
+                    .anyMatch(e -> e.getDate().equals(individualTour.getDate()) &&
+                            e instanceof IndividualTour &&
+                            ((IndividualTour) e).getHour().equals(individualTour.getHour()));
+            individualTourConflicts.put(individualTour.getId(), hasConflict);
+        }
+
         // Add attributes to the model
         model.addAttribute("guide", currentGuide);
         // model.addAttribute("guideId", currentGuide.getId());
         model.addAttribute("tours", tours);
         model.addAttribute("tourConflicts", tourConflicts); // Pass conflict information as a separate attribute
+        model.addAttribute("individualTours", individualTours);
+        model.addAttribute("individualTourConflicts", individualTourConflicts); // Pass conflict information as a separate attribute
 
         return "guide-tables";
     }

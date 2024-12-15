@@ -71,7 +71,7 @@ function assignIndividualTourGuide(tourId, guideId) {
     })
         .then(response => {
             if (response.ok) {
-                alert('Guide assigned successfully!');
+                alert('Assignment is successful!');
                 location.reload(); // Reload to reflect changes
             } else {
                 return response.json().then((errorData) => {
@@ -92,8 +92,6 @@ function assignIndividualTourGuide(tourId, guideId) {
             }
         });
 }
-
-
 
 function removeIndividualTourGuide(buttonElement) {
     // Extract tourId and guideId from the button's data attributes
@@ -151,6 +149,35 @@ function cancelIndividualTour(tourId) {
             alert(`Error: ${error.message}`);
         });
 }
+// Note that to join an individual tour, already defined js functions are used because the logic is the same
+document.addEventListener("DOMContentLoaded", () => {
+    // Event delegation for Join Individual Tour button
+    document.body.addEventListener("click", (event) => {
+        if (event.target.classList.contains("join-individual-tour-button")) {
+            const button = event.target;
+            const tourId = button.getAttribute("data-tour-id");
+            const guideId = button.getAttribute("data-guide-id");
+
+            if (tourId && guideId) {
+                assignIndividualTourGuide(tourId, guideId);
+            }
+        }
+    });
+
+    // Event delegation for Leave Individual Tour button
+    document.body.addEventListener("click", (event) => {
+        if (event.target.classList.contains("leave-individual-tour-button")) {
+            const button = event.target;
+            const tourId = button.getAttribute("data-tour-id");
+            const guideId = button.getAttribute("data-guide-id");
+
+            if (tourId && guideId) {
+                removeIndividualTourGuide(button);
+            }
+        }
+    });
+});
+
 
 
 
