@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.util.Date;
 import java.util.List;
@@ -470,6 +471,7 @@ public class EventService implements IEventService {
             }
             // Clear the existing guide to allow reassignment
             individualTour.getGuides().clear();
+
         }
 
         // Check if the guide has another individual tour on the same date and hour
@@ -697,8 +699,55 @@ public class EventService implements IEventService {
         }
     }
 
+    public void notifyGuidesForUpcomingEvents() {
+        List<Fair> upcomingFairs = getAllFairs().stream()
+                .filter(fair -> fair.getStatus() == Status.UPCOMING_FAIR)
+                .collect(Collectors.toList());
 
+        List<Tour> upcomingTours = getAllTours().stream()
+                .filter(tour -> tour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
 
+        List<IndividualTour> upcomingIndividualTours = getAllIndividualTours().stream()
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
+
+        Date now = new Date();
+
+        for (Fair fair : upcomingFairs) {
+            if (daysBetween(now, fair.getDate()) == 3) {
+                notifyGuides(fair.getGuides(), fair);
+            }
+        }
+
+        for (Tour tour : upcomingTours) {
+            if (daysBetween(now, tour.getDate()) == 3) {
+                notifyGuides(tour.getGuides(), tour);
+            }
+        }
+
+        for (IndividualTour individualTour : upcomingIndividualTours) {
+            if (daysBetween(now, individualTour.getDate()) == 3) {
+                notifyGuides(individualTour.getGuides(), individualTour);
+            }
+        }
+    }
+
+    private void notifyGuides(List<Guide> guides, Event event) {
+        for (Guide guide : guides) {
+            String message = "Reminder: You have an upcoming " + event.getEventType() +
+                    " on " + new SimpleDateFormat("dd/MM/yyyy").format(event.getDate()) +
+                    ". Please prepare accordingly.";
+            notificationService.sendNotification(guide, message);
+        }
+    }
+
+    private long daysBetween(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
 }
+
+
 
 

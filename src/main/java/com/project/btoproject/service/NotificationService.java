@@ -17,17 +17,18 @@ public class NotificationService {
     private final GuideService guideService;
     private final AdvisorService advisorService;
     private final UserService userService;
-    public void createNotification(Long userId, String message,NotificationType type) {
+    public void createNotification(Long userId, String message) {
         Notification notification = Notification.builder()
                 .userId(userId)
                 .message(message)
-                .type(type)
                 .timestamp(LocalDateTime.now())
                 .read(false)
                 .build();
         notificationRepository.save(notification);
     }
-
+    public void sendNotification(User user, String message) {
+        createNotification(user.getId(), message);
+    }
     public void notifyNewTourApplication(Tour tour) {
         String message = String.format("New tour application from %s for date %s",
                 tour.getSchool().getName(),
@@ -36,13 +37,13 @@ public class NotificationService {
         // Notify all advisors
         List<Advisor> advisors = advisorService.getAllAdvisors();
         for (Advisor advisor : advisors) {
-            createNotification(advisor.getId(), message, NotificationType.NEW_TOUR_APPLICATION);
+            createNotification(advisor.getId(), message);
         }
 
         // Notify available guides
         List<Guide> guides = guideService.getAllGuides();
         for (Guide guide : guides) {
-            createNotification(guide.getId(), message, NotificationType.NEW_TOUR_APPLICATION);
+            createNotification(guide.getId(), message);
         }
     }
     public List<Notification> getUnreadNotifications(Long userId) {
@@ -60,7 +61,7 @@ public class NotificationService {
                 tour.getSchool().getName(),
                 tour.getDate().toString());
 
-        createNotification(guide.getId(), message, NotificationType.GUIDE_ASSIGNED);
+        createNotification(guide.getId(), message);
     }
     public void notifyTourApproved(Tour tour) {
         String message = String.format("Tour for %s on %s has been approved",
@@ -69,7 +70,9 @@ public class NotificationService {
 
         // Notify assigned guides
         for (Guide guide : tour.getGuides()) {
-            createNotification(guide.getId(), message, NotificationType.TOUR_APPROVED);
+            createNotification(guide.getId(), message);
         }
     }
+
+
 }
