@@ -21,7 +21,12 @@ public class UIGuideController {
     public String getAllGuides(Model model) {
         List<Guide> guides = guideService.getAllGuides();
         model.addAttribute("guides", guides);
-
         return "guides";
+    }
+    @GetMapping("/getGuideRankings")
+    public String getGuideRankings(Model model) {
+        List<Guide> guides = guideService.getGuideRankingsEntity();
+        model.addAttribute("guides", guides);
+        return "guideRankings";
     }
 }

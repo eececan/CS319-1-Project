@@ -82,6 +82,13 @@ public class GuideService implements IGuideService
     }
 
     @Override
+    public List<Guide> getGuideRankingsEntity() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted((g1, g2) -> Integer.compare(getTotalPoints(g2), getTotalPoints(g1)))
+                .toList();
+    }
+    @Override
     public Guide getGuideWithLowestPoints() {
         List<Long> rankings = getGuideRankings();
         Long guideId = rankings.get(rankings.size()-1);

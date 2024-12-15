@@ -19,6 +19,7 @@ public interface IGuideService {
     void deleteGuide(Long guideId);
     List<Guide>getGuidesByDepartment(String department);
     List<Long> getGuideRankings();
+    List<Guide> getGuideRankingsEntity();
     Guide getGuideWithLowestPoints();
     Guide getGuideWithHighestPoints();
     int getGuideRanking(Long guideId);
