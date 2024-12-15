@@ -36,7 +36,7 @@ public class EventService implements IEventService {
             if (!fair.getStatus().equals(Status.NEW_FAIR_APPLICATION)) {
                 throw new IllegalStateException("Fair is not in a state to be approved.");
             }
-            fair.setStatus(Status.NEW_FAIR_APPLICATION);
+            fair.setStatus(Status.UPCOMING_FAIR);
             eventRepository.save(fair);
         }
 
@@ -58,6 +58,36 @@ public class EventService implements IEventService {
 
         else {
             throw new IllegalArgumentException("Fair not found with ID: " + fairId);
+        }
+    }
+    @Transactional
+    public void cancelFair(Long fairId) {
+
+        Optional<Event> eventOptional = eventRepository.findById(fairId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
+            Fair fair = (Fair) eventOptional.get();
+
+
+            if (!fair.getStatus().equals(Status.UPCOMING_FAIR)) {
+                throw new IllegalStateException("Tour is not in a state to be canceled.");
+            }
+
+
+            List<Guide> assignedGuides = fair.getGuides();
+            for (Guide guide : assignedGuides) {
+                guide.getEvents().remove(fair); // Remove the fair from the guide's events
+                guideRepository.save(guide);   // Save the updated guide
+            }
+
+
+            fair.getGuides().clear();
+
+            fair.setStatus(Status.CANCELED_FAIR);
+
+            eventRepository.save(fair);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + fairId);
         }
     }
 
@@ -344,6 +374,16 @@ public class EventService implements IEventService {
         );
         return eventRepository.findToursByStatuses(applicationStatuses);
     }
+    public List<Fair> getFairApplications() {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.UPCOMING_FAIR,
+                Status.CANCELED_FAIR,
+                Status.REJECTED_FAIR
+        );
+        return eventRepository.findFairsByStatuses(applicationStatuses);
+    }
+
 
     public List<IndividualTour> getIndividualTourApplications() {
         List<Status> applicationStatuses = List.of(
@@ -370,6 +410,14 @@ public class EventService implements IEventService {
                 Status.CANCELED_INDIVIDUAL_TOUR
         );
         return eventRepository.findIndividualToursByStatuses(tourStatuses);
+    }
+    public List<Fair> getFairs() {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        return eventRepository.findFairsByStatuses(tourStatuses);
     }
 
     @Transactional
@@ -529,11 +577,35 @@ public class EventService implements IEventService {
         // Save the updated tour to the database
         eventRepository.save(tour);
     }
+    @Transactional
+    public void increaseGuideCountFair(Long fairId) {
+        // Fetch the tour from the database
+        Event event = eventRepository.findById(fairId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+
+        // Ensure the event is a tour
+        if (!(event instanceof Fair)) {
+            throw new IllegalArgumentException("The specified event is not a tour.");
+        }
+
+        Fair fair = (Fair) event;
+
+        // Check the current guide count
+        if (fair .getGuideCount() >= 3) {
+            throw new IllegalStateException("The maximum number of guides (3) is already assigned.");
+        }
+
+        // Increment the guide count
+        fair.setGuideCount(fair.getGuideCount() + 1);
+
+        // Save the updated tour to the database
+        eventRepository.save(fair);
+    }
 
     @Transactional
-    public void decreaseGuideCount(Long tourId) {
+    public void decreaseGuideCount(Long eventId) {
         // Fetch the tour from the database
-        Event event = eventRepository.findById(tourId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
 
         // Decrease guide count but ensure it doesn't go below 1

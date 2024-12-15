@@ -51,7 +51,8 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses")
     List<IndividualTour> findIndividualToursByStatuses(@Param("statuses") List<Status> statuses);
-
+    @Query("SELECT t FROM Fair t WHERE t.status IN :statuses")
+    List<Fair> findFairsByStatuses(@Param("statuses") List<Status> statuses);
 
 
 }
