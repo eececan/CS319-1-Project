@@ -124,7 +124,6 @@ public class EventService implements IEventService {
         }
     }
 
-
     @Transactional
     public void cancelTourBySecretary(Long tourId) {
         // Fetch the event and check if it is a tour
@@ -464,6 +463,41 @@ public class EventService implements IEventService {
 
         // Save the updated individual tour
         eventRepository.save(individualTour);
+    }
+
+    @Transactional
+    public void cancelIndividualTour(Long individualTourId) {
+        // Fetch the event and check if it is an individual tour
+        Optional<Event> eventOptional = eventRepository.findById(individualTourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) eventOptional.get();
+
+            // Ensure the individual tour is in a cancellable state
+            if (!individualTour.getStatus().equals(Status.UPCOMING_INDIVIDUAL_TOUR)) {
+                throw new IllegalStateException("Individual Tour is not in a state to be canceled.");
+            }
+
+            // Check if a guide is assigned
+            List<Guide> assignedGuides = individualTour.getGuides();
+            if (!assignedGuides.isEmpty()) {
+                // Remove the individual tour from the assigned guide's events list
+                Guide assignedGuide = assignedGuides.get(0); // Individual tours have only one guide
+                assignedGuide.getEvents().remove(individualTour);
+                guideRepository.save(assignedGuide); // Save the updated guide
+            }
+
+            // Clear the guide list for the individual tour
+            individualTour.getGuides().clear();
+
+            // Set the individual tour's status to CANCELED_INDIVIDUAL_TOUR
+            individualTour.setStatus(Status.CANCELED_INDIVIDUAL_TOUR);
+
+            // Save the updated individual tour
+            eventRepository.save(individualTour);
+        } else {
+            throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
+        }
     }
 
 

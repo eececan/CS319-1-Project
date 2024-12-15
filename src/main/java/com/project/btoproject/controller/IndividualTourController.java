@@ -58,4 +58,11 @@ public class IndividualTourController {
         return ResponseEntity.ok().build(); // Return success response
     }
 
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelIndividualTour(@PathVariable Long id) {
+        System.out.println("Received ID for Cancellation: " + id);
+        eventService.cancelIndividualTour(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

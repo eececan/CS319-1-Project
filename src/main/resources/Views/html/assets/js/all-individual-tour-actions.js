@@ -129,4 +129,28 @@ function removeIndividualTourGuide(buttonElement) {
         });
 }
 
+function cancelIndividualTour(tourId) {
+    fetch(`/api/individual-tours/${tourId}/cancel`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Individual Tour ID ${tourId} canceled successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error canceling individual tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+
 
