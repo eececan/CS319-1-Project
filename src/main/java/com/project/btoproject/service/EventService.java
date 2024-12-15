@@ -344,6 +344,15 @@ public class EventService implements IEventService {
         return eventRepository.findToursByStatuses(applicationStatuses);
     }
 
+    public List<IndividualTour> getIndividualTourApplications() {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+        return eventRepository.findIndividualToursByStatuses(applicationStatuses);
+    }
+
     public List<Tour> getTours() {
         List<Status> tourStatuses = List.of(
                 Status.UPCOMING_TOUR,
@@ -351,6 +360,15 @@ public class EventService implements IEventService {
                 Status.COMPLETED_TOUR
         );
         return eventRepository.findToursByStatuses(tourStatuses);
+    }
+
+    public List<IndividualTour> getIndividualTours() {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        return eventRepository.findIndividualToursByStatuses(tourStatuses);
     }
 
     @Transactional
@@ -460,6 +478,50 @@ public class EventService implements IEventService {
 
         return upcomingFairs.size() + upcomingTours.size() + upcomingToursInd.size();  // Sum up both
     }
+
+    public void approveIndividualTour(Long individualTourId) {
+        Optional<Event> eventOptional = eventRepository.findById(individualTourId);
+
+        // Check if the event exists and is of type IndividualTour
+        if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) eventOptional.get();
+
+            // Ensure the current status is NEW_INDIVIDUAL_TOUR_APPLICATION
+            if (!individualTour.getStatus().equals(Status.NEW_INDIVIDUAL_TOUR_APPLICATION)) {
+                throw new IllegalStateException("Individual Tour is not in a state to be approved.");
+            }
+
+            // Set the status to advisor approved
+            individualTour.setStatus(Status.UPCOMING_INDIVIDUAL_TOUR); // Update status to approved
+            eventRepository.save(individualTour); // Save changes to the repository
+        } else {
+            // Handle case where the event doesn't exist or is not an IndividualTour
+            throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
+        }
+    }
+
+    public void rejectIndividualTour(Long individualTourId) {
+        Optional<Event> eventOptional = eventRepository.findById(individualTourId);
+
+        // Check if the event exists and is of type IndividualTour
+        if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) eventOptional.get();
+
+            // Ensure the current status is NEW_INDIVIDUAL_TOUR_APPLICATION
+            if (!individualTour.getStatus().equals(Status.NEW_INDIVIDUAL_TOUR_APPLICATION)) {
+                throw new IllegalStateException("Individual Tour is not in a state to be rejected.");
+            }
+
+            // Set the status to REJECTED_INDIVIDUAL_TOUR_APPLICATION
+            individualTour.setStatus(Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION);
+            eventRepository.save(individualTour); // Save changes to the repository
+        } else {
+            // Handle case where the event doesn't exist or is not an IndividualTour
+            throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
+        }
+    }
+
+
 
 }
 

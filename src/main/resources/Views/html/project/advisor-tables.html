@@ -582,16 +582,6 @@
                                                         </div>
                                                     </td>
 
-
-
-
-
-
-
-
-
-
-
                                                     <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
                                                     <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
                                                 </tr>
@@ -661,36 +651,78 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Day</th>
-                                                    <th class="w100">Hour</th>
-                                                    <th class="w100">Student Name</th>
-                                                    <th>Interested Field</th>
-                                                    <th>High School Name</th>
-                                                    <th>City</th>
-                                                    <th>Contact</th>
-                                                    <th>Action</th>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">Student Name</th>
+                                                    <th style="width: 1%;">High School Name</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">Interested Field</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                </tr>
+                                                <tr id="individualTourApplications-row-${individualTour.id}"
+                                                       th:each="individualTour : ${individualTourApplications}"
+                                                       th:classappend="
+                                                                    ${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'} ? 'approved-tour' :
+                                                                    (${individualTour.status.name() == 'REJECTED_INDIVIDUAL_TOUR_APPLICATION'} ? 'bto-rejected-tour')">
+                                                    <!-- Render Date -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
 
+                                                    <!-- Render Day -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                                                    <!-- Render Hour -->
+                                                    <td th:text="${individualTour.hour}">Hour</td>
+
+                                                    <!-- Render Student Name -->
+                                                    <td th:text="${individualTour.student.name}">Student Name</td>
+
+                                                    <!-- Render High School Name -->
+                                                    <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                                                    <!-- Render City -->
+                                                    <td th:text="${individualTour.student.school.city}">City</td>
+
+                                                    <!-- Render Interested Field -->
+                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                                                    <!-- Render Contact -->
+                                                    <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                                                    <!-- Render Action Buttons -->
+                                                    <td>
+                                                        <div th:if="${individualTour.status.name() == 'NEW_INDIVIDUAL_TOUR_APPLICATION' and #dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                            <!-- Approve Button -->
+                                                            <button class="btn btn-success"
+                                                                    th:onclick="'handleIndividualTourApproval(' + ${individualTour.id} + ')'">
+                                                                Approve
+                                                            </button>
+                                                            <!-- Reject Button -->
+                                                            <button class="btn btn-danger"
+                                                                    th:onclick="'handleIndividualTourRejection(' + ${individualTour.id} + ')'">
+                                                                Reject
+                                                            </button>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">NEW</li>
+                                <li class="legend-item completed-tour">ACCEPTED</li>
+                                <li class="legend-item bto-rejected-tour">REJECTED</li>
+                            </ul>
                         </div>
                     </div>
 
@@ -703,28 +735,57 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Day</th>
-                                                    <th class="w100">Hour</th>
-                                                    <th class="w100">Student Name</th>
-                                                    <th>Interested Field</th>
-                                                    <th>High School Name</th>
-                                                    <th>City</th>
-                                                    <th>Contact</th>
-
-
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">Student Name</th>
+                                                    <th style="width: 1%;">High School Name</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">Interested Field</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
+                                                <tr id="individualTours-row-${individualTour.id}" th:each="individualTour : ${individualTours}"
+                                                    th:classappend="
+                                        ${individualTour.status.name() == 'COMPLETED_INDIVIDUAL_TOUR'} ? 'completed-tour' :
+                                        (${individualTour.status.name() == 'CANCELED_INDIVIDUAL_TOUR'} ? 'canceled-tour' : '')">
+                                                    <!-- Date -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
+
+                                                    <!-- Day -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                                                    <!-- Hour -->
+                                                    <td th:text="${individualTour.hour}">Hour</td>
+
+                                                    <!-- Student Name -->
+                                                    <td th:text="${individualTour.student.name}">Student Name</td>
+
+                                                    <!-- Interested Field -->
+                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                                                    <!-- High School -->
+                                                    <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                                                    <!-- City -->
+                                                    <td th:text="${individualTour.student.school.city}">City</td>
+
+                                                    <!-- Contact -->
+                                                    <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                                                    <!-- Guide -->
+
+
+                                                    <!-- Actions -->
+                                                    <td>
+                                                        <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                            <button class="btn btn-danger" th:onclick="'cancelIndividualTour(' + ${individualTour.id} + ')'">
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
 
                                                 </tbody>
@@ -733,6 +794,14 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item bto-rejected-tour">CANCELED</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="Project-add" role="tabpanel">
@@ -789,6 +858,7 @@
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/all-event-actions.js}"></script>
+<script th:src="@{/assets/js/all-individual-tour-actions.js}"></script>
 
 
 

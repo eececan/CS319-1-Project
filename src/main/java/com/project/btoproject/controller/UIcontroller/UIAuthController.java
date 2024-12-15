@@ -225,7 +225,9 @@ public class UIAuthController {
         DayOfWeek responsibleDay = advisor.getResponsibleDay();
         List<Guide> guides = guideService.getAllGuides();
         List<Tour> tours = eventService.getTours();
+        List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
         List<Tour> tourApplications = eventService.getTourApplications();
+        List<IndividualTour> individualTours = eventService.getIndividualTours();
         // Create guideCounts map
         Map<Long, List<Integer>> guideCounts = tours.stream()
                 .collect(Collectors.toMap(
@@ -239,6 +241,9 @@ public class UIAuthController {
         model.addAttribute("responsibleDay", responsibleDay);
         model.addAttribute("guides", guides);
         model.addAttribute("guideCounts", guideCounts);
+        model.addAttribute("individualTourApplications", individualTourApplications);
+        model.addAttribute("individualTours", individualTours);
+
         System.out.println(responsibleDay);
         //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";

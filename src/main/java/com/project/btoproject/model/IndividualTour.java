@@ -1,5 +1,7 @@
 package com.project.btoproject.model;
+import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Hour;
+import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +12,6 @@ import java.util.List;
 @Data
 @Entity
 @DiscriminatorValue("INDIVIDUAL_TOUR")
-@NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Builder
@@ -28,6 +29,13 @@ public class IndividualTour extends Event {
 
     @Column(name = "interested_field")
     private String interestedField;
+
+    // Constructor that sets eventType to TOUR
+    public IndividualTour() {
+        this.setEventType(EventType.INDIVIDUAL_TOUR);
+        this.setStatus(Status.NEW_INDIVIDUAL_TOUR_APPLICATION);
+        this.setGuideCount(1);
+    }
 
     /*@CollectionTable(name = "tour", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "hour", nullable = false)
