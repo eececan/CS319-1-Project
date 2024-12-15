@@ -16,12 +16,10 @@ import java.util.List;
 
 @Controller
 public class UIPointRecordController {
-    private final IAllUsersService allUsersService;
     private final IGuideService guideService;
     private final IPointRecordService pointRecordService;
 
-    public UIPointRecordController(IAllUsersService userService, IGuideService guideService, IPointRecordService pointRecordService) {
-        this.allUsersService = userService;
+    public UIPointRecordController(IGuideService guideService, IPointRecordService pointRecordService) {
         this.guideService = guideService;
         this.pointRecordService = pointRecordService;
     }

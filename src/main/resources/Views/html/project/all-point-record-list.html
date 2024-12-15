@@ -1,10 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>All Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-records {
+            text-align: center;
+            color: #888;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .record-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .record-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+
+        .record-item h2 {
+            margin-top: 0;
+            color: #555;
+        }
+
+        .record-details p {
+            margin: 5px 0;
+        }
+
+        .hr-divider {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
+<h1>All Records</h1>
 
+<div class="container">
+
+    <!-- Check if point records list is empty -->
+    <div th:if="${#lists.isEmpty(all_records)}" class="no-records">
+        <p>No point records found.</p>
+    </div>
+
+    <!-- Check if point records list is not empty -->
+    <ul th:if="${!#lists.isEmpty(all_records)}" class="record-list">
+        <li th:each="record : ${all_records}" class="record-item">
+            <h2 th:text="${record.guide.firstName + ' ' + record.guide.lastName}"></h2>
+            <div class="record-details">
+                <p><strong>Guide:</strong> <span th:text="${record.guide.firstName + ' ' + record.guide.lastName}"></span></p>
+                <p><strong>Event:</strong> <span th:text="${record.event.name}"></span></p>
+                <p><strong>Point:</strong> <span th:text="${record.point}"></span></p>
+            </div>
+            <hr class="hr-divider" />
+        </li>
+    </ul>
+</div>
 </body>
 </html>
+l>
