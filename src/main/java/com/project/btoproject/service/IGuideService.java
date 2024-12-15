@@ -8,7 +8,7 @@ public interface IGuideService {
     void saveGuide(Guide guide);
     List<Event> seeAssignedEvents(Guide g);
     void selfAssignTour(Guide guide, Tour tour);
-    void selfAssignIndividualTour(Guide guide, IndividualTour tour);
+    //void selfAssignIndividualTour(Guide guide, IndividualTour tour);
     int seeCurrentPoints(Guide g);
 
     int getTotalPoints(Guide guide);

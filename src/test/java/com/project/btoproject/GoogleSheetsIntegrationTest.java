@@ -42,5 +42,19 @@ public class GoogleSheetsIntegrationTest {
         }
     }
 
+    @Test
+    public void testSaveNewIndividualTours() {
+        String spreadsheetId = "1Z5is13p8dc2W3md4IbypdTzpmGUenpfcesNjOqw5wrg";
+        String range = "A2:J"; // Adjust the range based on your sheet
+
+        try {
+            googleSheetsService.saveNewIndividualTours();
+            System.out.println("New tours fetched and saved successfully if there are!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Failed to save new tours: " + e.getMessage());
+        }
+    }
+
 
 }

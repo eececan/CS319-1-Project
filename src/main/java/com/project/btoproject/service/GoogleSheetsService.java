@@ -8,10 +8,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.project.btoproject.enums.Hour;
-import com.project.btoproject.model.Fair;
-import com.project.btoproject.model.School;
-import com.project.btoproject.model.SchoolCounselor;
-import com.project.btoproject.model.Tour;
+import com.project.btoproject.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +38,8 @@ public class GoogleSheetsService {
     // Use SchoolCounselorService for database operations
     private SchoolCounselorService schoolCounselorService;
 
+    private StudentService studentService;
+
     // Tour-specific Google Sheet attributes
     private static final String TOUR_SPREADSHEET_ID = "1FHzTMk7yby8Y2eKa2uNWtnTWs1s4tCnItCmvAnBQLwc";
     private static final String TOUR_SPREADSHEET_RANGE = "A2:K";
@@ -49,10 +48,15 @@ public class GoogleSheetsService {
     private static final String FAIR_SPREADSHEET_ID = "1E6i3VIJuqoVcsQ4iaZkipwhNt6f9LlcHenf1YRLGYmU";
     private static final String FAIR_SPREADSHEET_RANGE = "A2:L";
 
+    // Google Sheet attributes
+    private static final String INDIVIDUAL_TOUR_SPREADSHEET_ID = "1Z5is13p8dc2W3md4IbypdTzpmGUenpfcesNjOqw5wrg";
+    private static final String INDIVIDUAL_TOUR_SPREADSHEET_RANGE = "A2:J";
+
     @Autowired
-    public GoogleSheetsService(SchoolService schoolService, SchoolCounselorService schoolCounselorService, EventService eventService) {
+    public GoogleSheetsService(SchoolService schoolService, SchoolCounselorService schoolCounselorService, StudentService studentService, EventService eventService) {
         this.schoolService = schoolService;
         this.schoolCounselorService = schoolCounselorService;
+        this.studentService = studentService;
 
         // Initialize the Sheets API client
         try {
@@ -318,5 +322,106 @@ public class GoogleSheetsService {
 
         return fair;
     }
+
+    public List<List<Object>> fetchIndividualTourData() throws IOException {
+        ValueRange response = sheetsService.spreadsheets().values()
+                .get(INDIVIDUAL_TOUR_SPREADSHEET_ID, INDIVIDUAL_TOUR_SPREADSHEET_RANGE)
+                .execute();
+
+        if (response.getValues() == null || response.getValues().isEmpty()) {
+            System.out.println("No data found in the Google Sheet for individual tours.");
+            return Collections.emptyList();
+        }
+
+        return response.getValues();
+    }
+
+    public void saveNewIndividualTours() throws IOException {
+        // Get the latest applicationTimeStamp from the database
+        Date latestTimestamp = eventService.findLatestIndividualTourApplicationTimeStamp();
+
+        // Fetch all rows from Google Sheets
+        List<List<Object>> rows = fetchIndividualTourData();
+
+        // Prepare a list for new IndividualTour objects
+        List<IndividualTour> newIndividualTours = new ArrayList<>();
+
+        // Iterate through rows and process new applications
+        for (List<Object> row : rows) {
+            if (!row.isEmpty()) {
+                try {
+                    // Parse the timestamp
+                    String timestampString = row.get(0).toString();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                    Date rowTimestamp = dateFormat.parse(timestampString);
+
+                    if (latestTimestamp != null && !rowTimestamp.after(latestTimestamp)) {
+                        continue; // Skip old applications
+                    }
+
+                    // Map the row to an Individual Tour object
+                    IndividualTour individualTour = mapRowToIndividualTour(row);
+
+                    // Add to the list
+                    newIndividualTours.add(individualTour);
+                } catch (ParseException e) {
+                    System.err.println("Error parsing timestamp for row: " + row);
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Save all new individual tours to the database
+        if (!newIndividualTours.isEmpty()) {
+            eventService.saveAllIndividualTours(newIndividualTours); // Assuming the same `saveAllTours()` is used for individual tours
+            System.out.println("Saved " + newIndividualTours.size() + " new individual tours to the database.");
+        } else {
+            System.out.println("No new individual tours to save.");
+        }
+    }
+
+    private IndividualTour mapRowToIndividualTour(List<Object> row) throws ParseException {
+        IndividualTour individualTour = new IndividualTour();
+
+        // Parse timestamp (Column A)
+        String timestampString = row.get(0).toString();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Date applicationTimeStamp = dateFormat.parse(timestampString);
+        individualTour.setApplicationTimeStamp(applicationTimeStamp);
+
+        // Parse student details (Columns B, C, D)
+        String studentName = row.get(1).toString();
+        String studentEmail = row.get(2).toString();
+        String studentPhone = row.get(3).toString();
+
+        String schoolName = row.get(4).toString();
+        String city = row.get(5).toString();
+
+        School school = schoolService.findOrCreateSchool(schoolName, city, "");
+        Student student = studentService.findOrCreateStudent(studentName, studentEmail, studentPhone, school);
+
+        // Set the student object to the individual tour
+        individualTour.setStudent(student);
+
+        // Parse preferred visit date (Column G)
+        String visitDateString = row.get(6).toString();
+        SimpleDateFormat requestedDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Date requestedVisitDate = requestedDateFormat.parse(visitDateString);
+        individualTour.setDate(requestedVisitDate);
+
+        // Parse preferred visit time (Column H)
+        String hourString = row.get(7).toString();
+        individualTour.setHour(hourString);
+
+        String interestedIn = row.get(8).toString();
+        individualTour.setInterestedField(interestedIn);
+
+        // Parse visitor notes or additional comments (Column J)
+        individualTour.setVisitorNotes(row.get(9).toString());
+
+        return individualTour;
+    }
+
+
 
 }

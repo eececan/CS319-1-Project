@@ -21,7 +21,6 @@ import java.util.List;
 @Table(name = "event")
 public class Event {
 
-    // Constructor that sets eventType to TOUR
     public Event() {
         this.setGuideCount(0);
     }

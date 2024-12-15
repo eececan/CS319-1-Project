@@ -19,13 +19,13 @@ public class TourStatisticsController {
     }
 
     // Endpoint to get schools with their tour counts
-    @GetMapping("/schools/tour-counts")
+    /*@GetMapping("/schools/tour-counts")
     public List<SchoolTourCountDTO> getSchoolTourCounts() {
         return tourStatisticsService.getSchoolTourCounts();
     }
     @GetMapping("/schools/tour-counts-by-state")
     public List<Object[]> getTourCountsByState() {
         return tourStatisticsService.getTourCountsByState();
-    }
+    }*/
 
 }

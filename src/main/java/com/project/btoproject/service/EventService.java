@@ -59,6 +59,7 @@ public class EventService implements IEventService {
             throw new IllegalArgumentException("Fair not found with ID: " + fairId);
         }
     }
+
     public void approveTourByAdvisor(Long tourId) {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
@@ -289,6 +290,10 @@ public class EventService implements IEventService {
         return eventRepository.findLatestTourApplicationTimeStamp();
     }
 
+    public Date findLatestIndividualTourApplicationTimeStamp() {
+        return eventRepository.findLatestIndividualTourApplicationTimeStamp();
+    }
+
     public void saveAllTours(List<Tour> tours) {
         eventRepository.saveAll(tours); // Save tours as they are also events
     }
@@ -297,9 +302,14 @@ public class EventService implements IEventService {
         eventRepository.saveAll(fairs); // Save fairs as they are also events
     }
 
+    public void saveAllIndividualTours(List<IndividualTour> individualTours) {
+        eventRepository.saveAll(individualTours); // Save Individual Tours as they are also events
+    }
+
     public List<Tour> getAllTours() {
         return eventRepository.findAllTours();
     }
+
     public List<Event> getEventsByDay(String day) {
         DayOfWeek dayOfWeek;
         try {
@@ -368,7 +378,9 @@ public class EventService implements IEventService {
         System.out.println("Guide assigned to tour: " + guide.getFirstName() + " " + guide.getLastName());
         // Add the guide to the tour
         (event.getGuides()).add(guide);
+        System.out.println("Tours of the guide: " + guide.getEvents());
         eventRepository.save(event); // Save the updated tour
+        System.out.println("Tours of the guide: " + guide.getEvents());
     }
 
     @Transactional

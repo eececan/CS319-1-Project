@@ -20,7 +20,7 @@ public class TourStatisticsService {
     }
 
     // Method to get a list of school names and their counts
-    public List<SchoolTourCountDTO> getSchoolTourCounts() {
+    /*public List<SchoolTourCountDTO> getSchoolTourCounts() {
         List<Object[]> results = schoolRepository.countSchoolsInTours();
         List<SchoolTourCountDTO> tourCounts = new ArrayList<>();
 
@@ -34,8 +34,8 @@ public class TourStatisticsService {
         tourCounts.sort(Comparator.comparingLong(SchoolTourCountDTO::getTourCount).reversed());
 
         return tourCounts;
-    }
-    public List<Object[]> getTourCountsByState() {
+    }*/
+    /*public List<Object[]> getTourCountsByState() {
         return schoolRepository.getTourCountsByState();
-    }
+    }*/
 }

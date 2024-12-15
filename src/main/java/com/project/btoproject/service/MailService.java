@@ -34,7 +34,7 @@ public class MailService {
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
         }
-        if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
+        /*if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
             System.out.println("Sending email...");
             IndividualTour tour = (IndividualTour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
@@ -44,7 +44,7 @@ public class MailService {
             mail.setText("Sayın " + tour.getContactPerson() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz " + tour.getPeopleCount() + " öğrenci içerecek ve yaptığınız başvuruda belirttiğiniz ilgi alanlarınıza en uygun rehber tarafından yönlendirilecektir. Öğrenci sayısı, tarih veya ilgi alanınız hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
-        }
+        }*/
     }
 
     @Async
@@ -60,7 +60,7 @@ public class MailService {
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
         }
-        if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
+        /*if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
             System.out.println("Sending email...");
             IndividualTour tour = (IndividualTour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
@@ -70,7 +70,7 @@ public class MailService {
             mail.setText("Sayın " + tour.getContactPerson() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için sabırsızlanıyor!Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
-        }
+        }*/
     }
 }
 

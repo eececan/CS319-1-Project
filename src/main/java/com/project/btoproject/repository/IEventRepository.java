@@ -27,6 +27,14 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT MAX(f.applicationTimeStamp) FROM Fair f")
     Date findLatestFairApplicationTimeStamp();
 
+    /**
+     * Find the latest application timestamp for IndividualTour events.
+     */
+    @Query("SELECT MAX(t.applicationTimeStamp) FROM IndividualTour t")
+    Date findLatestIndividualTourApplicationTimeStamp();
+
+
+
     @Query("SELECT e FROM Event e WHERE TYPE(e) = Tour")
     List<Tour> findAllTours();
 

@@ -30,7 +30,15 @@ public class SchoolService {
         Optional<School> existingSchool = schoolRepository.findByName(schoolName);
 
         if (existingSchool.isPresent()) {
-            return existingSchool.get();
+            School school = existingSchool.get();
+
+            // Update the address only if it's not empty and different from the current address
+            if (!address.isEmpty() && !address.equals(school.getAddress())) {
+                school.setAddress(address);
+                return schoolRepository.save(school); // Save the updated school
+            }
+
+            return school; // Return the existing school if no update is needed
         }
 
         // If the school doesn't exist, create a new one

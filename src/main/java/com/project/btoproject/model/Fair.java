@@ -24,7 +24,7 @@ public class Fair extends Event {
     private School school;
 
     @ManyToOne
-    @JoinColumn(name = "school_counselor_id", nullable = false)
+    @JoinColumn(name = "school_counselor_id", nullable = true)
     private SchoolCounselor schoolCounselor;
 
     @Column(name = "hour")

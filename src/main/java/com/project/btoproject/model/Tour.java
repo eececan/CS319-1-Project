@@ -51,7 +51,7 @@ public class Tour extends Event {
     private TourInfo tourInformation;
 
     @ManyToOne
-    @JoinColumn(name = "school_counselor_id", nullable = false)
+    @JoinColumn(name = "school_counselor_id", nullable = true)
     private SchoolCounselor schoolCounselor;
 
     // Constructor that sets eventType to TOUR

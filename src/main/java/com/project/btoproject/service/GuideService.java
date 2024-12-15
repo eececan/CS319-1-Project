@@ -37,7 +37,7 @@ public class GuideService implements IGuideService
         //maybe add error message later
     }
 
-    @Override
+    /*@Override
     @Transactional
     public void selfAssignIndividualTour(Guide guide, IndividualTour individualTour) {
         if(individualTour.getGuide()!=null) {
@@ -46,7 +46,7 @@ public class GuideService implements IGuideService
         individualTour.setGuide(guide);
         guide.getEvents().add(individualTour);
         guideRepository.save(guide);
-    }
+    }*/
 
     @Override
     public int seeCurrentPoints(Guide guide) {
