@@ -22,11 +22,12 @@ public class EventService implements IEventService {
 
     private IEventRepository eventRepository;
     private IGuideRepository guideRepository;
-
+    private final NotificationService notificationService;
     @Autowired
-    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository) {
+    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository, NotificationService notificationService) {
         this.eventRepository = eventRepository;
         this.guideRepository = guideRepository;
+        this.notificationService = notificationService;
     }
     public void approveFair(Long fairId) {
         Optional<Event> eventOptional = eventRepository.findById(fairId);
@@ -71,6 +72,7 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.BTO_ACCEPTED); // Set status to advisor approved
             eventRepository.save(tour);
+            notificationService.notifyTourApproved(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
@@ -398,6 +400,7 @@ public class EventService implements IEventService {
         System.out.println("Tours of the guide: " + guide.getEvents());
         eventRepository.save(event); // Save the updated tour
         System.out.println("Tours of the guide: " + guide.getEvents());
+        notificationService.notifyGuideAssigned((Tour)event, guide);
     }
 
     @Transactional
