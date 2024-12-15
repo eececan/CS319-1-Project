@@ -7,10 +7,14 @@ import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IGuideService;
 import com.project.btoproject.service.IPointRecordService;
 import com.project.btoproject.service.IUserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -31,11 +35,20 @@ public class UIPointRecordController {
         return "all-point-record-list";
     }
 
-    @GetMapping("/getRecordsOfGuide/{id}")
-    public String getPointRecordPage(Model model, @PathVariable Long id) {
-        Guide guide = guideService.getGuideById(id);
-        List< PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
+    // Get point records page
+    @GetMapping("/getRecordsOfGuide")
+    public String getPointRecordPage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+        }
+        Guide guide = guideService.getGuideById(Long.parseLong(username));
+        List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
         model.addAttribute("guide_records", pointRecords);
+        model.addAttribute("guide", guide); // Display guide details on frontend
         return "point-record-list";
     }
+
 }
