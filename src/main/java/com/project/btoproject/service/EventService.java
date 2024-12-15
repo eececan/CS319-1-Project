@@ -103,7 +103,7 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.BTO_ACCEPTED); // Set status to advisor approved
             eventRepository.save(tour);
-            notificationService.notifyTourApproved(tour);
+            notificationService.notifyEventApproved(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
@@ -580,6 +580,36 @@ public class EventService implements IEventService {
         eventRepository.save(tour);
     }
     @Transactional
+    public void assignGuideToFair(Long eventId, Long guideId) {
+
+        // Fetch the tour and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Fair not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is already assigned to this tour
+        if (event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is already assigned to this fair.");
+        }
+
+        // Check if the guide has another tour on the same date and hour
+        boolean hasConflict = guide.getEvents().stream()
+                .anyMatch(existingFair -> existingFair.getDate().equals(event.getDate())
+                        && ((Fair) existingFair).getHour().equals(((Fair) event).getHour()));
+        if (hasConflict) {
+            throw new IllegalArgumentException("This guide is already assigned to another fair at the same time.");
+        }
+
+        System.out.println("Guide assigned to fair: " + guide.getFirstName() + " " + guide.getLastName());
+        // Add the guide to the tour
+        (event.getGuides()).add(guide);
+        System.out.println("Fairs of the guide: " + guide.getEvents());
+        eventRepository.save(event); // Save the updated tour
+        System.out.println("Fairs of the guide: " + guide.getEvents());
+        notificationService.notifyGuideAssigned((Fair)event, guide);
+    }
+    @Transactional
     public void increaseGuideCountFair(Long fairId) {
         // Fetch the tour from the database
         Event event = eventRepository.findById(fairId)
@@ -602,6 +632,28 @@ public class EventService implements IEventService {
 
         // Save the updated tour to the database
         eventRepository.save(fair);
+    }
+    @Transactional
+    public void removeGuideFromFair(Long eventId, Long guideId) {
+
+        // Fetch the event and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Fair not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is assigned to this tour
+        if (!event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is not assigned to this fair.");
+        }
+
+        // Remove the guide from the tour's guide list
+        event.getGuides().remove(guide);
+
+        // Save the updated tour (cascade will handle guide changes)
+        eventRepository.save(event);
+
+        System.out.println("Guide removed from fair: " + guide.getFirstName() + " " + guide.getLastName());
     }
 
     @Transactional

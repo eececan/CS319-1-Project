@@ -45,3 +45,26 @@ function handleFairRejection(fairId) {
             alert(`Error: ${error.message}`);
         });
 }
+function handleFairCancellation(fairId) {
+    console.log("Cancelling fair with ID:", fairId);
+    fetch(`/api/fairs/cancelFair/${fairId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Fair ID ${fairId} cancelled successfully!`);
+                location.reload();
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error cancelling fair:", error);
+            alert(`Error: ${error.message}`);
+        });
+}

@@ -7,6 +7,7 @@ import com.project.btoproject.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,21 +57,59 @@ public class NotificationService {
             notificationRepository.save(notification);
         });
     }
-    public void notifyGuideAssigned(Tour tour, Guide guide) {
-        String message = String.format("You have been assigned to tour for %s on %s",
-                tour.getSchool().getName(),
-                tour.getDate().toString());
-
+    public void notifyGuideAssigned(Event event, Guide guide) {
+        String eventType;
+        String message;
+        if (event instanceof Tour) {
+            eventType = "tour";
+            Tour tour = (Tour) event;
+            message = String.format("You have been assigned to %s for %s on %s",
+                    eventType,
+                    tour.getSchool().getName(),
+                    tour.getDate().toString());
+        } else if (event instanceof Fair) {
+            eventType = "fair";
+            Fair fair = (Fair) event;
+            message = String.format("You have been assigned to %s for %s on %s",
+                    eventType,
+                    fair.getSchool().getName(),
+                    fair.getDate().toString());
+        } else {
+            throw new IllegalArgumentException("Event must be either a Tour or a Fair");
+        }
         createNotification(guide.getId(), message);
     }
-    public void notifyTourApproved(Tour tour) {
-        String message = String.format("Tour for %s on %s has been approved",
-                tour.getSchool().getName(),
-                tour.getDate().toString());
 
-        // Notify assigned guides
-        for (Guide guide : tour.getGuides()) {
-            createNotification(guide.getId(), message);
+    public void notifyEventApproved(Event event) {
+        String eventType;
+        String message;
+
+        if (event instanceof Tour) {
+            eventType = "Tour";
+            Tour tour = (Tour) event;
+            message = String.format("%s for %s on %s has been approved",
+                    eventType,
+                    tour.getSchool().getName(),
+                    new SimpleDateFormat("dd/MM/yyyy").format(tour.getDate()));
+
+            for (Guide guide : tour.getGuides()) {
+                createNotification(guide.getId(), message);
+            }
+
+        } else if (event instanceof Fair) {
+            eventType = "Fair";
+            Fair fair = (Fair) event;
+            message = String.format("%s for %s on %s has been approved",
+                    eventType,
+                    fair.getSchool().getName(),
+                    new SimpleDateFormat("dd/MM/yyyy").format(fair.getDate()));
+
+            for (Guide guide : fair.getGuides()) {
+                createNotification(guide.getId(), message);
+            }
+
+        } else {
+            throw new IllegalArgumentException("Event must be either a Tour or a Fair");
         }
     }
 
