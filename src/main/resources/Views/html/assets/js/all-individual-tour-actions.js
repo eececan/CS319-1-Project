@@ -45,3 +45,88 @@ function handleIndividualTourRejection(individualTourId) {
             alert(`Error: ${error.message}`);
         });
 }
+
+function handleGuideSelection(selectElement) {
+    const tourId = selectElement.getAttribute("data-tour-id");
+    const guideId = selectElement.value;
+
+    if (!guideId || !tourId) {
+        alert("Invalid selection. Please try again.");
+        return;
+    }
+
+    assignIndividualTourGuide(tourId, guideId);
+}
+
+function assignIndividualTourGuide(tourId, guideId) {
+    if (!guideId) {
+        alert('Please select a valid guide.');
+        return;
+    }
+
+    fetch(`/api/individual-tours/${tourId}/assign-guide`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guideId })
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Guide assigned successfully!');
+                location.reload(); // Reload to reflect changes
+            } else {
+                return response.json().then((errorData) => {
+                    throw new Error(errorData.error || 'Failed to assign guide.');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error assigning guide:', error);
+
+            // Show a cleaner alert
+            alert(error.message);
+
+            // Reset the dropdown
+            const dropdown = document.querySelector(`#individual-guide-${tourId}`);
+            if (dropdown) {
+                dropdown.selectedIndex = 0; // Reset to "Select Guide"
+            }
+        });
+}
+
+
+
+function removeIndividualTourGuide(buttonElement) {
+    // Extract tourId and guideId from the button's data attributes
+    const tourId = buttonElement.getAttribute('data-tour-id');
+    const guideId = buttonElement.getAttribute('data-guide-id');
+
+    if (!guideId) {
+        alert('No guide is assigned to this tour.');
+        return;
+    }
+
+    console.log("Tour ID:", tourId, "Guide ID:", guideId);
+
+    // Make the fetch request to remove the guide
+    fetch(`/api/individual-tours/${tourId}/remove-guide`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guideId }) // Sending guideId in the request body
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert('Guide removed successfully!');
+                location.reload(); // Reload to reflect changes
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error removing guide:', error);
+            alert('Failed to remove guide. ' + error.message);
+        });
+}
+
+

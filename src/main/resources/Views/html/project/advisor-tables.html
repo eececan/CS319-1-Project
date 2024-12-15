@@ -743,6 +743,7 @@
                                                     <th style="width: 1%;">City</th>
                                                     <th style="width: 1%;">Interested Field</th>
                                                     <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Guide</th>
                                                     <th style="width: 1%;">Action</th>
                                                 </tr>
                                                 </thead>
@@ -763,21 +764,44 @@
                                                     <!-- Student Name -->
                                                     <td th:text="${individualTour.student.name}">Student Name</td>
 
-                                                    <!-- Interested Field -->
-                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
-
                                                     <!-- High School -->
                                                     <td th:text="${individualTour.student.school.name}">High School Name</td>
 
                                                     <!-- City -->
                                                     <td th:text="${individualTour.student.school.city}">City</td>
 
+                                                    <!-- Interested Field -->
+                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
+
                                                     <!-- Contact -->
                                                     <td th:text="${individualTour.student.phoneNumber}">Contact</td>
 
                                                     <!-- Guide -->
-
-
+                                                    <td>
+                                                        <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR' && individualTour.guides.size() == 0 }">
+                                                            <select class="form-select individual-guide-dropdown"
+                                                                    th:id="'individual-guide-' + ${individualTour.id}"
+                                                                    th:name="'individual-guide-' + ${individualTour.id}"
+                                                                    th:data-tour-id="${individualTour.id}"
+                                                                    onchange="handleGuideSelection(this)">
+                                                                <option value="" disabled selected>Select Guide</option>
+                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                    Guide Name
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                        <!-- Check if a guide is assigned -->
+                                                        <div th:if="${individualTour.guides.size() > 0 && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                            <span th:text="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}">Guide Name</span>
+                                                            <!-- Remove button -->
+                                                            <button class="btn ms-2 remove-guide-individual"
+                                                                    th:data-tour-id="${individualTour.id}"
+                                                                    th:data-guide-id="${individualTour.guides[0].id}"
+                                                                    onclick="removeIndividualTourGuide(this)">
+                                                                -
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                     <!-- Actions -->
                                                     <td>
                                                         <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">

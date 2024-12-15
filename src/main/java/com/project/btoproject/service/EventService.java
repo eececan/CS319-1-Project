@@ -402,6 +402,73 @@ public class EventService implements IEventService {
     }
 
     @Transactional
+    public void assignGuideToIndividualTour(Long individualTourId, Long guideId) {
+        // Fetch the individual tour and guide from the database
+        IndividualTour individualTour = eventRepository.findById(individualTourId)
+                .filter(event -> event instanceof IndividualTour)
+                .map(event -> (IndividualTour) event)
+                .orElseThrow(() -> new IllegalArgumentException("Individual Tour not found or invalid ID"));
+
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if a guide is already assigned to this individual tour
+        if (individualTour.getGuides() != null && !individualTour.getGuides().isEmpty()) {
+            Guide existingGuide = individualTour.getGuides().get(0); // Get the assigned guide
+            if (existingGuide.getId().equals(guideId)) {
+                throw new IllegalArgumentException("This guide is already assigned to this individual tour.");
+            }
+            // Clear the existing guide to allow reassignment
+            individualTour.getGuides().clear();
+        }
+
+        // Check if the guide has another individual tour on the same date and hour
+        boolean hasConflict = guide.getEvents().stream()
+                .filter(event -> event instanceof IndividualTour)
+                .anyMatch(existingTour -> existingTour.getDate().equals(individualTour.getDate())
+                        && ((IndividualTour) existingTour).getHour().equals(individualTour.getHour()));
+
+        if (hasConflict) {
+            throw new IllegalArgumentException("This guide is already assigned to another individual tour at the same time.");
+        }
+
+        // Assign the guide to the individual tour (add to the guides list)
+        individualTour.getGuides().add(guide);
+
+        // Save the updated individual tour
+        eventRepository.save(individualTour);
+    }
+
+    @Transactional
+    public void removeGuideFromIndividualTour(Long individualTourId, Long guideId) {
+        // Fetch the individual tour and guide from the database
+        Event event = eventRepository.findById(individualTourId)
+                .orElseThrow(() -> new IllegalArgumentException("Individual Tour not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Ensure the event is an IndividualTour
+        if (!(event instanceof IndividualTour)) {
+            throw new IllegalArgumentException("The specified event is not an Individual Tour.");
+        }
+
+        IndividualTour individualTour = (IndividualTour) event;
+
+        // Check if the guide is assigned to this individual tour
+        if (!individualTour.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is not assigned to this Individual Tour.");
+        }
+
+        // Remove the guide from the tour's guide list
+        individualTour.getGuides().remove(guide);
+
+        // Save the updated individual tour
+        eventRepository.save(individualTour);
+    }
+
+
+
+    @Transactional
     public void increaseGuideCount(Long tourId) {
         // Fetch the tour from the database
         Event event = eventRepository.findById(tourId)
