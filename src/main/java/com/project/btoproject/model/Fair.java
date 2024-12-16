@@ -1,6 +1,7 @@
 package com.project.btoproject.model;
 
 import com.project.btoproject.enums.EventType;
+import com.project.btoproject.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import com.project.btoproject.model.School;
@@ -44,5 +45,7 @@ public class Fair extends Event {
     // Constructor that sets eventType to FAIR
     public Fair() {
         this.setEventType(EventType.FAIR);
+        this.setStatus(Status.NEW_FAIR_APPLICATION);
+        this.setGuideCount(0);
     }
 }
