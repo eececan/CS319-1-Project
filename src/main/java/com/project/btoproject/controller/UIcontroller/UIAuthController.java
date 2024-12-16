@@ -265,6 +265,7 @@ public class UIAuthController {
         List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
         List<Tour> tourApplications = eventService.getTourApplications();
         List<IndividualTour> individualTours = eventService.getIndividualTours();
+        List <Fair> fairs = eventService.getFairs();
         // Create guideCounts map
         Map<Long, List<Integer>> guideCounts = tours.stream()
                 .collect(Collectors.toMap(
@@ -277,6 +278,7 @@ public class UIAuthController {
         model.addAttribute("tourApplications", tourApplications);
         model.addAttribute("responsibleDay", responsibleDay);
         model.addAttribute("guides", guides);
+        model.addAttribute("fairs", fairs);
         model.addAttribute("guideCounts", guideCounts);
         model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);
@@ -295,33 +297,41 @@ public class UIAuthController {
         String userId = userDetails.getUsername();
         long coordinatorId = Long.parseLong(userId);
         Coordinator coordinator = coordinatorService.getCoordinatorById(coordinatorId);*/
+        try {
         List<Guide> guides = guideService.getAllGuides();
         List<Tour> tours = eventService.getTours();
-        List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
         List<Tour> tourApplications = eventService.getTourApplications();
         List<Fair> fairApplications = eventService.getFairApplications();
         List<Fair> fairs = eventService.getFairs();
-        List<IndividualTour> individualTours = eventService.getIndividualTours();
-        // Create guideCounts map
-        Map<Long, List<Integer>> guideCounts = fairs.stream()
-                .collect(Collectors.toMap(
-                        Fair::getId,
-                        Fair -> IntStream.rangeClosed(1, Fair.getGuideCount())
-                                .boxed()
-                                .collect(Collectors.toList())
-                ));
+
+        // Create guideCounts map for fairs
+        Map<Long, List<Integer>> guideCounts = new HashMap<>();
+        for (Fair fair : fairs) {
+            List<Integer> counts = IntStream.rangeClosed(1, fair.getGuideCount())
+                    .boxed()
+                    .collect(Collectors.toList());
+            guideCounts.put(fair.getId(), counts);
+        }
+
+        // Add all attributes to model
         model.addAttribute("tours", tours);
         model.addAttribute("tourApplications", tourApplications);
         model.addAttribute("fairs", fairs);
         model.addAttribute("fairApplications", fairApplications);
         model.addAttribute("guides", guides);
         model.addAttribute("guideCounts", guideCounts);
+
+        return "Director-Coordinator-Tables";  // Match template name exactly
+    } catch (Exception e) {
+        e.printStackTrace();  // Log the error
+        throw e;  // Rethrow to see error in logs
+    }
         /*model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);*/
 
 
         //model.addAttribute("advisorId", advisorId);
-        return "Director-Coordinator-Tables";
+
     }
 
     @GetMapping("/head-secretary-tables")
