@@ -1,14 +1,17 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"  lang="en" dir="ltr">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        .task-completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
 
-
-    <!-- Favicon -->
-    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
-    <title>Profile</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <!-- Bootstrap Core and vendor -->
     <link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet"  >
 
@@ -227,21 +230,96 @@
             </div>
         </div>
     </div>
+
+
     <div class="user_div">
-        <h5 class="brand-name mb-4">Head Secretary<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
+        <h5 class="brand-name mb-4">Guide<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
         <div class="card-body">
-            <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
-            <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
-            <span th:text="${user.email}"></span>
+            <a href="@{/head-secretary-profile.html}"><img th:src="@{/assets/images/sm/avatar1.jpg}" class="card-profile-img" alt="Profile Picture"></a>
+            <h6 class="mb-0">Peter Richards</h6>
+            <span>peter.richard@gmail.com</span>
+            <div class="d-flex align-items-baseline mt-3">
+                <h3 class="mb-0 mr-2">9.8</h3>
+                <p class="mb-0"><span class="text-success">1.6% <i class="fa fa-arrow-up"></i></span></p>
+            </div>
+            <div class="progress progress-xs">
+                <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-orange" role="progressbar" style="width: 5%" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-indigo" role="progressbar" style="width: 13%" aria-valuenow="13" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <h6 class="text-uppercase font-10 mt-1">Performance Score</h6>
             <hr>
+            <p>Activity</p>
+            <ul class="new_timeline">
+                <li>
+                    <div class="bullet pink"></div>
+                    <div class="time">11:00am</div>
+                    <div class="desc">
+                        <h3>Attendance</h3>
+                        <h4>Computer Class</h4>
+                    </div>
+                </li>
+                <li>
+                    <div class="bullet pink"></div>
+                    <div class="time">11:30am</div>
+                    <div class="desc">
+                        <h3>Added an interest</h3>
+                        <h4>“Volunteer Activities”</h4>
+                    </div>
+                </li>
+                <li>
+                    <div class="bullet green"></div>
+                    <div class="time">12:00pm</div>
+                    <div class="desc">
+                        <h3>Developer Team</h3>
+                        <h4>Hangouts</h4>
+                        <ul class="list-unstyled team-info margin-0 p-t-5">
+                            <li><img th:src="@{/assets/images/xs/avatar1.jpg}" alt="Avatar"></li>
+                            <li><img th:src="@{/assets/images/xs/avatar2.jpg}" alt="Avatar"></li>
+                            <li><img th:src="@{/assets/images/xs/avatar3.jpg}" alt="Avatar"></li>
+                            <li><img th:src="@{/assets/images/xs/avatar4.jpg}" alt="Avatar"></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <div class="bullet green"></div>
+                    <div class="time">2:00pm</div>
+                    <div class="desc">
+                        <h3>Responded to need</h3>
+                        <a href="javascript:void(0)">“In-Kind Opportunity”</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="bullet orange"></div>
+                    <div class="time">1:30pm</div>
+                    <div class="desc">
+                        <h3>Lunch Break</h3>
+                    </div>
+                </li>
+                <li>
+                    <div class="bullet green"></div>
+                    <div class="time">2:38pm</div>
+                    <div class="desc">
+                        <h3>Finish</h3>
+                        <h4>Go to Home</h4>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <div id="left-sidebar" class="sidebar ">
-        <h5 class="brand-name">Head Secretary <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+
+    <div id="left-sidebar" class="sidebar">
+        <h5 class="brand-name">Guide
+            <a href="javascript:void(0)" class="menu_option float-right">
+                <i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i>
+            </a>
+        </h5>
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
-                <li class="g_heading"></li>
+                <li class="g_heading">Project</li>
                 <li class="active">
                     <a th:href="@{/dashboard}">
                         <i class="fa fa-dashboard"></i><span>Dashboard</span>
@@ -249,11 +327,11 @@
                 </li>
                 <li>
                     <a th:href="@{/getAllUsers}">
-                        <i class="fa fa-user"></i><span>Clients</span>
+                        <i class="fa fa-user"></i><span>All Members</span>
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/getAllRecords}">
+                    <a th:href="@{/getRecordsOfGuide}">
                         <i class="fa fa-user"></i><span>Point Records</span>
                     </a>
                 </li>
@@ -263,20 +341,15 @@
                     </a>
                 </li>
                 <li class="g_heading"></li>
+
                 <li>
                     <a th:href="@{/calender}">
                         <i class="fa fa-calendar"></i><span>Calendar</span>
                     </a>
                 </li>
-                <li>
-                    <a href="@{/app-setting.html}">
-                        <i class="fa fa-gear"></i><span>Setting</span>
-                    </a>
-                </li>
             </ul>
         </nav>
     </div>
-
 
     <div class="page">
         <div id="page_top" class="section-body top_dark">
@@ -284,65 +357,11 @@
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">My Profile</h1>
-                        
+                        <h1 class="page-title">Todo List</h1>
+
                     </div>
                     <div class="right">
-                        
                         <div class="notification d-flex">
-                           
-                            <div class="dropdown d-flex">
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                    <ul class="right_chat list-unstyled w350 p-0">
-                                        <li class="online">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Donald Gardner</span>
-                                                    <div class="message">It is a long established fact that a reader</div>
-                                                    <small>11 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="online">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object " src="../assets/images/xs/avatar5.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Wendy Keen</span>
-                                                    <div class="message">There are many variations of passages of Lorem Ipsum</div>
-                                                    <small>18 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>                            
-                                        </li>
-                                        <li class="offline">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object " src="../assets/images/xs/avatar2.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Matt Rosales</span>
-                                                    <div class="message">Contrary to popular belief, Lorem Ipsum is not simply</div>
-                                                    <small>27 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>                            
-                                        </li>
-                                        <li class="online">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object " src="../assets/images/xs/avatar3.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Phillip Smith</span>
-                                                    <div class="message">It has roots in a piece of classical Latin literature from 45 BC</div>
-                                                    <small>33 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>                            
-                                        </li>                        
-                                    </ul>
-                                    <div class="dropdown-divider"></div>
-                                    <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
-                                </div>
-                            </div>
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
@@ -381,7 +400,7 @@
                                                 <h4 class="title">7 New Orders <small class="float-right text-muted">11:35</small></h4>
                                                 <small>You received a new oder from Tina.</small>
                                             </div>
-                                        </li>                                   
+                                        </li>
                                     </ul>
                                     <div class="dropdown-divider"></div>
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
@@ -390,10 +409,13 @@
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                    <a class="dropdown-item" th:href="@{/ui/UserProfile/profile}"><i class="dropdown-icon fe fe-user}"></i> Profile</a>
+                                    <a class="dropdown-item" href="head-secretary-profile.html"><i class="dropdown-icon fe fe-user"></i> Profile</a>
+                                    <a class="dropdown-item" href="app-setting.html"><i class="dropdown-icon fe fe-settings"></i> Settings</a>
                                     <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
+                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-send"></i> Message</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" th:href="@{/}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
+                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-help-circle"></i> Need help?</a>
+                                    <a class="dropdown-item" href="login.html"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
                                 </div>
                             </div>
                         </div>
@@ -401,86 +423,125 @@
                 </div>
             </div>
         </div>
-        <div class="section-body mt-4">
+        <div class="section-body">
             <div class="container-fluid">
-                <div class="row clearfix">
-                    <div class="col-lg-4 col-md-12">
-                        <div class="row">
-                            <div class="card">
-                                <img class="card-img-top"
-                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                                     alt="Card image cap">
-                                <div class="card-body">
-                                    <div class="row">
-                                    </div>
-                                </div>
-                                <div th:if="${user != null}">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
-                                        <li class="list-group-item" >Head Secretary</li>
-                                        <li class="list-group-item" th:text="${user.email}"></li>
-                                        <li class="list-group-item" th:text="${user.phoneNumber}"></li>
-                                    </ul>
-                                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <ul class="nav nav-tabs page-header-tab">
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#todo-list">ToDo List</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#todo-add">Add Todo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="section-body mt-3">
+            <div class="container-fluid">
+                <div class="tab-content">
+                    <!-- Todo List -->
+                    <div class="tab-pane fade show active" id="todo-list" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-hover">
+                                    <tbody>
+                                    <tr th:each="task : ${tasks}">
+                                        <td>
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox"
+                                                       class="custom-control-input"
+                                                       th:checked="${task.state}"
+                                                       th:onchange="|toggleTask(${task.taskId}, this.checked)|"
+                                                       th:value="${task.taskId}">
+                                                <span class="custom-control-label"
+                                                      th:classappend="${task.state} ? 'task-completed' : ''"
+                                                      th:text="${task.taskName}"></span>
+                                            </label>
+
+                                            <script>
+                                                function toggleTask(taskId, isChecked) {
+                                                    var url = isChecked
+                                                        ? `/ui/task/mark-task-complete/${taskId}`
+                                                        : `/ui/task/mark-task-incomplete/${taskId}`;
+
+                                                    fetch(url, {
+                                                        method: 'GET',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        }
+                                                    })
+                                                        .then(response => {
+                                                            if (response.ok) {
+                                                                console.log("Task updated successfully.");
+
+                                                                // Locate the label dynamically and toggle the 'task-completed' class
+                                                                var checkbox = document.querySelector(`input[value="${taskId}"]`);
+                                                                var label = checkbox.closest('label').querySelector('.custom-control-label');
+                                                                if (isChecked) {
+                                                                    label.classList.add('task-completed');
+                                                                } else {
+                                                                    label.classList.remove('task-completed');
+                                                                }
+                                                            } else {
+                                                                alert("Failed to update task.");
+                                                            }
+                                                        })
+                                                        .catch(error => console.error("Error updating task:", error));
+                                                }
 
 
+                                            </script>
+
+
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="user-actions">
+                                                <!-- Form to delete task -->
+                                                <form th:action="@{/ui/task/delete-task/{taskId}(taskId=${task.taskId})}"
+                                                      method="get"
+                                                      onsubmit="return confirm('Are you sure you want to delete this task?')">
+                                                    <button type="submit" title="Delete Task" class="btn btn-link">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 col-md-12">
-                        <div class="row">
-                            <div>
-                                <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">Edit Profile</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content" id="pills-tabContent">
-                                    <div class="tab-pane active show" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Edit Profile</h3>
-                                                <div class="card-options">
-                                                    <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row clearfix">
-                                                    <div class="col-sm-6 col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">ID</label>
-                                                            <input type="text" class="form-control" placeholder="Username" th:value="${user.id}" >
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-4">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Email address</label>
-                                                            <input type="email" class="form-control" placeholder="Email" th:value="${user.email}" >
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label">First Name</label>
-                                                            <input type="text" class="form-control" placeholder="First Name" th:value="${user.firstName}" >
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Last Name</label>
-                                                            <input type="text" class="form-control" placeholder="Last Name" th:value="${user.lastName}" >
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="card-footer text-right">
-                                                <button type="submit" class="btn btn-primary float-left">View/Edit Schedule</button>
-                                                <button type="submit" class="btn btn-primary">Update Profile</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Add Todo -->
+                    <div class="tab-pane fade" id="todo-add" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Add Todo</h3>
+                                <div class="card-options ">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
                                 </div>
                             </div>
+                            <form th:action="@{/ui/task/post-task}" method="post" class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">Todo Name <span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" name="taskName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">Description <span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <textarea rows="4" class="form-control no-resize" name="description" placeholder="Please type what you want..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label"></label>
+                                    <div class="col-md-7">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/ui/task/todo'">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -488,8 +549,6 @@
         </div>
     </div>
 </div>
-
-
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
 <!-- <script th:src="@{/assets/bundles/counterup.bundle.js}"></script> -->
@@ -497,5 +556,6 @@
 <script th:src="@{/assets/bundles/c3.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/page/project-index.js}"></script>
+
 </body>
 </html>

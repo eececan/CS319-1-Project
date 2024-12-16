@@ -4,6 +4,7 @@ import com.project.btoproject.model.User;
 import com.project.btoproject.model.UserTask;
 import com.project.btoproject.service.AllUsersService;
 import com.project.btoproject.service.UserService;
+import com.project.btoproject.service.UserTaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,15 +31,31 @@ public class UIUserTaskController {
     public String getTodoPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
+        String roleUser="";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
         User user = allUsersService.getUserById(Long.parseLong(username));
-        List<UserTask> tasks = allUsersService.seeAllTasks(user);
-        model.addAttribute("tasks", tasks);
-        model.addAttribute("user", user); // Display user details on frontend
-        return "project-todo";
+        List<UserTask> userTask = allUsersService.seeAllTasks(user);
+        model.addAttribute("user", user);
+        model.addAttribute("userTask", userTask);
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            return"project-todo-DirectorSpecific";
+        }
+        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE")) || (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING")) )) {
+            return"project-todo-guideSpecific";
+        }
+        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            roleUser ="ADVISOR";
+            model.addAttribute("roleUser", roleUser);
+            return"project-todo";
+        }
+        else{
+            roleUser ="HEAD SECRETARY";
+            model.addAttribute("roleUser", roleUser);
+            return "project-todo";
+        }
     }
 
     // Post a new task (UI for adding tasks)

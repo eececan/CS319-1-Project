@@ -1,7 +1,11 @@
 package com.project.btoproject.controller.UIcontroller;
+import com.project.btoproject.model.Role;
 import com.project.btoproject.model.User;
 import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IUserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +24,33 @@ public class UIUserController {
     }
     @GetMapping("/getAllUsers")
     public String getUsersPage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        String roleUser="";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+        }
+        User user = allUsersService.getUserById(Long.parseLong(username));
         List<User> users = allUsersService.getAllUsers();
         model.addAttribute("all_users", users);
-        return "member-list";
+        model.addAttribute("user", user);
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            return"member-list-directorSpecific";
+        }
+        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE")) || (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING")) )) {
+            return"member-list-guideSpecific";
+        }
+        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            roleUser ="ADVISOR";
+            model.addAttribute("roleUser", roleUser);
+            return"member-list";
+        }
+        else{
+            roleUser ="HEAD SECRETARY";
+            model.addAttribute("roleUser", roleUser);
+            return "member-list";
+        }
     }
 
     @GetMapping("/deleteUser/{id}")
