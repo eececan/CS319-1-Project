@@ -22,8 +22,8 @@ public class User {
     @Id
     private Long id; //is this school id or automatically generated id
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "password", nullable = true)
+    private String password = "";
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
