@@ -14,6 +14,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
@@ -35,7 +36,7 @@ public class UserService implements IUserService {
         guide.setEmail(userGuideDto.getEmail());
         guide.setFirstName(userGuideDto.getFirstName());
         guide.setLastName(userGuideDto.getLastName());
-        guide.setId(userEntity.getId());
+        guide.setId(Long.parseLong(userEntity.getUsername()));
         guide.setPassword(userEntity.getPassword());
         guide.setPicture(userGuideDto.getPicture());
         guide.setStartDate(new Date());
@@ -52,7 +53,7 @@ public class UserService implements IUserService {
         guideInTraining.setPicture(userGuideInTrainingDto.getPicture());
         guideInTraining.setDescription(userGuideInTrainingDto.getDescription());
         guideInTraining.setStartDate(new Date());
-        guideInTraining.setId(userEntity.getId());
+        guideInTraining.setId(Long.parseLong(userEntity.getUsername()));
         guideInTraining.setPassword(userEntity.getPassword());
         allUsersService.addUser(guideInTraining);
     }
@@ -67,7 +68,7 @@ public class UserService implements IUserService {
         advisor.setPicture(userAdvisorDto.getPicture());
         advisor.setDescription(userAdvisorDto.getDescription());
         advisor.setStartDate(new Date());
-        advisor.setId(userEntity.getId());
+        advisor.setId(Long.parseLong(userEntity.getUsername()));
         advisor.setPassword(userEntity.getPassword());
         allUsersService.addUser(advisor);
     }
@@ -105,6 +106,22 @@ public class UserService implements IUserService {
     @Override
     public void forgotPassword(Long id) {
 
+    }
+
+    @Transactional
+    @Override
+    public void changeRole(Long id, Role role){
+        UserEntity user = userRepository.findByUsername(id.toString())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Optional<UserEntity> findUserByUsername(Long id) {
+        return userRepository.findByUsername(id.toString());
     }
 
 

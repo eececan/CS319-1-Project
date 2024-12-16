@@ -34,14 +34,16 @@ public class UIAuthController {
     private final IAdvisorService advisorService;
     private final AllUsersService allUsersService;
     private final PointRecordService pointRecordService;
+    private final CoordinatorService coordinatorService;
 
-    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController) {
+    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService) {
         this.authService = _authService;
         this.eventService = eventService;
         this.guideService = guideService;
         this.advisorService = advisorService;
         this.allUsersService = allUsersService;
         this.pointRecordService = pointRecordService;
+        this.coordinatorService = coordinatorService;
     }
 
     @GetMapping("/login")
@@ -98,7 +100,41 @@ public class UIAuthController {
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
                 return "Director-Dashboard";// Director's page
-            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            }
+            else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+                // Get the current authenticated user
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String username = "";
+                if (authentication.getPrincipal() instanceof UserDetails) {
+                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                    username = userDetails.getUsername();
+                }
+                User user = allUsersService.getUserById(Long.parseLong(username));
+                // Add user to the model so that it's accessible in the view
+                model.addAttribute("user", user);
+                // Fetch advisor of the day
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                // Fetch associated tours and fairs
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                // Add advisor, tours, and fairs to the model
+                List<User> users = allUsersService.getAllUsers();
+                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                int sum=0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum+=pointRecords.get(0).getPoint();
+                }
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                model.addAttribute("sum",sum);
+                model.addAttribute("users", users);
+                model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                return "Coordinator-Dashboard";// Coordinator's page
+            }else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
                 // Get the current authenticated user
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 String username = "";
@@ -229,6 +265,7 @@ public class UIAuthController {
         List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
         List<Tour> tourApplications = eventService.getTourApplications();
         List<IndividualTour> individualTours = eventService.getIndividualTours();
+        List <Fair> fairs = eventService.getFairs();
         // Create guideCounts map
         Map<Long, List<Integer>> guideCounts = tours.stream()
                 .collect(Collectors.toMap(
@@ -241,6 +278,7 @@ public class UIAuthController {
         model.addAttribute("tourApplications", tourApplications);
         model.addAttribute("responsibleDay", responsibleDay);
         model.addAttribute("guides", guides);
+        model.addAttribute("fairs", fairs);
         model.addAttribute("guideCounts", guideCounts);
         model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);
@@ -249,7 +287,52 @@ public class UIAuthController {
         //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";
     }
+    @GetMapping("/Director-Coordinator-Tables")
+    public String showEventListCoordinator( Model model) {
 
+        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = new UserEntity();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String userId = userDetails.getUsername();
+        long coordinatorId = Long.parseLong(userId);
+        Coordinator coordinator = coordinatorService.getCoordinatorById(coordinatorId);*/
+        try {
+        List<Guide> guides = guideService.getAllGuides();
+        List<Tour> tours = eventService.getTours();
+        List<Tour> tourApplications = eventService.getTourApplications();
+        List<Fair> fairApplications = eventService.getFairApplications();
+        List<Fair> fairs = eventService.getFairs();
+
+        // Create guideCounts map for fairs
+        Map<Long, List<Integer>> guideCounts = new HashMap<>();
+        for (Fair fair : fairs) {
+            List<Integer> counts = IntStream.rangeClosed(1, fair.getGuideCount())
+                    .boxed()
+                    .collect(Collectors.toList());
+            guideCounts.put(fair.getId(), counts);
+        }
+
+        // Add all attributes to model
+        model.addAttribute("tours", tours);
+        model.addAttribute("tourApplications", tourApplications);
+        model.addAttribute("fairs", fairs);
+        model.addAttribute("fairApplications", fairApplications);
+        model.addAttribute("guides", guides);
+        model.addAttribute("guideCounts", guideCounts);
+
+        return "Director-Coordinator-Tables";  // Match template name exactly
+    } catch (Exception e) {
+        e.printStackTrace();  // Log the error
+        throw e;  // Rethrow to see error in logs
+    }
+        /*model.addAttribute("individualTourApplications", individualTourApplications);
+        model.addAttribute("individualTours", individualTours);*/
+
+
+        //model.addAttribute("advisorId", advisorId);
+
+    }
 
     @GetMapping("/head-secretary-tables")
     public String showEventListHeadSecretary(Model model) {

@@ -1,11 +1,19 @@
 package com.project.btoproject.config;
 
+import com.project.btoproject.dto.RegisterDto;
+import com.project.btoproject.dto.UserAdvisorDto;
+import com.project.btoproject.dto.UserGuideDto;
+import com.project.btoproject.dto.UserGuideInTrainingDto;
 import com.project.btoproject.model.Advisor;
 import com.project.btoproject.model.Guide;
 import com.project.btoproject.model.Role;
+import com.project.btoproject.model.UserEntity;
 import com.project.btoproject.repository.IAdvisorRepository;
 import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
+import com.project.btoproject.service.AuthService;
+import com.project.btoproject.service.IAllUsersService;
+import com.project.btoproject.service.IUserService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,117 +28,154 @@ public class DataInitializer {
     private final RoleRepository roleRepository;
     private final IGuideRepository guideRepository;
     private final IAdvisorRepository advisorRepository;
+    private final AuthService authService;
+    private final IUserService userService;
 
-    public DataInitializer(RoleRepository _roleRepository, IGuideRepository _guideRepository, IAdvisorRepository advisorRepository) {
-        this.roleRepository = _roleRepository;
-        this.guideRepository = _guideRepository;
+    public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
+                           IAdvisorRepository advisorRepository, AuthService authService,
+                           IUserService userService) {
+        this.roleRepository = roleRepository;
+        this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
+        this.authService = authService;
+        this.userService = userService;
     }
 
     @Bean
-    @Transactional
     public ApplicationRunner initializeRoles() {
-        return args -> {
-            if (roleRepository.findByName("ROLE_GUIDE").isEmpty()) {
-                Role user = new Role();
-                user.setName("ROLE_GUIDE");
-                roleRepository.save(user);
-            }
-            if (roleRepository.findByName("ROLE_ADVISOR").isEmpty()) {
-                Role advisor = new Role();
-                advisor.setName("ROLE_ADVISOR");
-                roleRepository.save(advisor);
-            }
-            if (roleRepository.findByName("ROLE_COORDINATOR").isEmpty()) {
-                Role coordinator = new Role();
-                coordinator.setName("ROLE_COORDINATOR");
-                roleRepository.save(coordinator);
-            }
-            if (roleRepository.findByName("ROLE_HEAD_SECRETARY").isEmpty()) {
-                Role headSecretary = new Role();
-                headSecretary.setName("ROLE_HEAD_SECRETARY");
-                roleRepository.save(headSecretary);
-            }
-            if (roleRepository.findByName("ROLE_DIRECTOR").isEmpty()) {
-                Role director = new Role();
-                director.setName("ROLE_DIRECTOR");
-                roleRepository.save(director);
-            }
-        };
+        return args -> initializeRoleData();
     }
 
-    @Bean
     @Transactional
+    public void initializeRoleData() {
+        if (roleRepository.findByName("ROLE_GUIDE").isEmpty()) {
+            Role user = new Role();
+            user.setName("ROLE_GUIDE");
+            roleRepository.save(user);
+        }
+        if (roleRepository.findByName("ROLE_ADVISOR").isEmpty()) {
+            Role advisor = new Role();
+            advisor.setName("ROLE_ADVISOR");
+            roleRepository.save(advisor);
+        }
+        if (roleRepository.findByName("ROLE_COORDINATOR").isEmpty()) {
+            Role coordinator = new Role();
+            coordinator.setName("ROLE_COORDINATOR");
+            roleRepository.save(coordinator);
+        }
+        if (roleRepository.findByName("ROLE_HEAD_SECRETARY").isEmpty()) {
+            Role headSecretary = new Role();
+            headSecretary.setName("ROLE_HEAD_SECRETARY");
+            roleRepository.save(headSecretary);
+        }
+        if (roleRepository.findByName("ROLE_DIRECTOR").isEmpty()) {
+            Role director = new Role();
+            director.setName("ROLE_DIRECTOR");
+            roleRepository.save(director);
+        }
+        if (roleRepository.findByName("ROLE_GUIDE_IN_TRAINING").isEmpty()) {
+            Role guideInTraining = new Role();
+            guideInTraining.setName("ROLE_GUIDE_IN_TRAINING");
+            roleRepository.save(guideInTraining);
+        }
+    }
+/*
+    @Bean
     public ApplicationRunner initializeAdvisors() {
-        return args -> {
-            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
-                Advisor advisor = new Advisor();
-                advisor.setDepartment("CS");
-                advisor.setStartDate(new Date());
-                advisor.setEmail("furkan.akyol@ug.bilkent.edu.tr");
-                advisor.setFirstName("Furkan");
-                advisor.setLastName("Akyol");
-                advisor.setGrade(5);
-                advisor.setPassword("asd");
-                advisor.setId(12345678L);
-                advisor.setDescription("Furkan Akyol added as an advisor for an example.");
-                advisor.setPhoneNumber("0123456789");
-                advisor.setResponsibleDay(DayOfWeek.WEDNESDAY);
-                advisorRepository.save(advisor);
-            }
-        };
+        return args -> initializeAdvisorData();
     }
 
     @Bean
-    @Transactional
     public ApplicationRunner initializeGuides() {
-        return args -> {
-            if(guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()){
-                Guide guide = new Guide();
-                guide.setStartDate(new Date());
-                guide.setDepartment("CS");
-                guide.setEmail("candan.atac@ug.bilkent.edu.tr");
-                guide.setFirstName("Ayca");
-                guide.setLastName("Atac");
-                guide.setSchedule("example schedule");
-                guide.setGrade(3);
-                guide.setPassword("password");
-                guide.setId(22203501L);
-                guide.setDescription("Ayca added as a guide for an example.");
-                guide.setPhoneNumber("05370527736");
-                guideRepository.save(guide);
-            }
-            if(guideRepository.findByFirstNameAndLastName("Mustafa", "Ir").isEmpty()){
-                Guide guide = new Guide();
-                guide.setStartDate(new Date());
-                guide.setDepartment("CS");
-                guide.setEmail("ozkan.ir@ug.bilkent.edu.tr");
-                guide.setFirstName("Mustafa Özkan");
-                guide.setLastName("İr");
-                guide.setSchedule("example schedule");
-                guide.setGrade(3);
-                guide.setPassword("password");
-                guide.setId(22103254L);
-                guide.setDescription("Mustafa added as a guide for an example.");
-                guide.setPhoneNumber("05326589878");
-                guideRepository.save(guide);
-            }
-
-            if(guideRepository.findByFirstNameAndLastName("Poyraz", "Karayel").isEmpty()){
-                Guide guide = new Guide();
-                guide.setStartDate(new Date());
-                guide.setDepartment("MAN");
-                guide.setEmail("poyraz.karayel@ug.bilkent.edu.tr");
-                guide.setFirstName("Poyraz");
-                guide.setLastName("Karayel");
-                guide.setSchedule("example schedule");
-                guide.setGrade(3);
-                guide.setPassword("password");
-                guide.setId(22103216L);
-                guide.setDescription("Poyraz is now Here.");
-                guide.setPhoneNumber("05326145462");
-                guideRepository.save(guide);
-            }
-        };
+        return args -> initializeGuideData();
     }
+
+    @Bean
+    public ApplicationRunner initializeGuideInTrainings() {
+        return args -> initializeGuideInTrainingData();
+    }
+
+    @Transactional
+    public void initializeAdvisorData() {
+        if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("1");
+            registerDto.setPassword("1");
+            registerDto.setRole("ROLE_ADVISOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(1L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserAdvisorDto advisorDto = new UserAdvisorDto();
+            advisorDto.setFirstName("Furkan");
+            advisorDto.setLastName("Akyol");
+            advisorDto.setDescription("Furkan Akyol added as an advisor as an example.");
+            advisorDto.setPhoneNumber("0123456789");
+            advisorDto.setResponsibleDay(DayOfWeek.WEDNESDAY);
+            advisorDto.setEmail("furkan.akyol@ug.bilkent.edu.tr");
+            advisorDto.setGrade(3);
+            advisorDto.setPicture("picture.jpg");
+            advisorDto.setDepartment("CS");
+            userService.enterPersonalInformationAdvisor(user, advisorDto);
+        }
+    }
+
+    @Transactional
+    public void initializeGuideData() {
+        if (guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("2");
+            registerDto.setPassword("2");
+            registerDto.setRole("ROLE_GUIDE");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(2L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideDto guideDto = new UserGuideDto();
+            guideDto.setSchedule("example guide schedule");
+            guideDto.setFirstName("Ayca");
+            guideDto.setLastName("Atac");
+            guideDto.setDescription("Ayca Atac added as a guide as an example.");
+            guideDto.setPhoneNumber("05370527736");
+            guideDto.setEmail("candan.atac@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            userService.enterPersonalInformationGuide(user, guideDto);
+        }
+    }
+
+
+    @Transactional
+    public void initializeGuideInTrainingData() {
+        if (guideRepository.findByFirstNameAndLastName("Ece", "Can").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("3");
+            registerDto.setPassword("3");
+            registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(3L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
+            guideDto.setSchedule("example guide in training schedule");
+            guideDto.setFirstName("Ece");
+            guideDto.setLastName("Can");
+            guideDto.setDescription("Ece can added as a guide in training as an example.");
+            guideDto.setPhoneNumber("05371127736");
+            guideDto.setEmail("ececan@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            userService.enterPersonalInformationGuideInTraining(user, guideDto);
+        }
+    }
+
+*/
 }
