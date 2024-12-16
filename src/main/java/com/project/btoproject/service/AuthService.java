@@ -12,6 +12,7 @@ import com.project.btoproject.security.JWTGenerator;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,32 +21,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Locale;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class AuthService {
 
-    private AuthenticationManager authenticationManager;
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private JWTGenerator jwtGenerator;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JWTGenerator jwtGenerator;
 
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtGenerator = jwtGenerator;
-    }
 
-    public ResponseEntity<?> login(@RequestBody LoginDto loginDto, HttpServletRequest request) {
+    public ResponseEntity<?> login(LoginDto loginDto, HttpServletRequest request) {
         try {
             // Authenticate the user
             Authentication authentication = authenticationManager.authenticate(
@@ -66,34 +58,32 @@ public class AuthService {
             // Return success response
             return ResponseEntity.ok(new AuthResponseDTO(token));
         } catch (Exception e) {
-            // Handle specific exceptions and return meaningful messages
             if (e instanceof org.springframework.security.authentication.BadCredentialsException) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ErrorResponseDto("Invalid username or password"));
             } else {
-                // For other exceptions, return a generic error message
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(new ErrorResponseDto("Authentication failed. Please try again."));
             }
         }
     }
 
-
-    public String register(@RequestBody RegisterDto registerDto) {
+    @Transactional
+    public String register(RegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername())) {
-            return ("Username is taken!");
+            return "Username is already taken!";
         }
+
+        Role role = roleRepository.findByName(registerDto.getRole().toUpperCase(Locale.ROOT))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid role: " + registerDto.getRole()));
 
         UserEntity user = new UserEntity();
         user.setUsername(registerDto.getUsername());
-        user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
-        String role = registerDto.getRole();
-        Role roles = roleRepository.findByName(role.toUpperCase(Locale.ROOT)).get();
-        user.setRoles(Collections.singletonList(roles));
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        user.setRoles(Collections.singletonList(role));
 
         userRepository.save(user);
 
-        return ("User registered success!");
+        return "User registered successfully!";
     }
-
 }

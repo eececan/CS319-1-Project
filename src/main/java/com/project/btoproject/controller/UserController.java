@@ -1,6 +1,7 @@
 package com.project.btoproject.controller;
 
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.service.AllUsersService;
 import com.project.btoproject.service.UserService;
 import com.project.btoproject.service.UserService;
@@ -20,12 +21,14 @@ public class UserController {
 
     private final AllUsersService allUsersService;
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public UserController(AllUsersService allUsersService,
-                           UserService userService) {
+                          UserService userService, RoleRepository roleRepository) {
         this.allUsersService = allUsersService;
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/get-tasks")
@@ -90,6 +93,16 @@ public class UserController {
         UserDetails userDetails = (UserDetails) principal;
         String userId = userDetails.getUsername();
         userService.changePassword(Long.parseLong(userId), password);
+    }
+
+    @PostMapping("/changeRole")
+    public void changeRole(@RequestParam String roleName){
+        Role role = roleRepository.findByName(roleName).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String userId = userDetails.getUsername();
+        userService.changeRole(Long.parseLong(userId), role);
     }
 
 }
