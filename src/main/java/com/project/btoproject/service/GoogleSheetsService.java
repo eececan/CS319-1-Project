@@ -10,6 +10,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.project.btoproject.enums.Hour;
 import com.project.btoproject.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
@@ -99,6 +100,36 @@ public class GoogleSheetsService {
         }
 
         return response.getValues();
+    }
+
+    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    public void fetchAndSaveNewTours() {
+        try {
+            saveNewTours();
+            System.out.println("Scheduled task: Tours fetched and saved.");
+        } catch (IOException e) {
+            System.err.println("Error fetching and saving tours: " + e.getMessage());
+        }
+    }
+
+    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    public void fetchAndSaveNewFairs() {
+        try {
+            saveNewFairs();
+            System.out.println("Scheduled task: Fairs fetched and saved.");
+        } catch (IOException e) {
+            System.err.println("Error fetching and saving fairs: " + e.getMessage());
+        }
+    }
+
+    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    public void fetchAndSaveNewIndividualTours() {
+        try {
+            saveNewIndividualTours();
+            System.out.println("Scheduled task: Individual Tours fetched and saved.");
+        } catch (IOException e) {
+            System.err.println("Error fetching and saving individual tours: " + e.getMessage());
+        }
     }
 
     public void saveNewTours() throws IOException {
