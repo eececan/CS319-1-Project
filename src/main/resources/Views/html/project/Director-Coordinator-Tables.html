@@ -321,6 +321,21 @@
         <li class="g_heading">Support</li>
         <li><a href="javascript:void(0)"><i class="fa fa-support"></i><span>Need Help?</span></a></li>
         <li><a href="javascript:void(0)"><i class="fa fa-tag"></i><span>ContactUs</span></a></li>-->
+        <!-- Add navigation tabs -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="tour-applications-tab" data-toggle="tab" href="#Tour-Applications" role="tab">Tour Applications</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tours-tab" data-toggle="tab" href="#Tours" role="tab">Tours</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="fair-applications-tab" data-toggle="tab" href="#Fair-Applications" role="tab">Fair Applications</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="fairs-tab" data-toggle="tab" href="#Fairs" role="tab">Fairs</a>
+  </li>
+</ul>
       </ul>
     </nav>
   </div>
@@ -338,7 +353,207 @@
     <div class="section-body mt-3">
       <div class="container-fluid">
         <div class="tab-content">
-          <div class="tab-pane fade show active" id="Fair-Applications" role="tabpanel">
+          <!-- Tour Applications Tab -->
+          <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="status-legend table-responsive" style="overflow-x: auto;">
+                      <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                        <thead>
+                          <tr>
+                            <th style="width: 1%;">Date</th>
+                            <th style="width: 1%;">Day</th>
+                            <th style="width: 1%;">Hour</th>
+                            <th style="width: 1%;">High School</th>
+                            <th style="width: 1%;">City</th>
+                            <th style="width: 1%;">People Count</th>
+                            <th style="width: 1%;">Counselor Name</th>
+                            <th style="width: 1%;">Contact</th>
+                            <th style="width: 1%;">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr id="tourApplications-row-${tour.id}" th:each="tour : ${tourApplications}"
+                              th:classappend="
+                                ${tour.status.name() == 'BTO_ACCEPTED'} ? 'bto-approved-tour' :
+                                (${tour.status.name() == 'BTO_REJECTED'} ?  'bto-rejected-tour' :
+                                (${tour.status.name() == 'UPCOMING_TOUR'} ? 'approved-tour' :
+                                (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')))">
+                            <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
+                            <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
+                            <td th:switch="${tour.hour.name()}">
+                              <span th:case="'NINE'">09:00</span>
+                              <span th:case="'ELEVEN'">11:00</span>
+                              <span th:case="'THIRTEEN_THIRTY'">13:30</span>
+                              <span th:case="'SIXTEEN'">16:00</span>
+                              <span th:case="*">Unknown</span>
+                            </td>
+                            <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
+                            <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">City</td>
+                            <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
+                            <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
+                            <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
+                            <td>
+                              <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION'}">
+                                <button class="btn btn-success" th:onclick="'handleAdvisorApproval(' + ${tour.id} + ')'">Approve</button>
+                                <button class="btn btn-danger" th:onclick="'handleAdvisorRejection(' + ${tour.id} + ')'">Reject</button>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Legend -->
+            <div class="status-legend-container">
+              <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                <li class="legend-item new">New</li>
+                <li class="legend-item approved-tour">Approved</li>
+                <li class="legend-item bto-approved-tour">BTO Approved</li>
+                <li class="legend-item bto-rejected-tour">BTO Rejected</li>
+                <li class="legend-item canceled-tour">Canceled</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Tours Tab -->
+          <div class="tab-pane fade" id="Tours" role="tabpanel">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                      <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                        <thead>
+                          <tr>
+                            <th style="width: 1%;">Date</th>
+                            <th style="width: 1%;">Day</th>
+                            <th style="width: 1%;">Hour</th>
+                            <th style="width: 1%;">High School</th>
+                            <th style="width: 1%;">City</th>
+                            <th style="width: 1%;">People Count</th>
+                            <th style="width: 1%;">Guide #</th>
+                            <th style="width: 1%;">Guide 1</th>
+                            <th style="width: 1%;">Guide 2</th>
+                            <th style="width: 1%;">Guide 3</th>
+                            <th style="width: 1%;">Counselor Name</th>
+                            <th style="width: 1%;">Contact</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr id="tours-row-${tour.id}" th:each="tour : ${tours}"
+                              th:classappend="
+                                ${tour.status.name() == 'COMPLETED_TOUR'} ? 'completed-tour' :
+                                (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')">
+                            <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
+                            <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
+                            <td th:switch="${tour.hour.name()}">
+                              <span th:case="'NINE'">09:00</span>
+                              <span th:case="'ELEVEN'">11:00</span>
+                              <span th:case="'THIRTEEN_THIRTY'">13:30</span>
+                              <span th:case="'SIXTEEN'">16:00</span>
+                              <span th:case="*">Unknown</span>
+                            </td>
+                            <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
+                            <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">City</td>
+                            <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
+                            <td style="text-align: center; vertical-align: middle;" th:text="${tour.guideCount}"></td>
+                            <!-- Logic for Guide 1 -->
+                            <td>
+                              <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
+                                <span>-</span>
+                              </div>
+                              <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 1}">
+                                <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                              </div>
+                              <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1}">
+                                <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                <button class="btn ms-2 remove-guide" th:data-tour-id="${tour.id}" th:data-guide-id="${tour.guides[0].id}">-</button>
+                              </div>
+                              <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
+                                <select class="form-select guide-dropdown" th:id="'guide-' + ${tour.id} + '-1'" th:name="'guide-' + ${tour.id} + '-1'" th:data-highschoolname="${tour.school.name}" th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}" th:data-tourhour="${tour.hour}">
+                                  <option value="" disabled selected>Select Guide</option>
+                                  <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">Guide Name</option>
+                                </select>
+                              </div>
+                            </td>
+                            <!-- Logic for Guide 2 -->
+                            <td>
+                              <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
+                                <span>-</span>
+                              </div>
+                              <div th:if="${tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                <button class="btn btn-primary add-guide-slot" th:data-tour-id="${tour.id}">Add Guide Slot</button>
+                              </div>
+                              <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 2}">
+                                <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                              </div>
+                              <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() >= 2}">
+                                <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                <button class="btn ms-2 remove-guide" th:data-tour-id="${tour.id}" th:data-guide-id="${tour.guides[1].id}">-</button>
+                              </div>
+                              <div class="guide-slot-wrapper" th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
+                                <select class="form-select guide-dropdown" th:id="'guide-' + ${tour.id} + '-2'" th:name="'guide-' + ${tour.id} + '-2'" th:data-highschoolname="${tour.school.name}" th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}" th:data-tourhour="${tour.hour}">
+                                  <option value="" disabled selected>Select Guide</option>
+                                  <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">Guide Name</option>
+                                </select>
+                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 1}">
+                                  <button class="btn btn-danger btn-sm remove-guide-slot" th:data-tour-id="${tour.id}" th:data-guide-index="2">-</button>
+                                </div>
+                              </div>
+                            </td>
+                            <!-- Logic for Guide 3 -->
+                            <td>
+                              <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                <span>-</span>
+                              </div>
+                              <div th:if="${tour.guideCount == 2 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                <button class="btn btn-primary add-guide-slot" th:data-tour-id="${tour.id}">Add Guide Slot</button>
+                              </div>
+                              <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 3}">
+                                <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                              </div>
+                              <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() >= 3}">
+                                <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                <button class="btn ms-2 remove-guide" th:data-tour-id="${tour.id}" th:data-guide-id="${tour.guides[2].id}">-</button>
+                              </div>
+                              <div class="guide-slot-wrapper" th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
+                                <select class="form-select guide-dropdown" th:id="'guide-' + ${tour.id} + '-3'" th:name="'guide-' + ${tour.id} + '-3'" th:data-highschoolname="${tour.school.name}" th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}" th:data-tourhour="${tour.hour}">
+                                  <option value="" disabled selected>Select Guide</option>
+                                  <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">Guide Name</option>
+                                </select>
+                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 2}">
+                                  <button class="btn btn-danger btn-sm remove-guide-slot" th:data-tour-id="${tour.id}" th:data-guide-index="3">-</button>
+                                </div>
+                              </div>
+                            </td>
+                            <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
+                            <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Legend -->
+            <div class="status-legend-container">
+              <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                <li class="legend-item new">UPCOMING</li>
+                <li class="legend-item completed-tour">Completed</li>
+                <li class="legend-item canceled-tour">Canceled</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Fair Applications Tab -->
+          <div class="tab-pane fade" id="Fair-Applications" role="tabpanel">
             <div class="row">
               <div class="col-md-12">
                 <div class="card">
@@ -405,6 +620,187 @@
               </ul>
             </div>
 
+          </div>
+          <div class="tab-pane fade" id="Fairs" role="tabpanel">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                      <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                        <thead>
+                        <tr>
+                          <th style="width: 1%;">Date</th>
+                          <th style="width: 1%;">Day</th>
+                          <th style="width: 1%;">Hour</th>
+                          <th style="width: 1%;">High School</th>
+                          <th style="width: 1%;">City</th>
+                          <th style="width: 1%;">People Count</th>
+                          <th style="width: 1%;">Guide #</th>
+                          <th style="width: 1%;">Guide 1</th>
+                          <th style="width: 1%;">Guide 2</th>
+                          <th style="width: 1%;">Guide 3</th>
+                          <th style="width: 1%;">Counselor Name</th>
+                          <th style="width: 1%;">Contact</th>
+                          <th style="width: 1%;">Responsibility</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="fairs-row-${fair.id}" th:each="fair : ${fairs}">
+                          <td th:text="${#dates.format(fair.date, 'dd/MM/yyyy')}">Date</td>
+                          <td th:text="${#dates.format(fair.date, 'EEEE')}">Day</td>
+                          <td th:text="${fair.hour}">Hour</td>
+                          <td th:text="${fair.school.name}">High School</td>
+                          <td th:text="${fair.school.city}">City</td>
+                          <td th:text="${fair.peopleCount}">People Count</td>
+                          <td th:text="${fair.guideCount}">Guide #</td>
+                          <td th:text="${fair.guide1}">Guide 1</td>
+                          <td th:text="${fair.guide2}">Guide 2</td>
+                          <td th:text="${fair.guide3}">Guide 3</td>
+                          <td>
+                            <div th:if="${fair.status.name() == 'CANCELED_FAIR'}">
+                              <span>-</span>
+                            </div>
+                            <div th:if="${fair.status.name() == 'COMPLETED_FAIR' && fair.guides.size() >= 1}">
+                              <span th:text="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"></span>
+                            </div>
+                            <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 1 && fair.guides.size() >= 1}">
+                              <span th:text="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"></span>
+                              <button
+                                      class="btn ms-2 remove-guide"
+                                      th:data-fair-id="${fair.id}"
+                                      th:data-guide-id="${fair.guides[0].id}">
+                                -
+                              </button>
+                            </div>
+                            <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 1 && fair.guides.size() < 1}">
+                              <select
+                                      class="form-select guide-dropdown"
+                                      th:id="'guide-' + ${fair.id} + '-1'"
+                                      th:name="'guide-' + ${fair.id} + '-1'"
+                                      th:data-highschoolname="${fair.school.name}"
+                                      th:data-fairdate="${#dates.format(fair.date, 'dd/MM/yyyy')}"
+                                      th:data-fairhour="${fair.hour}">
+                                <option value="" disabled selected>Select Guide</option>
+                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                  Guide Name
+                                </option>
+                              </select>
+                            </div>
+                          </td>
+
+                          <!-- Logic for Guide 2 -->
+                          <td>
+                            <div th:if="${fair.status.name() == 'CANCELED_FAIR'}">
+                              <span>-</span>
+                            </div>
+                            <div th:if="${fair.guideCount == 1 && fair.status.name() == 'UPCOMING_FAIR'}">
+                              <!-- Add guide slot button only when guideCount is less than 2 -->
+                              <button
+                                      class="btn btn-primary add-guide-slot"
+                                      th:data-fair-id="${fair.id}">
+                                Add Guide Slot
+                              </button>
+                            </div>
+                            <div th:if="${fair.status.name() == 'COMPLETED_FAIR' && fair.guides.size() >= 2}">
+                              <span th:text="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"></span>
+                            </div>
+                            <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 2 && fair.guides.size() >= 2}">
+                              <span th:text="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"></span>
+                              <button
+                                      class="btn ms-2 remove-guide"
+                                      th:data-fair-id="${fair.id}"
+                                      th:data-guide-id="${fair.guides[1].id}">
+                                -
+                              </button>
+                            </div>
+                            <div class="guide-slot-wrapper" th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 2 && fair.guides.size() < 2}">
+                              <select
+                                      class="form-select guide-dropdown"
+                                      th:id="'guide-' + ${fair.id} + '-2'"
+                                      th:name="'guide-' + ${fair.id} + '-2'"
+                                      th:data-highschoolname="${fair.school.name}"
+                                      th:data-fairdate="${#dates.format(fair.date, 'dd/MM/yyyy')}"
+                                      th:data-fairhour="${fair.hour}">
+                                <option value="" disabled selected>Select Guide</option>
+                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                  Guide Name
+                                </option>
+                              </select>
+                              <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount > 1}">
+                                <button
+                                        class="btn btn-danger btn-sm remove-guide-slot"
+                                        th:data-fair-id="${fair.id}"
+                                        th:data-guide-index="2">
+                                  -
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+
+                          <!-- Logic for Guide 3 -->
+                          <td>
+                            <div th:if="${fair.status.name() == 'CANCELED_FAIR' || fair.guideCount == 1 && fair.status.name() == 'UPCOMING_FAIR'}">
+                              <span>-</span>
+                            </div>
+                            <div th:if="${fair.guideCount == 2 && fair.status.name() == 'UPCOMING_FAIR'}">
+                              <button
+                                      class="btn btn-primary add-guide-slot"
+                                      th:data-fair-id="${fair.id}">
+                                Add Guide Slot
+                              </button>
+                            </div>
+                            <div th:if="${fair.status.name() == 'COMPLETED_FAIR' && fair.guides.size() >= 3}">
+                              <span th:text="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"></span>
+                            </div>
+                            <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 3 && fair.guides.size() >= 3}">
+                              <span th:text="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"></span>
+                              <button
+                                      class="btn ms-2 remove-guide"
+                                      th:data-fair-id="${fair.id}"
+                                      th:data-guide-id="${fair.guides[2].id}">
+                                -
+                              </button>
+                            </div>
+                            <div class="guide-slot-wrapper" th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 3 && fair.guides.size() < 3}">
+                              <select
+                                      class="form-select guide-dropdown"
+                                      th:id="'guide-' + ${fair.id} + '-3'"
+                                      th:name="'guide-' + ${fair.id} + '-3'"
+                                      th:data-highschoolname="${fair.school.name}"
+                                      th:data-fairdate="${#dates.format(fair.date, 'dd/MM/yyyy')}"
+                                      th:data-fairhour="${fair.hour}">
+                                <option value="" disabled selected>Select Guide</option>
+                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                  Guide Name
+                                </option>
+                              </select>
+                              <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount > 2}">
+                                <button
+                                        class="btn btn-danger btn-sm remove-guide-slot"
+                                        th:data-fair-id="${fair.id}"
+                                        th:data-guide-index="3">
+                                  -
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                          <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
+                          <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
+                          <td>
+                            <div th:if="${fair.status.name() == 'NEW_FAIR_APPLICATION'}">
+                              <button class="btn btn-success" th:onclick="'handleFairApproval(' + ${fair.id} + ')'">Approve</button>
+                              <button class="btn btn-danger" th:onclick="'handleFairRejection(' + ${fair.id} + ')'">Reject</button>
+                            </div>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
