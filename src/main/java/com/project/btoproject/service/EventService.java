@@ -370,8 +370,7 @@ public class EventService implements IEventService {
                 Status.NEW_TOUR_APPLICATION,
                 Status.BTO_ACCEPTED,
                 Status.BTO_REJECTED,
-                Status.UPCOMING_TOUR,
-                Status.CANCELED_TOUR
+                Status.UPCOMING_TOUR
         );
         return eventRepository.findToursByStatuses(applicationStatuses);
     }

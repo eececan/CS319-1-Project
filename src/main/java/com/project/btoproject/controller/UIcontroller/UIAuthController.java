@@ -255,6 +255,7 @@ public class UIAuthController {
     public String showEventListHeadSecretary(Model model) {
 
         model.addAttribute("tourApplications", eventService.getTourApplications());
+        model.addAttribute("tours", eventService.getTours());
         return "head-secretary-tables";
     }
 
