@@ -378,7 +378,6 @@ public class EventService implements IEventService {
         List<Status> applicationStatuses = List.of(
                 Status.NEW_FAIR_APPLICATION,
                 Status.UPCOMING_FAIR,
-                Status.CANCELED_FAIR,
                 Status.REJECTED_FAIR
         );
         return eventRepository.findFairsByStatuses(applicationStatuses);
