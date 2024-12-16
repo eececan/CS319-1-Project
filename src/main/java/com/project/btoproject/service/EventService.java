@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,7 @@ public class EventService implements IEventService {
             if (!fair.getStatus().equals(Status.NEW_FAIR_APPLICATION)) {
                 throw new IllegalStateException("Fair is not in a state to be approved.");
             }
-            fair.setStatus(Status.NEW_FAIR_APPLICATION);
+            fair.setStatus(Status.UPCOMING_FAIR);
             eventRepository.save(fair);
         }
 
@@ -60,6 +61,36 @@ public class EventService implements IEventService {
             throw new IllegalArgumentException("Fair not found with ID: " + fairId);
         }
     }
+    @Transactional
+    public void cancelFair(Long fairId) {
+
+        Optional<Event> eventOptional = eventRepository.findById(fairId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
+            Fair fair = (Fair) eventOptional.get();
+
+
+            if (!fair.getStatus().equals(Status.UPCOMING_FAIR)) {
+                throw new IllegalStateException("Tour is not in a state to be canceled.");
+            }
+
+
+            List<Guide> assignedGuides = fair.getGuides();
+            for (Guide guide : assignedGuides) {
+                guide.getEvents().remove(fair); // Remove the fair from the guide's events
+                guideRepository.save(guide);   // Save the updated guide
+            }
+
+
+            fair.getGuides().clear();
+
+            fair.setStatus(Status.CANCELED_FAIR);
+
+            eventRepository.save(fair);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + fairId);
+        }
+    }
 
     public void approveTourByAdvisor(Long tourId) {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
@@ -72,7 +103,7 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.BTO_ACCEPTED); // Set status to advisor approved
             eventRepository.save(tour);
-            notificationService.notifyTourApproved(tour);
+            notificationService.notifyEventApproved(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
@@ -339,11 +370,20 @@ public class EventService implements IEventService {
                 Status.NEW_TOUR_APPLICATION,
                 Status.BTO_ACCEPTED,
                 Status.BTO_REJECTED,
-                Status.UPCOMING_TOUR,
-                Status.CANCELED_TOUR
+                Status.UPCOMING_TOUR
         );
         return eventRepository.findToursByStatuses(applicationStatuses);
     }
+    public List<Fair> getFairApplications() {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.UPCOMING_FAIR,
+                Status.CANCELED_FAIR,
+                Status.REJECTED_FAIR
+        );
+        return eventRepository.findFairsByStatuses(applicationStatuses);
+    }
+
 
     public List<IndividualTour> getIndividualTourApplications() {
         List<Status> applicationStatuses = List.of(
@@ -370,6 +410,14 @@ public class EventService implements IEventService {
                 Status.CANCELED_INDIVIDUAL_TOUR
         );
         return eventRepository.findIndividualToursByStatuses(tourStatuses);
+    }
+    public List<Fair> getFairs() {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        return eventRepository.findFairsByStatuses(tourStatuses);
     }
 
     @Transactional
@@ -422,6 +470,7 @@ public class EventService implements IEventService {
             }
             // Clear the existing guide to allow reassignment
             individualTour.getGuides().clear();
+
         }
 
         // Check if the guide has another individual tour on the same date and hour
@@ -529,11 +578,87 @@ public class EventService implements IEventService {
         // Save the updated tour to the database
         eventRepository.save(tour);
     }
+    @Transactional
+    public void assignGuideToFair(Long eventId, Long guideId) {
+
+        // Fetch the tour and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Fair not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is already assigned to this tour
+        if (event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is already assigned to this fair.");
+        }
+
+        // Check if the guide has another tour on the same date and hour
+        boolean hasConflict = guide.getEvents().stream()
+                .anyMatch(existingFair -> existingFair.getDate().equals(event.getDate())
+                        && ((Fair) existingFair).getHour().equals(((Fair) event).getHour()));
+        if (hasConflict) {
+            throw new IllegalArgumentException("This guide is already assigned to another fair at the same time.");
+        }
+
+        System.out.println("Guide assigned to fair: " + guide.getFirstName() + " " + guide.getLastName());
+        // Add the guide to the tour
+        (event.getGuides()).add(guide);
+        System.out.println("Fairs of the guide: " + guide.getEvents());
+        eventRepository.save(event); // Save the updated tour
+        System.out.println("Fairs of the guide: " + guide.getEvents());
+        notificationService.notifyGuideAssigned((Fair)event, guide);
+    }
+    @Transactional
+    public void increaseGuideCountFair(Long fairId) {
+        // Fetch the tour from the database
+        Event event = eventRepository.findById(fairId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+
+        // Ensure the event is a tour
+        if (!(event instanceof Fair)) {
+            throw new IllegalArgumentException("The specified event is not a tour.");
+        }
+
+        Fair fair = (Fair) event;
+
+        // Check the current guide count
+        if (fair .getGuideCount() >= 3) {
+            throw new IllegalStateException("The maximum number of guides (3) is already assigned.");
+        }
+
+        // Increment the guide count
+        fair.setGuideCount(fair.getGuideCount() + 1);
+
+        // Save the updated tour to the database
+        eventRepository.save(fair);
+    }
+    @Transactional
+    public void removeGuideFromFair(Long eventId, Long guideId) {
+
+        // Fetch the event and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Fair not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is assigned to this tour
+        if (!event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is not assigned to this fair.");
+        }
+
+        // Remove the guide from the tour's guide list
+        event.getGuides().remove(guide);
+
+        // Save the updated tour (cascade will handle guide changes)
+        eventRepository.save(event);
+
+        System.out.println("Guide removed from fair: " + guide.getFirstName() + " " + guide.getLastName());
+    }
 
     @Transactional
-    public void decreaseGuideCount(Long tourId) {
+    public void decreaseGuideCount(Long eventId) {
         // Fetch the tour from the database
-        Event event = eventRepository.findById(tourId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
 
         // Decrease guide count but ensure it doesn't go below 1
@@ -625,8 +750,55 @@ public class EventService implements IEventService {
         }
     }
 
+    public void notifyGuidesForUpcomingEvents() {
+        List<Fair> upcomingFairs = getAllFairs().stream()
+                .filter(fair -> fair.getStatus() == Status.UPCOMING_FAIR)
+                .collect(Collectors.toList());
 
+        List<Tour> upcomingTours = getAllTours().stream()
+                .filter(tour -> tour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
 
+        List<IndividualTour> upcomingIndividualTours = getAllIndividualTours().stream()
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
+
+        Date now = new Date();
+
+        for (Fair fair : upcomingFairs) {
+            if (daysBetween(now, fair.getDate()) == 3) {
+                notifyGuides(fair.getGuides(), fair);
+            }
+        }
+
+        for (Tour tour : upcomingTours) {
+            if (daysBetween(now, tour.getDate()) == 3) {
+                notifyGuides(tour.getGuides(), tour);
+            }
+        }
+
+        for (IndividualTour individualTour : upcomingIndividualTours) {
+            if (daysBetween(now, individualTour.getDate()) == 3) {
+                notifyGuides(individualTour.getGuides(), individualTour);
+            }
+        }
+    }
+
+    private void notifyGuides(List<Guide> guides, Event event) {
+        for (Guide guide : guides) {
+            String message = "Reminder: You have an upcoming " + event.getEventType() +
+                    " on " + new SimpleDateFormat("dd/MM/yyyy").format(event.getDate()) +
+                    ". Please prepare accordingly.";
+            notificationService.sendNotification(guide, message);
+        }
+    }
+
+    private long daysBetween(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
 }
+
+
 
 
