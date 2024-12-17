@@ -105,8 +105,8 @@ public class AuthController {
                     System.out.println("User is a DIRECTOR");
                     // Add logic for DIRECTOR
                 } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COORDINATOR"))) {
-                    System.out.println("User is a COORDINATOR");
-                    // Add logic for COORDINATOR
+                    UserCoordinatorDto coordinatorDto = objectMapper.convertValue(dtoMap, UserCoordinatorDto.class);
+                    userService.enterPersonalInformationCoordinator(user, coordinatorDto);
                 } else {
                     System.out.println("User has no matching roles.");
                     // Add logic for unmatched roles

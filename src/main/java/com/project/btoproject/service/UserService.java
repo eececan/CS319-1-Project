@@ -1,6 +1,7 @@
 package com.project.btoproject.service;
 
 import com.project.btoproject.dto.UserAdvisorDto;
+import com.project.btoproject.dto.UserCoordinatorDto;
 import com.project.btoproject.dto.UserGuideDto;
 import com.project.btoproject.dto.UserGuideInTrainingDto;
 import com.project.btoproject.model.*;
@@ -71,6 +72,21 @@ public class UserService implements IUserService {
         advisor.setId(Long.parseLong(userEntity.getUsername()));
         advisor.setPassword(userEntity.getPassword());
         allUsersService.addUser(advisor);
+    }
+
+    @Override
+    public void enterPersonalInformationCoordinator(UserEntity userEntity, UserCoordinatorDto userCoordinatorDto) {
+        Coordinator coordinator = new Coordinator(userCoordinatorDto.getDepartment(), userCoordinatorDto.getGrade() );
+        coordinator.setFirstName(userCoordinatorDto.getFirstName());
+        coordinator.setLastName(userCoordinatorDto.getLastName());
+        coordinator.setPhoneNumber(userCoordinatorDto.getPhoneNumber());
+        coordinator.setEmail(userCoordinatorDto.getEmail());
+        coordinator.setPicture(userCoordinatorDto.getPicture());
+        coordinator.setDescription(userCoordinatorDto.getDescription());
+        coordinator.setStartDate(new Date());
+        coordinator.setId(Long.parseLong(userEntity.getUsername()));
+        coordinator.setPassword(userEntity.getPassword());
+        allUsersService.addUser(coordinator);
     }
 
     @Transactional

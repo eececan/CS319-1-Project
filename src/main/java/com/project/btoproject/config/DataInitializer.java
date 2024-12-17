@@ -1,9 +1,6 @@
 package com.project.btoproject.config;
 
-import com.project.btoproject.dto.RegisterDto;
-import com.project.btoproject.dto.UserAdvisorDto;
-import com.project.btoproject.dto.UserGuideDto;
-import com.project.btoproject.dto.UserGuideInTrainingDto;
+import com.project.btoproject.dto.*;
 import com.project.btoproject.model.Advisor;
 import com.project.btoproject.model.Guide;
 import com.project.btoproject.model.Role;
@@ -12,6 +9,7 @@ import com.project.btoproject.repository.IAdvisorRepository;
 import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.service.AuthService;
+import com.project.btoproject.service.CoordinatorService;
 import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IUserService;
 import org.springframework.boot.ApplicationRunner;
@@ -30,15 +28,17 @@ public class DataInitializer {
     private final IAdvisorRepository advisorRepository;
     private final AuthService authService;
     private final IUserService userService;
+    private final CoordinatorService coordinatorService;
 
     public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
                            IAdvisorRepository advisorRepository, AuthService authService,
-                           IUserService userService) {
+                           IUserService userService, CoordinatorService coordinatorService) {
         this.roleRepository = roleRepository;
         this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
         this.authService = authService;
         this.userService = userService;
+        this.coordinatorService = coordinatorService;
     }
 
     @Bean
@@ -79,7 +79,7 @@ public class DataInitializer {
             roleRepository.save(guideInTraining);
         }
     }
-/*
+
     @Bean
     public ApplicationRunner initializeAdvisors() {
         return args -> initializeAdvisorData();
@@ -93,6 +93,11 @@ public class DataInitializer {
     @Bean
     public ApplicationRunner initializeGuideInTrainings() {
         return args -> initializeGuideInTrainingData();
+    }
+
+    @Bean
+    public ApplicationRunner initializeCoordinators() {
+        return args -> initializeCoordinatorData();
     }
 
     @Transactional
@@ -177,5 +182,31 @@ public class DataInitializer {
         }
     }
 
-*/
+    @Transactional
+    public void initializeCoordinatorData() {
+        if (coordinatorService.getCoordinatorById(4L) == null) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("4");
+            registerDto.setPassword("4");
+            registerDto.setRole("ROLE_COORDINATOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(4L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserCoordinatorDto coordinatorDto = new UserCoordinatorDto();
+            coordinatorDto.setFirstName("Ceren");
+            coordinatorDto.setLastName("Celik");
+            coordinatorDto.setDescription("Ceren celik added as a coordinator as an example.");
+            coordinatorDto.setPhoneNumber("0537113327736");
+            coordinatorDto.setEmail("ceren.celik@ug.bilkent.edu.tr");
+            coordinatorDto.setGrade(3);
+            coordinatorDto.setPicture("picture.jpg");
+            coordinatorDto.setDepartment("CS");
+            userService.enterPersonalInformationCoordinator(user, coordinatorDto);
+        }
+    }
+
+
 }

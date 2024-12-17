@@ -16,8 +16,8 @@ import java.util.List;
 @DiscriminatorValue("COORIDNATOR")
 public class Coordinator extends User {
 
-    @Column(name = "schedule")
-    private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
+   /* @Column(name = "schedule")
+    private String schedule = "default_schedule";  assuming Hour[] is mapped as a string*/
 
     @Column(name = "department", nullable = false)
     private String department = "default_department";
