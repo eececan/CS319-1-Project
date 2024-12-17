@@ -41,6 +41,20 @@
         .closebtn:hover {
             color: black;
         }
+        /* Force Success Alert to Green */
+        .alert-success {
+            background-color: #28a745 !important;
+            color: #fff !important;
+            border-color: #28a745 !important;
+        }
+
+        /* Close Button for Green Alerts */
+        .alert-success .btn-close {
+            color: #fff;
+            opacity: 1;
+            filter: invert(1); /* Makes the close button white */
+        }
+
     </style>
 </head>
 
@@ -484,18 +498,29 @@
                                 <!-- Profile Edit Tab -->
                                 <div class="tab-pane active show" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                     <!-- ID Display Outside the Form -->
-
+                                    <div th:if="${successMessage != null and successMessage != ''}"
+                                         class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <span th:text="${successMessage}"></span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
                                     <!-- Form -->
                                     <form th:action="@{/ui/UserProfile/updateProfile}" method="post">
                                         <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Edit Profile</h3>
-                                                <div class="card-options">
-                                                    <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen">
-                                                        <i class="fe fe-maximize"></i>
-                                                    </a>
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <!-- Left aligned Edit Profile text -->
+                                                <h3 class="card-title mb-0">Edit Profile</h3>
+
+                                                <!-- Right aligned Change Password button and fullscreen icon -->
+                                                <div class="d-flex align-items-center">
+                                                    <a href="/ui/UserProfile/changePassword" class="btn btn-sm btn-primary mr-2">Change Password</a>
+                                                    <div class="card-options">
+                                                        <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen">
+                                                            <i class="fe fe-maximize"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
+
                                             <div class="card-body">
                                                 <div class="row clearfix">
                                                     <!-- First Name -->
@@ -541,18 +566,17 @@
                                                         </div>
                                                     </div>
                                                     <!-- Grade -->
-
-
                                                 </div>
                                             </div>
+
                                             <!-- Submit Button -->
                                             <div class="card-footer text-right">
                                                 <button type="button" class="btn btn-primary float-left" onclick="viewEditSchedule()">View/Edit Schedule</button>
-
                                                 <button type="submit" class="btn btn-primary">Update Profile</button>
                                             </div>
                                         </div>
                                     </form>
+
                                 </div>
                             </div>
 
