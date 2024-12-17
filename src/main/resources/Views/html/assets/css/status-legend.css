@@ -177,6 +177,11 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     text-align: center; /* Align headers */
 }
 
+.table td, .table th {
+    text-align: center; /* Center content horizontally */
+    vertical-align: middle; /* Center content vertically */
+}
+
 
 
 
