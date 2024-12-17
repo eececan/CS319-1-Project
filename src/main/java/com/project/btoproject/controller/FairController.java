@@ -120,4 +120,13 @@ public class FairController {
                     .body("An unexpected error occurred. Please try again later.");
         }
     }
+
+    // Cancel fair
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelFair(@PathVariable Long id) {
+        // Logic for Head Secretary cancellation
+        System.out.println("Received ID for Cancellation: " + id);
+        eventService.cancelFair(id);
+        return ResponseEntity.ok().build();
+    }
 }

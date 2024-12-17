@@ -45,6 +45,29 @@ function handleAdvisorRejection(tourId) {
         });
 }
 
+function handleSecretaryApproval(tourId) {
+    fetch(`/api/tours/${tourId}/secretary/approve`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ID ${tourId} approved successfully!`);
+                location.reload(); // Reload the page to reflect the updated status
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error approving tour:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
 function handleSecretaryRejection(tourId) {
     fetch(`/api/tours/${tourId}/secretary/reject`, {
         method: "POST",

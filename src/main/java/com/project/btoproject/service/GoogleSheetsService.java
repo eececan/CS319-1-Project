@@ -350,6 +350,9 @@ public class GoogleSheetsService {
         // Parse event details or additional notes (Column L)
         fair.setVisitorNotes(row.get(11).toString());
 
+        int guideCount = (int) Math.ceil(Integer.parseInt(row.get(10).toString()) / 50.0); // Calculate guide count
+        if(guideCount > 3)  guideCount = 3; // Limit guide count to 3
+        fair.setGuideCount(guideCount);
 
         return fair;
     }

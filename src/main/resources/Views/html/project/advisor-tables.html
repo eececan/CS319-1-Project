@@ -608,145 +608,7 @@
                                                     <td th:text="${fair.school.city}">City</td>
                                                     <td th:text="${fair.peopleCount}">People Count</td>
                                                     <td th:text="${fair.guideCount}">Guide #</td>
-                                                    <td th:text="${fair.guide1}">Guide 1</td>
-                                                    <td th:text="${fair.guide2}">Guide 2</td>
-                                                    <td th:text="${fair.guide3}">Guide 3</td>
-                                                    <td>
-                                                        <div th:if="${fair.status.name() == 'CANCELED_FAIR'}">
-                                                            <span>-</span>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'COMPLETED_FAIR' && fair.guides.size() >= 1}">
-                                                            <span th:text="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"></span>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 1 && fair.guides.size() >= 1}">
-                                                            <span th:text="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"></span>
-                                                            <button
-                                                                    class="btn ms-2 remove-guide"
-                                                                    th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${fair.guides[0].id}">
-                                                                -
-                                                            </button>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 1 && fair.guides.size() < 1}">
-                                                            <select
-                                                                    class="form-select guide-dropdown"
-                                                                    th:id="'guide-' + ${fair.id} + '-1'"
-                                                                    th:name="'guide-' + ${fair.id} + '-1'"
-                                                                    th:data-highschoolname="${fair.school.name}"
-                                                                    th:data-fairdate="${#dates.format(fair.date, 'dd/MM/yyyy')}"
-                                                                    th:data-fairhour="${fair.hour}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
 
-                                                    <!-- Logic for Guide 2 -->
-                                                    <td>
-                                                        <div th:if="${fair.status.name() == 'CANCELED_FAIR'}">
-                                                            <span>-</span>
-                                                        </div>
-                                                        <div th:if="${fair.guideCount == 1 && fair.status.name() == 'UPCOMING_FAIR'}">
-                                                            <!-- Add guide slot button only when guideCount is less than 2 -->
-                                                            <button
-                                                                    class="btn btn-primary add-guide-slot"
-                                                                    th:data-fair-id="${fair.id}">
-                                                                Add Guide Slot
-                                                            </button>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'COMPLETED_FAIR' && fair.guides.size() >= 2}">
-                                                            <span th:text="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"></span>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 2 && fair.guides.size() >= 2}">
-                                                            <span th:text="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"></span>
-                                                            <button
-                                                                    class="btn ms-2 remove-guide"
-                                                                    th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${fair.guides[1].id}">
-                                                                -
-                                                            </button>
-                                                        </div>
-                                                        <div class="guide-slot-wrapper" th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 2 && fair.guides.size() < 2}">
-                                                            <select
-                                                                    class="form-select guide-dropdown"
-                                                                    th:id="'guide-' + ${fair.id} + '-2'"
-                                                                    th:name="'guide-' + ${fair.id} + '-2'"
-                                                                    th:data-highschoolname="${fair.school.name}"
-                                                                    th:data-fairdate="${#dates.format(fair.date, 'dd/MM/yyyy')}"
-                                                                    th:data-fairhour="${fair.hour}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
-                                                            <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount > 1}">
-                                                                <button
-                                                                        class="btn btn-danger btn-sm remove-guide-slot"
-                                                                        th:data-fair-id="${fair.id}"
-                                                                        th:data-guide-index="2">
-                                                                    -
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-
-                                                    <!-- Logic for Guide 3 -->
-                                                    <td>
-                                                        <div th:if="${fair.status.name() == 'CANCELED_FAIR' || fair.guideCount == 1 && fair.status.name() == 'UPCOMING_FAIR'}">
-                                                            <span>-</span>
-                                                        </div>
-                                                        <div th:if="${fair.guideCount == 2 && fair.status.name() == 'UPCOMING_FAIR'}">
-                                                            <button
-                                                                    class="btn btn-primary add-guide-slot"
-                                                                    th:data-fair-id="${fair.id}">
-                                                                Add Guide Slot
-                                                            </button>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'COMPLETED_FAIR' && fair.guides.size() >= 3}">
-                                                            <span th:text="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"></span>
-                                                        </div>
-                                                        <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 3 && fair.guides.size() >= 3}">
-                                                            <span th:text="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"></span>
-                                                            <button
-                                                                    class="btn ms-2 remove-guide"
-                                                                    th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${fair.guides[2].id}">
-                                                                -
-                                                            </button>
-                                                        </div>
-                                                        <div class="guide-slot-wrapper" th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount >= 3 && fair.guides.size() < 3}">
-                                                            <select
-                                                                    class="form-select guide-dropdown"
-                                                                    th:id="'guide-' + ${fair.id} + '-3'"
-                                                                    th:name="'guide-' + ${fair.id} + '-3'"
-                                                                    th:data-highschoolname="${fair.school.name}"
-                                                                    th:data-fairdate="${#dates.format(fair.date, 'dd/MM/yyyy')}"
-                                                                    th:data-fairhour="${fair.hour}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
-                                                            <div th:if="${fair.status.name() == 'UPCOMING_FAIR' && fair.guideCount > 2}">
-                                                                <button
-                                                                        class="btn btn-danger btn-sm remove-guide-slot"
-                                                                        th:data-fair-id="${fair.id}"
-                                                                        th:data-guide-index="3">
-                                                                    -
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
-                                                    <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
-                                                    <td>
-                                                        <div th:if="${fair.status.name() == 'NEW_FAIR_APPLICATION'}">
-                                                            <button class="btn btn-success" th:onclick="'handleFairApproval(' + ${fair.id} + ')'">Approve</button>
-                                                            <button class="btn btn-danger" th:onclick="'handleFairRejection(' + ${fair.id} + ')'">Reject</button>
-                                                        </div>
-                                                    </td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -996,6 +858,7 @@
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/all-event-actions.js}"></script>
+<!--<script th:src="@{/assets/js/all-fair-actions.js}"></script>-->
 <script th:src="@{/assets/js/all-individual-tour-actions.js}"></script>
 
 

@@ -48,7 +48,7 @@ function handleFairRejection(fairId) {
 
 function handleFairCancellation(fairId) {
     console.log("Cancelling fair with ID:", fairId);
-    fetch(`/api/fairs/cancelFair/${fairId}`, {
+    fetch(`/api/fairs/${fairId}/cancel`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -71,7 +71,7 @@ function handleFairCancellation(fairId) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const guideDropdowns = document.querySelectorAll('.guide-dropdown');
+    const guideDropdowns = document.querySelectorAll('.guide-fair-dropdown');
     let selectedFairId = null;
     let selectedGuideId = null;
     let selectedDropdown = null;
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const addGuideSlotButtons = document.querySelectorAll('.add-guide-slot');
+    const addGuideSlotButtons = document.querySelectorAll('.add-fair-guide-slot');
 
     addGuideSlotButtons.forEach((button) => {
         button.addEventListener('click', function () {
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    const removeGuideSlotButtons = document.querySelectorAll(".remove-guide-slot");
+    const removeGuideSlotButtons = document.querySelectorAll(".remove-fair-guide-slot");
 
     removeGuideSlotButtons.forEach((button) => {
         button.addEventListener("click", function () {
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const removeGuideButtons = document.querySelectorAll('.remove-guide');
+    const removeGuideButtons = document.querySelectorAll('.remove-fair-guide');
 
     removeGuideButtons.forEach((button) => {
         button.addEventListener('click', function () {

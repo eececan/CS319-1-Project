@@ -109,15 +109,15 @@ public class UIAuthController {
                     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                     username = userDetails.getUsername();
                 }
-                User user = allUsersService.getUserById(Long.parseLong(username));
+                //User user = allUsersService.getUserById(Long.parseLong(username));
                 // Add user to the model so that it's accessible in the view
-                model.addAttribute("user", user);
+                //model.addAttribute("user", user);
                 // Fetch advisor of the day
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                 // Fetch associated tours and fairs
                 List<Tour> tours = eventService.getAllTours();
                 List<Fair> fairs = eventService.getAllFairs();
-                List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                //List<UserTask> tasks = allUsersService.seeAllTasks(user);
                 // Add advisor, tours, and fairs to the model
                 List<User> users = allUsersService.getAllUsers();
                 List<PointRecord> pointRecords = pointRecordService.findAllRecords();
@@ -129,7 +129,7 @@ public class UIAuthController {
                 model.addAttribute("upComing", upComing);
                 model.addAttribute("sum",sum);
                 model.addAttribute("users", users);
-                model.addAttribute("tasks", tasks);
+               // model.addAttribute("tasks", tasks);
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
@@ -283,7 +283,7 @@ public class UIAuthController {
         model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);
 
-        System.out.println(responsibleDay);
+        System.out.println(fairs);
         //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";
     }

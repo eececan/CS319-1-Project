@@ -71,7 +71,7 @@ public class EventService implements IEventService {
 
 
             if (!fair.getStatus().equals(Status.UPCOMING_FAIR)) {
-                throw new IllegalStateException("Tour is not in a state to be canceled.");
+                throw new IllegalStateException("Fair is not in a state to be canceled.");
             }
 
 
