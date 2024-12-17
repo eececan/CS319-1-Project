@@ -325,6 +325,8 @@ public class UIAuthController {
         List<Tour> tourApplications = eventService.getTourApplications();
         List<Fair> fairApplications = eventService.getFairApplications();
         List<Fair> fairs = eventService.getFairs();
+        List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
+        List<IndividualTour> individualTours = eventService.getIndividualTours();
 
         // Create guideCounts map for fairs
         Map<Long, List<Integer>> guideCounts = new HashMap<>();
@@ -342,8 +344,10 @@ public class UIAuthController {
         model.addAttribute("fairApplications", fairApplications);
         model.addAttribute("guides", guides);
         model.addAttribute("guideCounts", guideCounts);
+        model.addAttribute("individualTourApplications", individualTourApplications);
+        model.addAttribute("individualTours", individualTours);
 
-        return "Director-Coordinator-Tables";  // Match template name exactly
+        return "director-coordinator-tables";  // Match template name exactly
     } catch (Exception e) {
         e.printStackTrace();  // Log the error
         throw e;  // Rethrow to see error in logs
@@ -376,8 +380,11 @@ public class UIAuthController {
         long guideId = Long.parseLong(userId);
         Guide currentGuide = guideService.getGuideById(guideId);
 
-        // Fetch all tours
+        // Fetch tours
         List<Tour> tours = eventService.getTours();
+
+        // Fetch tours
+        List<Fair> fairs = eventService.getFairs();
 
         // Create a map to store tour conflicts
         Map<Long, Boolean> tourConflicts = new HashMap<>();
@@ -405,13 +412,27 @@ public class UIAuthController {
             individualTourConflicts.put(individualTour.getId(), hasConflict);
         }
 
+        // Create a map to store tour conflicts
+        Map<Long, Boolean> fairConflicts = new HashMap<>();
+
+        // Check conflicts for each tour
+        for (Fair fair : fairs) {
+            boolean hasConflict = currentGuide.getEvents().stream()
+                    .anyMatch(e -> e.getDate().equals(fair.getDate()) &&
+                            e instanceof Fair &&
+                            ((Fair) e).getHour().equals(fair.getHour()));
+            fairConflicts.put(fair.getId(), hasConflict);
+        }
+
         // Add attributes to the model
         model.addAttribute("guide", currentGuide);
+        model.addAttribute("fairs", fairs);
         // model.addAttribute("guideId", currentGuide.getId());
         model.addAttribute("tours", tours);
         model.addAttribute("tourConflicts", tourConflicts); // Pass conflict information as a separate attribute
         model.addAttribute("individualTours", individualTours);
         model.addAttribute("individualTourConflicts", individualTourConflicts); // Pass conflict information as a separate attribute
+        model.addAttribute("fairConflicts", fairConflicts); // Pass conflict information as a separate attribute
 
         return "guide-tables";
     }

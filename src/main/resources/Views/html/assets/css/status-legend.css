@@ -163,6 +163,20 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     border-color: #bd2130!important;
 }
 
+.table tr, .table td, .table th {
+    padding: 4px 6px; /* Smaller padding for cells */
+    line-height: 1.2; /* Compact line height */
+}
+
+.table-hover > tbody > tr {
+    height: 50px; /* Set a smaller row height */
+}
+
+.table th {
+    vertical-align: middle; /* Center headers vertically */
+    text-align: center; /* Align headers */
+}
+
 
 
 
