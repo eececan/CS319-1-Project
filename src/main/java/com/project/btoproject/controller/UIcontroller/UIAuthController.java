@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,10 @@ public class UIAuthController {
     private final AllUsersService allUsersService;
     private final PointRecordService pointRecordService;
     private final CoordinatorService coordinatorService;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService) {
+    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService) {
         this.authService = _authService;
         this.eventService = eventService;
         this.guideService = guideService;
@@ -44,6 +47,8 @@ public class UIAuthController {
         this.allUsersService = allUsersService;
         this.pointRecordService = pointRecordService;
         this.coordinatorService = coordinatorService;
+        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/login")
@@ -63,186 +68,203 @@ public class UIAuthController {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             AuthResponseDTO authResponseDTO = (AuthResponseDTO) response.getBody();
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            model.addAttribute("auth", auth);
-
-            // Check user roles and return appropriate page
-            if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
-                // Get the current authenticated user
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String username = "";
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    username = userDetails.getUsername();
-                }
-                User user = allUsersService.getUserById(Long.parseLong(username));
-                // Add user to the model so that it's accessible in the view
-                model.addAttribute("user", user);
-                // Fetch advisor of the day
-                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
-                // Fetch associated tours and fairs
-                List<Tour> tours = eventService.getAllTours();
-                List<Fair> fairs = eventService.getAllFairs();
-                List<UserTask> tasks = allUsersService.seeAllTasks(user);
-                // Add advisor, tours, and fairs to the model
-                List<User> users = allUsersService.getAllUsers();
-                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
-                int sum=0;
-                for (int i = 0; i < pointRecords.size(); i++) {
-                    sum+=pointRecords.get(0).getPoint();
-                }
-                long upComing = eventService.getUpcomingEventsCount();
-                model.addAttribute("upComing", upComing);
-                model.addAttribute("sum",sum);
-                model.addAttribute("users", users);
-                model.addAttribute("tasks", tasks);
-                model.addAttribute("advisor", advisor);
-                model.addAttribute("tours", tours);
-                model.addAttribute("fairs", fairs);
-                return "Director-Dashboard";// Director's page
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = "";
+            if (authentication.getPrincipal() instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                username = userDetails.getUsername();
             }
-            else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
-                // Get the current authenticated user
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String username = "";
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    username = userDetails.getUsername();
+            else{
+                return "authentication principal is not in type UserDetails";
+            }
+            model.addAttribute("auth", authentication);
+
+            if(!allUsersService.hasUserWithId(Long.parseLong(username))){
+                model.addAttribute("showPopUp", "true");
+                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                    return "director-profile";
                 }
-                //User user = allUsersService.getUserById(Long.parseLong(username));
-                // Add user to the model so that it's accessible in the view
-                //model.addAttribute("user", user);
-                // Fetch advisor of the day
-                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
-                // Fetch associated tours and fairs
-                List<Tour> tours = eventService.getAllTours();
-                List<Fair> fairs = eventService.getAllFairs();
-                //List<UserTask> tasks = allUsersService.seeAllTasks(user);
-                // Add advisor, tours, and fairs to the model
-                List<User> users = allUsersService.getAllUsers();
-                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
-                int sum=0;
-                for (int i = 0; i < pointRecords.size(); i++) {
-                    sum+=pointRecords.get(0).getPoint();
+                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+                    return "head-secretary-profile";
                 }
-                long upComing = eventService.getUpcomingEventsCount();
-                model.addAttribute("upComing", upComing);
-                model.addAttribute("sum",sum);
-                model.addAttribute("users", users);
-               // model.addAttribute("tasks", tasks);
-                model.addAttribute("advisor", advisor);
-                model.addAttribute("tours", tours);
-                model.addAttribute("fairs", fairs);
-                return "Coordinator-Dashboard";// Coordinator's page
-            }else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
-                // Get the current authenticated user
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String username = "";
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    username = userDetails.getUsername();
+                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+                   // return "coordinator-profile";
                 }
+                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+                    model.addAttribute("user", new Advisor());
+                    return "advisor-profile";
+                }
+                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+                    model.addAttribute("sum", 0);
+                    model.addAttribute("user", new Guide());
+                    System.out.println("showPopUp: " + model.getAttribute("showPopUp"));
+                    return "guide-profile";
+                }
+                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+                    model.addAttribute("user", new GuideInTraining());
+                    return "guide-in-training-profile";
+                }
+                //find role and direct to that role's profile page
+                //display popup and direct to profile update page
+            }
+           else{
                 User user = allUsersService.getUserById(Long.parseLong(username));
-                // Add user to the model so that it's accessible in the view
                 model.addAttribute("user", user);
-                // Fetch advisor of the day
-                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
-                // Fetch associated tours and fairs
-                List<Tour> tours = eventService.getAllTours();
-                List<Fair> fairs = eventService.getAllFairs();
-                List<UserTask> tasks = allUsersService.seeAllTasks(user);
-                // Add advisor, tours, and fairs to the model
-                List<User> users = allUsersService.getAllUsers();
-                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
-                int sum=0;
-                for (int i = 0; i < pointRecords.size(); i++) {
-                    sum+=pointRecords.get(0).getPoint();
-                }
-                long upComing = eventService.getUpcomingEventsCount();
-                model.addAttribute("upComing", upComing);
-                model.addAttribute("sum",sum);
-                model.addAttribute("users", users);
-                model.addAttribute("tasks", tasks);
-                model.addAttribute("advisor", advisor);
-                model.addAttribute("tours", tours);
-                model.addAttribute("fairs", fairs);
-                return "Advisor-Dashboard"; // Advisor's page
-            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
-                // Get the current authenticated user
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String username = "";
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    username = userDetails.getUsername();
-                }
-                User user = allUsersService.getUserById(Long.parseLong(username));
-                // Add user to the model so that it's accessible in the view
-                model.addAttribute("user", user);
-                // Fetch advisor of the day
-                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
-                // Fetch associated tours and fairs
-                List<Tour> tours = eventService.getAllTours();
-                List<Fair> fairs = eventService.getAllFairs();
-                List<UserTask> tasks = allUsersService.seeAllTasks(user);
-                // Add advisor, tours, and fairs to the model
-                List<User> users = allUsersService.getAllUsers();
-                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
-                int sum=0;
-                for (int i = 0; i < pointRecords.size(); i++) {
-                    sum+=pointRecords.get(0).getPoint();
-                }
-                long upComing = eventService.getUpcomingEventsCount();
-                model.addAttribute("upComing", upComing);
-                model.addAttribute("sum",sum);
-                model.addAttribute("users", users);
-                model.addAttribute("tasks", tasks);
-                model.addAttribute("advisor", advisor);
-                model.addAttribute("tours", tours);
-                model.addAttribute("fairs", fairs);
-                return "Guide-Dashboard"; // Guide's page
-            } else if (auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
-                // Get the current authenticated user
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String username = "";
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    username = userDetails.getUsername();
-                }
-                /*User user = allUsersService.getUserById(Long.parseLong(username));
-                // Add user to the model so that it's accessible in the view
-                model.addAttribute("user", user);*/
-                // Fetch advisor of the day
-                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
-                // Fetch associated tours and fairs
-                List<Tour> tours = eventService.getAllTours();
-                List<Fair> fairs = eventService.getAllFairs();
-                //List<UserTask> tasks = allUsersService.seeAllTasks(user);
-                // Add advisor, tours, and fairs to the model
-                List<User> users = allUsersService.getAllUsers();
-                //List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide((Guide) user);
+                UserEntity userEntity = userService.findUserByUsername(Long.parseLong(username)).get();
+               if(allUsersService.hasMissingInformation(user, userEntity)){
+                   model.addAttribute("showPopUp", "true");
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                       return "director-profile";
+                   }
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+                       return "head-secretary-profile";
+                   }
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+                       // return "coordinator-profile";
+                   }
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+                       return "advisor-profile";
+                   }
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+                       model.addAttribute("sum", 0);  //should i delete this
+                       return "guide-profile";
+                   }
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+                       model.addAttribute("user", new GuideInTraining());
+                       return "guide-in-training-profile";
+                   }
+               }
+                else {
+                   model.addAttribute("showPopUp", "false");
+
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                       Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                       List<Tour> tours = eventService.getAllTours();
+                       List<Fair> fairs = eventService.getAllFairs();
+                       List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                       List<User> users = allUsersService.getAllUsers();
+                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       int sum=0;
+                       for (int i = 0; i < pointRecords.size(); i++) {
+                           sum+=pointRecords.get(0).getPoint();
+                       }
+                       long upComing = eventService.getUpcomingEventsCount();
+                       model.addAttribute("upComing", upComing);
+                       model.addAttribute("sum",sum);
+                       model.addAttribute("users", users);
+                       model.addAttribute("tasks", tasks);
+                       model.addAttribute("advisor", advisor);
+                       model.addAttribute("tours", tours);
+                       model.addAttribute("fairs", fairs);
+                       return "Director-Dashboard";
+                   }
+                   else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+
+
+                       Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                       List<Tour> tours = eventService.getAllTours();
+                       List<Fair> fairs = eventService.getAllFairs();
+                       List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                       List<User> users = allUsersService.getAllUsers();
+                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       int sum=0;
+                       for (int i = 0; i < pointRecords.size(); i++) {
+                           sum+=pointRecords.get(0).getPoint();
+                       }
+                       long upComing = eventService.getUpcomingEventsCount();
+                       model.addAttribute("upComing", upComing);
+                       model.addAttribute("sum",sum);
+                       model.addAttribute("users", users);
+                       model.addAttribute("tasks", tasks);
+                       model.addAttribute("advisor", advisor);
+                       model.addAttribute("tours", tours);
+                       model.addAttribute("fairs", fairs);
+                       return "Coordinator-Dashboard";// Coordinator's page
+                   }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+
+
+                       // Fetch advisor of the day
+                       Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                       // Fetch associated tours and fairs
+                       List<Tour> tours = eventService.getAllTours();
+                       List<Fair> fairs = eventService.getAllFairs();
+                       List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                       // Add advisor, tours, and fairs to the model
+                       List<User> users = allUsersService.getAllUsers();
+                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       int sum=0;
+                       for (int i = 0; i < pointRecords.size(); i++) {
+                           sum+=pointRecords.get(0).getPoint();
+                       }
+                       long upComing = eventService.getUpcomingEventsCount();
+                       model.addAttribute("upComing", upComing);
+                       model.addAttribute("sum",sum);
+                       model.addAttribute("users", users);
+                       model.addAttribute("tasks", tasks);
+                       model.addAttribute("advisor", advisor);
+                       model.addAttribute("tours", tours);
+                       model.addAttribute("fairs", fairs);
+                       return "Advisor-Dashboard"; // Advisor's page
+                   } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+
+
+                       // Fetch advisor of the day
+                       Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                       // Fetch associated tours and fairs
+                       List<Tour> tours = eventService.getAllTours();
+                       List<Fair> fairs = eventService.getAllFairs();
+                       List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                       // Add advisor, tours, and fairs to the model
+                       List<User> users = allUsersService.getAllUsers();
+                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       int sum=0;
+                       for (int i = 0; i < pointRecords.size(); i++) {
+                           sum+=pointRecords.get(0).getPoint();
+                       }
+                       long upComing = eventService.getUpcomingEventsCount();
+                       model.addAttribute("upComing", upComing);
+                       model.addAttribute("sum",sum);
+                       model.addAttribute("users", users);
+                       model.addAttribute("tasks", tasks);
+                       model.addAttribute("advisor", advisor);
+                       model.addAttribute("tours", tours);
+                       model.addAttribute("fairs", fairs);
+                       return "Guide-Dashboard"; // Guide's page
+                   } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+
+                       Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                       // Fetch associated tours and fairs
+                       List<Tour> tours = eventService.getAllTours();
+                       List<Fair> fairs = eventService.getAllFairs();
+                       //List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                       // Add advisor, tours, and fairs to the model
+                       List<User> users = allUsersService.getAllUsers();
+                       //List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide((Guide) user);
                 /*int sum=0;
                 for (int i = 0; i < pointRecords.size(); i++) {
                     sum+=pointRecords.get(0).getPoint();
                 }*/
-                long upComing = eventService.getUpcomingEventsCount();
-                model.addAttribute("upComing", upComing);
-                //model.addAttribute("sum",sum);
-                model.addAttribute("users", users);
-                //model.addAttribute("tasks", tasks);
-                model.addAttribute("advisor", advisor);
-                model.addAttribute("tours", tours);
-                model.addAttribute("fairs", fairs);
+                       long upComing = eventService.getUpcomingEventsCount();
+                       model.addAttribute("upComing", upComing);
+                       //model.addAttribute("sum",sum);
+                       model.addAttribute("users", users);
+                       //model.addAttribute("tasks", tasks);
+                       model.addAttribute("advisor", advisor);
+                       model.addAttribute("tours", tours);
+                       model.addAttribute("fairs", fairs);
                 /*List<User> users = allUsersService.getAllUsers();
                 List<Tour> tours = eventService.getAllTours();
                 List<Fair> fairs = eventService.getAllFairs();
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
                 model.addAttribute("users", users);*/
-                return "Head-Secretary-Dashboard"; // Head Secretary's page
-            } else {
-                return "page-empty"; // Default page for unrecognized roles
+                       return "Head-Secretary-Dashboard"; // Head Secretary's page
+                   } else {
+                       return "page-empty"; // Default page for unrecognized roles
+                   }
+               }
+               }
             }
-        }
 
         model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
         return "login";
@@ -283,7 +305,7 @@ public class UIAuthController {
         model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);
 
-        System.out.println(fairs);
+        System.out.println(responsibleDay);
         //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";
     }

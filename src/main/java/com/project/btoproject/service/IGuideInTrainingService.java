@@ -10,4 +10,5 @@ public interface IGuideInTrainingService {
     void saveGuideInTraining(GuideInTraining guideInTraining);
     List<Event> seeAssignedEvents(Long id);
     void convertToGuide(Long id);
+    GuideInTraining getGuideInTrainingById(Long id);
 }
