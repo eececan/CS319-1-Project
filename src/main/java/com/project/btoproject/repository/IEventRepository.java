@@ -6,6 +6,8 @@ import com.project.btoproject.model.Fair;
 import com.project.btoproject.model.IndividualTour;
 import com.project.btoproject.model.Tour;
 import com.project.btoproject.model.Advisor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -53,6 +55,10 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     List<IndividualTour> findIndividualToursByStatuses(@Param("statuses") List<Status> statuses);
     @Query("SELECT t FROM Fair t WHERE t.status IN :statuses")
     List<Fair> findFairsByStatuses(@Param("statuses") List<Status> statuses);
+
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses ORDER BY t.applicationTimeStamp DESC")
+    Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+
 
 
 }

@@ -35,4 +35,6 @@ public class UIEventController {
         // Render a single template
         return "guide-tables"; // Thymeleaf template
     }
+
+
 }

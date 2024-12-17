@@ -125,6 +125,29 @@ public class DataInitializer {
             advisorDto.setDepartment("CS");
             userService.enterPersonalInformationAdvisor(user, advisorDto);
         }
+        if (advisorRepository.findByFirstNameAndLastName("Mehmet", "Akyol").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("8");
+            registerDto.setPassword("8");
+            registerDto.setRole("ROLE_ADVISOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(8L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserAdvisorDto advisorDto = new UserAdvisorDto();
+            advisorDto.setFirstName("Mehmet");
+            advisorDto.setLastName("Akyol");
+            advisorDto.setDescription("Furkan Akyoal added as an advisor as an example.");
+            advisorDto.setPhoneNumber("0123456789");
+            advisorDto.setResponsibleDay(DayOfWeek.MONDAY);
+            advisorDto.setEmail("afurkan.akyol@ug.bilkent.edu.tr");
+            advisorDto.setGrade(3);
+            advisorDto.setPicture("picture.jpg");
+            advisorDto.setDepartment("CS");
+            userService.enterPersonalInformationAdvisor(user, advisorDto);
+        }
     }
 
     @Transactional

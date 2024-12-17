@@ -7,6 +7,9 @@ import com.project.btoproject.repository.IGuideRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -795,6 +798,26 @@ public class EventService implements IEventService {
     private long daysBetween(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    public Page<Tour> getTourApplicationsPageable(int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findToursByStatusesPageable(applicationStatuses, pageable);
+    }
+    public Page<Tour> getToursPageable(int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findToursByStatusesPageable(tourStatuses, pageable);
     }
 }
 

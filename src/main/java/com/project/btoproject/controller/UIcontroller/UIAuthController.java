@@ -7,6 +7,9 @@ import com.project.btoproject.model.*;
 import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
@@ -301,7 +305,9 @@ public class UIAuthController {
 
 
     @GetMapping("/advisor-tables")
-    public String showEventListAdvisor( Model model) {
+    public String showEventListAdvisor(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "12") int size,
+                                       Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity user = new UserEntity();
@@ -325,14 +331,25 @@ public class UIAuthController {
                                 .boxed()
                                 .collect(Collectors.toList())
                 ));
-        model.addAttribute("tours", tours);
-        model.addAttribute("tourApplications", tourApplications);
+        //model.addAttribute("tours", tours);
+        //model.addAttribute("tourApplications", tourApplications);
         model.addAttribute("responsibleDay", responsibleDay);
         model.addAttribute("guides", guides);
         model.addAttribute("fairs", fairs);
         model.addAttribute("guideCounts", guideCounts);
         model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);
+
+        Page<Tour> tourApplicationsPageable = eventService.getTourApplicationsPageable(page, size);
+
+        model.addAttribute("tourApplications", tourApplicationsPageable);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", tourApplicationsPageable.getTotalPages());
+
+        Page<Tour> toursPageable = eventService.getToursPageable(page, size);
+        model.addAttribute("tours", toursPageable);
+        model.addAttribute("tourTotalPages", toursPageable.getTotalPages());
+        model.addAttribute("pageSize", size);
 
         System.out.println(responsibleDay);
         //model.addAttribute("advisorId", advisorId);
@@ -395,6 +412,7 @@ public class UIAuthController {
         model.addAttribute("tourApplications", eventService.getTourApplications());
         model.addAttribute("tours", eventService.getTours());
         model.addAttribute("individualTours", eventService.getIndividualTours());
+        model.addAttribute("fairs", eventService.getFairs());
         return "head-secretary-tables";
     }
 

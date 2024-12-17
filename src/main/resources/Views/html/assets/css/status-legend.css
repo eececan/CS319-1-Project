@@ -182,6 +182,26 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     vertical-align: middle; /* Center content vertically */
 }
 
+.pagination {
+    margin-top: 15px;
+}
+
+.pagination .page-item .page-link {
+    color: #007bff;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+}
+
 
 
 
