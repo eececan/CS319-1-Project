@@ -483,15 +483,17 @@
                             </div>
 
 
-                            <!-- Points Card -->
+                            !-- Rankings Card -->
                             <div class="col-12 col-md-3">
-                                <div class="card" style="border-radius:16px; min-height: 200px;">
-                                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                                        <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Point Records</h3>
-                                        <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text ="${sum}"></h5>
-                                        <span class="font-12" style="color: #6e7687; margin-top: 5px;">View your point records</span>
+                                <a th:href="@{/getGuideRankings}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                    <div class="card" style="border-radius:16px; min-height: 200px;">
+                                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Guide Rankings</h3>
+                                            <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text ="${users.size()}"></h5>
+                                            <span class="font-12" style="color: #6e7687; margin-top: 5px;">View guide rankings and information</span>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
 
                             <!-- Display Feedback QR Card -->
