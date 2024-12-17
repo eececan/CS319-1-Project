@@ -29,6 +29,7 @@ public class UIUserTaskController {
     // Get tasks page (To-Do List)
     @GetMapping("/todo")
     public String getTodoPage(Model model) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
         String roleUser="";
@@ -37,9 +38,9 @@ public class UIUserTaskController {
             username = userDetails.getUsername();
         }
         User user = allUsersService.getUserById(Long.parseLong(username));
-        List<UserTask> userTask = allUsersService.seeAllTasks(user);
+        List<UserTask> tasks = allUsersService.seeAllTasks(user);
         model.addAttribute("user", user);
-        model.addAttribute("userTask", userTask);
+        model.addAttribute("tasks", tasks);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
             return"project-todo-DirectorSpecific";
         }
