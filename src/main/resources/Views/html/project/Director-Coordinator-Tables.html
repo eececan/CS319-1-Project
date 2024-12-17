@@ -243,7 +243,7 @@
       <ul class="metismenu">
         <li class="g_heading"></li>
         <li class="active">
-          <a th:href="@{/dahsboard}">
+          <a th:href="@{/dashboard}">
             <i class="fa fa-dashboard"></i><span>Dashboard</span>
           </a>
         </li>
@@ -293,7 +293,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center">
-              <ul class="nav nav-tabs page-header-tab">
+              <ul class="nav nav-tabs page-header-tab" role="tablist">
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Tour-Applications">Tour Applications</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Fair-Applications">Fair Applications</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Tours">Tours</a></li>
@@ -312,7 +312,7 @@
     </div>
 
     <div class="section-body mt-3">
-      <div class="container-fluid">
+        <div class="container-fluid">
         <div class="tab-content">
           <!-- Tour Applications Tab -->
           <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
@@ -517,8 +517,8 @@
             <div class="status-legend-container">
               <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
                 <li class="legend-item new">UPCOMING</li>
-                <li class="legend-item completed-tour">Completed</li>
-                <li class="legend-item canceled-tour">Canceled</li>
+                <li class="legend-item completed-tour">COMPLETED</li>
+                <li class="legend-item canceled-tour">CANCELED</li>
               </ul>
             </div>
           </div>
@@ -528,7 +528,7 @@
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-body">
-                    <div class="table-responsive" style="overflow-x: auto;">
+                    <div class="status-legend table-responsive" style="overflow-x: auto;">
                       <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                         <thead>
                         <tr>
@@ -689,6 +689,7 @@
                           </td>
                           <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
                           <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
+
                           <td>
                             <div th:if="${fair.status.name() == 'UPCOMING_FAIR'}">
                               <button class="btn btn-danger" th:onclick="'handleFairCancellation(' + ${fair.id} + ')'">Cancel</button>
@@ -706,11 +707,10 @@
             <div class="status-legend-container">
               <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
                 <li class="legend-item new">UPCOMING</li>
-                <li class="legend-item completed-tour">Completed</li>
-                <li class="legend-item canceled-tour">Canceled</li>
+                <li class="legend-item completed-tour">COMPLETED</li>
+                <li class="legend-item canceled-tour">CANCELED</li>
               </ul>
             </div>
-
           </div>
 
         </div>

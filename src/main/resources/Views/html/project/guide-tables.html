@@ -227,7 +227,7 @@
         </div>
     </div>
 
-
+    <!--
     <div class="user_div">
         <h5 class="brand-name mb-4">Guide<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
         <div class="card-body">
@@ -236,7 +236,7 @@
             <span th:text="${user.email}"></span>
             <hr>
         </div>
-    </div>
+    </div>-->
 
 
     <div id="left-sidebar" class="sidebar">
@@ -404,7 +404,7 @@
                                                                         && !#lists.contains(guide.events, tour)
                                                                         && !tourConflicts[tour.id]}">
                                                             <button
-                                                                    class="btn btn-sm self-assign-tour-button"
+                                                                    class="btn btn-sm join-tour-button"
                                                                     th:data-tour-id="${tour.id}">
                                                                 Join Tour
                                                             </button>
@@ -413,7 +413,7 @@
                                                         <!-- Show "Leave Tour" Button if already assigned -->
                                                         <div th:if="${#lists.contains(guide.events, tour) && tour.status.name() == 'UPCOMING_TOUR'}">
                                                             <button
-                                                                    class="btn btn-sm remove-self-assignment-tour-button"
+                                                                    class="btn btn-sm leave-tour-button"
                                                                     th:data-tour-id="${tour.id}">
                                                                 Leave Tour
                                                             </button>
@@ -475,10 +475,84 @@
                                                     <th style="width: 1%;">Guide 3</th>
                                                     <th style="width: 1%;">Counselor Name</th>
                                                     <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
+                                                <tr id="fairs-row-${fair.id}" th:each="fair : ${fairs}"th:classappend="
+                                                                        ${fair.status.name() == 'COMPLETED_FAIR'} ? 'completed-tour' :
+                                                                        (${fair.status.name() == 'CANCELED_FAIR'} ? 'canceled-tour' : '')">
+                                                    <td th:text="${#dates.format(fair.date, 'dd/MM/yyyy')}">Date</td>
+                                                    <td th:text="${#dates.format(fair.date, 'EEEE')}">Day</td>
+                                                    <td th:text="${fair.hour}">Hour</td>
+                                                    <td th:text="${fair.school.name}">High School</td>
+                                                    <td th:text="${fair.school.city}">City</td>
+                                                    <td th:text="${fair.peopleCount}">People Count</td>
+                                                    <td th:text="${fair.guideCount}">Guide #</td>
+                                                    <!-- Logic for Guide 1 -->
+                                                    <td>
+                                                        <span th:if="${fair.guides.size() >= 1 && fair.status.name() != 'CANCELED_FAIR'}" th:text="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"></span>
+                                                        <span th:if="${fair.guides.size() < 1}">-</span>
+                                                    </td>
+
+                                                    <!-- Logic for Guide 2 -->
+                                                    <td>
+                                                        <span th:if="${fair.guides.size() >= 2 && fair.status.name() != 'CANCELED_FAIR'}" th:text="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"></span>
+                                                        <span th:if="${fair.guides.size() < 2}">-</span>
+                                                    </td>
+
+                                                    <!-- Logic for Guide 3 -->
+                                                    <td>
+                                                        <span th:if="${fair.guides.size() >= 3 && fair.status.name() != 'CANCELED_FAIR'}" th:text="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"></span>
+                                                        <span th:if="${fair.guides.size() < 3}">-</span>
+                                                    </td>
+
+                                                    <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
+                                                    <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
+
+                                                    <!-- Action Buttons -->
+                                                    <td>
+
+                                                        <!-- Show "Join Fair" Button if there's no conflict -->
+                                                        <div th:if="${fair.guides.size() < fair.guideCount
+                                                                        && fair.status.name() == 'UPCOMING_FAIR'
+                                                                        && !#lists.contains(guide.events, fair)
+                                                                        && !fairConflicts[fair.id]}">
+                                                            <button
+                                                                    class="btn btn-sm join-fair-button"
+                                                                    th:data-fair-id="${fair.id}"
+                                                                    th:data-guide-id="${guide.id}">
+                                                                Join Fair
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Leave Tour" Button if already assigned -->
+                                                        <div th:if="${#lists.contains(guide.events, fair) && fair.status.name() == 'UPCOMING_FAIR'}">
+                                                            <button
+                                                                    class="btn btn-sm leave-fair-button"
+                                                                    th:data-fair-id="${fair.id}"
+                                                                    th:data-guide-id="${guide.id}">
+                                                                Leave Fair
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Time Conflict" Message if there's a conflict -->
+                                                        <div th:if="${fair.guides.size() < fair.guideCount
+                                                                        && fair.status.name() == 'UPCOMING_FAIR'
+                                                                        && !#lists.contains(guide.events, fair)
+                                                                        && fairConflicts[fair.id]}">
+                                                            <span class="text-danger fw-bold">CONFLICT</span>
+                                                        </div>
+
+                                                        <!-- Show "No Guide Slot" Message if there's no slot -->
+                                                        <div th:if="${fair.guides.size() == fair.guideCount
+                                                                        && fair.status.name() == 'UPCOMING_FAIR'
+                                                                        && !#lists.contains(guide.events, fair)}">
+                                                            <span class="text-danger fw-bold">NO SLOT</span>
+                                                        </div>
+
+                                                    </td>
+
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -619,6 +693,7 @@
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/all-event-actions.js}"></script>
+<script th:src="@{/assets/js/all-fair-actions.js}"></script>
 <script th:src="@{/assets/js/all-individual-tour-actions.js}"></script>
 
 </body>
