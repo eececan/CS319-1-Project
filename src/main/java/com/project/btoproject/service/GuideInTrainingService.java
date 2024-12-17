@@ -5,6 +5,7 @@ import com.project.btoproject.model.Guide;
 import com.project.btoproject.model.GuideInTraining;
 import com.project.btoproject.repository.IGuideInTrainingRepository;
 import com.project.btoproject.repository.IGuideRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,4 +67,15 @@ public class GuideInTrainingService implements IGuideInTrainingService {
             throw new IllegalArgumentException("Guide in training is not found with id: " + id);
         }
     }
+
+    @Override
+    public GuideInTraining getGuideInTrainingById(Long id) {
+        Optional<GuideInTraining> guideInTraining = guideInTrainingRepository.findById(id);
+        if (guideInTraining.isPresent()) {
+            return guideInTraining.get();
+        } else {
+            throw new EntityNotFoundException("GuideInTraining with ID " + id + " not found.");
+        }
+    }
+
 }

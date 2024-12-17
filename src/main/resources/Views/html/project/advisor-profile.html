@@ -18,6 +18,31 @@
     <!-- Core css -->
     <link th:href="@{/assets/css/main.css}" rel="stylesheet">
     <link th:href="@{/assets/css/theme1.css}" rel="stylesheet" >
+    <style>
+        .alert {
+            padding: 20px;
+            background-color: #2196F3; /* Blue */
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        /* The close button */
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* When moving the mouse over the close button */
+        .closebtn:hover {
+            color: black;
+        }
+    </style>
 </head>
 
 <body class="font-montserrat">
@@ -234,6 +259,8 @@
             <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
             <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
             <span th:text="${user.email}"></span>
+            <p th:text="${showPopUp}"></p> <!-- Displays the boolean value of showPopUp -->
+            <p th:text="${user.email}"></p> <!-- Displays the boolean value of showPopUp -->
             <hr>
         </div>
     </div>
@@ -339,6 +366,10 @@
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
                                 </div>
                             </div>
+                            <div th:if="${showPopUp == 'true'}" class="alert">
+                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                You have missing personal information! Please update your profile before continuing!
+                            </div>
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
@@ -415,8 +446,10 @@
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
                                         <li class="list-group-item" >Advisor</li>
-                                        <li class="list-group-item" th:text="${user.email}"></li>
-                                        <li class="list-group-item" th:text="${user.phoneNumber}"></li>
+
+                                        <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
+                                        <li class="list-group-item" th:text="'Responsible Day: ' + ${user.responsibleDay}"></li>
+
                                     </ul>
                                 </div>
 
@@ -427,87 +460,95 @@
                     <div class="col-lg-8 col-md-12">
                         <div class="row">
                             <div>
+                                <!-- Navigation Tabs -->
                                 <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">Edit Profile</a>
+                                        <a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true">
+                                            Edit Profile
+                                        </a>
                                     </li>
                                 </ul>
+
+                                <!-- Tab Content -->
                                 <div class="tab-content" id="pills-tabContent">
+                                    <!-- Profile Edit Tab -->
                                     <div class="tab-pane active show" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Edit Profile</h3>
-                                                <div class="card-options">
-                                                    <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row clearfix">
-                                                    <div class="col-md-5">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Department</label>
-                                                            <input type="text" class="form-control" placeholder="Department" th:value="${user.department}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Bilkent ID</label>
-                                                            <input type="text" class="form-control" placeholder="Username" th:value="${user.id}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-4">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Email address</label>
-                                                            <input type="email" class="form-control" placeholder="Email" th:value="${user.email}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label">First Name</label>
-                                                            <input type="text" class="form-control" placeholder="First Name" th:value="${user.firstName}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Last Name</label>
-                                                            <input type="text" class="form-control" placeholder="Last Name" th:value="${user.lastName}">
-                                                        </div>
-                                                    </div>
-                                                    <!-- Add Grade Field -->
-                                                    <div class="col-sm-6 col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Grade</label>
-                                                            <input type="number" class="form-control" placeholder="Grade" th:value="${user.grade}">
-                                                        </div>
-                                                    </div>
-                                                    <!-- Add Responsible Day Field -->
-                                                    <div class="col-sm-6 col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Responsible Day</label>
-                                                            <select class="form-control" th:value="${user.responsibleDay}">
-                                                                <option value="MONDAY">Monday</option>
-                                                                <option value="TUESDAY">Tuesday</option>
-                                                                <option value="WEDNESDAY">Wednesday</option>
-                                                                <option value="THURSDAY">Thursday</option>
-                                                                <option value="FRIDAY">Friday</option>
-                                                                <option value="SATURDAY">Saturday</option>
-                                                                <option value="SUNDAY">Sunday</option>
-                                                            </select>
-                                                        </div>
+                                        <!-- ID Display Outside the Form -->
+
+                                        <!-- Form -->
+                                        <form th:action="@{/ui/UserProfile/updateProfile}" method="post">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Edit Profile</h3>
+                                                    <div class="card-options">
+                                                        <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen">
+                                                            <i class="fe fe-maximize"></i>
+                                                        </a>
                                                     </div>
                                                 </div>
+                                                <div class="card-body">
+                                                    <div class="row clearfix">
+                                                        <!-- First Name -->
+                                                        <div class="col-sm-6 col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">First Name</label>
+                                                                <input type="text" class="form-control" name="firstName" placeholder="First Name" th:value="${user.firstName}">
+                                                            </div>
+                                                        </div>
+                                                        <!-- Last Name -->
+                                                        <div class="col-sm-6 col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Last Name</label>
+                                                                <input type="text" class="form-control" name="lastName" placeholder="Last Name" th:value="${user.lastName}">
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Email -->
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Email address</label>
+                                                                <input type="email" class="form-control" name="email" placeholder="Email" th:value="${user.email}">
+                                                            </div>
+                                                        </div>
+                                                        <!-- Phone Number -->
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Phone Number</label>
+                                                                <input type="text" class="form-control" name="phoneNumber" placeholder="Phone Number" th:value="${user.phoneNumber}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-3">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Grade</label>
+                                                                <input type="number" class="form-control" name="grade" placeholder="Grade" th:value="${user.grade}">
+                                                            </div>
+                                                        </div>
+                                                        <!-- Department -->
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Department</label>
+                                                                <input type="text" class="form-control" name="department" placeholder="Department" th:value="${user.department}">
+                                                            </div>
+                                                        </div>
+                                                        <!-- Grade -->
+
+
+                                                    </div>
+                                                </div>
+                                                <!-- Submit Button -->
+                                                <div class="card-footer text-right">
+                                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                                </div>
                                             </div>
-                                            <div class="card-footer text-right">
-                                                <button type="submit" class="btn btn-primary float-left">View/Edit Schedule</button>
-                                                <button type="submit" class="btn btn-primary">Update Profile</button>
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
+
 
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
