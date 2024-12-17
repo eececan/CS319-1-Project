@@ -243,7 +243,7 @@
       <ul class="metismenu">
         <li class="g_heading"></li>
         <li class="active">
-          <a th:href="@{/dahsboard}">
+          <a th:href="@{/dashboard}">
             <i class="fa fa-dashboard"></i><span>Dashboard</span>
           </a>
         </li>
@@ -293,13 +293,13 @@
         <div class="row">
           <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center">
-              <ul class="nav nav-tabs page-header-tab">
+              <ul class="nav nav-tabs page-header-tab" role="tablist">
                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Tour-Applications">Tour Applications</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Fair-Applications">Fair Applications</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Tours">Tours</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Fairs">Fairs</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Individual-Tours">Individual Tours</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Individual-Tour Applications">Individual Tour Applications</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Individual-Tour-Applications">Individual Tour Applications</a></li>
 
               </ul>
               <div class="header-action d-md-flex">
@@ -312,7 +312,7 @@
     </div>
 
     <div class="section-body mt-3">
-      <div class="container-fluid">
+        <div class="container-fluid">
         <div class="tab-content">
           <!-- Tour Applications Tab -->
           <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
@@ -517,8 +517,8 @@
             <div class="status-legend-container">
               <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
                 <li class="legend-item new">UPCOMING</li>
-                <li class="legend-item completed-tour">Completed</li>
-                <li class="legend-item canceled-tour">Canceled</li>
+                <li class="legend-item completed-tour">COMPLETED</li>
+                <li class="legend-item canceled-tour">CANCELED</li>
               </ul>
             </div>
           </div>
@@ -528,7 +528,7 @@
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-body">
-                    <div class="table-responsive" style="overflow-x: auto;">
+                    <div class="status-legend table-responsive" style="overflow-x: auto;">
                       <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                         <thead>
                         <tr>
@@ -689,6 +689,7 @@
                           </td>
                           <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
                           <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
+
                           <td>
                             <div th:if="${fair.status.name() == 'UPCOMING_FAIR'}">
                               <button class="btn btn-danger" th:onclick="'handleFairCancellation(' + ${fair.id} + ')'">Cancel</button>
@@ -706,14 +707,172 @@
             <div class="status-legend-container">
               <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
                 <li class="legend-item new">UPCOMING</li>
-                <li class="legend-item completed-tour">Completed</li>
-                <li class="legend-item canceled-tour">Canceled</li>
+                <li class="legend-item completed-tour">COMPLETED</li>
+                <li class="legend-item canceled-tour">CANCELED</li>
               </ul>
             </div>
-
           </div>
 
+          <div class="tab-pane fade" id="Individual-Tours" role="tabpanel">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                      <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                        <thead>
+                        <tr>
+                          <th style="width: 1%;">Date</th>
+                          <th style="width: 1%;">Day</th>
+                          <th style="width: 1%;">Hour</th>
+                          <th style="width: 1%;">Student Name</th>
+                          <th style="width: 1%;">High School Name</th>
+                          <th style="width: 1%;">City</th>
+                          <th style="width: 1%;">Interested Field</th>
+                          <th style="width: 1%;">Contact</th>
+                          <th style="width: 1%;">Guide</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="individualTours-row-${individualTour.id}" th:each="individualTour : ${individualTours}"
+                            th:classappend="
+                                        ${individualTour.status.name() == 'COMPLETED_INDIVIDUAL_TOUR'} ? 'completed-tour' :
+                                        (${individualTour.status.name() == 'CANCELED_INDIVIDUAL_TOUR'} ? 'canceled-tour' : '')">
+                          <!-- Date -->
+                          <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
+
+                          <!-- Day -->
+                          <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                          <!-- Hour -->
+                          <td th:text="${individualTour.hour}">Hour</td>
+
+                          <!-- Student Name -->
+                          <td th:text="${individualTour.student.name}">Student Name</td>
+
+                          <!-- High School -->
+                          <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                          <!-- City -->
+                          <td th:text="${individualTour.student.school.city}">City</td>
+
+                          <!-- Interested Field -->
+                          <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                          <!-- Contact -->
+                          <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                          <!-- Guide -->
+                          <td>
+                            <!-- Check if a guide is assigned -->
+                            <div th:if="${individualTour.guides.size() > 0 && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                              <span th:text="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}">Guide Name</span>
+                            </div>
+                            <div th:if="${individualTour.guides.size() == 0 && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                              <span>-</span>
+                            </div>
+                          </td>
+                        </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Legend -->
+            <div class="status-legend-container">
+              <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                <li class="legend-item new">UPCOMING</li>
+                <li class="legend-item completed-tour">COMPLETED</li>
+                <li class="legend-item canceled-tour">CANCELED</li>
+              </ul>
+            </div>
         </div>
+          <div class="tab-pane fade" id="Individual-Tour-Applications" role="tabpanel">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                      <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                        <thead>
+                        <tr>
+                          <th style="width: 1%;">Date</th>
+                          <th style="width: 1%;">Day</th>
+                          <th style="width: 1%;">Hour</th>
+                          <th style="width: 1%;">Student Name</th>
+                          <th style="width: 1%;">High School Name</th>
+                          <th style="width: 1%;">City</th>
+                          <th style="width: 1%;">Interested Field</th>
+                          <th style="width: 1%;">Contact</th>
+                          <th style="width: 1%;">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="individualTourApplications-row-${individualTour.id}"
+                            th:each="individualTour : ${individualTourApplications}"
+                            th:classappend="
+                                                                    ${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'} ? 'approved-tour' :
+                                                                    (${individualTour.status.name() == 'REJECTED_INDIVIDUAL_TOUR_APPLICATION'} ? 'bto-rejected-tour')">
+                          <!-- Render Date -->
+                          <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
+
+                          <!-- Render Day -->
+                          <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                          <!-- Render Hour -->
+                          <td th:text="${individualTour.hour}">Hour</td>
+
+                          <!-- Render Student Name -->
+                          <td th:text="${individualTour.student.name}">Student Name</td>
+
+                          <!-- Render High School Name -->
+                          <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                          <!-- Render City -->
+                          <td th:text="${individualTour.student.school.city}">City</td>
+
+                          <!-- Render Interested Field -->
+                          <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                          <!-- Render Contact -->
+                          <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                          <!-- Render Action Buttons -->
+                          <td>
+                            <div th:if="${individualTour.status.name() == 'NEW_INDIVIDUAL_TOUR_APPLICATION'}">
+                              <!-- Approve Button -->
+                              <button class="btn btn-success"
+                                      th:onclick="'handleIndividualTourApproval(' + ${individualTour.id} + ')'">
+                                Approve
+                              </button>
+                              <!-- Reject Button -->
+                              <button class="btn btn-danger"
+                                      th:onclick="'handleIndividualTourRejection(' + ${individualTour.id} + ')'">
+                                Reject
+                              </button>
+                            </div>
+
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Legend -->
+            <div class="status-legend-container">
+              <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                <li class="legend-item new">NEW</li>
+                <li class="legend-item completed-tour">ACCEPTED</li>
+                <li class="legend-item bto-rejected-tour">REJECTED</li>
+              </ul>
+            </div>
+          </div>
       </div>
     </div>
   </div>

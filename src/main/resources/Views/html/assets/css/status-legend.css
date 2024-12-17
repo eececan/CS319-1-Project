@@ -141,26 +141,45 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     color: inherit;
 }
 
-.join-tour-button, .join-individual-tour-button {
+.join-tour-button, .join-individual-tour-button, .join-fair-button {
     background-color: #28a745; /* Green (success) color */
     border-color: #28a745;
     color: #fff;
 }
 
-.join-tour-button:hover, .join-individual-tour-button:hover {
+.join-tour-button:hover, .join-individual-tour-button:hover, .join-fair-button:hover {
     background-color: #218838; /* Darker green for hover effect */
     border-color: #218838;
 }
 
-.leave-tour-button, .leave-individual-tour-button {
-    background-color: #dc3545; /* Red (danger) color */
-    border-color: #dc3545;
-    color: #fff; /* White text for visibility */
+.leave-tour-button, .leave-fair-button, .leave-individual-tour-button {
+    background-color: #dc3545!important; /* Red (danger) color */
+    border-color: #dc3545!important;
+    color: #fff!important; /* White text for visibility */
 }
 
-.leave-tour-button:hover, .leave-individual-tour-button:hover {
-    background-color: #bd2130; /* Darker red for hover effect */
-    border-color: #bd2130;
+.leave-tour-button:hover, .leave-fair-button:hover, .leave-individual-tour-button:hover {
+    background-color: #bd2130!important; /* Darker red for hover effect */
+    border-color: #bd2130!important;
+}
+
+.table tr, .table td, .table th {
+    padding: 4px 6px; /* Smaller padding for cells */
+    line-height: 1.2; /* Compact line height */
+}
+
+.table-hover > tbody > tr {
+    height: 50px; /* Set a smaller row height */
+}
+
+.table th {
+    vertical-align: middle; /* Center headers vertically */
+    text-align: center; /* Align headers */
+}
+
+.table td, .table th {
+    text-align: center; /* Center content horizontally */
+    vertical-align: middle; /* Center content vertically */
 }
 
 
