@@ -78,6 +78,9 @@ public class UIDashBoardController {
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
             return"Guide-In-Training-Dashboard";
         }
+        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+            return"Coordinator-Dashboard";
+        }
         else
             return "page-empty"; // Default page for unrecognized roles
     }
