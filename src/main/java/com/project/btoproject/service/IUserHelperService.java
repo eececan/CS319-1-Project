@@ -12,4 +12,5 @@ public interface IUserHelperService {
     void enterPersonalInformationAdvisor(UserEntity user, UserAdvisorDto userAdvisorDto) ;
     void enterPersonalInformationCoordinator(UserEntity user, UserCoordinatorDto userCoordinatorDto) ;
     void enterPersonalInformationHeadSecretary(UserEntity userEntity, UserHeadSecretaryDto userDto);
+    void enterPersonalInformationDirector(UserEntity userEntity, UserDirectorDto userDto);
 }

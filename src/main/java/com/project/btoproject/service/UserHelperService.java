@@ -100,4 +100,19 @@ public class UserHelperService implements IUserHelperService {
         headSecretary.setPassword(userEntity.getPassword());
         allUsersService.addUser(headSecretary);
     }
+
+    @Override
+    public void enterPersonalInformationDirector(UserEntity userEntity, UserDirectorDto userDto) {
+        Director director = new Director();
+        director.setFirstName(userDto.getFirstName());
+        director.setLastName(userDto.getLastName());
+        director.setPhoneNumber(userDto.getPhoneNumber());
+        director.setEmail(userDto.getEmail());
+        director.setPicture(userDto.getPicture());
+        director.setDescription(userDto.getDescription());
+        director.setStartDate(new Date());
+        director.setId(Long.parseLong(userEntity.getUsername()));
+        director.setPassword(userEntity.getPassword());
+        allUsersService.addUser(director);
+    }
 }

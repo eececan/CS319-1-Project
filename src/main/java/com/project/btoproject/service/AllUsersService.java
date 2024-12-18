@@ -24,8 +24,9 @@ public class AllUsersService implements IAllUsersService {
     private final UserRepository userRepository;
     private final CoordinatorService coordinatorService;
     private final HeadSecretaryService headSecretaryService;
+    private final DirectorService directorService;
 
-    public AllUsersService(IAllUsersRepository repository, IUserTaskRepository userTaskRepository, IGuideService guideService, IAdvisorService advisorService, IGuideInTrainingService guideInTrainingService, UserRepository userRepository, CoordinatorService coordinatorService, HeadSecretaryService headSecretaryService) {
+    public AllUsersService(IAllUsersRepository repository, IUserTaskRepository userTaskRepository, IGuideService guideService, IAdvisorService advisorService, IGuideInTrainingService guideInTrainingService, UserRepository userRepository, CoordinatorService coordinatorService, HeadSecretaryService headSecretaryService, DirectorService directorService) {
         this.repository = repository;
         this.userTaskRepository = userTaskRepository;
         this.guideService = guideService;
@@ -34,6 +35,7 @@ public class AllUsersService implements IAllUsersService {
         this.userRepository = userRepository;
         this.coordinatorService = coordinatorService;
         this.headSecretaryService = headSecretaryService;
+        this.directorService = directorService;
     }
 
     @Override
@@ -101,119 +103,79 @@ public class AllUsersService implements IAllUsersService {
     @Override
     public boolean hasMissingInformation(User user, UserEntity userEntity) {
         boolean missing = false;
-        if(userEntity.getRoles().contains("ROLE_GUIDE")){
+
+        if (userEntity.getRoles().contains("ROLE_GUIDE")) {
             Guide guide = guideService.getGuideById(user.getId());
-            if(guide.getSchedule().isEmpty()){
-                missing = true;
-                return missing;
+            if (guide.getSchedule().isEmpty() ||
+                    guide.getDepartment().isEmpty() ||
+                    guide.getGrade() == null ||
+                    guide.getFirstName().isEmpty() ||
+                    guide.getLastName().isEmpty() ||
+                    guide.getPhoneNumber().isEmpty() ||
+                    guide.getEmail().isEmpty() ||
+                    guide.getPicture().isEmpty() ||
+                    guide.getDescription().isEmpty()) {
+                return true;
             }
-            if(guide.getDepartment().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guide.getGrade() == null){
-                missing = true;
-                return missing;
-            }
-            if(guide.getFirstName().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guide.getLastName().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guide.getPhoneNumber().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guide.getEmail().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guide.getPicture().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guide.getDescription().isEmpty()){
-                missing = true;
-                return missing;
-            }
-        }
-        else if(userEntity.getRoles().contains("ROLE_ADVISOR")){
+        } else if (userEntity.getRoles().contains("ROLE_ADVISOR")) {
             Advisor advisor = advisorService.getAdvisorById(user.getId());
-            if(advisor.getDepartment().isEmpty()){
-                missing = true;
-                return missing;
+            if (advisor.getDepartment().isEmpty() ||
+                    advisor.getGrade() == null ||
+                    advisor.getFirstName().isEmpty() ||
+                    advisor.getLastName().isEmpty() ||
+                    advisor.getPhoneNumber().isEmpty() ||
+                    advisor.getEmail().isEmpty() ||
+                    advisor.getPicture().isEmpty() ||
+                    advisor.getDescription().isEmpty()) {
+                return true;
             }
-            if(advisor.getGrade() == null){
-                missing = true;
-                return missing;
-            }
-            if(advisor.getFirstName().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(advisor.getLastName().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(advisor.getPhoneNumber().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(advisor.getEmail().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(advisor.getPicture().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(advisor.getDescription().isEmpty()){
-                missing = true;
-                return missing;
-            }
-        }
-        else if(userEntity.getRoles().contains("ROLE_GUIDE_IN_TRAINING")){
+        } else if (userEntity.getRoles().contains("ROLE_GUIDE_IN_TRAINING")) {
             GuideInTraining guideInTraining = guideInTrainingService.getGuideInTrainingById(user.getId());
-            if(guideInTraining.getSchedule().isEmpty()){
-                missing = true;
-                return missing;
+            if (guideInTraining.getSchedule().isEmpty() ||
+                    guideInTraining.getDepartment().isEmpty() ||
+                    guideInTraining.getGrade() == null ||
+                    guideInTraining.getFirstName().isEmpty() ||
+                    guideInTraining.getLastName().isEmpty() ||
+                    guideInTraining.getPhoneNumber().isEmpty() ||
+                    guideInTraining.getEmail().isEmpty() ||
+                    guideInTraining.getPicture().isEmpty() ||
+                    guideInTraining.getDescription().isEmpty()) {
+                return true;
             }
-            if(guideInTraining.getDepartment().isEmpty()){
-                missing = true;
-                return missing;
+        } else if (userEntity.getRoles().contains("ROLE_HEAD_SECRETARY")) {
+            HeadSecretary headSecretary = headSecretaryService.getHeadSecretaryById(user.getId()).get();
+            if (headSecretary.getFirstName().isEmpty() ||
+                    headSecretary.getLastName().isEmpty() ||
+                    headSecretary.getPhoneNumber().isEmpty() ||
+                    headSecretary.getEmail().isEmpty() ||
+                    headSecretary.getPicture().isEmpty() ||
+                    headSecretary.getDescription().isEmpty()) {
+                return true;
             }
-            if(guideInTraining.getGrade() == null){
-                missing = true;
-                return missing;
+        } else if (userEntity.getRoles().contains("ROLE_DIRECTOR")) {
+            Director director = directorService.getDirectorById(user.getId()).get();
+            if (director.getFirstName().isEmpty() ||
+                    director.getLastName().isEmpty() ||
+                    director.getPhoneNumber().isEmpty() ||
+                    director.getEmail().isEmpty() ||
+                    director.getPicture().isEmpty() ||
+                    director.getDescription().isEmpty()) {
+                return true;
             }
-            if(guideInTraining.getFirstName().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guideInTraining.getLastName().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guideInTraining.getPhoneNumber().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guideInTraining.getEmail().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guideInTraining.getPicture().isEmpty()){
-                missing = true;
-                return missing;
-            }
-            if(guideInTraining.getDescription().isEmpty()){
-                missing = true;
-                return missing;
+        } else if (userEntity.getRoles().contains("ROLE_COORDINATOR")) {
+            Coordinator coordinator = coordinatorService.getCoordinatorById(user.getId());
+            if (coordinator.getFirstName().isEmpty() ||
+                    coordinator.getLastName().isEmpty() ||
+                    coordinator.getPhoneNumber().isEmpty() ||
+                    coordinator.getEmail().isEmpty() ||
+                    coordinator.getPicture().isEmpty() ||
+                    coordinator.getDescription().isEmpty() ||
+                    coordinator.getDepartment().isEmpty() ||
+                    coordinator.getGrade() == null) {
+                return true;
             }
         }
+
         return missing;
     }
 
@@ -295,8 +257,21 @@ public class AllUsersService implements IAllUsersService {
                 System.out.println("User not found");
             }
 
-        } else if (userEntity.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_DIERCTOR"))) {
-            System.out.println("User is a DIRECTOR");
+        } else if (userEntity.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_DIRECTOR"))) {
+            UserDirectorDto userDto = objectMapper.convertValue(dtoMap, UserDirectorDto.class);
+            Optional<Director> userH = directorService.getDirectorById(id);
+            if (userH.isPresent()) {
+                Director user = userH.get();
+                if (userDto.getFirstName() != null) user.setFirstName(userDto.getFirstName());
+                if (userDto.getLastName() != null) user.setLastName(userDto.getLastName());
+                if (userDto.getPhoneNumber() != null) user.setPhoneNumber(userDto.getPhoneNumber());
+                if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
+                if (userDto.getPicture() != null) user.setPicture(userDto.getPicture());
+                if (userDto.getDescription() != null) user.setDescription(userDto.getDescription());
+                repository.save(user);
+            } else {
+                System.out.println("User not found");
+            }
 
         } else if (userEntity.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_COORDINATOR"))) {
             UserCoordinatorDto userCoordinatorDto= objectMapper.convertValue(dtoMap, UserCoordinatorDto.class);

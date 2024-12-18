@@ -25,10 +25,11 @@ public class DataInitializer {
     private final CoordinatorService coordinatorService;
     private final IUserHelperService userHelperService;
     private final IHeadSecretaryService headSecretaryService;
+    private final IDirectorService directorService;
 
     public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
                            IAdvisorRepository advisorRepository, AuthService authService,
-                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService) {
+                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService, IDirectorService directorService) {
         this.roleRepository = roleRepository;
         this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
@@ -37,6 +38,7 @@ public class DataInitializer {
         this.coordinatorService = coordinatorService;
         this.userHelperService = userHelperService;
         this.headSecretaryService = headSecretaryService;
+        this.directorService = directorService;
     }
 
     @Bean
@@ -101,6 +103,11 @@ public class DataInitializer {
     @Bean
     public ApplicationRunner initializeHeadSecretary() {
         return args -> initializeHeadSecretaryData();
+    }
+
+    @Bean
+    public ApplicationRunner initializeDirector() {
+        return args -> initializeDirectorData();
     }
 
     @Transactional
@@ -255,6 +262,31 @@ public class DataInitializer {
             secretaryDto.setEmail("dilekyildiz@ug.bilkent.edu.tr");
             secretaryDto.setPicture("dilekpicture.jpg");
             userHelperService.enterPersonalInformationHeadSecretary(user, secretaryDto);
+        }
+    }
+
+    @Transactional
+    public void initializeDirectorData() {
+
+        if (!directorService.getDirectorById(6L).isPresent()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("6");
+            registerDto.setPassword("6");
+            registerDto.setRole("ROLE_DIRECTOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(6L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserDirectorDto directorDto = new UserDirectorDto();
+            directorDto.setFirstName("Orsan");
+            directorDto.setLastName("Orge");
+            directorDto.setDescription("Orsan Orge added as the director as an example.");
+            directorDto.setPhoneNumber("0537222222");
+            directorDto.setEmail("orsanorge@ug.bilkent.edu.tr");
+            directorDto.setPicture("orsanpicture.jpg");
+            userHelperService.enterPersonalInformationDirector(user, directorDto);
         }
     }
 

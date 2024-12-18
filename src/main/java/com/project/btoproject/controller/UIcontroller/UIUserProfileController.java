@@ -52,7 +52,6 @@ public class UIUserProfileController {
     public String getProfile(Model model, RedirectAttributes redirectAttributes,
                              @ModelAttribute("successMessage") String successMessage,
                              @ModelAttribute("errorMessage") String errorMessage) {
-        // Get the current authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
         if (authentication.getPrincipal() instanceof UserDetails) {
@@ -61,7 +60,6 @@ public class UIUserProfileController {
         }
         User user = allUsersService.getUserById(Long.parseLong(username));
 
-        // Add flash attributes to the model
         if (successMessage != null && !successMessage.isEmpty()) {
             model.addAttribute("successMessage", successMessage);
         }
@@ -71,15 +69,18 @@ public class UIUserProfileController {
 
         model.addAttribute("user", user);
 
-        // Check user roles and return the respective profile page
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            model.addAttribute("role", "ROLE_DIRECTOR");
+            return "director-profile"; // Director's profile page
+        } else  if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+            model.addAttribute("role", "ROLE_COORDINATOR");
             return "director-profile"; // Director's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
             return "advisor-profile"; // Advisor's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
             Guide guide = (Guide) user;
             List<Event> event = guide.getEvents();
-            // Add user to the model so that it's accessible in the view
+
             int sum = 0;
             for (int i = 0; i < event.size(); i++) {
                 System.out.println(event.get(i).getId());
@@ -100,7 +101,7 @@ public class UIUserProfileController {
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
             GuideInTraining guide = (GuideInTraining) user;
             List<Event> event = guide.getEvents();
-            // Add user to the model so that it's accessible in the view
+
             int sum = 0;
             for (int i = 0; i < event.size(); i++) {
                 if (event.get(i).getEventType() == EventType.TOUR) {
@@ -112,7 +113,7 @@ public class UIUserProfileController {
             model.addAttribute("sum", sum);
             return "guide-in-training-profile";
         } else {
-            return "page-empty"; // Default page for unrecognized roles
+            return "page-empty";
         }
     }
 

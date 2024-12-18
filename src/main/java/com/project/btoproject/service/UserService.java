@@ -52,6 +52,10 @@ public class UserService implements IUserService {
         else if (role.equals("ROLE_HEAD_SECRETARY")) {
             UserHeadSecretaryDto headSecretaryDto = objectMapper.convertValue(dtoMap, UserHeadSecretaryDto.class);
             userHelperService.enterPersonalInformationHeadSecretary(user, headSecretaryDto);
+        }
+        else if (role.equals("ROLE_DIRECTOR")) {
+            UserDirectorDto directorDto = objectMapper.convertValue(dtoMap, UserDirectorDto.class);
+            userHelperService.enterPersonalInformationDirector(user, directorDto);
         }else {
             System.out.println("User has no matching roles.");
         }

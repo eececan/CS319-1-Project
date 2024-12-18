@@ -136,22 +136,39 @@ public class UIAuthController {
             if(!allUsersService.hasUserWithId(Long.parseLong(username))){
                 model.addAttribute("showPopUp", "true");
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
-                    return "head-secretary-profile";
+                    model.addAttribute("sum", 0);
+                    HeadSecretary user = new HeadSecretary();
+                    user.setId(Long.parseLong(username));
+                    model.addAttribute("user", user);
+                    model.addAttribute("role", roleF);
+                    return "guide-profile";
                 }
-               /* if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
-                    return "director-profile";
+               if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                   model.addAttribute("role", roleF);
+                   Director user = new Director();
+                   user.setId(Long.parseLong(username));
+                   model.addAttribute("user", user);
+                   return "director-profile";
                 }
 
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
-                   // return "coordinator-profile";
-                }*/
+                    model.addAttribute("role", roleF);
+                    Coordinator user = new Coordinator();
+                    user.setId(Long.parseLong(username));
+                    model.addAttribute("user", user);
+                    return "director-profile";
+                }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
-                    model.addAttribute("user", new Advisor());
+                    Advisor user = new Advisor();
+                    user.setId(Long.parseLong(username));
+                    model.addAttribute("user", user);
                     return "advisor-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
                     model.addAttribute("sum", 0);
-                    model.addAttribute("user", new Guide());
+                    Guide user = new Guide();
+                    user.setId(Long.parseLong(username));
+                    model.addAttribute("user", user);
                     model.addAttribute("role", roleF);
                     System.out.println("showPopUp: " + model.getAttribute("showPopUp"));
                     return "guide-profile";
@@ -160,36 +177,7 @@ public class UIAuthController {
                     model.addAttribute("user", new GuideInTraining());
                     return "guide-in-training-profile";
                 }
-                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
 
-                    Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
-                    // Fetch associated tours and fairs
-                    List<Tour> tours = eventService.getAllTours();
-                    List<Fair> fairs = eventService.getAllFairs();
-                    //List<UserTask> tasks = allUsersService.seeAllTasks(user);
-                    // Add advisor, tours, and fairs to the model
-                    List<User> users = allUsersService.getAllUsers();
-                    //List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide((Guide) user);
-                /*int sum=0;
-                for (int i = 0; i < pointRecords.size(); i++) {
-                    sum+=pointRecords.get(0).getPoint();
-                }*/
-                    long upComing = eventService.getUpcomingEventsCount();
-                    model.addAttribute("upComing", upComing);
-                    //model.addAttribute("sum",sum);
-                    model.addAttribute("users", users);
-                    //model.addAttribute("tasks", tasks);
-                    model.addAttribute("advisor", advisor);
-                    model.addAttribute("tours", tours);
-                    model.addAttribute("fairs", fairs);
-                /*List<User> users = allUsersService.getAllUsers();
-                List<Tour> tours = eventService.getAllTours();
-                List<Fair> fairs = eventService.getAllFairs();
-                model.addAttribute("tours", tours);
-                model.addAttribute("fairs", fairs);
-                model.addAttribute("users", users);*/
-                    return "Head-Secretary-Dashboard"; // Head Secretary's page
-                }
 
             }
            else{
@@ -197,15 +185,15 @@ public class UIAuthController {
                 model.addAttribute("user", user);
                 UserEntity userEntity = userService.findUserByUsername(Long.parseLong(username)).get();
                if(allUsersService.hasMissingInformation(user, userEntity)){
-                   /*if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                       model.addAttribute("role", roleF);
                        return "director-profile";
                    }
-                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
-                       return "head-secretary-profile";
-                   }
+
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
-                       // return "coordinator-profile";
-                   }*/
+                       model.addAttribute("role", roleF);
+                       return "director-profile";
+                   }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
                        model.addAttribute("sum", 0);  //should i delete this
                        model.addAttribute("role", "ROLE_HEAD_SECRETARY");
