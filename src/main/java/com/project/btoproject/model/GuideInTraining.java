@@ -17,7 +17,7 @@ import java.util.List;
 public class GuideInTraining extends User {
 
     @Column(name = "schedule",nullable = true)
-    private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
+    private String schedule; // assuming Hour[] is mapped as a string
 
     @Column(name = "department", nullable = false)
     private String department;

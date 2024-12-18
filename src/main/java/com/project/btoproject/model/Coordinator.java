@@ -20,10 +20,10 @@ public class Coordinator extends User {
     private String schedule = "default_schedule";  assuming Hour[] is mapped as a string*/
 
     @Column(name = "department", nullable = false)
-    private String department = "default_department";
+    private String department;
 
     @Column(name = "grade")
-    private Integer grade = 2;
+    private Integer grade;
 
     //decide after discussion
 //    @OneToMany(mappedBy = "coordinator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

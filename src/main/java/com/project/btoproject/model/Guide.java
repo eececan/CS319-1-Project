@@ -17,13 +17,13 @@ import java.util.List;
 public class Guide extends User {
 
     @Column(name = "schedule")
-    private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
+    private String schedule; // assuming Hour[] is mapped as a string
 
     @Column(name = "department", nullable = true)
-    private String department = "default_department";
+    private String department;
 
     @Column(name = "grade")
-    private Integer grade = 2;
+    private Integer grade;
 
     @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PointRecord> points = new ArrayList<>();

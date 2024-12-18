@@ -55,6 +55,13 @@
             filter: invert(1); /* Makes the close button white */
         }
 
+
+        .disabled-sidebar {
+            pointer-events: none; /* Disables all clicks */
+            opacity: 0.5; /* Makes it visually appear inactive */
+        }
+
+
     </style>
 </head>
 
@@ -279,8 +286,11 @@
     </div>
 
 
-    <div id="left-sidebar" class="sidebar">
-        <h5 class="brand-name">Guide
+    <!-- Sidebar -->
+    <div id="left-sidebar" class="sidebar"
+         th:classappend="${showPopUp == 'true'} ? 'disabled-sidebar' : ''">
+        <h5 class="brand-name">
+            <span th:text="${role == 'ROLE_DIRECTOR' ? 'Director' : (role == 'ROLE_COORDINATOR' ? 'Coordinator' : '')}"></span>
             <a href="javascript:void(0)" class="menu_option float-right">
                 <i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i>
             </a>
@@ -289,7 +299,7 @@
             <ul class="metismenu">
                 <li class="g_heading">Project</li>
                 <li class="active">
-                    <a th:href="@{/dashboard}">
+                    <a href="javascript:void(0)">
                         <i class="fa fa-dashboard"></i><span>Dashboard</span>
                     </a>
                 </li>
@@ -309,7 +319,6 @@
                     </a>
                 </li>
                 <li class="g_heading"></li>
-
                 <li>
                     <a th:href="@{/calender}">
                         <i class="fa fa-calendar"></i><span>Calendar</span>
@@ -318,6 +327,7 @@
             </ul>
         </nav>
     </div>
+
 
 
     <div class="page">
@@ -475,18 +485,7 @@
                     </div>
                     <div class="col-lg-8 col-md-12">
                         <div class="row">
-                            <div class="col-xl-4 col-lg-4 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body widgets1">
-                                        <div class="details">
-                                            <h6 class="mb-0 font600">Tour History</h6>
-                                            <span class="mb-0">
-                                        <span th:text="${sum}"></span>
-                                    </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane active show" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                     <div th:if="${successMessage != null and successMessage != ''}"
