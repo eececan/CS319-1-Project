@@ -2,9 +2,13 @@ package com.project.btoproject.controller.UIcontroller;
 
 import com.project.btoproject.model.Guide;
 import com.project.btoproject.service.GuideService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -29,4 +33,35 @@ public class UIGuideController {
         model.addAttribute("guides", guides);
         return "guideRankings";
     }
+    @GetMapping("/updateSchedule")
+    public String updateSchedule(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+        }
+        Long guideId = Long.parseLong(username);
+        Guide guide = guideService.getGuideById(guideId);
+        model.addAttribute("guide", guide);
+        return "guideSchedule";  // Returns the view where the schedule is displayed
+    }
+
+    @PostMapping("/updateSchedule")
+    public String updateSchedule(int position, String status, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+        }
+        Long guideId = Long.parseLong(username);
+        guideService.setSchedule(guideId, position, status.charAt(0));
+        String schedule = guideService.getSchedule(guideId);
+        Guide guide = guideService.getGuideById(guideId);
+        model.addAttribute("guide", guide);
+        return "guideSchedule";  // Returns the updated schedule view
+    }
+
+
 }
