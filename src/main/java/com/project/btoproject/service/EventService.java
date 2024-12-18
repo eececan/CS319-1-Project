@@ -762,7 +762,7 @@ public class EventService implements IEventService {
                 .collect(Collectors.toList());
 
         List<IndividualTour> upcomingIndividualTours = getAllIndividualTours().stream()
-                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_TOUR)
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_INDIVIDUAL_TOUR)
                 .collect(Collectors.toList());
 
         Date now = new Date();
@@ -818,6 +818,12 @@ public class EventService implements IEventService {
         );
         Pageable pageable = PageRequest.of(page, size);
         return eventRepository.findToursByStatusesPageable(tourStatuses, pageable);
+    }
+    public List<Event> getEventsByDay(int day) {
+        return eventRepository.findAllByDayOfWeek(day);
+    }
+    public List<Tour> searchEventsBySchoolName(String name) {
+        return eventRepository.findAllBySchoolNameContaining(name);
     }
 }
 

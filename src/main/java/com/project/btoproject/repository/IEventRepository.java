@@ -61,6 +61,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     Page<Tour> findToursApplicationsByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
   @Query("SELECT t FROM Tour t WHERE t.status IN :statuses  ORDER BY t.status ASC ,t.date ASC")
   Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
-
+    @Query("SELECT t FROM Tour t WHERE t.school.name LIKE %:name%")
+    List<Tour> findAllBySchoolNameContaining(@Param("name") String name);
 
 }
