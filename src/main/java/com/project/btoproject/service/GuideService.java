@@ -2,7 +2,6 @@ package com.project.btoproject.service;
 
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IGuideRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,29 +23,6 @@ public class GuideService implements IGuideService
         List<Event> events = guide.getEvents();
         return events;
     }
-
-    @Override
-    @Transactional
-    public void selfAssignTour(Guide guide, Tour tour) {
-        if (!tour.getGuides().contains(guide)) {
-            tour.getGuides().add(guide);
-            guide.getEvents().add(tour);
-            guideRepository.save(guide);
-            //touru guncelle
-        }
-        //maybe add error message later
-    }
-
-    /*@Override
-    @Transactional
-    public void selfAssignIndividualTour(Guide guide, IndividualTour individualTour) {
-        if(individualTour.getGuide()!=null) {
-            throw new IllegalStateException("This individual tour already has a guide assigned.");
-        }
-        individualTour.setGuide(guide);
-        guide.getEvents().add(individualTour);
-        guideRepository.save(guide);
-    }*/
 
     @Override
     public int seeCurrentPoints(Guide guide) {
@@ -107,6 +83,21 @@ public class GuideService implements IGuideService
         List<Long> rankings = getGuideRankings();
         //1st for highest points
         return rankings.indexOf(guideId) +1;
+    }
+
+    @Override
+    public String getSchedule(Long guideId) {
+        return guideRepository.getGuideById(guideId).getSchedule();
+    }
+
+    @Override
+    public void setSchedule(Long guideId, int position, char status) {
+        Guide guide = guideRepository.getGuideById(guideId);
+        String currentSchedule = guide.getSchedule();
+        StringBuilder newSchedule = new StringBuilder(currentSchedule);
+        newSchedule.setCharAt(position, status);
+        guide.setSchedule(newSchedule.toString());
+        guideRepository.save(guide);
     }
 
     @Override

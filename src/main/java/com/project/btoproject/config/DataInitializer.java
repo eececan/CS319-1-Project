@@ -185,6 +185,29 @@ public class DataInitializer {
             guideDto.setDepartment("CS");
             userHelperService.enterPersonalInformationGuide(user, guideDto);
         }
+        if (guideRepository.findByFirstNameAndLastName("Ece", "Cann").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("42");
+            registerDto.setPassword("42");
+            registerDto.setRole("ROLE_GUIDE");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(42L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideDto guideDto = new UserGuideDto();
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            guideDto.setFirstName("Ece");
+            guideDto.setLastName("Cann");
+            guideDto.setDescription("Ece Cann added as a guide as an example.");
+            guideDto.setPhoneNumber("05370527736");
+            guideDto.setEmail("ece.cann@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            userHelperService.enterPersonalInformationGuide(user, guideDto);
+        }
     }
 
 
