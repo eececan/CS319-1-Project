@@ -53,6 +53,18 @@ public class UIAuthController {
         this.userService = userService;
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        // Invalidate the session to log out the user
+        request.getSession().invalidate();
+
+        // Clear the SecurityContext
+        SecurityContextHolder.clearContext();
+
+        // Redirect to the login page
+        return "redirect:/ui/auth/login";
+    }
+
     @GetMapping("/login")
     public String login(Model model) {
         LoginDto loginDto = new LoginDto();
