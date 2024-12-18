@@ -185,6 +185,7 @@ public class UIAuthController {
                 model.addAttribute("user", user);
                 UserEntity userEntity = userService.findUserByUsername(Long.parseLong(username)).get();
                if(allUsersService.hasMissingInformation(user, userEntity)){
+                   model.addAttribute("showPopUp", "true");
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
                        model.addAttribute("role", roleF);
                        return "director-profile";

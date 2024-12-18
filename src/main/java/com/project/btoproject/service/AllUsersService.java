@@ -8,11 +8,14 @@ import com.project.btoproject.repository.IUserTaskRepository;
 import com.project.btoproject.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+
 
 @Service
 public class AllUsersService implements IAllUsersService {
@@ -94,17 +97,19 @@ public class AllUsersService implements IAllUsersService {
         repository.save(user);
         return true;
     }
-
+/*
     @Override
     public void changeRole(User user, Role role) {
 
     }
-
+*/
     @Override
     public boolean hasMissingInformation(User user, UserEntity userEntity) {
         boolean missing = false;
 
-        if (userEntity.getRoles().contains("ROLE_GUIDE")) {
+        if(userEntity.getRoles()
+                .stream()
+                .anyMatch(role -> "ROLE_GUIDE".equalsIgnoreCase(role.getName()))){
             Guide guide = guideService.getGuideById(user.getId());
             if (guide.getSchedule().isEmpty() ||
                     guide.getDepartment().isEmpty() ||
@@ -117,7 +122,9 @@ public class AllUsersService implements IAllUsersService {
                     guide.getDescription().isEmpty()) {
                 return true;
             }
-        } else if (userEntity.getRoles().contains("ROLE_ADVISOR")) {
+        } else if(userEntity.getRoles()
+                .stream()
+                .anyMatch(role -> "ROLE_ADVISOR".equalsIgnoreCase(role.getName()))) {
             Advisor advisor = advisorService.getAdvisorById(user.getId());
             if (advisor.getDepartment().isEmpty() ||
                     advisor.getGrade() == null ||
@@ -126,10 +133,12 @@ public class AllUsersService implements IAllUsersService {
                     advisor.getPhoneNumber().isEmpty() ||
                     advisor.getEmail().isEmpty() ||
                     advisor.getPicture().isEmpty() ||
-                    advisor.getDescription().isEmpty()) {
+                    advisor.getDescription().isEmpty() || advisor.getResponsibleDay() == null) {
                 return true;
             }
-        } else if (userEntity.getRoles().contains("ROLE_GUIDE_IN_TRAINING")) {
+        } else if(userEntity.getRoles()
+                .stream()
+                .anyMatch(role -> "ROLE_GUIDE_IN_TRAINING".equalsIgnoreCase(role.getName()))) {
             GuideInTraining guideInTraining = guideInTrainingService.getGuideInTrainingById(user.getId());
             if (guideInTraining.getSchedule().isEmpty() ||
                     guideInTraining.getDepartment().isEmpty() ||
@@ -142,7 +151,9 @@ public class AllUsersService implements IAllUsersService {
                     guideInTraining.getDescription().isEmpty()) {
                 return true;
             }
-        } else if (userEntity.getRoles().contains("ROLE_HEAD_SECRETARY")) {
+        } else if(userEntity.getRoles()
+                .stream()
+                .anyMatch(role -> "ROLE_HEAD_SECRETARY".equalsIgnoreCase(role.getName()))) {
             HeadSecretary headSecretary = headSecretaryService.getHeadSecretaryById(user.getId()).get();
             if (headSecretary.getFirstName().isEmpty() ||
                     headSecretary.getLastName().isEmpty() ||
@@ -152,7 +163,9 @@ public class AllUsersService implements IAllUsersService {
                     headSecretary.getDescription().isEmpty()) {
                 return true;
             }
-        } else if (userEntity.getRoles().contains("ROLE_DIRECTOR")) {
+        } else if(userEntity.getRoles()
+                .stream()
+                .anyMatch(role -> "ROLE_DIRECTOR".equalsIgnoreCase(role.getName()))) {
             Director director = directorService.getDirectorById(user.getId()).get();
             if (director.getFirstName().isEmpty() ||
                     director.getLastName().isEmpty() ||
@@ -162,7 +175,9 @@ public class AllUsersService implements IAllUsersService {
                     director.getDescription().isEmpty()) {
                 return true;
             }
-        } else if (userEntity.getRoles().contains("ROLE_COORDINATOR")) {
+        } else if(userEntity.getRoles()
+                .stream()
+                .anyMatch(role -> "ROLE_COORDINATOR".equalsIgnoreCase(role.getName()))) {
             Coordinator coordinator = coordinatorService.getCoordinatorById(user.getId());
             if (coordinator.getFirstName().isEmpty() ||
                     coordinator.getLastName().isEmpty() ||
@@ -296,30 +311,57 @@ public class AllUsersService implements IAllUsersService {
 
     }
 
-
-
-    /*
+    //dogru mu checkle
     @Override
-    public void changeRole(User user, Role role) {
-        repository.delete(user);
+    public void changeRole(@RequestParam Long userId, String role) {
+        User user = repository.findById(userId).get();
+        UserEntity userEntity = userRepository.findByUsername(user.getId().toString()).get();
         if(user instanceof Guide){
-            user = (Guide) user;
+            if(role.equals("ROLE_ADVISOR")){
+                Advisor advisor = new Advisor(((Guide) user).getDepartment(), ((Guide) user).getGrade(), null, new ArrayList<>(), ((Guide) user).getEvents()); //eski eventlerini mi aliyoruz
+                advisor.setFirstName(((Guide) user).getFirstName());
+                advisor.setLastName(((Guide) user).getLastName());
+                advisor.setPhoneNumber(((Guide) user).getPhoneNumber());
+                advisor.setEmail(((Guide) user).getEmail());
+                advisor.setPicture(((Guide) user).getPicture());
+                advisor.setDescription(((Guide) user).getDescription());
+                advisor.setId(user.getId());
+                advisor.setPassword(userEntity.getPassword());
+                repository.delete(user);
+                repository.save(advisor);
+            }
         }
         if(user instanceof GuideInTraining){
-            user = (GuideInTraining) user;
+            if(role.equals("ROLE_GUIDE")){
+                Guide guide = new Guide(((GuideInTraining) user).getSchedule(), ((GuideInTraining) user).getDepartment(), ((GuideInTraining) user).getGrade(), new ArrayList<>(), ((GuideInTraining) user).getEvents());
+                guide.setFirstName(((GuideInTraining) user).getFirstName());
+                guide.setLastName(((GuideInTraining) user).getLastName());
+                guide.setPhoneNumber(((GuideInTraining) user).getPhoneNumber());
+                guide.setEmail(((GuideInTraining) user).getEmail());
+                guide.setPicture(((GuideInTraining) user).getPicture());
+                guide.setDescription(((GuideInTraining) user).getDescription());
+                guide.setId(user.getId());
+                guide.setPassword(userEntity.getPassword());
+                repository.delete(user);
+                repository.save(guide);
+            }
         }
         if(user instanceof Advisor){
-            user = (Advisor) user;
+            if(role.equals("ROLE_COORDINATOR")){
+                Coordinator coordinator = new Coordinator(((Advisor) user).getDepartment(), ((Advisor) user).getGrade());
+                coordinator.setFirstName(((Advisor) user).getFirstName());
+                coordinator.setLastName(((Advisor) user).getLastName());
+                coordinator.setPhoneNumber(((Advisor) user).getPhoneNumber());
+                coordinator.setEmail(((Advisor) user).getEmail());
+                coordinator.setPicture(((Advisor) user).getPicture());
+                coordinator.setDescription(((Advisor) user).getDescription());
+                coordinator.setId(user.getId());
+                coordinator.setPassword(userEntity.getPassword());
+                repository.delete(user);
+                repository.save(coordinator);
+            }
         }
-        User updatedUser;
-        switch (role.toString()) {
-            case ("ROLE_GUIDE"):
-                updatedUser = new Guide();
-
-                break;
-        };
-        default: throw new IllegalArgumentException("Unsupported role: " + role);
-    }*/
+    }
 
     @Override
     public void deleteUserById(Long id) {

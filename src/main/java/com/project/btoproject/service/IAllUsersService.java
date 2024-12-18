@@ -17,7 +17,7 @@ public interface IAllUsersService {
     List<UserTask> seeAllTasks(User user);
     void addTaskToUser(User user, UserTask newTask);
     boolean updateTaskStatus(User user, Long taskId, boolean b);
-    void changeRole(User user, Role role);
+    void changeRole(Long userId, String role);
     boolean hasMissingInformation(User user, UserEntity userEntity);
     boolean hasUserWithId(Long id);
     void updateProfile(Long id, Map<String, Object> dtoMap);

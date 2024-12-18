@@ -96,13 +96,10 @@ public class UserController {
     }
 
     @PostMapping("/changeRole")
-    public void changeRole(@RequestParam String roleName){
+    public void changeRole(@RequestParam Long userId, @RequestParam String roleName){
         Role role = roleRepository.findByName(roleName).get();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String userId = userDetails.getUsername();
-        userService.changeRole(Long.parseLong(userId), role);
+
+        userService.changeRole(userId, role);
     }
 
 }

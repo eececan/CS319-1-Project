@@ -96,6 +96,7 @@ public class UserService implements IUserService {
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);
+        allUsersService.changeRole(id, role.getName());
     }
 
     @Override
