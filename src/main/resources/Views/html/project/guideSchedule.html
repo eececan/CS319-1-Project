@@ -27,14 +27,22 @@
         }
     </style>
     <script>
-        function toggleSlot(guideId, position, currentStatus, element) {
-            let newStatus = 'l';  // Default to 'e'
-            if (currentStatus === 'e') {
-                newStatus = 'f';  // If current status is 'e', set new status to 'f'
-            } else if (currentStatus === 'f') {
-                newStatus = 'e';  // If current status is 'f', set new status to 'e'
+        function toggleSlot(element) {
+            const currentStatus = element.getAttribute('data-status');
+            const guideId = element.getAttribute('data-guide-id');
+            const position = element.getAttribute('data-position');
+            let newStatus = currentStatus === 'e' ? 'f' : 'e';  // Toggle status between 'e' and 'f'
+
+            // Update the slot's visual appearance based on its new status
+            if (newStatus === 'e') {
+                element.classList.remove('full');
+                element.classList.add('empty');
+            } else {
+                element.classList.remove('empty');
+                element.classList.add('full');
             }
 
+            // Send the new status to the server
             const formData = new FormData();
             formData.append('guideId', guideId);
             formData.append('position', position);
@@ -46,17 +54,30 @@
             })
                 .then(response => response.text())
                 .then(html => {
-                    // Update the class of the clicked element based on the new status
-                    if (newStatus === 'e') {
-                        element.classList.remove('full');
-                        element.classList.add('empty');
-                    } else {
-                        element.classList.remove('empty');
-                        element.classList.add('full');
-                    }
+                    // Update the status attribute to reflect the new status
+                    element.setAttribute('data-status', newStatus);
                 })
                 .catch(() => alert("Failed to update schedule"));
         }
+
+        // On load function to check the initial status of the slots
+        function initializeSchedule() {
+            // Get all the td elements that have data-status attributes
+            const slots = document.querySelectorAll('td[data-status]');
+            slots.forEach(slot => {
+                const currentStatus = slot.getAttribute('data-status');
+                if (currentStatus === 'f') {
+                    slot.classList.add('full');
+                    slot.classList.remove('empty');
+                } else {
+                    slot.classList.add('empty');
+                    slot.classList.remove('full');
+                }
+            });
+        }
+
+        // Initialize the schedule on page load
+        window.onload = initializeSchedule;
     </script>
 </head>
 <body>
@@ -77,22 +98,44 @@
     <tbody>
     <tr>
         <td>NINE</td>
-        <td class="${guide.schedule.charAt(0) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 0, '${guide.schedule.charAt(0)}', this)"></td>
-        <td class="${guide.schedule.charAt(1) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 1, '${guide.schedule.charAt(1)}', this)"></td>
-        <td class="${guide.schedule.charAt(2) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 2, '${guide.schedule.charAt(2)}', this)"></td>
-        <td class="${guide.schedule.charAt(3) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 3, '${guide.schedule.charAt(3)}', this)"></td>
-        <td class="${guide.schedule.charAt(4) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 4, '${guide.schedule.charAt(4)}', this)"></td>
-        <td class="${guide.schedule.charAt(5) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 5, '${guide.schedule.charAt(5)}', this)"></td>
-        <td class="${guide.schedule.charAt(6) === 'e' ? 'empty' : 'full'}"
-            onclick="toggleSlot('${guide.id}', 6, '${guide.schedule.charAt(6)}', this)"></td>
+        <td th:each="i : ${#numbers.sequence(0, 6)}"
+            th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+            th:data-guide-id="${guide.id}"
+            th:data-position="${i}"
+            th:data-status="${guide.schedule.charAt(i)}"
+            th:onclick="|toggleSlot(this)|">
+        </td>
     </tr>
-    <!-- Repeat for other time slots as needed -->
+    <tr>
+        <td>ELEVEN</td>
+        <td th:each="i : ${#numbers.sequence(7, 13)}"
+            th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+            th:data-guide-id="${guide.id}"
+            th:data-position="${i}"
+            th:data-status="${guide.schedule.charAt(i)}"
+            th:onclick="|toggleSlot(this)|">
+        </td>
+    </tr>
+    <tr>
+        <td>THIRTEEN_THIRTY</td>
+        <td th:each="i : ${#numbers.sequence(14, 20)}"
+            th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+            th:data-guide-id="${guide.id}"
+            th:data-position="${i}"
+            th:data-status="${guide.schedule.charAt(i)}"
+            th:onclick="|toggleSlot(this)|">
+        </td>
+    </tr>
+    <tr>
+        <td>SIXTEEN</td>
+        <td th:each="i : ${#numbers.sequence(21, 27)}"
+            th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+            th:data-guide-id="${guide.id}"
+            th:data-position="${i}"
+            th:data-status="${guide.schedule.charAt(i)}"
+            th:onclick="|toggleSlot(this)|">
+        </td>
+    </tr>
     </tbody>
 </table>
 </body>
