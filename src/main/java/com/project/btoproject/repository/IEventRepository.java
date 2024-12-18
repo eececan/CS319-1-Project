@@ -48,6 +48,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e WHERE FUNCTION('DAYOFWEEK', e.date) = :day")
     List<Event> findAllByDayOfWeek(@Param("day") int day);
 
+
     @Query("SELECT t FROM Tour t WHERE t.status IN :statuses")
     List<Tour> findToursByStatuses(@Param("statuses") List<Status> statuses);
 
@@ -56,9 +57,10 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT t FROM Fair t WHERE t.status IN :statuses")
     List<Fair> findFairsByStatuses(@Param("statuses") List<Status> statuses);
 
-    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses ORDER BY t.applicationTimeStamp DESC")
-    Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
-
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses ORDER BY t.status ASC, t.applicationTimeStamp DESC")
+    Page<Tour> findToursApplicationsByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+  @Query("SELECT t FROM Tour t WHERE t.status IN :statuses  ORDER BY t.status ASC ,t.date ASC")
+  Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
 
 
 }

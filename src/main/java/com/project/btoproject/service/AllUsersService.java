@@ -118,7 +118,7 @@ public class AllUsersService implements IAllUsersService {
                     guide.getLastName().isEmpty() ||
                     guide.getPhoneNumber().isEmpty() ||
                     guide.getEmail().isEmpty() ||
-                    guide.getPicture().isEmpty() ||
+
                     guide.getDescription().isEmpty()) {
                 return true;
             }
@@ -131,9 +131,9 @@ public class AllUsersService implements IAllUsersService {
                     advisor.getFirstName().isEmpty() ||
                     advisor.getLastName().isEmpty() ||
                     advisor.getPhoneNumber().isEmpty() ||
-                    advisor.getEmail().isEmpty() ||
-                    advisor.getPicture().isEmpty() ||
-                    advisor.getDescription().isEmpty() || advisor.getResponsibleDay() == null) {
+                    advisor.getEmail().isEmpty()
+
+                ) { //  advisor.getResponsibleDay() == null
                 return true;
             }
         } else if(userEntity.getRoles()
@@ -146,9 +146,9 @@ public class AllUsersService implements IAllUsersService {
                     guideInTraining.getFirstName().isEmpty() ||
                     guideInTraining.getLastName().isEmpty() ||
                     guideInTraining.getPhoneNumber().isEmpty() ||
-                    guideInTraining.getEmail().isEmpty() ||
-                    guideInTraining.getPicture().isEmpty() ||
-                    guideInTraining.getDescription().isEmpty()) {
+                    guideInTraining.getEmail().isEmpty()
+
+                  ) {
                 return true;
             }
         } else if(userEntity.getRoles()
@@ -158,9 +158,9 @@ public class AllUsersService implements IAllUsersService {
             if (headSecretary.getFirstName().isEmpty() ||
                     headSecretary.getLastName().isEmpty() ||
                     headSecretary.getPhoneNumber().isEmpty() ||
-                    headSecretary.getEmail().isEmpty() ||
-                    headSecretary.getPicture().isEmpty() ||
-                    headSecretary.getDescription().isEmpty()) {
+                    headSecretary.getEmail().isEmpty()
+
+                 ) {
                 return true;
             }
         } else if(userEntity.getRoles()
@@ -170,9 +170,9 @@ public class AllUsersService implements IAllUsersService {
             if (director.getFirstName().isEmpty() ||
                     director.getLastName().isEmpty() ||
                     director.getPhoneNumber().isEmpty() ||
-                    director.getEmail().isEmpty() ||
-                    director.getPicture().isEmpty() ||
-                    director.getDescription().isEmpty()) {
+                    director.getEmail().isEmpty()
+
+                ) {
                 return true;
             }
         } else if(userEntity.getRoles()
@@ -183,8 +183,8 @@ public class AllUsersService implements IAllUsersService {
                     coordinator.getLastName().isEmpty() ||
                     coordinator.getPhoneNumber().isEmpty() ||
                     coordinator.getEmail().isEmpty() ||
-                    coordinator.getPicture().isEmpty() ||
-                    coordinator.getDescription().isEmpty() ||
+
+
                     coordinator.getDepartment().isEmpty() ||
                     coordinator.getGrade() == null) {
                 return true;

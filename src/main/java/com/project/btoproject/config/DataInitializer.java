@@ -80,7 +80,7 @@ public class DataInitializer {
         }
     }
 
-   @Bean
+  @Bean
     public ApplicationRunner initializeAdvisors() {
         return args -> initializeAdvisorData();
     }
