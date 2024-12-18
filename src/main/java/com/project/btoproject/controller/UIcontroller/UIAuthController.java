@@ -68,7 +68,7 @@ public class UIAuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("registerDto") RegisterDto registerDto, RedirectAttributes redirectAttributes) {
+    public String register(@ModelAttribute("registerDto") RegisterDto registerDto, RedirectAttributes redirectAttributes, Model model) {
         try {
             String response = authService.register(registerDto);
             if (response.equals("User registered successfully!")) {
@@ -77,17 +77,17 @@ public class UIAuthController {
                 return "redirect:/getAllUsers"; // Redirect to /getAllUsers
             } else if (response.equals("Username is already taken!")) {
                 // Failure: Stay on registration page
-                redirectAttributes.addFlashAttribute("errorMessage", "There is an existing user registered with this Bilkent ID!");
-                return "redirect:/register";
+                model.addAttribute("errorMessage", "There is an existing user registered with this Bilkent ID!");
+                return "register";
             } else {
                 // Failure: General error
-                redirectAttributes.addFlashAttribute("errorMessage", "User could not be registered! Please try again!");
-                return "redirect:/register";
+                model.addAttribute("errorMessage", "User could not be registered! Please try again!");
+                return "register";
             }
         } catch (Exception e) {
             // Handle unexpected errors
-            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred: " + e.getMessage());
-            return "redirect:/register";
+            model.addAttribute("errorMessage", "An error occurred: " + e.getMessage());
+            return "register";
         }
     }
 
