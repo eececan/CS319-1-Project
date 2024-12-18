@@ -808,7 +808,7 @@ public class EventService implements IEventService {
                 Status.UPCOMING_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        return eventRepository.findToursByStatusesPageable(applicationStatuses, pageable);
+        return eventRepository.findToursApplicationsByStatusesPageable(applicationStatuses, pageable);
     }
     public Page<Tour> getToursPageable(int page, int size) {
         List<Status> tourStatuses = List.of(
