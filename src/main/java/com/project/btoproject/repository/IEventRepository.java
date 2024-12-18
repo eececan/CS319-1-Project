@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.DayOfWeek;
 import java.util.Date;
 import java.util.List;
 
@@ -45,9 +46,13 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE TYPE(e) = IndividualTour ")
     List<IndividualTour> findAllIndividualTours();
-    @Query("SELECT e FROM Event e WHERE FUNCTION('DAYOFWEEK', e.date) = :day")
-    List<Event> findAllByDayOfWeek(@Param("day") int day);
+    @Query("SELECT e FROM Event e WHERE TO_CHAR(e.date, 'D') = :day")
+    List<Event> findAllByDayOfWeek(@Param("day") String day);
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND TO_CHAR(t.date, 'D') = :day")
+    Page<Tour> findToursApplicationsByStatusesAndDayPageable(@Param("statuses") List<Status> statuses, @Param("day") String day, Pageable pageable);
 
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND TO_CHAR(t.date, 'D') = :day")
+    Page<Tour> findToursByStatusesAndDayPageable(@Param("statuses") List<Status> statuses, @Param("day") String day, Pageable pageable);
 
     @Query("SELECT t FROM Tour t WHERE t.status IN :statuses")
     List<Tour> findToursByStatuses(@Param("statuses") List<Status> statuses);
@@ -61,6 +66,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     Page<Tour> findToursApplicationsByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
   @Query("SELECT t FROM Tour t WHERE t.status IN :statuses  ORDER BY t.status ASC ,t.date ASC")
   Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
-
+    @Query("SELECT t FROM Tour t WHERE t.school.name LIKE %:name%")
+    List<Tour> findAllBySchoolNameContaining(@Param("name") String name);
 
 }

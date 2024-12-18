@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Fragments</title>
+</head>
+<body>
+<!-- fragments.html -->
+<div th:fragment="searchFilterBar (daySelectId)">
+  <div class="row">
+    <div class="col-md-6">
+      <!-- Existing content or leave empty -->
+    </div>
+    <div class="col-md-6 d-flex justify-content-end">
+      <div class="filter-container mr-3">
+        <label th:for="${daySelectId}" class="mr-2">Select Day:</label>
+        <select th:id="${daySelectId}" class="form-select d-inline-block w-auto">
+          <option value="">All Days</option>
+          <option value="2">Monday</option>
+          <option value="3">Tuesday</option>
+          <option value="4">Wednesday</option>
+          <option value="5">Thursday</option>
+          <option value="6">Friday</option>
+          <option value="7">Saturday</option>
+          <option value="1">Sunday</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

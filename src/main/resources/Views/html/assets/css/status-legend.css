@@ -1,3 +1,35 @@
+.filter-container, .search-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure labels have no bottom margin */
+.filter-container label, .search-container label {
+    margin-bottom: 0;
+}
+
+/* Adjust select and input widths */
+#day-select, #school-search {
+    width: auto;
+}
+
+/* Add spacing between input and button */
+.search-container .btn {
+    margin-left: 3px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 564px) {
+    .d-flex.justify-content-end {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-container, .search-container {
+        margin-bottom: 7px;
+    }
+}
+
 .status-legend-container {
     margin-top: 20px;
     padding: 10px;

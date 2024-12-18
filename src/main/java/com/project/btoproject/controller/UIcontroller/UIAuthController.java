@@ -3,6 +3,7 @@ package com.project.btoproject.controller.UIcontroller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
+import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.service.*;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -352,56 +355,85 @@ public class UIAuthController {
 
 
     @GetMapping("/advisor-tables")
-    public String showEventListAdvisor(@RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "12") int size,
-                                       Model model) {
+    public String showEventListAdvisor(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(required = false) Integer dayFilter,
+            Model model) {
 
+        // Get logged in advisor
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity user = new UserEntity();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String userId = userDetails.getUsername();
-        long advisorId = Long.parseLong(userId);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        long advisorId = Long.parseLong(userDetails.getUsername());
+
         Advisor advisor = advisorService.getAdvisorById(advisorId);
         DayOfWeek responsibleDay = advisor.getResponsibleDay();
         List<Guide> guides = guideService.getAllGuides();
-        List<Tour> tours = eventService.getTours();
-        List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
+
+        // Get all events
+        List<Tour> allTours = eventService.getTours();
         List<Tour> tourApplications = eventService.getTourApplications();
+        List<Fair> fairs = eventService.getFairs();
         List<IndividualTour> individualTours = eventService.getIndividualTours();
-        List <Fair> fairs = eventService.getFairs();
-        // Create guideCounts map
-        Map<Long, List<Integer>> guideCounts = tours.stream()
+        List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
+        Page<Tour> tourApplicationsPageable;
+        Page<Tour> toursPageable;
+        if (dayFilter != null) {
+            tourApplicationsPageable = eventService.getTourApplicationsByDayPageable(page, size, dayFilter);
+            toursPageable = eventService.getToursByDayPageable(page, size, dayFilter);
+
+
+            List<Event> filteredEvents = eventService.getEventsByDay(dayFilter);
+
+            fairs = filteredEvents.stream()
+                    .filter(e -> e instanceof Fair)
+                    .map(e -> (Fair) e)
+                    .collect(Collectors.toList());
+
+            individualTours = filteredEvents.stream()
+                    .filter(e -> e instanceof IndividualTour)
+                    .map(e -> (IndividualTour) e)
+                    .collect(Collectors.toList());
+
+            individualTourApplications = filteredEvents.stream()
+                    .filter(e -> e instanceof IndividualTour &&
+                            ((IndividualTour)e).getStatus() == Status.NEW_INDIVIDUAL_TOUR_APPLICATION)
+                    .map(e -> (IndividualTour) e)
+                    .collect(Collectors.toList());
+        }
+        // Create pagination
+        else{
+         tourApplicationsPageable = eventService.getTourApplicationsPageable(page, size);
+         toursPageable = eventService.getToursPageable(page, size);
+        }
+        // Create guide counts map
+        Map<Long, List<Integer>> guideCounts = allTours.stream()
                 .collect(Collectors.toMap(
                         Tour::getId,
                         tour -> IntStream.rangeClosed(1, tour.getGuideCount())
                                 .boxed()
                                 .collect(Collectors.toList())
                 ));
-        //model.addAttribute("tours", tours);
-        //model.addAttribute("tourApplications", tourApplications);
+
+        // Add to model
         model.addAttribute("responsibleDay", responsibleDay);
         model.addAttribute("guides", guides);
         model.addAttribute("fairs", fairs);
         model.addAttribute("guideCounts", guideCounts);
         model.addAttribute("individualTourApplications", individualTourApplications);
         model.addAttribute("individualTours", individualTours);
-
-        Page<Tour> tourApplicationsPageable = eventService.getTourApplicationsPageable(page, size);
-
         model.addAttribute("tourApplications", tourApplicationsPageable);
+        model.addAttribute("tours", toursPageable);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", tourApplicationsPageable.getTotalPages());
-
-        Page<Tour> toursPageable = eventService.getToursPageable(page, size);
-        model.addAttribute("tours", toursPageable);
         model.addAttribute("tourTotalPages", toursPageable.getTotalPages());
         model.addAttribute("pageSize", size);
+        model.addAttribute("selectedDay", dayFilter);
 
-        System.out.println(responsibleDay);
-        //model.addAttribute("advisorId", advisorId);
         return "advisor-tables";
     }
+
+
     @GetMapping("/Director-Coordinator-Tables")
     public String showEventListCoordinator( Model model) {
 

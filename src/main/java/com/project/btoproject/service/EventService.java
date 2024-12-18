@@ -345,15 +345,10 @@ public class EventService implements IEventService {
         return eventRepository.findAllTours();
     }
 
-    public List<Event> getEventsByDay(String day) {
-        DayOfWeek dayOfWeek;
-        try {
-            dayOfWeek = DayOfWeek.valueOf(day.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid day: " + day);
-        }
-        int dayNumber = dayOfWeek.getValue(); // 1 (Monday) to 7 (Sunday)
-        return eventRepository.findAllByDayOfWeek(dayNumber);
+    public List<Event> getEventsByDay(int dayFilter) {
+
+        String sqlDayNumber = String.valueOf((dayFilter % 7) );
+        return eventRepository.findAllByDayOfWeek(sqlDayNumber);
     }
 
     public List<Event> getAllEvents() {
@@ -762,7 +757,7 @@ public class EventService implements IEventService {
                 .collect(Collectors.toList());
 
         List<IndividualTour> upcomingIndividualTours = getAllIndividualTours().stream()
-                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_TOUR)
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_INDIVIDUAL_TOUR)
                 .collect(Collectors.toList());
 
         Date now = new Date();
@@ -818,6 +813,34 @@ public class EventService implements IEventService {
         );
         Pageable pageable = PageRequest.of(page, size);
         return eventRepository.findToursByStatusesPageable(tourStatuses, pageable);
+    }
+    /*public List<Event> getEventsByDay(int day) {
+        return eventRepository.findAllByDayOfWeek(day);
+    }*/
+    public List<Tour> searchEventsBySchoolName(String name) {
+        return eventRepository.findAllBySchoolNameContaining(name);
+    }
+    public Page<Tour> getTourApplicationsByDayPageable(int page, int size, int dayFilter) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 7) );
+        return eventRepository.findToursApplicationsByStatusesAndDayPageable(applicationStatuses, sqlDayNumber, pageable);
+    }
+
+    public Page<Tour> getToursByDayPageable(int page, int size, int dayFilter) {
+        List<Status> tourStatuses = List.of(
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 7) );
+        return eventRepository.findToursByStatusesAndDayPageable(tourStatuses, sqlDayNumber, pageable);
     }
 }
 
