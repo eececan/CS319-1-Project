@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Schedule</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        td {
+            cursor: pointer;
+        }
+        .full {
+            background-color: blue;
+            color: white;
+        }
+        .empty {
+            background-color: white;
+            color: black;
+        }
+    </style>
+    <script>
+        function toggleSlot(guideId, position, currentStatus, element) {
+            let newStatus = 'l';  // Default to 'e'
+            if (currentStatus === 'e') {
+                newStatus = 'f';  // If current status is 'e', set new status to 'f'
+            } else if (currentStatus === 'f') {
+                newStatus = 'e';  // If current status is 'f', set new status to 'e'
+            }
+
+            const formData = new FormData();
+            formData.append('guideId', guideId);
+            formData.append('position', position);
+            formData.append('status', newStatus);  // Send 'e' or 'f' as a string
+
+            fetch('/updateSchedule', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(html => {
+                    // Update the class of the clicked element based on the new status
+                    if (newStatus === 'e') {
+                        element.classList.remove('full');
+                        element.classList.add('empty');
+                    } else {
+                        element.classList.remove('empty');
+                        element.classList.add('full');
+                    }
+                })
+                .catch(() => alert("Failed to update schedule"));
+        }
+    </script>
+</head>
+<body>
+<h1>Guide Schedule</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Time Slots</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>NINE</td>
+        <td class="${guide.schedule.charAt(0) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 0, '${guide.schedule.charAt(0)}', this)"></td>
+        <td class="${guide.schedule.charAt(1) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 1, '${guide.schedule.charAt(1)}', this)"></td>
+        <td class="${guide.schedule.charAt(2) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 2, '${guide.schedule.charAt(2)}', this)"></td>
+        <td class="${guide.schedule.charAt(3) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 3, '${guide.schedule.charAt(3)}', this)"></td>
+        <td class="${guide.schedule.charAt(4) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 4, '${guide.schedule.charAt(4)}', this)"></td>
+        <td class="${guide.schedule.charAt(5) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 5, '${guide.schedule.charAt(5)}', this)"></td>
+        <td class="${guide.schedule.charAt(6) === 'e' ? 'empty' : 'full'}"
+            onclick="toggleSlot('${guide.id}', 6, '${guide.schedule.charAt(6)}', this)"></td>
+    </tr>
+    <!-- Repeat for other time slots as needed -->
+    </tbody>
+</table>
+</body>
+</html>

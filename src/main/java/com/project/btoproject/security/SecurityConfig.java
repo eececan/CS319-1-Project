@@ -71,7 +71,8 @@ public class SecurityConfig {
                                 "/ui/assets/js/**",
                                 "/ui/auth/head-secretary-tables",
                                 "/api/tours/**",
-                                "/deleteUser/**"
+                                "/deleteUser/**",
+                                "/updateSchedule"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

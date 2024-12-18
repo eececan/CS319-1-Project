@@ -17,7 +17,7 @@ import java.util.List;
 public class Guide extends User {
 
     @Column(name = "schedule")
-    private String schedule; // assuming Hour[] is mapped as a string
+    private String schedule = "eeeeeeeeeeeeeeeeeeeeeeeeeeee"; // e is empty f is full
 
     @Column(name = "department", nullable = true)
     private String department;

@@ -42,9 +42,9 @@ public class GuideController {
         return guideService.seeAssignedEvents(guide);
     }
 
-    @PostMapping("/selfAssignTourToGuide")
-    public void selfAssignTourToGuide(@RequestParam Long guideId, @RequestParam Tour tour) { //can change this to tour id
-        Guide guide = guideService.getGuideById(guideId);
-        guideService.selfAssignTour(guide, tour);
+    @PostMapping("setScheduleOfGuide")
+    public void setSchedule(@RequestParam Long guide, @RequestParam int position, @RequestParam char status) {
+        guideService.setSchedule(guide,position,status);
     }
+
 }
