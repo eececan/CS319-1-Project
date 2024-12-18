@@ -87,7 +87,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%; /* Ensures it matches the table row height */
+            height: 100%;
             overflow: hidden;
         }
     </style>
@@ -522,29 +522,6 @@
                 </div>
             </div>
         </div>
-        <div class="section-body mt-3">
-            <div class="container-fluid">
-                <div class="row clearfix">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-md-flex justify-content-between">
-                                    <ul class="nav nav-tabs b-none">
-                                        <li class="nav-item"><a class="nav-link active" id="list-tab" data-toggle="tab" href="#list"><i class="fa fa-list-ul"></i> List</a></li>
-                                    </ul>
-                                    <div class="d-flex align-items-center sort_stat">
-
-                                    </div>
-                                </div>
-                                <div class="input-group mt-2">
-                                    <input type="text" class="form-control search" placeholder="Search...">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="section-body">
             <div class="container-fluid">
                 <div class="tab-content">
@@ -562,8 +539,7 @@
                 </div>
             </div>
         </div>
-        <div class="container ml-30">
-
+        <div class="container ml-30" style="width: 90%; margin: 0 auto;">
             <!-- Check if guides list is empty -->
             <div th:if="${#lists.isEmpty(guides)}" class="no-guides">
                 <p>No guides found.</p>
