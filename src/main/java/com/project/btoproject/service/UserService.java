@@ -1,10 +1,7 @@
 package com.project.btoproject.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.btoproject.dto.UserAdvisorDto;
-import com.project.btoproject.dto.UserCoordinatorDto;
-import com.project.btoproject.dto.UserGuideDto;
-import com.project.btoproject.dto.UserGuideInTrainingDto;
+import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.UserRepository;
@@ -51,7 +48,11 @@ public class UserService implements IUserService {
         } else if (role.equals("ROLE_COORDINATOR")) {
             UserCoordinatorDto coordinatorDto = objectMapper.convertValue(dtoMap, UserCoordinatorDto.class);
             userHelperService.enterPersonalInformationCoordinator(user, coordinatorDto);
-        } else {
+        }
+        else if (role.equals("ROLE_HEAD_SECRETARY")) {
+            UserHeadSecretaryDto headSecretaryDto = objectMapper.convertValue(dtoMap, UserHeadSecretaryDto.class);
+            userHelperService.enterPersonalInformationHeadSecretary(user, headSecretaryDto);
+        }else {
             System.out.println("User has no matching roles.");
         }
     }

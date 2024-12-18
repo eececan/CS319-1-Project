@@ -90,9 +90,13 @@ public class UIUserProfileController {
                 }
             }
             model.addAttribute("sum", sum);
+
+            model.addAttribute("role", "ROLE_GUIDE");
             return "guide-profile"; // Guide's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
-            return "head-secretary-profile"; // Head Secretary's profile page
+            model.addAttribute("sum", 0);  //should i delete this
+            model.addAttribute("role", "ROLE_HEAD_SECRETARY");
+            return "guide-profile";
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
             GuideInTraining guide = (GuideInTraining) user;
             List<Event> event = guide.getEvents();

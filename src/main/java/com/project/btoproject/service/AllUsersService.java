@@ -1,10 +1,7 @@
 package com.project.btoproject.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.btoproject.dto.UserAdvisorDto;
-import com.project.btoproject.dto.UserCoordinatorDto;
-import com.project.btoproject.dto.UserGuideDto;
-import com.project.btoproject.dto.UserGuideInTrainingDto;
+import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.IUserTaskRepository;
@@ -26,8 +23,9 @@ public class AllUsersService implements IAllUsersService {
     private final IGuideInTrainingService guideInTrainingService;
     private final UserRepository userRepository;
     private final CoordinatorService coordinatorService;
+    private final HeadSecretaryService headSecretaryService;
 
-    public AllUsersService(IAllUsersRepository repository, IUserTaskRepository userTaskRepository, IGuideService guideService, IAdvisorService advisorService, IGuideInTrainingService guideInTrainingService, UserRepository userRepository, CoordinatorService coordinatorService) {
+    public AllUsersService(IAllUsersRepository repository, IUserTaskRepository userTaskRepository, IGuideService guideService, IAdvisorService advisorService, IGuideInTrainingService guideInTrainingService, UserRepository userRepository, CoordinatorService coordinatorService, HeadSecretaryService headSecretaryService) {
         this.repository = repository;
         this.userTaskRepository = userTaskRepository;
         this.guideService = guideService;
@@ -35,6 +33,7 @@ public class AllUsersService implements IAllUsersService {
         this.guideInTrainingService = guideInTrainingService;
         this.userRepository = userRepository;
         this.coordinatorService = coordinatorService;
+        this.headSecretaryService = headSecretaryService;
     }
 
     @Override
@@ -281,7 +280,20 @@ public class AllUsersService implements IAllUsersService {
             }
 
         } else if (userEntity.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_HEAD_SECRETARY"))) {
-            System.out.println("User is a HEAD SECRETARY");
+            UserHeadSecretaryDto userDto = objectMapper.convertValue(dtoMap, UserHeadSecretaryDto.class);
+            Optional<HeadSecretary> userH = headSecretaryService.getHeadSecretaryById(id);
+            if (userH.isPresent()) {
+                HeadSecretary user = userH.get();
+                if (userDto.getFirstName() != null) user.setFirstName(userDto.getFirstName());
+                if (userDto.getLastName() != null) user.setLastName(userDto.getLastName());
+                if (userDto.getPhoneNumber() != null) user.setPhoneNumber(userDto.getPhoneNumber());
+                if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
+                if (userDto.getPicture() != null) user.setPicture(userDto.getPicture());
+                if (userDto.getDescription() != null) user.setDescription(userDto.getDescription());
+                repository.save(user);
+            } else {
+                System.out.println("User not found");
+            }
 
         } else if (userEntity.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_DIERCTOR"))) {
             System.out.println("User is a DIRECTOR");

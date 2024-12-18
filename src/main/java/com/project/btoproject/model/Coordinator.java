@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "all_users")
 @Getter
 @Setter
-@DiscriminatorValue("COORIDNATOR")
+@DiscriminatorValue("COORDINATOR")
 public class Coordinator extends User {
 
    /* @Column(name = "schedule")

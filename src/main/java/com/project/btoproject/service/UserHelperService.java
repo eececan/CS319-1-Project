@@ -1,9 +1,6 @@
 package com.project.btoproject.service;
 
-import com.project.btoproject.dto.UserAdvisorDto;
-import com.project.btoproject.dto.UserCoordinatorDto;
-import com.project.btoproject.dto.UserGuideDto;
-import com.project.btoproject.dto.UserGuideInTrainingDto;
+import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.UserRepository;
@@ -86,5 +83,21 @@ public class UserHelperService implements IUserHelperService {
         coordinator.setId(Long.parseLong(userEntity.getUsername()));
         coordinator.setPassword(userEntity.getPassword());
         allUsersService.addUser(coordinator);
+    }
+
+    @Override
+    @Transactional
+    public void enterPersonalInformationHeadSecretary(UserEntity userEntity, UserHeadSecretaryDto userDto) {
+        HeadSecretary headSecretary = new HeadSecretary();
+        headSecretary.setFirstName(userDto.getFirstName());
+        headSecretary.setLastName(userDto.getLastName());
+        headSecretary.setPhoneNumber(userDto.getPhoneNumber());
+        headSecretary.setEmail(userDto.getEmail());
+        headSecretary.setPicture(userDto.getPicture());
+        headSecretary.setDescription(userDto.getDescription());
+        headSecretary.setStartDate(new Date());
+        headSecretary.setId(Long.parseLong(userEntity.getUsername()));
+        headSecretary.setPassword(userEntity.getPassword());
+        allUsersService.addUser(headSecretary);
     }
 }

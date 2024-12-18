@@ -118,9 +118,15 @@ public class UIAuthController {
             AuthResponseDTO authResponseDTO = (AuthResponseDTO) response.getBody();
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = "";
+            String roleF = "";
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 username = userDetails.getUsername();
+                roleF = userDetails.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .map(authority -> authority.getAuthority()) // Get the role name
+                        .orElse("ROLE_UNKNOWN");
             }
             else{
                 return "authentication principal is not in type UserDetails";
@@ -129,12 +135,13 @@ public class UIAuthController {
 
             if(!allUsersService.hasUserWithId(Long.parseLong(username))){
                 model.addAttribute("showPopUp", "true");
-               /* if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
-                    return "director-profile";
-                }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
                     return "head-secretary-profile";
                 }
+               /* if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+                    return "director-profile";
+                }
+
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
                    // return "coordinator-profile";
                 }*/
@@ -145,6 +152,7 @@ public class UIAuthController {
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
                     model.addAttribute("sum", 0);
                     model.addAttribute("user", new Guide());
+                    model.addAttribute("role", roleF);
                     System.out.println("showPopUp: " + model.getAttribute("showPopUp"));
                     return "guide-profile";
                 }
@@ -198,11 +206,17 @@ public class UIAuthController {
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
                        // return "coordinator-profile";
                    }*/
+                   if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+                       model.addAttribute("sum", 0);  //should i delete this
+                       model.addAttribute("role", "ROLE_HEAD_SECRETARY");
+                       return "guide-profile";
+                   }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
                        return "advisor-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
                        model.addAttribute("sum", 0);  //should i delete this
+                       model.addAttribute("role", "ROLE_GUIDE");
                        return "guide-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {

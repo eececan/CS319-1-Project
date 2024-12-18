@@ -1,10 +1,7 @@
 package com.project.btoproject.config;
 
 import com.project.btoproject.dto.*;
-import com.project.btoproject.model.Advisor;
-import com.project.btoproject.model.Guide;
-import com.project.btoproject.model.Role;
-import com.project.btoproject.model.UserEntity;
+import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAdvisorRepository;
 import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
@@ -27,10 +24,11 @@ public class DataInitializer {
     private final IUserService userService;
     private final CoordinatorService coordinatorService;
     private final IUserHelperService userHelperService;
+    private final IHeadSecretaryService headSecretaryService;
 
     public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
                            IAdvisorRepository advisorRepository, AuthService authService,
-                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService) {
+                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService) {
         this.roleRepository = roleRepository;
         this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
@@ -38,6 +36,7 @@ public class DataInitializer {
         this.userService = userService;
         this.coordinatorService = coordinatorService;
         this.userHelperService = userHelperService;
+        this.headSecretaryService = headSecretaryService;
     }
 
     @Bean
@@ -97,6 +96,11 @@ public class DataInitializer {
     @Bean
     public ApplicationRunner initializeCoordinators() {
         return args -> initializeCoordinatorData();
+    }
+
+    @Bean
+    public ApplicationRunner initializeHeadSecretary() {
+        return args -> initializeHeadSecretaryData();
     }
 
     @Transactional
@@ -227,6 +231,30 @@ public class DataInitializer {
             coordinatorDto.setPicture("picture.jpg");
             coordinatorDto.setDepartment("CS");
             userHelperService.enterPersonalInformationCoordinator(user, coordinatorDto);
+        }
+    }
+
+    @Transactional
+    public void initializeHeadSecretaryData() {
+        if (!headSecretaryService.getHeadSecretaryById(5L).isPresent()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("5");
+            registerDto.setPassword("5");
+            registerDto.setRole("ROLE_HEAD_SECRETARY");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(5L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserHeadSecretaryDto secretaryDto = new UserHeadSecretaryDto();
+            secretaryDto.setFirstName("Dilek");
+            secretaryDto.setLastName("Yildiz");
+            secretaryDto.setDescription("Dilek Yildiz added as the head secretary as an example.");
+            secretaryDto.setPhoneNumber("05371444444");
+            secretaryDto.setEmail("dilekyildiz@ug.bilkent.edu.tr");
+            secretaryDto.setPicture("dilekpicture.jpg");
+            userHelperService.enterPersonalInformationHeadSecretary(user, secretaryDto);
         }
     }
 

@@ -19,7 +19,7 @@ public class Guide extends User {
     @Column(name = "schedule")
     private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
 
-    @Column(name = "department", nullable = false)
+    @Column(name = "department", nullable = true)
     private String department = "default_department";
 
     @Column(name = "grade")
