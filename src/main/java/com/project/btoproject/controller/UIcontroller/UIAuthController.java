@@ -18,10 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
@@ -61,6 +59,40 @@ public class UIAuthController {
         model.addAttribute("loginDto", loginDto);
         return "login";
     }
+
+    @GetMapping("/register")
+    public String register(Model model) {
+        RegisterDto registerDto = new RegisterDto();
+        model.addAttribute("registerDto", registerDto);
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute("registerDto") RegisterDto registerDto, RedirectAttributes redirectAttributes) {
+        try {
+            String response = authService.register(registerDto);
+            if (response.equals("User registered successfully!")) {
+                // Success: Add flash attribute for success message
+                redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
+                return "redirect:/getAllUsers"; // Redirect to /getAllUsers
+            } else if (response.equals("Username is already taken!")) {
+                // Failure: Stay on registration page
+                redirectAttributes.addFlashAttribute("errorMessage", "There is an existing user registered with this Bilkent ID!");
+                return "redirect:/register";
+            } else {
+                // Failure: General error
+                redirectAttributes.addFlashAttribute("errorMessage", "User could not be registered! Please try again!");
+                return "redirect:/register";
+            }
+        } catch (Exception e) {
+            // Handle unexpected errors
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred: " + e.getMessage());
+            return "redirect:/register";
+        }
+    }
+
+
+
 
     @PostMapping("/login")
     public String login(LoginDto loginDto, Model model, HttpServletRequest request) {

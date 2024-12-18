@@ -4,11 +4,13 @@ import com.project.btoproject.model.User;
 import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IUserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,35 +25,46 @@ public class UIUserController {
         this.userService = allUsersService;
     }
     @GetMapping("/getAllUsers")
-    public String getUsersPage(Model model) {
+    public String getUsersPage(Model model, @ModelAttribute("successMessage") String successMessage) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
-        String roleUser="";
+        String roleUser = "";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
+            roleUser = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(GrantedAuthority::getAuthority)
+                    .orElse("ROLE_UNKNOWN");
         }
         User user = allUsersService.getUserById(Long.parseLong(username));
         List<User> users = allUsersService.getAllUsers();
         model.addAttribute("all_users", users);
         model.addAttribute("user", user);
+        model.addAttribute("role", roleUser);
+
+        // Pass success message to the model (if present)
+        if (successMessage != null && !successMessage.isEmpty()) {
+            model.addAttribute("successMessage", successMessage);
+        }
+
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
-            return"member-list-directorSpecific";
-        }
-        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE")) || (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING")) )) {
-            return"member-list-guideSpecific";
-        }
-        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
-            roleUser ="ADVISOR";
+            return "member-list-directorSpecific";
+        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE")) ||
+                authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+            return "member-list-guideSpecific";
+        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            roleUser = "ADVISOR";
             model.addAttribute("roleUser", roleUser);
-            return"member-list";
-        }
-        else{
-            roleUser ="HEAD SECRETARY";
+            return "member-list";
+        } else {
+            roleUser = "HEAD SECRETARY";
             model.addAttribute("roleUser", roleUser);
             return "member-list";
         }
     }
+
 
     @GetMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable Long id, Model model) {

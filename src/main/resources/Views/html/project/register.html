@@ -1,64 +1,80 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <title>:: Register ::</title>
 
-<title>:: Soccer :: Register</title>
+    <!-- Bootstrap Core and vendor -->
+    <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
 
-<!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
-
-<!-- Core css -->
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/theme1.css"/>
-
-
+    <!-- Custom CSS for dark red background -->
+    <style>
+        .auth_right {
+            background-color: #8B0000; /* Dark Red */
+            opacity: 0.9; /* Slight transparency for a softer appearance */
+            height: 100vh; /* Full height */
+            width: 100%;
+        }
+    </style>
 </head>
-<body class="font-montserrat">
 
-<div class="auth">
+<body class="font-montserrat">
+<div class="auth d-flex">
     <div class="auth_left">
         <div class="card">
-            <div class="text-center mb-5">
-                <a class="header-brand" href="index.html"><i class="fa fa-soccer-ball-o brand-logo"></i></a>
-            </div>
             <div class="card-body">
-                <div class="card-title">Create new account</div>
-                <div class="form-group">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control" placeholder="Enter name">
+
+                <div class="card-title text-center">Create New Account</div>
+                <!-- Error Message -->
+                <div th:if="${errorMessage != null and errorMessage != ''}"
+                     class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Email address</label>
-                    <input type="email" class="form-control" placeholder="Enter email">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="Password">
-                </div>
-                <div class="form-group">
-                    <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" />
-                    <span class="custom-control-label">Agree the <a href="#">terms and policy</a></span>
-                    </label>
-                </div>
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary btn-block">Create new account</button>
-                </div>
-            </div>
-            <div class="text-center text-muted">
-                Already have account? <a href="login.html">Sign in</a>
+                <!-- Form starts here -->
+                <form th:action="@{/ui/auth/register}" th:object="${registerDto}" method="post">
+                    <!-- Bilkent ID -->
+                    <div class="form-group">
+                        <label class="form-label">Bilkent ID</label>
+                        <input type="text" class="form-control" placeholder="Enter Bilkent ID" th:field="*{username}" />
+                    </div>
+                    <!-- Role -->
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-control" th:field="*{role}">
+                            <option value="" disabled selected>Select a role</option>
+                            <option value="ROLE_GUIDE_IN_TRAINING">Guide In Training</option>
+                            <option value="ROLE_GUIDE">Guide</option>
+                            <option value="ROLE_ADVISOR">Advisor</option>
+                            <option value="ROLE_COORDINATOR">Coordinator</option>
+                        </select>
+                    </div>
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" placeholder="Enter password" th:field="*{password}" />
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary btn-block">Create New Account</button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
-    <div class="auth_right full_img"></div>
+    <!-- Dark red background -->
+    <div class="auth_right"></div>
 </div>
 
-<script src="../assets/bundles/lib.vendor.bundle.js"></script>
-<script src="../assets/js/core.js"></script>
+<!-- Bootstrap JS Bundle (includes Popper.js) -->
+<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
