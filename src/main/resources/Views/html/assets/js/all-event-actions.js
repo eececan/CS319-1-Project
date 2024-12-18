@@ -412,5 +412,32 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the day select dropdown
+    const daySelect = document.getElementById('eventDaySelect');
 
+    if (daySelect) {
+        daySelect.addEventListener('change', function() {
+            const selectedDay = this.value;
+
+            // Construct URL with day filter
+            let url = new URL(window.location.href);
+            if (selectedDay) {
+                url.searchParams.set('dayFilter', selectedDay);
+            } else {
+                url.searchParams.delete('dayFilter');
+            }
+
+            // Redirect to filtered URL
+            window.location.href = url.toString();
+        });
+
+        // Set initial value if there's a day filter in URL
+        const params = new URLSearchParams(window.location.search);
+        const dayFilter = params.get('dayFilter');
+        if (dayFilter) {
+            daySelect.value = dayFilter;
+        }
+    }
+});
 

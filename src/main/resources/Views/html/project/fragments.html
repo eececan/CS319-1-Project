@@ -5,7 +5,7 @@
 </head>
 <body>
 <!-- fragments.html -->
-<div th:fragment="searchFilterBar (daySelectId, schoolSearchId, searchButtonId, showSearch)">
+<div th:fragment="searchFilterBar (daySelectId)">
   <div class="row">
     <div class="col-md-6">
       <!-- Existing content or leave empty -->
@@ -24,11 +24,7 @@
           <option value="1">Sunday</option>
         </select>
       </div>
-      <!-- Only show search if showSearch parameter is true -->
-      <div th:if="${showSearch}" class="search-container">
-        <input th:id="${schoolSearchId}" type="text" class="form-control d-inline-block w-auto" placeholder="Search school...">
-        <button th:id="${searchButtonId}" class="btn btn-primary">Search</button>
-      </div>
+
     </div>
   </div>
 </div>
