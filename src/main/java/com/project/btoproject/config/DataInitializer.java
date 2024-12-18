@@ -8,10 +8,7 @@ import com.project.btoproject.model.UserEntity;
 import com.project.btoproject.repository.IAdvisorRepository;
 import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
-import com.project.btoproject.service.AuthService;
-import com.project.btoproject.service.CoordinatorService;
-import com.project.btoproject.service.IAllUsersService;
-import com.project.btoproject.service.IUserService;
+import com.project.btoproject.service.*;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,16 +26,18 @@ public class DataInitializer {
     private final AuthService authService;
     private final IUserService userService;
     private final CoordinatorService coordinatorService;
+    private final IUserHelperService userHelperService;
 
     public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
                            IAdvisorRepository advisorRepository, AuthService authService,
-                           IUserService userService, CoordinatorService coordinatorService) {
+                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService) {
         this.roleRepository = roleRepository;
         this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
         this.authService = authService;
         this.userService = userService;
         this.coordinatorService = coordinatorService;
+        this.userHelperService = userHelperService;
     }
 
     @Bean
@@ -80,7 +79,7 @@ public class DataInitializer {
         }
     }
 
-    @Bean
+   @Bean
     public ApplicationRunner initializeAdvisors() {
         return args -> initializeAdvisorData();
     }
@@ -123,7 +122,7 @@ public class DataInitializer {
             advisorDto.setGrade(3);
             advisorDto.setPicture("picture.jpg");
             advisorDto.setDepartment("CS");
-            userService.enterPersonalInformationAdvisor(user, advisorDto);
+            userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
         }
         if (advisorRepository.findByFirstNameAndLastName("Mehmet", "Akyol").isEmpty()) {
             RegisterDto registerDto = new RegisterDto();
@@ -146,7 +145,7 @@ public class DataInitializer {
             advisorDto.setGrade(3);
             advisorDto.setPicture("picture.jpg");
             advisorDto.setDepartment("CS");
-            userService.enterPersonalInformationAdvisor(user, advisorDto);
+            userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
         }
     }
 
@@ -173,7 +172,7 @@ public class DataInitializer {
             guideDto.setGrade(3);
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
-            userService.enterPersonalInformationGuide(user, guideDto);
+            userHelperService.enterPersonalInformationGuide(user, guideDto);
         }
     }
 
@@ -201,7 +200,7 @@ public class DataInitializer {
             guideDto.setGrade(3);
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
-            userService.enterPersonalInformationGuideInTraining(user, guideDto);
+            userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
         }
     }
 
@@ -227,7 +226,7 @@ public class DataInitializer {
             coordinatorDto.setGrade(3);
             coordinatorDto.setPicture("picture.jpg");
             coordinatorDto.setDepartment("CS");
-            userService.enterPersonalInformationCoordinator(user, coordinatorDto);
+            userHelperService.enterPersonalInformationCoordinator(user, coordinatorDto);
         }
     }
 

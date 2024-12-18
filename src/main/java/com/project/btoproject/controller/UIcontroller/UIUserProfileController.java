@@ -7,10 +7,7 @@ import com.project.btoproject.dto.UserGuideInTrainingDto;
 import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
-import com.project.btoproject.service.AllUsersService;
-import com.project.btoproject.service.AuthService;
-import com.project.btoproject.service.EventService;
-import com.project.btoproject.service.UserService;
+import com.project.btoproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,12 +32,20 @@ public class UIUserProfileController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
+    private final EventService eventService;
+    private final AdvisorService advisorService;
+    private final GuideService guideService;
+    private final PointRecordService pointRecordService;
 
-    UIUserProfileController(AllUsersService allUsersService, UserService userService, PasswordEncoder passwordEncoder, AuthService authService) {
+    UIUserProfileController(AllUsersService allUsersService, UserService userService, PasswordEncoder passwordEncoder, AuthService authService, EventService eventService, AdvisorService advisorService, GuideService guideService, PointRecordService pointRecordService) {
         this.allUsersService = allUsersService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authService = authService;
+        this.eventService = eventService;
+        this.advisorService = advisorService;
+        this.guideService = guideService;
+        this.pointRecordService = pointRecordService;
     }
 
     @GetMapping("/profile")
@@ -112,13 +117,161 @@ public class UIUserProfileController {
     public String updateProfile(@RequestParam Map<String, Object> dtoMap, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
+        String role = "";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority()) // Get the role name
+                    .orElse("ROLE_UNKNOWN");
         }
-        allUsersService.updateProfile(Long.parseLong(username), dtoMap);
-        return "redirect:/ui/UserProfile/profile";
+        if (!allUsersService.hasUserWithId(Long.parseLong(username))) {
+            UserEntity user = userService.findUserByUsername(Long.parseLong(username)).get();
+            userService.addNewUser(dtoMap, role, user);
+            model.addAttribute("showPopUp", "false");
+
+            if (role.equals("ROLE_DIRECTOR")) {
+                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                model.addAttribute("user", allUser);
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                List<UserTask> tasks = allUsersService.seeAllTasks(allUser);
+                List<User> users = allUsersService.getAllUsers();
+                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                int sum = 0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum += pointRecords.get(0).getPoint();
+                }
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                model.addAttribute("sum", sum);
+                model.addAttribute("users", users);
+                model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                return "Director-Dashboard";
+            } else if (role.equals("ROLE_COORDINATOR")) {
+
+                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                model.addAttribute("user", allUser);
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                List<UserTask> tasks = allUsersService.seeAllTasks(allUser);
+                List<User> users = allUsersService.getAllUsers();
+                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                int sum = 0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum += pointRecords.get(0).getPoint();
+                }
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                model.addAttribute("sum", sum);
+                model.addAttribute("users", users);
+                model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                return "Coordinator-Dashboard";// Coordinator's page
+            } else if (role.equals("ROLE_ADVISOR")) {
+
+                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                model.addAttribute("user", allUser);
+                // Fetch advisor of the day
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                // Fetch associated tours and fairs
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                List<UserTask> tasks = allUsersService.seeAllTasks(allUser);
+                // Add advisor, tours, and fairs to the model
+                List<User> users = allUsersService.getAllUsers();
+                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                int sum = 0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum += pointRecords.get(0).getPoint();
+                }
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                model.addAttribute("sum", sum);
+                model.addAttribute("users", users);
+                model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                return "Advisor-Dashboard"; // Advisor's page
+            } else if (role.equals("ROLE_GUIDE")) {
+
+                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                model.addAttribute("user", allUser);
+                // Fetch advisor of the day
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                // Fetch associated tours and fairs
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                List<UserTask> tasks = allUsersService.seeAllTasks(allUser);
+                // Add advisor, tours, and fairs to the model
+                List<User> users = allUsersService.getAllUsers();
+                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                int sum = 0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum += pointRecords.get(0).getPoint();
+                }
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                model.addAttribute("sum", sum);
+                model.addAttribute("users", users);
+                model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                return "Guide-Dashboard"; // Guide's page
+            } else if (role.equals("ROLE_HEAD_SECRETARY")) {
+
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                // Fetch associated tours and fairs
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                //List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                // Add advisor, tours, and fairs to the model
+                List<User> users = allUsersService.getAllUsers();
+                //List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide((Guide) user);
+                /*int sum=0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum+=pointRecords.get(0).getPoint();
+                }*/
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                //model.addAttribute("sum",sum);
+                model.addAttribute("users", users);
+                //model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                /*List<User> users = allUsersService.getAllUsers();
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                model.addAttribute("users", users);*/
+                return "Head-Secretary-Dashboard"; // Head Secretary's page
+            } else {
+                return "page-empty"; // Default page for unrecognized roles
+            }
+        }
+        else
+
+        {
+            allUsersService.updateProfile(Long.parseLong(username), dtoMap);
+            return "redirect:/ui/UserProfile/profile";
+        }
     }
+
+
+
 
     @GetMapping("/changePassword")
     public String changePassword() {
