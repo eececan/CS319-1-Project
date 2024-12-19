@@ -560,7 +560,10 @@
                                                 </div>
                                             </div>
                                             <div class="card-footer text-right">
-                                                <button type="button" class="btn btn-primary float-left" onclick="viewEditSchedule()">View/Edit Schedule</button>
+                                                <button type="button" class="btn btn-primary float-left" onclick="function viewEditSchedule() {
+                                                    window.location.href = '/updateSchedule';
+                                                }
+                                                viewEditSchedule()">View/Edit Schedule</button>
                                                 <button type="submit" class="btn btn-primary">Update Profile</button>
                                             </div>
                                         </div>
