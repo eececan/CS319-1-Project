@@ -4,21 +4,21 @@
     <style>
         table {
             width: 100%;
-            table-layout: fixed; /* Ensures equal-width columns */
+            table-layout: fixed;
             border-collapse: collapse;
-            margin: 20px auto; /* Center the table */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds slight shadow */
+            margin: 20px auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             background-color: #ffffff;
-            border-radius: 10px; /* Rounded corners */
+            border-radius: 6px;
             overflow: hidden;
         }
 
         th, td {
             border: 1px solid #e0e0e0 !important;
             text-align: center;
-            padding: 12px;
+            padding: 18px;
             font-size: 14px;
-            color: #333333;
+            color: #606060;
         }
 
         th {
@@ -356,14 +356,14 @@
         </div>
     </div>
     <div id="left-sidebar" class="sidebar ">
-        <h5 class="brand-name">Advisor <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+        <h5 class="brand-name">Guide <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
                 <li class="g_heading">Project</li>
-                <li class="active"><a href="index.html"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
-                <li><a href="project-taskboard.html"><i class="fa fa-calendar-check-o"></i><span>Taskboard</span></a></li>
-                <li><a href="project-clients.html"><i class="fa fa-user"></i><span>Clients</span></a></li>
-                <li><a href="project-todo.html"><i class="fa fa-check-square-o"></i><span>Todo List</span></a></li>
+                <li class="active"><a href="/dashboard"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
+                <li><a th:href="@{/ui/task/todo}"><i class="fa fa-check-square-o"></i><span>Todo List</span></a></li>
+                <li><a th:href="@{/getRecordsOfGuide}"><i class="fa fa-user"></i><span>Event Records</span></a></li>
+                <li><a th:href="@{/getAllUsers}"><i class="fa fa-user"></i><span>All Members</span></a></li>
                 <li class="g_heading">App</li>
                 <li><a href="app-calendar.html"><i class="fa fa-calendar"></i><span>Calendar</span></a></li>
                 <li><a href="app-contact.html"><i class="fa fa-address-book"></i><span>Contact</span></a></li>
@@ -401,10 +401,9 @@
                 </div>
             </div>
         </div>
-
         <div class="container ml-20" style="width: 90%; margin: 0 auto;">
             <h2>Edit availability for tour assignment</h2>
-            <p>Blue slots indicate unavailable times, while white slots are available. Click on a slot to update your schedule</p>
+            <p>Blue slots indicate unavailable times, while white slots are available. Click on a slot to update your schedule.</p>
             <table>
                 <thead>
                 <tr>
@@ -426,8 +425,7 @@
                         th:data-guide-id="${guide.id}"
                         th:data-position="${i}"
                         th:data-status="${guide.schedule.charAt(i)}"
-                        th:onclick="|toggleSlot(this)|">
-                    </td>
+                        th:onclick="|toggleSlot(this)|"></td>
                 </tr>
                 <tr>
                     <td>11.00</td>
@@ -436,8 +434,7 @@
                         th:data-guide-id="${guide.id}"
                         th:data-position="${i}"
                         th:data-status="${guide.schedule.charAt(i)}"
-                        th:onclick="|toggleSlot(this)|">
-                    </td>
+                        th:onclick="|toggleSlot(this)|"></td>
                 </tr>
                 <tr>
                     <td>13.30</td>
@@ -446,8 +443,7 @@
                         th:data-guide-id="${guide.id}"
                         th:data-position="${i}"
                         th:data-status="${guide.schedule.charAt(i)}"
-                        th:onclick="|toggleSlot(this)|">
-                    </td>
+                        th:onclick="|toggleSlot(this)|"></td>
                 </tr>
                 <tr>
                     <td>16.00</td>
@@ -456,15 +452,11 @@
                         th:data-guide-id="${guide.id}"
                         th:data-position="${i}"
                         th:data-status="${guide.schedule.charAt(i)}"
-                        th:onclick="|toggleSlot(this)|">
-                    </td>
+                        th:onclick="|toggleSlot(this)|"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
-
-
 
     </div>
 </div>
@@ -510,15 +502,17 @@
         if (newStatus === 'e') {
             element.classList.remove('full');
             element.classList.add('empty');
+            element.textContent = "Available";
         } else {
             element.classList.remove('empty');
             element.classList.add('full');
+            element.textContent = "Unavailable";
         }
 
         const formData = new FormData();
         formData.append('guideId', guideId);
         formData.append('position', position);
-        formData.append('status', newStatus);  // Send 'e' or 'f' as a string
+        formData.append('status', newStatus); // Send 'e' or 'f' as a string
 
         fetch('/updateSchedule', {
             method: 'POST',
@@ -539,13 +533,18 @@
             if (currentStatus === 'f') {
                 slot.classList.add('full');
                 slot.classList.remove('empty');
+                slot.textContent = "Unavailable"; // Initialize as Unavailable
             } else {
                 slot.classList.add('empty');
                 slot.classList.remove('full');
+                slot.textContent = "Available"; // Initialize as Available
             }
         });
     }
+
     window.onload = initializeSchedule;
+
+
 </script>
 </body>
 </html>
