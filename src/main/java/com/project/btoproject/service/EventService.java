@@ -842,6 +842,49 @@ public class EventService implements IEventService {
         String sqlDayNumber = String.valueOf((dayFilter % 7) );
         return eventRepository.findToursByStatusesAndDayPageable(tourStatuses, sqlDayNumber, pageable);
     }
+
+    public Page<Fair> getFairApplicationsPageable(int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesPageable(applicationStatuses, pageable);
+    }
+
+    public Page<Fair> getFairsPageable(int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesPageable(fairStatuses, pageable);
+    }
+
+    public Page<IndividualTour> getIndividualToursPageable(int page, int size) {
+        List<Status> individualTourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesPageable(individualTourStatuses, pageable);
+    }
+
+    public Page<IndividualTour> getIndividualTourApplicationsPageable(int page, int size) {
+        List<Status> individualTourStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesPageable(individualTourStatuses, pageable);
+    }
+
 }
 
 

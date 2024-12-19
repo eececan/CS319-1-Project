@@ -405,7 +405,8 @@
                                                                         && !tourConflicts[tour.id]}">
                                                             <button
                                                                     class="btn btn-sm join-tour-button"
-                                                                    th:data-tour-id="${tour.id}">
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-guide-id="${guide.id}">
                                                                 Join Tour
                                                             </button>
                                                         </div>
@@ -414,7 +415,8 @@
                                                         <div th:if="${#lists.contains(guide.events, tour) && tour.status.name() == 'UPCOMING_TOUR'}">
                                                             <button
                                                                     class="btn btn-sm leave-tour-button"
-                                                                    th:data-tour-id="${tour.id}">
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-guide-id="${guide.id}">
                                                                 Leave Tour
                                                             </button>
                                                         </div>
@@ -439,6 +441,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -557,6 +560,35 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${fairs != null and fairs.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${fairs.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/guideTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, fairs.totalPages - 1)}"
+                                                        th:classappend="${i == fairs.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/guideTables(fairsPage=${i}, fairsSize=${fairs.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${fairs.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/guideTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -667,6 +699,35 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${individualTours != null and individualTours.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${individualTours.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/guideTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTours.totalPages - 1)}"
+                                                        th:classappend="${i == individualTours.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/guideTables(individualToursPage=${i}, individualToursSize=${individualTours.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${individualTours.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/guideTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

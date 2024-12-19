@@ -48,6 +48,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     List<IndividualTour> findAllIndividualTours();
     @Query("SELECT e FROM Event e WHERE TO_CHAR(e.date, 'D') = :day")
     List<Event> findAllByDayOfWeek(@Param("day") String day);
+
     @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND TO_CHAR(t.date, 'D') = :day")
     Page<Tour> findToursApplicationsByStatusesAndDayPageable(@Param("statuses") List<Status> statuses, @Param("day") String day, Pageable pageable);
 
@@ -64,9 +65,19 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT t FROM Tour t WHERE t.status IN :statuses ORDER BY t.status ASC, t.applicationTimeStamp DESC")
     Page<Tour> findToursApplicationsByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
-  @Query("SELECT t FROM Tour t WHERE t.status IN :statuses  ORDER BY t.status ASC ,t.date ASC")
-  Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses  ORDER BY t.status ASC ,t.date ASC")
+    Page<Tour> findToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+
     @Query("SELECT t FROM Tour t WHERE t.school.name LIKE %:name%")
     List<Tour> findAllBySchoolNameContaining(@Param("name") String name);
+
+
+    @Query("SELECT f FROM Fair f WHERE f.status IN :statuses ORDER BY f.applicationTimeStamp DESC")
+    Page<Fair> findFairsByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+
+    @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses ORDER BY it.applicationTimeStamp DESC")
+    Page<IndividualTour> findIndividualToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+
 
 }

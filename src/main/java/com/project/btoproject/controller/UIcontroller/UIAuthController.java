@@ -433,68 +433,6 @@ public class UIAuthController {
         return "advisor-tables";
     }
 
-
-    @GetMapping("/Director-Coordinator-Tables")
-    public String showEventListCoordinator( Model model) {
-
-        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity user = new UserEntity();
-        Object principal = authentication.getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String userId = userDetails.getUsername();
-        long coordinatorId = Long.parseLong(userId);
-        Coordinator coordinator = coordinatorService.getCoordinatorById(coordinatorId);*/
-        try {
-        List<Guide> guides = guideService.getAllGuides();
-        List<Tour> tours = eventService.getTours();
-        List<Tour> tourApplications = eventService.getTourApplications();
-        List<Fair> fairApplications = eventService.getFairApplications();
-        List<Fair> fairs = eventService.getFairs();
-        List<IndividualTour> individualTourApplications = eventService.getIndividualTourApplications();
-        List<IndividualTour> individualTours = eventService.getIndividualTours();
-
-        // Create guideCounts map for fairs
-        Map<Long, List<Integer>> guideCounts = new HashMap<>();
-        for (Fair fair : fairs) {
-            List<Integer> counts = IntStream.rangeClosed(1, fair.getGuideCount())
-                    .boxed()
-                    .collect(Collectors.toList());
-            guideCounts.put(fair.getId(), counts);
-        }
-
-        // Add all attributes to model
-        model.addAttribute("tours", tours);
-        model.addAttribute("tourApplications", tourApplications);
-        model.addAttribute("fairs", fairs);
-        model.addAttribute("fairApplications", fairApplications);
-        model.addAttribute("guides", guides);
-        model.addAttribute("guideCounts", guideCounts);
-        model.addAttribute("individualTourApplications", individualTourApplications);
-        model.addAttribute("individualTours", individualTours);
-
-        return "director-coordinator-tables";  // Match template name exactly
-    } catch (Exception e) {
-        e.printStackTrace();  // Log the error
-        throw e;  // Rethrow to see error in logs
-    }
-        /*model.addAttribute("individualTourApplications", individualTourApplications);
-        model.addAttribute("individualTours", individualTours);*/
-
-
-        //model.addAttribute("advisorId", advisorId);
-
-    }
-
-    @GetMapping("/head-secretary-tables")
-    public String showEventListHeadSecretary(Model model) {
-
-        model.addAttribute("tourApplications", eventService.getTourApplications());
-        model.addAttribute("tours", eventService.getTours());
-        model.addAttribute("individualTours", eventService.getIndividualTours());
-        model.addAttribute("fairs", eventService.getFairs());
-        return "head-secretary-tables";
-    }
-
     @GetMapping("/guide-tables")
     public String showEventListGuide(Model model) {
 
