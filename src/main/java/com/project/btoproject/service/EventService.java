@@ -852,6 +852,41 @@ public class EventService implements IEventService {
         Pageable pageable = PageRequest.of(page, size);
         return eventRepository.findFairsByStatusesPageable(applicationStatuses, pageable);
     }
+    public Page<Fair> getFairApplicationsByDayPageable(int page, int size,int day) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+
+        return eventRepository.findFairsByStatusesAndDayPageable(applicationStatuses, String.valueOf(day),pageable);
+    }
+    public Page<Fair> getFairsByDayPageable(int page, int size, int day) {
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesAndDayPageable(List.of(Status.UPCOMING_FAIR,Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR), String.valueOf(day), pageable);
+    }
+
+    public Page<IndividualTour> getIndividualTourApplicationsByDayPageable(int page, int size, int day) {
+        List<Status> individualTourStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesAndDayPageable(individualTourStatuses, String.valueOf(day), pageable);
+    }
+
+    public Page<IndividualTour> getIndividualToursByDayPageable(int page, int size, int day) {
+        List<Status> individualTourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesAndDayPageable(individualTourStatuses, String.valueOf(day), pageable);
+    }
 
     public Page<Fair> getFairsPageable(int page, int size) {
         List<Status> fairStatuses = List.of(

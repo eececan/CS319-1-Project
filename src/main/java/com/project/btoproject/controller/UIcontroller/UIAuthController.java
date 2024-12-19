@@ -354,7 +354,7 @@ public class UIAuthController {
     }
 
 
-    @GetMapping("/advisor-tables")
+    /*@GetMapping("/advisor-tables")
     public String showEventListAdvisor(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
@@ -431,6 +431,6 @@ public class UIAuthController {
         model.addAttribute("selectedDay", dayFilter);
 
         return "advisor-tables";
-    }
+    }*/
 
 }

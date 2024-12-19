@@ -48,7 +48,11 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     List<IndividualTour> findAllIndividualTours();
     @Query("SELECT e FROM Event e WHERE TO_CHAR(e.date, 'D') = :day")
     List<Event> findAllByDayOfWeek(@Param("day") String day);
+    @Query("SELECT f FROM Fair f WHERE f.status IN :statuses AND TO_CHAR(f.date, 'D') = :day")
+    Page<Fair> findFairsByStatusesAndDayPageable(@Param("statuses") List<Status> statuses, @Param("day") String day, Pageable pageable);
 
+    @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses AND TO_CHAR(it.date, 'D') = :day")
+    Page<IndividualTour> findIndividualToursByStatusesAndDayPageable(@Param("statuses") List<Status> statuses, @Param("day") String day, Pageable pageable);
     @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND TO_CHAR(t.date, 'D') = :day")
     Page<Tour> findToursApplicationsByStatusesAndDayPageable(@Param("statuses") List<Status> statuses, @Param("day") String day, Pageable pageable);
 

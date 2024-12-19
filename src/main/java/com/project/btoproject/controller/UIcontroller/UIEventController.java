@@ -265,6 +265,7 @@ public class UIEventController {
             @RequestParam(defaultValue = "12") int individualTourApplicationsSize,
             @RequestParam(defaultValue = "0") int individualToursPage,
             @RequestParam(defaultValue = "12") int individualToursSize,
+            @RequestParam(required = false) Integer dayFilter,
             Model model) {
     try {
         // Get logged in advisor
@@ -277,12 +278,26 @@ public class UIEventController {
         List<Guide> guides = guideService.getAllGuides();
 
         // Fetch paginated data for each tab
-        Page<Tour> tourApplicationsPageable = eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
-        Page<Tour> toursPageable = eventService.getToursPageable(toursPage, toursSize);
-        Page<Fair> fairsPageable = eventService.getFairsPageable(fairsPage, fairsSize);
-        Page<IndividualTour> individualTourApplicationsPageable = eventService.getIndividualTourApplicationsPageable(individualTourApplicationsPage, individualTourApplicationsSize);
-        Page<IndividualTour> individualToursPageable = eventService.getIndividualToursPageable(individualToursPage, individualToursSize);
+        Page<Tour> tourApplicationsPageable;
+        Page<Tour> toursPageable;
+        Page<Fair> fairsPageable;
+        Page<IndividualTour> individualTourApplicationsPageable;
+        Page<IndividualTour> individualToursPageable;
+        if (dayFilter != null) {
+            tourApplicationsPageable = eventService.getTourApplicationsByDayPageable(tourApplicationsPage, tourApplicationsSize, dayFilter);
+            toursPageable = eventService.getToursByDayPageable(toursPage, toursSize, dayFilter);
+            fairsPageable = eventService.getFairsByDayPageable(fairsPage, fairsSize,dayFilter);
+            individualTourApplicationsPageable = eventService.getIndividualTourApplicationsByDayPageable(individualTourApplicationsPage,individualTourApplicationsSize,dayFilter);
+            individualToursPageable = eventService.getIndividualToursByDayPageable(individualToursPage, individualToursSize, dayFilter);
 
+        }
+        else{
+            tourApplicationsPageable= eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
+            toursPageable = eventService.getToursPageable(toursPage, toursSize);
+            fairsPageable =eventService.getFairsPageable(fairsPage, fairsSize);
+            individualTourApplicationsPageable = eventService.getIndividualTourApplicationsPageable(individualTourApplicationsPage, individualTourApplicationsSize);
+            individualToursPageable = eventService.getIndividualToursPageable(individualToursPage, individualToursSize);
+        }
         // Create guide counts map for Tours and Fairs
         Map<Long, List<Integer>> guideCounts = toursPageable.getContent().stream()
                 .collect(Collectors.toMap(
@@ -311,6 +326,7 @@ public class UIEventController {
         model.addAttribute("guideCounts", guideCounts);
         model.addAttribute("fairGuideCounts", fairGuideCounts);
 
+
         // Pagination details for each tab
         model.addAttribute("tourApplicationsCurrentPage", tourApplicationsPage);
         model.addAttribute("tourApplicationsTotalPages", tourApplicationsPageable.getTotalPages());
@@ -323,7 +339,11 @@ public class UIEventController {
         model.addAttribute("individualToursCurrentPage", individualToursPage);
         model.addAttribute("individualToursTotalPages", individualToursPageable.getTotalPages());
         model.addAttribute("pageSize", tourApplicationsSize);
+        model.addAttribute("dayFilter", dayFilter);
+        model.addAttribute("selectedDay", dayFilter);
 
+        // Also add the current dayFilter to the fragment context
+        model.addAttribute("currentDayFilter", dayFilter);
         return "advisor-tables";
     } catch (Exception e) {
         e.printStackTrace(); // Log and rethrow the exception
