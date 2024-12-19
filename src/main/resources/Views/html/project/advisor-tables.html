@@ -365,33 +365,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <!--
-                                         Pagination Controls for Tour Applications
-                                        <div class="pagination-container text-center">
-                                            <nav aria-label="Page navigation">
-                                                <ul class="pagination d-inline-flex">
-                                                    <li class="page-item" th:if="${tourApplications.hasPrevious()}">
-                                                        <a class="page-link"
-                                                           th:href="@{/ui/auth/advisor-tables(page=${tourApplications.number - 1}, size=${tourApplications.size}, dayFilter=${selectedDay})}">
-                                                            Previous
-                                                        </a>
-                                                    </li>
-                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, tourApplications.totalPages - 1)}"
-                                                        th:classappend="${i == tourApplications.number} ? 'active'">
-                                                        <a class="page-link"
-                                                           th:href="@{/ui/auth/advisor-tables(page=${i}, size=${tourApplications.size}, dayFilter=${selectedDay})}"
-                                                           th:text="${i + 1}">
-                                                        </a>
-                                                    </li>
-                                                    <li class="page-item" th:if="${tourApplications.hasNext()}">
-                                                        <a class="page-link"
-                                                           th:href="@{/ui/auth/advisor-tables(page=${tourApplications.number + 1}, size=${tourApplications.size}, dayFilter=${selectedDay})}">
-                                                            Next
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
+
  -->
                                         <!--Pagination Controls for Tour Applications Latest Version-->
                                         <div class="pagination-container text-center">
@@ -625,32 +599,7 @@
                                             </table>
                                         </div>
 
-                                        <!-- Pagination Controls for Tours Previous Version-->
-                                        <!--<div class="pagination-container text-center">
-                                            <nav aria-label="Page navigation">
-                                                <ul class="pagination d-inline-flex">
-                                                    <li class="page-item" th:if="${tours.hasPrevious()}">
-                                                        <a class="page-link"
-                                                           th:href="@{/ui/auth/advisor-tables(page=${tours.number - 1}, size=${tours.size}, dayFilter=${selectedDay})}">
-                                                            Previous
-                                                        </a>
-                                                    </li>
-                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, tours.totalPages - 1)}"
-                                                        th:classappend="${i == tours.number} ? 'active'">
-                                                        <a class="page-link"
-                                                           th:href="@{/ui/auth/advisor-tables(page=${i}, size=${tours.size}, dayFilter=${selectedDay})}"
-                                                           th:text="${i + 1}">
-                                                        </a>
-                                                    </li>
-                                                    <li class="page-item" th:if="${tours.hasNext()}">
-                                                        <a class="page-link"
-                                                           th:href="@{/ui/auth/advisor-tables(page=${tours.number + 1}, size=${tours.size}, dayFilter=${selectedDay})}">
-                                                            Next
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>-->
+
                                         <!-- Pagination Controls for Tours Lates Version-->
                                         <div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
