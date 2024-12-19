@@ -919,6 +919,66 @@ public class EventService implements IEventService {
         Pageable pageable = PageRequest.of(page, size);
         return eventRepository.findIndividualToursByStatusesPageable(individualTourStatuses, pageable);
     }
+    public Page<Tour> searchTourApplications(String searchTerm, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findTourApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
+    }
+
+    public Page<Tour> searchTours(String searchTerm, int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_TOUR,
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findToursByStatusesAndSearchTerm(tourStatuses, searchTerm, pageable);
+    }
+
+    public Page<Fair> searchFairApplications(String searchTerm, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
+    }
+
+    public Page<Fair> searchFairs(String searchTerm, int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesAndSearchTerm(fairStatuses, searchTerm, pageable);
+    }
+
+    public Page<IndividualTour> searchIndividualTourApplications(String searchTerm, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualTourApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
+    }
+
+    public Page<IndividualTour> searchIndividualTours(String searchTerm, int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesAndSearchTerm(tourStatuses, searchTerm, pageable);
+    }
 
 }
 

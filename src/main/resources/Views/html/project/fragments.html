@@ -8,9 +8,18 @@
 <div th:fragment="searchFilterBar (daySelectId)">
   <div class="row">
     <div class="col-md-6">
-      <!-- Existing content or leave empty -->
+      <!-- Add search bar -->
+      <div class="search-container mr-3">
+        <div class="input-group">
+          <input type="text" id="schoolSearchInput" class="form-control" placeholder="Search by school name...">
+          <div class="input-group-append">
+            <button class="btn btn-primary" id="searchButton" type="button">Search</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-md-6 d-flex justify-content-end">
+      <!-- Existing day filter -->
       <div class="filter-container mr-3">
         <label th:for="${daySelectId}" class="mr-2">Select Day:</label>
         <select th:id="${daySelectId}" class="form-select d-inline-block w-auto">
@@ -24,7 +33,6 @@
           <option value="1">Sunday</option>
         </select>
       </div>
-
     </div>
   </div>
 </div>
