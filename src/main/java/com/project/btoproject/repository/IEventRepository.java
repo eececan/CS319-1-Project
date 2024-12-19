@@ -82,6 +82,52 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses ORDER BY it.applicationTimeStamp DESC")
     Page<IndividualTour> findIndividualToursByStatusesPageable(@Param("statuses") List<Status> statuses, Pageable pageable);
+    // Tour Applications Search
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND LOWER(t.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Tour> findTourApplicationsByStatusesAndSearchTerm(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
 
+    // Tours Search
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND LOWER(t.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Tour> findToursByStatusesAndSearchTerm(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
+
+    // Fair Applications Search
+    @Query("SELECT f FROM Fair f WHERE f.status IN :statuses AND LOWER(f.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Fair> findFairApplicationsByStatusesAndSearchTerm(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
+
+    // Fairs Search
+    @Query("SELECT f FROM Fair f WHERE f.status IN :statuses AND LOWER(f.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Fair> findFairsByStatusesAndSearchTerm(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
+
+    // Individual Tour Applications Search
+    @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses AND LOWER(it.student.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<IndividualTour> findIndividualTourApplicationsByStatusesAndSearchTerm(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
+
+    // Individual Tours Search
+    @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses AND LOWER(it.student.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<IndividualTour> findIndividualToursByStatusesAndSearchTerm(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            Pageable pageable
+    );
 
 }
