@@ -1,6 +1,8 @@
 package com.project.btoproject.controller.UIcontroller;
 
+import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
+import com.project.btoproject.service.AdvisorService;
 import com.project.btoproject.service.EventService;
 import com.project.btoproject.service.GuideService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +29,13 @@ public class UIEventController {
 
     private final EventService eventService;
     private final GuideService guideService;
+    private final AdvisorService advisorService;
 
     @Autowired
-    public UIEventController(EventService eventService, GuideService guideService) {
+    public UIEventController(EventService eventService, GuideService guideService, AdvisorService advisorService) {
         this.eventService = eventService;
         this.guideService = guideService;
+        this.advisorService = advisorService;
     }
 
     @GetMapping("/getAllEvents")
@@ -248,6 +253,83 @@ public class UIEventController {
         }
     }
 
+    @GetMapping("/advisorTables")
+    public String showEventListAdvisor(
+            @RequestParam(defaultValue = "0") int tourApplicationsPage,
+            @RequestParam(defaultValue = "12") int tourApplicationsSize,
+            @RequestParam(defaultValue = "0") int toursPage,
+            @RequestParam(defaultValue = "12") int toursSize,
+            @RequestParam(defaultValue = "0") int fairsPage,
+            @RequestParam(defaultValue = "12") int fairsSize,
+            @RequestParam(defaultValue = "0") int individualTourApplicationsPage,
+            @RequestParam(defaultValue = "12") int individualTourApplicationsSize,
+            @RequestParam(defaultValue = "0") int individualToursPage,
+            @RequestParam(defaultValue = "12") int individualToursSize,
+            Model model) {
+    try {
+        // Get logged in advisor
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        long advisorId = Long.parseLong(userDetails.getUsername());
+
+        Advisor advisor = advisorService.getAdvisorById(advisorId);
+        DayOfWeek responsibleDay = advisor.getResponsibleDay();
+        List<Guide> guides = guideService.getAllGuides();
+
+        // Fetch paginated data for each tab
+        Page<Tour> tourApplicationsPageable = eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
+        Page<Tour> toursPageable = eventService.getToursPageable(toursPage, toursSize);
+        Page<Fair> fairsPageable = eventService.getFairsPageable(fairsPage, fairsSize);
+        Page<IndividualTour> individualTourApplicationsPageable = eventService.getIndividualTourApplicationsPageable(individualTourApplicationsPage, individualTourApplicationsSize);
+        Page<IndividualTour> individualToursPageable = eventService.getIndividualToursPageable(individualToursPage, individualToursSize);
+
+        // Create guide counts map for Tours and Fairs
+        Map<Long, List<Integer>> guideCounts = toursPageable.getContent().stream()
+                .collect(Collectors.toMap(
+                        Tour::getId,
+                        tour -> IntStream.rangeClosed(1, tour.getGuideCount())
+                                .boxed()
+                                .collect(Collectors.toList())
+                ));
+
+        Map<Long, List<Integer>> fairGuideCounts = fairsPageable.getContent().stream()
+                .collect(Collectors.toMap(
+                        Fair::getId,
+                        fair -> IntStream.rangeClosed(1, fair.getGuideCount())
+                                .boxed()
+                                .collect(Collectors.toList())
+                ));
+
+        // Add data to the model
+        model.addAttribute("responsibleDay", responsibleDay);
+        model.addAttribute("guides", guides);
+        model.addAttribute("tourApplications", tourApplicationsPageable);
+        model.addAttribute("tours", toursPageable);
+        model.addAttribute("fairs", fairsPageable);
+        model.addAttribute("individualTourApplications", individualTourApplicationsPageable);
+        model.addAttribute("individualTours", individualToursPageable);
+        model.addAttribute("guideCounts", guideCounts);
+        model.addAttribute("fairGuideCounts", fairGuideCounts);
+
+        // Pagination details for each tab
+        model.addAttribute("tourApplicationsCurrentPage", tourApplicationsPage);
+        model.addAttribute("tourApplicationsTotalPages", tourApplicationsPageable.getTotalPages());
+        model.addAttribute("toursCurrentPage", toursPage);
+        model.addAttribute("toursTotalPages", toursPageable.getTotalPages());
+        model.addAttribute("fairsCurrentPage", fairsPage);
+        model.addAttribute("fairsTotalPages", fairsPageable.getTotalPages());
+        model.addAttribute("individualTourApplicationsCurrentPage", individualTourApplicationsPage);
+        model.addAttribute("individualTourApplicationsTotalPages", individualTourApplicationsPageable.getTotalPages());
+        model.addAttribute("individualToursCurrentPage", individualToursPage);
+        model.addAttribute("individualToursTotalPages", individualToursPageable.getTotalPages());
+        model.addAttribute("pageSize", tourApplicationsSize);
+
+        return "advisor-tables";
+    } catch (Exception e) {
+        e.printStackTrace(); // Log and rethrow the exception
+        throw e;
+    }
+}
 
 
 }

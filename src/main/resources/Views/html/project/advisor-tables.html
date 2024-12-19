@@ -365,7 +365,8 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <!-- Pagination Controls for Tour Applications -->
+                                        <!--
+                                         Pagination Controls for Tour Applications
                                         <div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
                                                 <ul class="pagination d-inline-flex">
@@ -385,6 +386,36 @@
                                                     <li class="page-item" th:if="${tourApplications.hasNext()}">
                                                         <a class="page-link"
                                                            th:href="@{/ui/auth/advisor-tables(page=${tourApplications.number + 1}, size=${tourApplications.size}, dayFilter=${selectedDay})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+ -->
+                                        <!--Pagination Controls for Tour Applications Latest Version-->
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${tourApplications != null and tourApplications.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${tourApplications.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(tourApplicationsPage=${tourApplications.number - 1}, tourApplicationsSize=${tourApplications.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, tourApplications.totalPages - 1)}"
+                                                        th:classappend="${i == tourApplications.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(tourApplicationsPage=${i}, tourApplicationsSize=${tourApplications.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${tourApplications.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(tourApplicationsPage=${tourApplications.number + 1}, tourApplicationsSize=${tourApplications.size})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -593,8 +624,9 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <!-- Pagination Controls for Tours -->
-                                        <div class="pagination-container text-center">
+
+                                        <!-- Pagination Controls for Tours Previous Version-->
+                                        <!--<div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
                                                 <ul class="pagination d-inline-flex">
                                                     <li class="page-item" th:if="${tours.hasPrevious()}">
@@ -618,7 +650,38 @@
                                                     </li>
                                                 </ul>
                                             </nav>
+                                        </div>-->
+                                        <!-- Pagination Controls for Tours Lates Version-->
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${tours != null and tours.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${tours.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(toursPage=${tours.number - 1}, toursSize=${tours.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, tours.totalPages - 1)}"
+                                                        th:classappend="${i == tours.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(toursPage=${i}, toursSize=${tours.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${tours.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(toursPage=${tours.number + 1}, toursSize=${tours.size})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -691,6 +754,35 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${fairs != null and fairs.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${fairs.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, fairs.totalPages - 1)}"
+                                                        th:classappend="${i == fairs.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(fairsPage=${i}, fairsSize=${fairs.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${fairs.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -774,6 +866,35 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${individualTourApplications != null and individualTourApplications.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${individualTourApplications.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualTourApplicationsPage=${individualTourApplications.number - 1}, individualTourApplicationsSize=${individualTourApplications.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTourApplications.totalPages - 1)}"
+                                                        th:classappend="${i == individualTourApplications.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualTourApplicationsPage=${i}, individualTourApplicationsSize=${individualTourApplications.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${individualTourApplications.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualTourApplicationsPage=${individualTourApplications.number + 1}, individualTourApplicationsSize=${individualTourApplications.size})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -877,6 +998,35 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${individualTours != null and individualTours.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${individualTours.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTours.totalPages - 1)}"
+                                                        th:classappend="${i == individualTours.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualToursPage=${i}, individualToursSize=${individualTours.size})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${individualTours.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
