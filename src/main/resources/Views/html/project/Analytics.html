@@ -140,7 +140,92 @@
         }
     </style>
     <style>
+        .horizontal-bar-chart {
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .bar-chart-bars {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            margin-bottom: 10px; /* Space between bars and numbers */
+        }
+
         .bar-chart-bar {
+            background-color: #4CAF50; /* Green color for the bars */
+            height: 20px; /* Height of the bars */
+            margin-bottom: 10px; /* Space between bars */
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 10px; /* Padding for the text inside the bar */
+            color: white;
+        }
+
+        .bar-chart-bar span {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .bar-chart-lines {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-between; /* Ensure the numbers are spaced evenly */
+        }
+
+        .bar-chart-line {
+            position: relative;
+        }
+
+        .bar-chart-line span {
+            font-size: 12px;
+            color: black;
+            text-align: center;
+            position: relative;
+            top: 10px; /* Adjust position of the number labels */
+        }
+
+        .bar-chart-lines {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: space-between; /* Spread the labels evenly across the line */
+            position: relative;
+            margin-top: 2rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            height: 2px; /* Line thickness */
+            background-color: gray;
+        }
+
+        .bar-chart-line {
+            position: relative;
+            height: 2px; /* Line thickness */
+        }
+
+        .bar-chart-line span {
+            position: absolute;
+            top: -20px; /* Adjust the position of the label above the line */
+            font-size: 12px;
+            color: black;
+            text-align: center;
+        }
+
+        /* Optional: Style for better spacing */
+        .bar-chart-lines li:first-child span {
+            left: 0;
+        }
+
+        .bar-chart-lines li:last-child span {
+            right: 0;
+        }
+
+        .bar-chart-bar {
+            left: 15px;
             height: 2.25rem;
             display: flex;
             align-items: center;
@@ -151,103 +236,33 @@
             transition: width 0.3s ease;
             margin-bottom: 10px;
         }
-
-        .bar-chart-bar span {
-            white-space: break-spaces;
-        }
-
-        /* credit to https://audreesteinberg.medium.com/overlapping-html-elements-using-css-grid-f401262a4486 for the method of overlaying */
-        .horizontal-bar-chart {
-            margin: 15px;
-            padding: 15px;
-            border: 2px solid var(--dark-grey);
-            border-bottom: 2px solid aliceblue;
-            border-right: 2px solid aliceblue;
-            background-color: #ffffff;
-            display: grid;
-        }
-
-        .bar-chart-title {
-            display: table;
-            margin: 0 auto;
-            text-decoration: underline;
-        }
-
-        .bar-chart-bars, .bar-chart-lines {
-            grid-area: 1 / 1;
-            margin-top: 2rem;
-            margin-left: 1rem;
-            margin-right: 1rem;
-        }
-
-        .bar-chart-bars {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .bar-chart-lines {
-            list-style-type: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: auto auto auto auto auto 0px;
-            counter-reset: line;
-        }
-
-        .bar-chart-line:not(:last-child) {
-            border-right: 1px solid gray;
-        }
-
-        .bar-chart-line:first-child {
-            border-left: 2px solid gray;
-        }
-
-
-        .bar-chart-line::before {
-            content: "0%";
+        .tooltip {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.8); /* Darker background for the tooltip */
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+            padding: 8px 15px; /* Slightly larger padding for better look */
             position: absolute;
-            transform: translateY(-100%) translateX(-30%);
+            bottom: 100%; /* Position the tooltip above the bar */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Shadow effect for the tooltip */
+            pointer-events: none; /* Prevent tooltip from blocking mouse events */
+            white-space: nowrap; /* Prevent tooltip text from wrapping */
         }
 
-
-        .bar-chart-line:not(:first-child)::before {
-            counter-increment: line +2;
-            content: counter(line)"0%";
+        .bar-chart-bar:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px); /* Slight lift on hover */
         }
 
-        .bar-chart-bar {
-            height: 2.25rem;
-            counter-increment: percentage var(--bar-width);
-            counter-reset: percentage;
-        }
-
-        .bar-chart-bar::before {
-            --width: calc(1% * var(--bar-width) - 2px);
-            content: counter(percentage)"%";
-            background-color: var(--red);
-            width: var(--width);
-            display: block;
-            height: 1.5rem;
-            transform: translateY(100%) translateX(2px);
-            z-index: -1;
-            text-indent: 4px;
-            text-shadow: 0px 0px 5px #ffffff;
-            font-weight: bold;
-        }
-
-        /* thanks to https://stackoverflow.com/a/24866952/8947779 for solving the stacking issue */
-        .bar-chart-bar span {
-            display: block;
-            position: relative;
-            color: var(--main-text-colour);
-            font-weight: bold;
-            text-align: right;
-            transform: translateX(-1%);
-            text-shadow: 0px 0px 5px #ffffff;
-        }
-
-        .bar-chart-bar:last-child {
-            margin-bottom: 2.25rem;
-        }
     </style>
 </head>
 <body class="font-montserrat">
@@ -623,89 +638,47 @@
             </div>
         </div>
         <div class="section-body">
-            <div class="container-fluid">
+            <div class="container-fluid" style="padding-top: 30px">
                 <div class="row clearfix">
                     <div class="col-12 col-sm-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">School Statistics</h3>
+                                <h3 class="card-title">Top Schools by Tour Count</h3>
                             </div>
                             <div class="card-body">
-                                <span class="bar-chart-title">Top Schools by Tour Count</span>
                                 <div class="horizontal-bar-chart">
+                                    <!-- Bars -->
                                     <ul class="bar-chart-bars">
-                                        <!-- School 1 -->
                                         <li class="bar-chart-bar"
-                                            th:style="'width: ' + (${topSchools[0].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            th:style="'width: ' + (${topSchools[0].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[0].tourCount}"></span>
                                             <span th:text="${topSchools[0].schoolName}"></span>
                                         </li>
-
-                                        <!-- School 2 -->
                                         <li class="bar-chart-bar"
-                                            th:style="'width: ' + (${topSchools[1].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            th:style="'width: ' + (${topSchools[1].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[1].tourCount}"></span>
                                             <span th:text="${topSchools[1].schoolName}"></span>
                                         </li>
-                                        <!-- School 3 -->
                                         <li class="bar-chart-bar"
-                                            th:style="'width: ' + (${topSchools[2].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            th:style="'width: ' + (${topSchools[2].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[2].tourCount}"></span>
                                             <span th:text="${topSchools[2].schoolName}"></span>
                                         </li>
-                                        <!-- School 4 -->
                                         <li class="bar-chart-bar"
-                                            th:style="'width: ' + (${topSchools[3].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            th:style="'width: ' + (${topSchools[3].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[3].tourCount}"></span>
                                             <span th:text="${topSchools[3].schoolName}"></span>
-                                        </li></ul>
+                                        </li>
+                                    </ul>
 
-                                    <ul class="bar-chart-lines" data-start="0" data-end="100" data-major-interval="10">
-                                        <li class="bar-chart-line"></li>
-                                        <li class="bar-chart-line"></li>
-                                        <li class="bar-chart-line"></li>
-                                        <li class="bar-chart-line"></li>
-                                        <li class="bar-chart-line"></li>
-                                        <li class="bar-chart-line"></li>
+                                    <!-- Numbers (Labels) -->
+                                    <ul class="bar-chart-lines" th:attr="data-start=0, data-end=${maxTourCount}, data-major-interval=${maxTourCount / 4}">
+                                        <li th:each="i : ${#numbers.sequence(0, maxTourCount, maxTourCount / 4)}"
+                                            class="bar-chart-line">
+                                            <span th:text="${i}"></span>
+                                        </li>
                                     </ul>
                                 </div>
-
-                                <!-- Data Table for Top Schools -->
-                                <table class="charts-css column show-data-on-hover data-center show-heading show-labels show-primary-axis show-data-axes data-spacing-5 datasets-spacing-1">
-                                    <thead>
-                                    <tr>
-                                        <th>School</th>
-                                        <th>Tour Count</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <!-- Dynamically generated table rows for each school -->
-                                    <tr>
-                                        <th scope="row" th:text="${topSchools[0].schoolName}"></th>
-                                        <td th:style="'--start: 0; --end: ' + (${topSchools[0].tourCount} / ${topSchools[0].tourCount} * 1.0)">
-                                            <span class="data" th:text="${topSchools[0].tourCount}"></span>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th scope="row" th:text="${topSchools[1].schoolName}"></th>
-                                        <td th:style="'--start: 0; --end: ' + (${topSchools[1].tourCount} / ${topSchools[0].tourCount} * 1.0)">
-                                            <span class="data" th:text="${topSchools[1].tourCount}"></span>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th scope="row" th:text="${topSchools[2].schoolName}"></th>
-                                        <td th:style="'--start: 0; --end: ' + (${topSchools[2].tourCount} / ${topSchools[0].tourCount} * 1.0)">
-                                            <span class="data" th:text="${topSchools[2].tourCount}"></span>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th scope="row" th:text="${topSchools[3].schoolName}"></th>
-                                        <td th:style="'--start: 0; --end: ' + (${topSchools[3].tourCount} / ${topSchools[0].tourCount} * 1.0)">
-                                            <span class="data" th:text="${topSchools[3].tourCount}"></span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
 
                             </div>
                         </div>
@@ -722,17 +695,31 @@
                                     <div class="pie-title" style="margin-bottom: 10px; font-weight: bold; color: white">Private vs Public</div>
                                     <div class="pie-title" style="margin-bottom: 10px; font-weight: bold; color: white">Diagram</div>
 
-
+                                    <!-- Donut Chart with Tooltips -->
                                     <div class="pie"
-                                         th:style="'background: conic-gradient(' + ${privateColor} + ' 0% ' + ${privatePercentage} + '%, '
-               + ${publicColor} + ' ' + ${privatePercentage} + '% 100%);'"
-                                         style="width: 200px; height: 200px; margin: 0 auto; border-radius: 50%;"></div>
+                                         th:style="'background: conic-gradient(' + ${privateColor} + ' 0% ' + ${privatePercentage} + '%, ' + ${publicColor} + ' ' + ${privatePercentage} + '% 100%)'"
+                                         style="width: 200px; height: 200px; margin: 0 auto; border-radius: 50%; position: relative;">
+
+                                        <!-- Tooltip for Private -->
+                                        <span class="tooltip private-tooltip"
+                                              th:text="'Private: ' + ${privatePercentage} + '%'">
+            </span>
+
+                                        <!-- Tooltip for Public -->
+                                        <span class="tooltip public-tooltip"
+                                              th:text="'Public: ' + ${publicPercentage} + '%'">
+            </span>
+
+                                    </div>
+
+                                    <!-- Legend -->
                                     <div class="pie-legend" style="margin-top: 10px; font-size: 14px;">
                                         <span class="red-part" style="display: inline-block; width: 10px; height: 10px; background-color: #303568; margin-right: 5px;"></span> Private
                                         <span class="blue-part" style="display: inline-block; width: 10px; height: 10px; background-color: #c00d0a; margin-left: 15px; margin-right: 5px;"></span> Public
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="col-xl-6 col-lg-12 col-md-12">
