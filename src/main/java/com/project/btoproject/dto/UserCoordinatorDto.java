@@ -19,4 +19,5 @@ public class UserCoordinatorDto {
     //do we store schedule in coordinator but not in advisor?
     private String department;
     private Integer grade;
+    private Date startDate;
 }

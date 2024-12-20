@@ -151,6 +151,7 @@ public class DataInitializer {
             advisorDto.setGrade(3);
             advisorDto.setPicture("picture.jpg");
             advisorDto.setDepartment("CS");
+            advisorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
         }
         if (advisorRepository.findByFirstNameAndLastName("Mehmet", "Akyol").isEmpty()) {
@@ -174,6 +175,7 @@ public class DataInitializer {
             advisorDto.setGrade(3);
             advisorDto.setPicture("picture.jpg");
             advisorDto.setDepartment("CS");
+            advisorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
         }
     }
@@ -201,6 +203,7 @@ public class DataInitializer {
             guideDto.setGrade(3);
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
+            guideDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationGuide(user, guideDto);
         }
         if (guideRepository.findByFirstNameAndLastName("Ece", "Cann").isEmpty()) {
@@ -224,6 +227,7 @@ public class DataInitializer {
             guideDto.setGrade(3);
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
+            guideDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationGuide(user, guideDto);
         }
     }
@@ -252,6 +256,7 @@ public class DataInitializer {
             guideDto.setGrade(3);
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
+            guideDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
         }
     }
@@ -278,6 +283,7 @@ public class DataInitializer {
             coordinatorDto.setGrade(3);
             coordinatorDto.setPicture("picture.jpg");
             coordinatorDto.setDepartment("CS");
+            coordinatorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationCoordinator(user, coordinatorDto);
         }
     }
@@ -302,6 +308,7 @@ public class DataInitializer {
             secretaryDto.setPhoneNumber("05371444444");
             secretaryDto.setEmail("dilekyildiz@ug.bilkent.edu.tr");
             secretaryDto.setPicture("dilekpicture.jpg");
+            secretaryDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationHeadSecretary(user, secretaryDto);
         }
     }
@@ -327,10 +334,10 @@ public class DataInitializer {
             directorDto.setPhoneNumber("0537222222");
             directorDto.setEmail("orsanorge@ug.bilkent.edu.tr");
             directorDto.setPicture("orsanpicture.jpg");
+            directorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationDirector(user, directorDto);
         }
-
-
     }
+
 
 }

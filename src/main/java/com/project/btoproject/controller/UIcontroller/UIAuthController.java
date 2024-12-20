@@ -94,13 +94,19 @@ public class UIAuthController {
             Model model) {
         try {
             if ("ROLE_ADVISOR".equals(role)) {
-                String response = authService.registerAdvisor(advisorRegisterDto);
-                if (response.equals("User registered successfully!")) {
-                    redirectAttributes.addFlashAttribute("successMessage", "Advisor registered successfully!");
-                    return "redirect:/getAllUsers";
-                } else {
-                    model.addAttribute("errorMessage", response);
+                if(!allUsersService.responsibleDayAvailable(advisorRegisterDto.getResponsibleDay())){
+                    model.addAttribute("errorMessage", "Another advisor is already responsible for this day! Please make the day available first!");
                     return "register";
+                }
+                else{
+                    String response = authService.registerAdvisor(advisorRegisterDto);
+                    if (response.equals("User registered successfully!")) {
+                        redirectAttributes.addFlashAttribute("successMessage", "Advisor registered successfully!");
+                        return "redirect:/getAllUsers";
+                    } else {
+                        model.addAttribute("errorMessage", response);
+                        return "register";
+                    }
                 }
             } else {
                 String response = authService.register(registerDto);

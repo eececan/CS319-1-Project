@@ -467,6 +467,7 @@
 
                                         <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
                                         <li class="list-group-item" th:text="'Responsible Day: ' + ${user.responsibleDay}"></li>
+                                        <li class="list-group-item" th:text="'Start Date: ' + ${#dates.format(user.startDate, 'dd MMMM yyyy')}"></li>
 
                                     </ul>
                                 </div>

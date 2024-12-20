@@ -279,7 +279,6 @@
             <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
             <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
             <span th:text="${user.email}"></span>
-
             <hr>
         </div>
     </div>
@@ -468,6 +467,7 @@
                                         <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
                                         <li class="list-group-item">GUIDE</li>
                                         <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
+                                        <li class="list-group-item" th:text="'Start Date: ' + ${#dates.format(user.startDate, 'dd MMMM yyyy')}"></li>
                                     </ul>
                                 </div>
                             </div>

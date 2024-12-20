@@ -38,23 +38,29 @@ public class UserService implements IUserService {
         ObjectMapper objectMapper = new ObjectMapper();
         if (role.equals("ROLE_GUIDE")) {
             UserGuideDto userGuideDto = objectMapper.convertValue(dtoMap, UserGuideDto.class);
+            userGuideDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationGuide(user, userGuideDto);
         } else if (role.equals("ROLE_ADVISOR")){
             UserAdvisorDto userAdvisorDto = objectMapper.convertValue(dtoMap, UserAdvisorDto.class);
+            userAdvisorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationAdvisor(user, userAdvisorDto);
         } else if (role.equals("ROLE_GUIDE_IN_TRAINING")) {
             UserGuideInTrainingDto userGuideInTrainingDto = objectMapper.convertValue(dtoMap, UserGuideInTrainingDto.class);
+            userGuideInTrainingDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationGuideInTraining(user, userGuideInTrainingDto);
         } else if (role.equals("ROLE_COORDINATOR")) {
             UserCoordinatorDto coordinatorDto = objectMapper.convertValue(dtoMap, UserCoordinatorDto.class);
+            coordinatorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationCoordinator(user, coordinatorDto);
         }
         else if (role.equals("ROLE_HEAD_SECRETARY")) {
             UserHeadSecretaryDto headSecretaryDto = objectMapper.convertValue(dtoMap, UserHeadSecretaryDto.class);
+            headSecretaryDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationHeadSecretary(user, headSecretaryDto);
         }
         else if (role.equals("ROLE_DIRECTOR")) {
             UserDirectorDto directorDto = objectMapper.convertValue(dtoMap, UserDirectorDto.class);
+            directorDto.setStartDate(new Date());
             userHelperService.enterPersonalInformationDirector(user, directorDto);
         }else {
             System.out.println("User has no matching roles.");

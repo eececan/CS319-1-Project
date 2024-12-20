@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 
 @Service
@@ -109,6 +110,7 @@ public class AuthService {
         Advisor advisor = new Advisor();
         advisor.setId(Long.parseLong(registerDto.getUsername())); // Assuming ID is based on username
         advisor.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        advisor.setStartDate(new Date());
         try {
             // Parse and validate the responsible day
             DayOfWeek dayOfWeek = DayOfWeek.valueOf(registerDto.getResponsibleDay().trim().toUpperCase(Locale.ENGLISH));
