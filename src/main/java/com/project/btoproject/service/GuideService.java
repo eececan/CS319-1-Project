@@ -58,6 +58,24 @@ public class GuideService implements IGuideService
     }
 
     @Override
+    public List<Long> getReverseGuideRankings() {
+        //TODO
+        return List.of();
+    }
+
+    @Override
+    public List<Long> getGuidesByExperience() {
+        //TODO
+        return List.of();
+    }
+
+    @Override
+    public List<Guide> getGuidesByLowestExperience() {
+        //TODO
+        return List.of();
+    }
+
+    @Override
     public List<Guide> getGuideRankingsEntity() {
         return guideRepository.findAll()
                 .stream()

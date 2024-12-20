@@ -5,7 +5,6 @@ import com.project.btoproject.model.School;
 import com.project.btoproject.model.Tour;
 import com.project.btoproject.service.EventService;
 import com.project.btoproject.service.SchoolService;
-import com.project.btoproject.service.TourStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +18,11 @@ import java.util.stream.Collectors;
 @RestController
 public class TourStatisticsController {
 
-    private final TourStatisticsService tourStatisticsService;
     private final SchoolService schoolService;
     private final EventService eventService;
 
     @Autowired
-    public TourStatisticsController(TourStatisticsService tourStatisticsService, SchoolService schoolService, EventService eventService) {
-        this.tourStatisticsService = tourStatisticsService;
+    public TourStatisticsController( SchoolService schoolService, EventService eventService) {
         this.schoolService = schoolService;
         this.eventService = eventService;
     }
