@@ -2,8 +2,12 @@ package com.project.btoproject.controller.UIcontroller;
 
 import com.project.btoproject.dto.SchoolTourCountDTO;
 import com.project.btoproject.enums.SchoolType;
+import com.project.btoproject.model.Fair;
+import com.project.btoproject.model.HighSchoolForStatistics;
 import com.project.btoproject.model.School;
 import com.project.btoproject.model.Tour;
+import com.project.btoproject.repository.HighSchoolRepository;
+import com.project.btoproject.repository.SchoolRepository;
 import com.project.btoproject.service.EventService;
 import com.project.btoproject.service.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +25,39 @@ import java.util.stream.Collectors;
 public class UIAnalyticsController {
 
     @Autowired
-    private EventService eventService;
+    private final EventService eventService;
+    private final HighSchoolRepository highSchoolRepository;
+    private final SchoolRepository schoolRepository;
     @Autowired
-    private SchoolService schoolService;
+    private final SchoolService schoolService;
+
+    public UIAnalyticsController(HighSchoolRepository highSchoolRepository, SchoolService schoolService, EventService eventService, SchoolRepository schoolRepository) {
+        this.highSchoolRepository = highSchoolRepository;
+        this.schoolService = schoolService;
+        this.eventService = eventService;
+        this.schoolRepository = schoolRepository;
+    }
 
     @GetMapping("/tour-counts")
     public String getSchoolTourCounts(@RequestParam(required = false) String schoolName, Model model) {
+
+        List<School> schools = schoolRepository.findAll();
+        List<HighSchoolForStatistics> highSchools = highSchoolRepository.findAll();
+
+        // Calculate the total student count across all high schools
+        long totalStudentCount = highSchools.stream()
+                .mapToLong(HighSchoolForStatistics::getStudentCount)
+                .sum();
+
+        // Create a map to store the total student count for each school
+        Map<String, Long> schoolStudentCounts = highSchools.stream()
+                .collect(Collectors.groupingBy(HighSchoolForStatistics::getName,
+                        Collectors.summingLong(HighSchoolForStatistics::getStudentCount)));
+
+        model.addAttribute("schools", schools);
+        model.addAttribute("schoolStudentCounts", schoolStudentCounts);
+        model.addAttribute("totalStudentCount", totalStudentCount);
+
         // Fetch the tour counts
         List<Tour> allTours = eventService.getAllTours();
 
@@ -43,8 +74,12 @@ public class UIAnalyticsController {
 
         // Extract top 4 schools
         List<SchoolTourCountDTO> topSchools = tourCountDTOs.stream().limit(4).collect(Collectors.toList());
+        List<SchoolTourCountDTO> allSchoolsTour = tourCountDTOs.stream().toList();
+
 
         // Add data to the model
+        model.addAttribute("allSchoolsTour", allSchoolsTour);
+        model.addAttribute("tourCounts", tourCounts);
         model.addAttribute("tourCountDTOs", tourCountDTOs); // Full list for table
         model.addAttribute("topSchools", topSchools);   // Top 4 for the chart
         model.addAttribute("schoolName", schoolName);

@@ -21,9 +21,8 @@ public class HighSchoolForStatistics {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "city", nullable = false)
-    private String city;
-
-    @OneToMany(mappedBy = "highSchool", cascade = CascadeType.ALL)
-    private List<UniversityStudentForStatistics> students;
+    @Column(name = "student_count", nullable = false)
+    private Long studentCount;
+    @Transient  // This field is not persisted in the database
+    private Double preferenceRate;  // Calculated only for view purposes
 }
