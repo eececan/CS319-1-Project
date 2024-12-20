@@ -761,27 +761,24 @@
                                     <table class="table table-hover table-striped text-nowrap table-vcenter mb-0">
                                         <thead>
                                         <tr>
-                                            <!--<th>#</th>-->
                                             <th>School Name</th>
-
-                                            <th>All Time Participants</th>
-                                            <th>Bilkent Preference Rate</th>
-                                            <th>School Type</th>
-                                            <th>Status</th>
+                                            <th>Tour Count</th>
+                                            <th>Preference Rate</th>
+                                            <th>Tier</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <!--<td>#AD1245</td>-->
-                                            <td>Deniz Okulları</td>
-
-                                            <td>140</td>
-                                            <td>%0.1</td>
-                                            <td>Private</td>
-                                            <td><span class="tag tag-bos">Tear 1</span></td>
+                                        <tr th:each="schoolTour : ${tourCountDTOs}">
+                                            <td th:text="${schoolTour.schoolName}"></td>
+                                            <td th:text="${schoolTour.tourCount}"></td>
+                                            <td th:text="${schoolStudentCounts[schoolTour.schoolName] != null ?
+                #numbers.formatDecimal((schoolStudentCounts[schoolTour.schoolName] / totalStudentCount) * 100, 0, 1) : '0.0'} + '%'"></td>
+                                            <td><span class="tag tag-bos" th:text="${schoolTour.tier}"></span></td>
                                         </tr>
                                         </tbody>
                                     </table>
+
+
                                 </div>
                             </div>
                         </div>

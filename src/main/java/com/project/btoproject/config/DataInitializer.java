@@ -2,15 +2,18 @@ package com.project.btoproject.config;
 
 import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.HighSchoolRepository;
 import com.project.btoproject.repository.IAdvisorRepository;
 import com.project.btoproject.repository.IGuideRepository;
 import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.service.*;
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.util.Date;
 
@@ -26,10 +29,12 @@ public class DataInitializer {
     private final IUserHelperService userHelperService;
     private final IHeadSecretaryService headSecretaryService;
     private final IDirectorService directorService;
+    private final HighSchoolRepository highSchoolRepository;
+    private final CsvService csvService;
 
     public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
                            IAdvisorRepository advisorRepository, AuthService authService,
-                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService, IDirectorService directorService) {
+                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService, IDirectorService directorService, HighSchoolRepository highSchoolRepository, CsvService csvService) {
         this.roleRepository = roleRepository;
         this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
@@ -39,11 +44,24 @@ public class DataInitializer {
         this.userHelperService = userHelperService;
         this.headSecretaryService = headSecretaryService;
         this.directorService = directorService;
+        this.highSchoolRepository = highSchoolRepository;
+        this.csvService = csvService;
     }
 
     @Bean
     public ApplicationRunner initializeRoles() {
         return args -> initializeRoleData();
+    }
+
+    @PostConstruct
+    public void initializeDatabase() throws IOException {
+        if (highSchoolRepository.count() == 0) {
+            processCsvAndSaveToDatabase();
+        }
+    }
+
+    private void processCsvAndSaveToDatabase() throws IOException {
+        csvService.saveCsvDataToDatabase();
     }
 
     @Transactional
@@ -311,7 +329,8 @@ public class DataInitializer {
             directorDto.setPicture("orsanpicture.jpg");
             userHelperService.enterPersonalInformationDirector(user, directorDto);
         }
-    }
 
+
+    }
 
 }

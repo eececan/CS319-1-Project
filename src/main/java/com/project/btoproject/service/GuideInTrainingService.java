@@ -16,8 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GuideInTrainingService implements IGuideInTrainingService {
 
-    private IGuideInTrainingRepository guideInTrainingRepository;
-    private IGuideRepository guideRepository;
+    private final IGuideInTrainingRepository guideInTrainingRepository;
+    private final IGuideRepository guideRepository;
 
     @Override
     public void saveGuideInTraining(GuideInTraining guideInTraining) {
