@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en" dir="ltr" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+
+    <title>Bilkent Tours</title>
+
+    <!-- Bootstrap Core and Vendor -->
+    <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/status-legend.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+    <style>
+        /* Container for the donut chart */
+        .donut-chart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        /* Outer donut chart */
+        .donut-chart {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+               }
+
+        /* Inner hollow circle */
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px; /* Adjust for hollow size */
+            height: 120px;
+            border-radius: 50%;
+            background-color: #fff; /* Matches page background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Centered text */
+        .donut-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Chart legend */
+        .chart-legend {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .chart-legend ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .chart-legend li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+    </style>
+    <style>
+
+        .charts-container {
+            display: flex;
+            gap: 100px;
+        }
+
+        .chart-container {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            text-align: center;
+        }
+
+        .pie {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+
+        }
+
+
+        .pie-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .pie-legend {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .pie-legend span {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .red-part {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: #c80706;
+        }
+
+        .blue-part {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: #30356c ;
+        }
+
+    </style>
+    <style>
+        .legend-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+        }
+    </style>
+    <style>
+        .bar-chart-bar {
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            background-color: #30356c;
+            color: white;
+            font-weight: bold;
+            padding: 0 10px;
+            transition: width 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .bar-chart-bar span {
+            white-space: break-spaces;
+        }
+
+        /* credit to https://audreesteinberg.medium.com/overlapping-html-elements-using-css-grid-f401262a4486 for the method of overlaying */
+        .horizontal-bar-chart {
+            margin: 15px;
+            padding: 15px;
+            border: 2px solid var(--dark-grey);
+            border-bottom: 2px solid aliceblue;
+            border-right: 2px solid aliceblue;
+            background-color: #ffffff;
+            display: grid;
+        }
+
+        .bar-chart-title {
+            display: table;
+            margin: 0 auto;
+            text-decoration: underline;
+        }
+
+        .bar-chart-bars, .bar-chart-lines {
+            grid-area: 1 / 1;
+            margin-top: 2rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+
+        .bar-chart-bars {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .bar-chart-lines {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: auto auto auto auto auto 0px;
+            counter-reset: line;
+        }
+
+        .bar-chart-line:not(:last-child) {
+            border-right: 1px solid gray;
+        }
+
+        .bar-chart-line:first-child {
+            border-left: 2px solid gray;
+        }
+
+
+        .bar-chart-line::before {
+            content: "0%";
+            position: absolute;
+            transform: translateY(-100%) translateX(-30%);
+        }
+
+
+        .bar-chart-line:not(:first-child)::before {
+            counter-increment: line +2;
+            content: counter(line)"0%";
+        }
+
+        .bar-chart-bar {
+            height: 2.25rem;
+            counter-increment: percentage var(--bar-width);
+            counter-reset: percentage;
+        }
+
+        .bar-chart-bar::before {
+            --width: calc(1% * var(--bar-width) - 2px);
+            content: counter(percentage)"%";
+            background-color: var(--red);
+            width: var(--width);
+            display: block;
+            height: 1.5rem;
+            transform: translateY(100%) translateX(2px);
+            z-index: -1;
+            text-indent: 4px;
+            text-shadow: 0px 0px 5px #ffffff;
+            font-weight: bold;
+        }
+
+        /* thanks to https://stackoverflow.com/a/24866952/8947779 for solving the stacking issue */
+        .bar-chart-bar span {
+            display: block;
+            position: relative;
+            color: var(--main-text-colour);
+            font-weight: bold;
+            text-align: right;
+            transform: translateX(-1%);
+            text-shadow: 0px 0px 5px #ffffff;
+        }
+
+        .bar-chart-bar:last-child {
+            margin-bottom: 2.25rem;
+        }
+    </style>
+</head>
+<body class="font-montserrat">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link user_btn">
+                        <img class="avatar" th:src="@{/assets/images/user.png}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/>
+                    </a>
+                    <a th:href="@{/calender}" class="nav-link icon app_inbox xs-hide">
+                        <i class="fa fa-calendar"></i>
+                    </a>
+                    <a th:href="@{/ui/UserProfile/profile}" class="nav-link icon xs-hide">
+                        <i class="fa fa-id-card-o"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon settingbar">
+                        <i class="fa fa-gear fa-spin" data-toggle="tooltip" data-placement="right" title="Settings"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle">
+                        <i class="fa fa-align-left"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="rightsidebar" class="right_sidebar">
+        <a href="javascript:void(0)" class="p-3 settingbar float-right">
+            <i class="fa fa-close"></i>
+        </a>
+        <div class="p-4">
+            <div class="mb-4">
+                <h6 class="font-14 font-weight-bold text-muted">Font Style</h6>
+                <div class="custom-controls-stacked font_setting">
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="font" value="font-opensans">
+                        <span class="custom-control-label">Open Sans Font</span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="font" value="font-montserrat" checked="">
+                        <span class="custom-control-label">Montserrat Google Font</span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="font" value="font-roboto">
+                        <span class="custom-control-label">Roboto Google Font</span>
+                    </label>
+                </div>
+            </div>
+            <hr>
+            <div class="mb-4">
+                <h6 class="font-14 font-weight-bold text-muted">Dropdown Menu Icon</h6>
+                <div class="custom-controls-stacked arrow_option">
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-a">
+                        <span class="custom-control-label">A</span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-b">
+                        <span class="custom-control-label">B</span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-c" checked="">
+                        <span class="custom-control-label">C</span>
+                    </label>
+                </div>
+                <h6 class="font-14 font-weight-bold mt-4 text-muted">SubMenu List Icon</h6>
+                <div class="custom-controls-stacked list_option">
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="listicon" value="list-a" checked="">
+                        <span class="custom-control-label">A</span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="listicon" value="list-b">
+                        <span class="custom-control-label">B</span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" name="listicon" value="list-c">
+                        <span class="custom-control-label">C</span>
+                    </label>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h6 class="font-14 font-weight-bold mt-4 text-muted">General Settings</h6>
+                <ul class="setting-list list-unstyled mt-1 setting_switch">
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Night Mode</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-darkmode">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Fix Navbar top</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-fixnavbar">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Header Dark</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-pageheader" checked="">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Min Sidebar Dark</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-min_sidebar">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Sidebar Dark</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-sidebar">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Icon Color</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-iconcolor">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Gradient Color</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-gradient">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Box Shadow</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxshadow">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">RTL Support</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-rtl">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="custom-switch">
+                            <span class="custom-switch-description">Box Layout</span>
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxlayout">
+                            <span class="custom-switch-indicator"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label class="d-block">Storage <span class="float-right">77%</span></label>
+                <div class="progress progress-sm">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 77%;"></div>
+                </div>
+                <button type="button" class="btn btn-primary btn-block mt-3">Upgrade Storage</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="theme_div">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group list-unstyled">
+                    <li class="list-group-item mb-2">
+                        <p>Default Theme</p>
+                        <a href="@{/project/index.html}">
+                            <img th:src="@{/assets/images/themes/default.png}" class="img-fluid" />
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-2">
+                        <p>Night Mode Theme</p>
+                        <a href="@{/project-dark/index.html}">
+                            <img th:src="@{/assets/images/themes/dark.png}" class="img-fluid" />
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-2">
+                        <p>RTL Version</p>
+                        <a href="@{/project-rtl/index.html}">
+                            <img th:src="@{/assets/images/themes/rtl.png}" class="img-fluid" />
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="user_div" id="user-profile">
+        <h5 class="brand-name mb-4">Director
+            <a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a>
+        </h5>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name">Advisor <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Clients</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllRecords}">
+                        <i class="fa fa-user"></i><span>Point Records</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li class="g_heading"></li>
+                <li>
+                    <a th:href="@{/calender}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Dashboard</h1>
+                    </div>
+                    <div class="right">
+
+                        <div class="notification d-flex">
+                            <div class="dropdown d-flex">
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                    <ul class="right_chat list-unstyled w350 p-0">
+                                        <li class="online">
+                                            <a href="javascript:void(0);" class="media">
+                                                <img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
+                                                <div class="media-body">
+                                                    <span class="name">Donald Gardner</span>
+                                                    <div class="message">It is a long established fact that a reader</div>
+                                                    <small>11 mins ago</small>
+                                                    <span class="badge badge-outline status"></span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="online">
+                                            <a href="javascript:void(0);" class="media">
+                                                <img class="media-object " src="../assets/images/xs/avatar5.jpg" alt="">
+                                                <div class="media-body">
+                                                    <span class="name">Wendy Keen</span>
+                                                    <div class="message">There are many variations of passages of Lorem Ipsum</div>
+                                                    <small>18 mins ago</small>
+                                                    <span class="badge badge-outline status"></span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="offline">
+                                            <a href="javascript:void(0);" class="media">
+                                                <img class="media-object " src="../assets/images/xs/avatar2.jpg" alt="">
+                                                <div class="media-body">
+                                                    <span class="name">Matt Rosales</span>
+                                                    <div class="message">Contrary to popular belief, Lorem Ipsum is not simply</div>
+                                                    <small>27 mins ago</small>
+                                                    <span class="badge badge-outline status"></span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="online">
+                                            <a href="javascript:void(0);" class="media">
+                                                <img class="media-object " src="../assets/images/xs/avatar3.jpg" alt="">
+                                                <div class="media-body">
+                                                    <span class="name">Phillip Smith</span>
+                                                    <div class="message">It has roots in a piece of classical Latin literature from 45 BC</div>
+                                                    <small>33 mins ago</small>
+                                                    <span class="badge badge-outline status"></span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
+                                </div>
+                            </div>
+                            <div class="dropdown d-flex">
+                                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                    <ul class="list-unstyled feeds_widget">
+                                        <li>
+                                            <div class="feeds-left"><i class="fa fa-check"></i></div>
+                                            <div class="feeds-body">
+                                                <h4 class="title text-danger">Issue Fixed <small class="float-right text-muted">11:05</small></h4>
+                                                <small>WE have fix all Design bug with Responsive</small>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="feeds-left"><i class="fa fa-user"></i></div>
+                                            <div class="feeds-body">
+                                                <h4 class="title">New User <small class="float-right text-muted">10:45</small></h4>
+                                                <small>I feel great! Thanks team</small>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="feeds-left"><i class="fa fa-thumbs-o-up"></i></div>
+                                            <div class="feeds-body">
+                                                <h4 class="title">7 New Feedback <small class="float-right text-muted">Today</small></h4>
+                                                <small>It will give a smart finishing to your site</small>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="feeds-left"><i class="fa fa-question-circle"></i></div>
+                                            <div class="feeds-body">
+                                                <h4 class="title text-warning">Server Warning <small class="float-right text-muted">10:50</small></h4>
+                                                <small>Your connection is not private</small>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="feeds-left"><i class="fa fa-shopping-cart"></i></div>
+                                            <div class="feeds-body">
+                                                <h4 class="title">7 New Orders <small class="float-right text-muted">11:35</small></h4>
+                                                <small>You received a new oder from Tina.</small>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
+                                </div>
+                            </div>
+                            <div class="dropdown d-flex">
+                                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                    <a class="dropdown-item" href="head-secretary-profile.html"><i class="dropdown-icon fe fe-user"></i> Profile</a>
+                                    <a class="dropdown-item" href="app-setting.html"><i class="dropdown-icon fe fe-settings"></i> Settings</a>
+                                    <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
+                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-send"></i> Message</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-help-circle"></i> Need help?</a>
+                                    <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">School Statistics</h3>
+                            </div>
+                            <div class="card-body">
+                                <span class="bar-chart-title">Top Schools by Tour Count</span>
+                                <div class="horizontal-bar-chart">
+                                    <ul class="bar-chart-bars">
+                                        <!-- School 1 -->
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[0].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            <span th:text="${topSchools[0].schoolName}"></span>
+                                        </li>
+
+                                        <!-- School 2 -->
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[1].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            <span th:text="${topSchools[1].schoolName}"></span>
+                                        </li>
+                                        <!-- School 3 -->
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[2].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            <span th:text="${topSchools[2].schoolName}"></span>
+                                        </li>
+                                        <!-- School 4 -->
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[3].tourCount} / ${topSchools[0].tourCount} * 100) + '%'">
+                                            <span th:text="${topSchools[3].schoolName}"></span>
+                                        </li></ul>
+
+                                    <ul class="bar-chart-lines" data-start="0" data-end="100" data-major-interval="10">
+                                        <li class="bar-chart-line"></li>
+                                        <li class="bar-chart-line"></li>
+                                        <li class="bar-chart-line"></li>
+                                        <li class="bar-chart-line"></li>
+                                        <li class="bar-chart-line"></li>
+                                        <li class="bar-chart-line"></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Data Table for Top Schools -->
+                                <table class="charts-css column show-data-on-hover data-center show-heading show-labels show-primary-axis show-data-axes data-spacing-5 datasets-spacing-1">
+                                    <thead>
+                                    <tr>
+                                        <th>School</th>
+                                        <th>Tour Count</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Dynamically generated table rows for each school -->
+                                    <tr>
+                                        <th scope="row" th:text="${topSchools[0].schoolName}"></th>
+                                        <td th:style="'--start: 0; --end: ' + (${topSchools[0].tourCount} / ${topSchools[0].tourCount} * 1.0)">
+                                            <span class="data" th:text="${topSchools[0].tourCount}"></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row" th:text="${topSchools[1].schoolName}"></th>
+                                        <td th:style="'--start: 0; --end: ' + (${topSchools[1].tourCount} / ${topSchools[0].tourCount} * 1.0)">
+                                            <span class="data" th:text="${topSchools[1].tourCount}"></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row" th:text="${topSchools[2].schoolName}"></th>
+                                        <td th:style="'--start: 0; --end: ' + (${topSchools[2].tourCount} / ${topSchools[0].tourCount} * 1.0)">
+                                            <span class="data" th:text="${topSchools[2].tourCount}"></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row" th:text="${topSchools[3].schoolName}"></th>
+                                        <td th:style="'--start: 0; --end: ' + (${topSchools[3].tourCount} / ${topSchools[0].tourCount} * 1.0)">
+                                            <span class="data" th:text="${topSchools[3].tourCount}"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix row-deck">
+                    <div class="col-xl-6 col-lg-24 col-md-24">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Private vs Public</h3>
+                            </div>
+                            <div class="donut-chart-container">
+                                <div class="donut-chart">
+                                    <div class="pie-title" style="margin-bottom: 10px; font-weight: bold; color: white">Private vs Public</div>
+                                    <div class="pie-title" style="margin-bottom: 10px; font-weight: bold; color: white">Diagram</div>
+
+
+                                    <div class="pie"
+                                         th:style="'background: conic-gradient(' + ${privateColor} + ' 0% ' + ${privatePercentage} + '%, '
+               + ${publicColor} + ' ' + ${privatePercentage} + '% 100%);'"
+                                         style="width: 200px; height: 200px; margin: 0 auto; border-radius: 50%;"></div>
+                                    <div class="pie-legend" style="margin-top: 10px; font-size: 14px;">
+                                        <span class="red-part" style="display: inline-block; width: 10px; height: 10px; background-color: #303568; margin-right: 5px;"></span> Private
+                                        <span class="blue-part" style="display: inline-block; width: 10px; height: 10px; background-color: #c00d0a; margin-left: 15px; margin-right: 5px;"></span> Public
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-12 col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Percentages of Cities</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="donut-chart-container" >
+                                    <!-- Outer donut chart -->
+                                    <div class="donut-chart" th:style="'background: conic-gradient(' + ${cityGradient} + ');'"></div>
+
+                                    <!-- Inner hollow circle -->
+                                    <div class="donut-center">
+                                    </div>
+                                </div>
+
+                                <div class="chart-legend">
+                                    <ul>
+                                        <li th:each="city, percentage : ${cityPercentages}" style="margin-bottom: 5px;">
+                                            <span class="legend-color" th:style="'background-color: ' + ${cityColors[city.key]}" style="display: inline-block; width: 10px; height: 10px; margin-right: 5px;"></span>
+                                            <span th:text="${city.key} + ': ' + ${city.value} + '%'" style="font-size: 14px;"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">School Statistics</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped text-nowrap table-vcenter mb-0">
+                                        <thead>
+                                        <tr>
+                                            <!--<th>#</th>-->
+                                            <th>School Name</th>
+
+                                            <th>All Time Participants</th>
+                                            <th>Bilkent Preference Rate</th>
+                                            <th>School Type</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <!--<td>#AD1245</td>-->
+                                            <td>Deniz Okulları</td>
+
+                                            <td>140</td>
+                                            <td>%0.1</td>
+                                            <td>Private</td>
+                                            <td><span class="tag tag-bos">Tear 1</span></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Include jQuery -->
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+
+<script th:src="@{/assets/js/all-event-actions.js}"></script>
+<script th:src="@{/assets/js/all-fair-actions.js}"></script>
+
+
+
+</body>
+</html>
