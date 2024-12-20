@@ -2,6 +2,7 @@ package com.project.btoproject.controller.UIcontroller;
 
 import com.project.btoproject.dto.SchoolTourCountDTO;
 import com.project.btoproject.enums.SchoolType;
+import com.project.btoproject.enums.Tier;
 import com.project.btoproject.model.Fair;
 import com.project.btoproject.model.HighSchoolForStatistics;
 import com.project.btoproject.model.School;
@@ -68,16 +69,19 @@ public class UIAnalyticsController {
 
         // Prepare data for the view
         List<SchoolTourCountDTO> tourCountDTOs = tourCounts.entrySet().stream()
-                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue()))
+                .map(entry -> {
+                    School school = entry.getKey();
+                    Tier tier = school.getTier() != null ? school.getTier() : Tier.THIRD_TIER;
+                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier);
+                })
                 .sorted((a, b) -> b.getTourCount().compareTo(a.getTourCount())) // Sort by tour count descending
                 .collect(Collectors.toList());
-
         // Extract top 4 schools
         List<SchoolTourCountDTO> topSchools = tourCountDTOs.stream().limit(4).collect(Collectors.toList());
-        List<SchoolTourCountDTO> allSchoolsTour = tourCountDTOs.stream().toList();
+        List<SchoolTourCountDTO> allSchoolsTour = tourCounts.entrySet().stream()
+                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue(),entry.getKey().getTier()))
+                .collect(Collectors.toList());
 
-
-        // Add data to the model
         model.addAttribute("allSchoolsTour", allSchoolsTour);
         model.addAttribute("tourCounts", tourCounts);
         model.addAttribute("tourCountDTOs", tourCountDTOs); // Full list for table
