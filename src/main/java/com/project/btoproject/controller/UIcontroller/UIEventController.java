@@ -266,6 +266,7 @@ public class UIEventController {
             @RequestParam(defaultValue = "0") int individualToursPage,
             @RequestParam(defaultValue = "12") int individualToursSize,
             @RequestParam(required = false) Integer dayFilter,
+            @RequestParam(required = false) String search,
             Model model) {
     try {
         // Get logged in advisor
@@ -283,22 +284,39 @@ public class UIEventController {
         Page<Fair> fairsPageable;
         Page<IndividualTour> individualTourApplicationsPageable;
         Page<IndividualTour> individualToursPageable;
-        if (dayFilter != null) {
+        // Combined search and day filter logic
+        if (search != null && !search.trim().isEmpty()) {
+            if (dayFilter != null) {
+                // Both search and day filter
+                tourApplicationsPageable = eventService.searchTourApplicationsByDay(search, dayFilter, tourApplicationsPage, tourApplicationsSize);
+                toursPageable = eventService.searchToursByDay(search, dayFilter, toursPage, toursSize);
+                fairsPageable = eventService.searchFairsByDay(search, dayFilter, fairsPage, fairsSize);
+                individualTourApplicationsPageable = eventService.searchIndividualTourApplicationsByDay(search, dayFilter, individualTourApplicationsPage, individualTourApplicationsSize);
+                individualToursPageable = eventService.searchIndividualToursByDay(search, dayFilter, individualToursPage, individualToursSize);
+            } else {
+                // Only search
+                tourApplicationsPageable = eventService.searchTourApplications(search, tourApplicationsPage, tourApplicationsSize);
+                toursPageable = eventService.searchTours(search, toursPage, toursSize);
+                fairsPageable = eventService.searchFairs(search, fairsPage, fairsSize);
+                individualTourApplicationsPageable = eventService.searchIndividualTourApplications(search, individualTourApplicationsPage, individualTourApplicationsSize);
+                individualToursPageable = eventService.searchIndividualTours(search, individualToursPage, individualToursSize);
+            }
+        } else if (dayFilter != null) {
+            // Only day filter
             tourApplicationsPageable = eventService.getTourApplicationsByDayPageable(tourApplicationsPage, tourApplicationsSize, dayFilter);
             toursPageable = eventService.getToursByDayPageable(toursPage, toursSize, dayFilter);
-            fairsPageable = eventService.getFairsByDayPageable(fairsPage, fairsSize,dayFilter);
-            individualTourApplicationsPageable = eventService.getIndividualTourApplicationsByDayPageable(individualTourApplicationsPage,individualTourApplicationsSize,dayFilter);
+            fairsPageable = eventService.getFairsByDayPageable(fairsPage, fairsSize, dayFilter);
+            individualTourApplicationsPageable = eventService.getIndividualTourApplicationsByDayPageable(individualTourApplicationsPage, individualTourApplicationsSize, dayFilter);
             individualToursPageable = eventService.getIndividualToursByDayPageable(individualToursPage, individualToursSize, dayFilter);
-
-        }
-        else{
-            tourApplicationsPageable= eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
+        } else {
+            // No filters
+            tourApplicationsPageable = eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
             toursPageable = eventService.getToursPageable(toursPage, toursSize);
-            fairsPageable =eventService.getFairsPageable(fairsPage, fairsSize);
+            fairsPageable = eventService.getFairsPageable(fairsPage, fairsSize);
             individualTourApplicationsPageable = eventService.getIndividualTourApplicationsPageable(individualTourApplicationsPage, individualTourApplicationsSize);
             individualToursPageable = eventService.getIndividualToursPageable(individualToursPage, individualToursSize);
         }
-        // Create guide counts map for Tours and Fairs
+// Create guide counts map for Tours and Fairs
         Map<Long, List<Integer>> guideCounts = toursPageable.getContent().stream()
                 .collect(Collectors.toMap(
                         Tour::getId,
@@ -325,7 +343,8 @@ public class UIEventController {
         model.addAttribute("individualTours", individualToursPageable);
         model.addAttribute("guideCounts", guideCounts);
         model.addAttribute("fairGuideCounts", fairGuideCounts);
-
+        model.addAttribute("searchTerm", search);
+        model.addAttribute("selectedDay", dayFilter);
 
         // Pagination details for each tab
         model.addAttribute("tourApplicationsCurrentPage", tourApplicationsPage);
@@ -342,8 +361,7 @@ public class UIEventController {
         model.addAttribute("dayFilter", dayFilter);
         model.addAttribute("selectedDay", dayFilter);
 
-        // Also add the current dayFilter to the fragment context
-        model.addAttribute("currentDayFilter", dayFilter);
+
         return "advisor-tables";
     } catch (Exception e) {
         e.printStackTrace(); // Log and rethrow the exception

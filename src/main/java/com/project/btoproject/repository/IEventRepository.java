@@ -129,5 +129,27 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
             @Param("searchTerm") String searchTerm,
             Pageable pageable
     );
+    @Query("SELECT t FROM Tour t WHERE t.status IN :statuses AND LOWER(t.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND TO_CHAR(t.date, 'D') = :day")
+    Page<Tour> findToursByStatusesAndSearchTermAndDay(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            @Param("day") String day,
+            Pageable pageable
+    );
 
+    @Query("SELECT f FROM Fair f WHERE f.status IN :statuses AND LOWER(f.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND TO_CHAR(f.date, 'D') = :day")
+    Page<Fair> findFairsByStatusesAndSearchTermAndDay(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            @Param("day") String day,
+            Pageable pageable
+    );
+
+    @Query("SELECT it FROM IndividualTour it WHERE it.status IN :statuses AND LOWER(it.student.school.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND TO_CHAR(it.date, 'D') = :day")
+    Page<IndividualTour> findIndividualToursByStatusesAndSearchTermAndDay(
+            @Param("statuses") List<Status> statuses,
+            @Param("searchTerm") String searchTerm,
+            @Param("day") String day,
+            Pageable pageable
+    );
 }
