@@ -63,7 +63,7 @@ public class SecurityConfig {
                                 "/",
                                 "/ui/auth/login",
                                 "/assets/**",
-                                "/bilkent.png",
+                                "/bilkent_pic.png",
                                 "/ui/assets/**",
                                 "/ui/assets/plugins/**",
                                 "/ui/assets/css/**",
