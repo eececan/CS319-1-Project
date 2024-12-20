@@ -104,6 +104,11 @@
                 <img src="/bilkent.png" alt="Bilkent Logo" class="logo-image">
             </div>
             <h3 class="mb-4 text-center">Login to your account</h3>
+            <div th:if="${errorMessage != null and errorMessage != ''}"
+                 class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <form action="/ui/auth/login" method="post">
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
@@ -121,6 +126,7 @@
                 </div>
             </form>
         </div>
+
     </div>
     <div class="auth-right">
         <img src="/bilkent_pic.png" alt="Background Image" class="background-image">
@@ -128,5 +134,7 @@
 </div>
 <script src="../assets/bundles/lib.vendor.bundle.js"></script>
 <script src="../assets/js/core.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
