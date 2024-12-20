@@ -412,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-document.addEventListener('DOMContentLoaded', function() {
+/*document.addEventListener('DOMContentLoaded', function() {
     // Get the day select dropdown
     const daySelect = document.getElementById('eventDaySelect');
 
@@ -440,4 +440,135 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+*/
+/*document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('schoolSearchInput');
+    const searchButton = document.getElementById('searchButton');
 
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        if (searchTerm) {
+            // Get current URL and parameters
+            let url = new URL(window.location.href);
+            let params = new URLSearchParams(url.search);
+
+            // Add search parameter
+            params.set('search', searchTerm);
+
+            // Reset page numbers
+            params.set('tourApplicationsPage', '0');
+            params.set('toursPage', '0');
+            params.set('fairsPage', '0');
+            params.set('individualTourApplicationsPage', '0');
+            params.set('individualToursPage', '0');
+
+            // Update URL and reload
+            url.search = params.toString();
+            window.location.href = url.toString();
+        }
+    }
+
+    // Search on button click
+    if (searchButton) {
+        searchButton.addEventListener('click', performSearch);
+    }
+
+    // Search on Enter key press
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+});*/
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('schoolSearchInput');
+    const searchButton = document.getElementById('searchButton');
+    const clearButton = document.getElementById('clearButton');
+    const daySelect = document.getElementById('eventDaySelect');
+
+    // Clear button functionality
+    if (clearButton) {
+        clearButton.addEventListener('click', function() {
+            searchInput.value = '';
+            let url = new URL(window.location.href);
+            url.searchParams.delete('search');
+
+            // Preserve day filter if exists
+            const dayFilter = daySelect?.value;
+            if (dayFilter) {
+                url.searchParams.set('dayFilter', dayFilter);
+            }
+
+            window.location.href = url.toString();
+        });
+    }
+
+    // Combined search and day filter
+    function updateFilters(searchTerm, dayFilter) {
+        let url = new URL(window.location.href);
+        let params = new URLSearchParams(url.search);
+
+        // Update search parameter
+        if (searchTerm) {
+            params.set('search', searchTerm);
+        } else {
+            params.delete('search');
+        }
+
+        // Update day filter
+        if (dayFilter) {
+            params.set('dayFilter', dayFilter);
+        } else {
+            params.delete('dayFilter');
+        }
+
+        // Reset page numbers
+        params.set('tourApplicationsPage', '0');
+        params.set('toursPage', '0');
+        params.set('fairsPage', '0');
+        params.set('individualTourApplicationsPage', '0');
+        params.set('individualToursPage', '0');
+
+        url.search = params.toString();
+        window.location.href = url.toString();
+    }
+
+    // Search functionality
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const dayFilter = daySelect?.value;
+        updateFilters(searchTerm, dayFilter);
+    }
+
+    // Day filter change
+    if (daySelect) {
+        daySelect.addEventListener('change', function() {
+            const searchTerm = searchInput.value.trim();
+            const dayFilter = this.value;
+            updateFilters(searchTerm, dayFilter);
+        });
+    }
+
+    if (searchButton) {
+        searchButton.addEventListener('click', performSearch);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+
+    // Set initial values from URL
+    const params = new URLSearchParams(window.location.search);
+    if (searchInput) {
+        searchInput.value = params.get('search') || '';
+    }
+    if (daySelect) {
+        daySelect.value = params.get('dayFilter') || '';
+    }
+});
