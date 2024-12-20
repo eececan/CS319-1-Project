@@ -24,7 +24,7 @@
             height: 100%;
         }
         .auth-left {
-            background-color: #031961; /* Blue color 0d3b66 */
+            background-color: #8c0000; /* Blue color 0d3b66 */
             width: 35%;
             display: flex;
             align-items: center;
@@ -74,6 +74,12 @@
             width: 100%;
             object-fit: cover;
         }
+        /* Error Message Styling */
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body class="font-montserrat">
@@ -88,6 +94,11 @@
         <!-- Login Card positioned between blue and image sections -->
         <div class="login-card">
             <h3 class="mb-4 text-center">Login to your account</h3>
+            <div th:if="${errorMessage != null and errorMessage != ''}"
+                 class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <form action="/ui/auth/login" method="post">
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
@@ -109,5 +120,6 @@
 </div>
 <script src="../assets/bundles/lib.vendor.bundle.js"></script>
 <script src="../assets/js/core.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
