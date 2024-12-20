@@ -121,6 +121,10 @@ public class UIAnalyticsController {
 
         model.addAttribute("cityGradient", gradientString);
         model.addAttribute("cityColors", cityColors);
+        double maxTourCount = topSchools.get(0).getTourCount();
+        int interval = (int) (maxTourCount / 10); // Adjust interval as needed
+        model.addAttribute("maxTourCount", (int) maxTourCount); // Pass as integer for cleaner output
+        model.addAttribute("interval", interval);
 
         // Prepare data for the view
         model.addAttribute("cityPercentages", cityPercentages);
