@@ -12,6 +12,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+
 @Service
 public class MailService {
     private JavaMailSender javaMailSender;
@@ -27,10 +29,12 @@ public class MailService {
             System.out.println("Sending email...");
             Tour tour = (Tour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo(tour.getSchoolCounselor().getEmail());
+            mail.setTo("aycaatac88@gmail.com");
+            //mail.setTo(tour.getSchoolCounselor().getEmail());
             mail.setFrom("dilekyildizbto@gmail.com");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             mail.setSubject("Bilkent Üniversitesi tur başvurunuz kabul edildi!");
-            mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool() + " öğrencilerini ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz " + tour.getPeopleCount() + " öğrenci içerecek ve " + (int) Math.ceil(tour.getPeopleCount() / 60.0) + " rehber içerecektir. Öğrenci sayısı veya tarih hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\n\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + formatter.format(tour.getDate()) + " tarihinde " + tour.getHour().toFormattedTime() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool().getName() + " öğrencilerini ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz " + tour.getPeopleCount() + " öğrenci içerecek ve " + (int) Math.ceil(tour.getPeopleCount() / 60.0) + " rehber içerecektir. Öğrenci sayısı veya tarih hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
         }
@@ -53,10 +57,13 @@ public class MailService {
             System.out.println("Sending email...");
             Tour tour = (Tour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo(tour.getSchoolCounselor().getEmail());
+            mail.setTo("aycaatac88@gmail.com");
+            //mail.setTo(tour.getSchoolCounselor().getEmail());
             mail.setFrom("dilekyildizbto@gmail.com");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             mail.setSubject("Bilkent Üniversitesi turu için yeni bir tarih seçin!");
-            mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool() + " öğrencilerini ağırlamak için sabırsızlanıyor! Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\n\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " +            formatter.format(tour.getDate())
+                    + " tarihinde " + tour.getHour().toFormattedTime() + " saatindeki tur başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool().getName() + " öğrencilerini ağırlamak için sabırsızlanıyor! Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
         }

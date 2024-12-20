@@ -27,11 +27,14 @@ public class EventService implements IEventService {
     private IEventRepository eventRepository;
     private IGuideRepository guideRepository;
     private final NotificationService notificationService;
+    private MailService mailService;
+
     @Autowired
-    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository, NotificationService notificationService) {
+    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository, NotificationService notificationService, MailService mailService) {
         this.eventRepository = eventRepository;
         this.guideRepository = guideRepository;
         this.notificationService = notificationService;
+        this.mailService = mailService;
     }
     public void approveFair(Long fairId) {
         Optional<Event> eventOptional = eventRepository.findById(fairId);
@@ -128,7 +131,7 @@ public class EventService implements IEventService {
         }
     }
 
-    public void approveTourBySecretary(Long tourId) {
+    public void approveTourBySecretary(Long tourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
@@ -139,12 +142,13 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.UPCOMING_TOUR); // Set status to advisor approved
             eventRepository.save(tour);
+            mailService.sendApprovalMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
 
-    public void rejectTourBySecretary(Long tourId) {
+    public void rejectTourBySecretary(Long tourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
@@ -155,6 +159,7 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.CANCELED_TOUR); // Set status to advisor rejected
             eventRepository.save(tour);
+            mailService.sendRejectionMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }

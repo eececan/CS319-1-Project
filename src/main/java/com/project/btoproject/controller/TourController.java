@@ -40,7 +40,7 @@ public class TourController {
 
     // Approve tour by Head Secretary
     @PostMapping("/{id}/secretary/approve")
-    public ResponseEntity<Void> approveTourBySecretary(@PathVariable Long id) {
+    public ResponseEntity<Void> approveTourBySecretary(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary approval
         System.out.println("Received ID for Approval by Secretary: " + id);
         eventService.approveTourBySecretary(id);
@@ -49,7 +49,7 @@ public class TourController {
 
     // Reject tour by Head Secretary
     @PostMapping("/{id}/secretary/reject")
-    public ResponseEntity<Void> rejectTourBySecretary(@PathVariable Long id) {
+    public ResponseEntity<Void> rejectTourBySecretary(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary rejection
         System.out.println("Received ID for Rejection by Secretary: " + id);
         eventService.rejectTourBySecretary(id);
