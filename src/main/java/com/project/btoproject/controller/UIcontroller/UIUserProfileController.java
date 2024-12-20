@@ -7,6 +7,7 @@ import com.project.btoproject.dto.UserGuideInTrainingDto;
 import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.util.*;
 
 @Controller
 @RequestMapping("ui/UserProfile")
@@ -36,8 +36,9 @@ public class UIUserProfileController {
     private final AdvisorService advisorService;
     private final GuideService guideService;
     private final PointRecordService pointRecordService;
+    private final RoleRepository roleRepository;
 
-    UIUserProfileController(AllUsersService allUsersService, UserService userService, PasswordEncoder passwordEncoder, AuthService authService, EventService eventService, AdvisorService advisorService, GuideService guideService, PointRecordService pointRecordService) {
+    UIUserProfileController(AllUsersService allUsersService, UserService userService, PasswordEncoder passwordEncoder, AuthService authService, EventService eventService, AdvisorService advisorService, GuideService guideService, PointRecordService pointRecordService, RoleRepository roleRepository) {
         this.allUsersService = allUsersService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -46,6 +47,7 @@ public class UIUserProfileController {
         this.advisorService = advisorService;
         this.guideService = guideService;
         this.pointRecordService = pointRecordService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/profile")
@@ -305,6 +307,127 @@ public class UIUserProfileController {
             return "redirect:/ui/UserProfile/changePassword"; // Redirect back to the form
         }
     }
+
+    @GetMapping("/getUserProfile")
+    public String getUserProfile(
+            @RequestParam Long userId,
+            @RequestParam(required = false) String successMessage,
+            @RequestParam(required = false) String errorMessage,
+            Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority()) // Get the role name
+                    .orElse("ROLE_UNKNOWN");
+        }
+
+        // Add success and error messages to the model
+        if (successMessage != null) {
+            model.addAttribute("successMessage", successMessage);
+        }
+        if (errorMessage != null) {
+            model.addAttribute("errorMessage", errorMessage);
+        }
+
+        // Redirect to user's own profile if the username matches userId
+        if (Long.parseLong(username) == userId) {
+            return "redirect:/ui/UserProfile/profile";
+        } else {
+            model.addAttribute("userRole", role);
+            Optional<UserEntity> user = userService.findUserByUsername(userId);
+            User all_user = allUsersService.getUserById(userId);
+
+            if (!user.isPresent()) {
+                // Redirect to profile if the user is not found
+                return "redirect:/ui/UserProfile/profile";
+            } else {
+                String roleName = user.get().getRoles().stream()
+                        .findFirst()
+                        .map(Role::getName)
+                        .orElse(null);
+                model.addAttribute("role", roleName);
+                model.addAttribute("user", all_user);
+                return "view-profile";
+            }
+        }
+    }
+
+    @PostMapping("/changeRole")
+    public String changeRole(@RequestParam Long userId, @RequestParam String roleName, RedirectAttributes redirectAttributes) {
+        Optional<UserEntity> optionalUser = userService.findUserByUsername(userId);
+
+        if (optionalUser.isEmpty()) {
+            redirectAttributes.addAttribute("errorMessage", "User not found.");
+            return "redirect:/ui/UserProfile/getUserProfile?userId=" + userId;
+        }
+
+        UserEntity user = optionalUser.get();
+        String currentRole = user.getRoles().stream()
+                .findFirst()
+                .map(Role::getName)
+                .orElse(null);
+
+        if (roleName.equals(currentRole)) {
+            redirectAttributes.addAttribute("errorMessage", "The role is already assigned to this user.");
+        } else {
+            Optional<Role> optionalRole = roleRepository.findByName(roleName);
+            if (optionalRole.isEmpty()) {
+                redirectAttributes.addAttribute("errorMessage", "The specified role does not exist.");
+            } else {
+                Role newRole = optionalRole.get();
+                userService.changeRole(userId, newRole);
+                redirectAttributes.addAttribute("successMessage", "Role has been successfully changed.");
+            }
+        }
+
+        // Redirect to getUserProfile with the updated role and userId
+        redirectAttributes.addAttribute("userId", userId);
+        return "redirect:/ui/UserProfile/getUserProfile";
+    }
+
+    @PostMapping("/changeResponsibleDay")
+    public String changeResponsibleDay(@RequestParam Long userId, @RequestParam String day, RedirectAttributes redirectAttributes) {
+        try {
+            // Normalize input
+            String normalizedDay = day.trim().toUpperCase(Locale.ENGLISH);
+
+
+            // Log input for debugging
+            System.out.println("Received day input: " + normalizedDay);
+
+            // Check if the day is valid
+            DayOfWeek dayOfWeek = DayOfWeek.valueOf(normalizedDay);
+
+            Advisor advisor = advisorService.getAdvisorById(userId);
+
+            if (advisor.getResponsibleDay() != null) {
+                if (advisorService.getResponsibleDay(userId).equals(dayOfWeek)) {
+                    redirectAttributes.addAttribute("errorMessage", "Advisor is already responsible for the day you selected!");
+                    return "redirect:/ui/UserProfile/getUserProfile?userId=" + userId;
+                }
+            }
+
+            if (!allUsersService.responsibleDayAvailable(dayOfWeek.name())) {
+                redirectAttributes.addAttribute("errorMessage", "Another advisor is already responsible for this day! Please make the day available first!");
+                return "redirect:/ui/UserProfile/getUserProfile?userId=" + userId;
+            } else {
+                advisorService.setResponsibleDay(userId, dayOfWeek);
+                redirectAttributes.addAttribute("successMessage", "The responsible day has been successfully changed to " + dayOfWeek.name() + "!");
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addAttribute("errorMessage", "Invalid day input. Please provide a valid day of the week.");
+        }
+
+        return "redirect:/ui/UserProfile/getUserProfile?userId=" + userId;
+    }
+
 
 
 }

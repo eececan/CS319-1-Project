@@ -11,6 +11,8 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("ADVISOR")
 @NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Advisor extends User {

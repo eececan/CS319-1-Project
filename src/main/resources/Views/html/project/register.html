@@ -21,6 +21,9 @@
             height: 100vh; /* Full height */
             width: 100%;
         }
+        .form-group.hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -31,23 +34,32 @@
             <div class="card-body">
 
                 <div class="card-title text-center">Create New Account</div>
+
+                <!-- Success Message -->
+                <div th:if="${successMessage != null and successMessage != ''}"
+                     class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
                 <!-- Error Message -->
                 <div th:if="${errorMessage != null and errorMessage != ''}"
                      class="alert alert-danger alert-dismissible fade show" role="alert">
                     <span th:text="${errorMessage}"></span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+
                 <!-- Form starts here -->
-                <form th:action="@{/ui/auth/register}" th:object="${registerDto}" method="post">
+                <form th:action="@{/ui/auth/register}" method="post">
                     <!-- Bilkent ID -->
                     <div class="form-group">
                         <label class="form-label">Bilkent ID</label>
-                        <input type="text" class="form-control" placeholder="Enter Bilkent ID" th:field="*{username}" />
+                        <input type="text" class="form-control" placeholder="Enter Bilkent ID" name="username" required />
                     </div>
                     <!-- Role -->
                     <div class="form-group">
                         <label class="form-label">Role</label>
-                        <select class="form-control" th:field="*{role}">
+                        <select id="roleSelect" class="form-control" name="role" onchange="toggleDayDropdown()" required>
                             <option value="" disabled selected>Select a role</option>
                             <option value="ROLE_GUIDE_IN_TRAINING">Guide In Training</option>
                             <option value="ROLE_GUIDE">Guide</option>
@@ -55,10 +67,24 @@
                             <option value="ROLE_COORDINATOR">Coordinator</option>
                         </select>
                     </div>
+                    <!-- Responsible Day Dropdown (only for advisors) -->
+                    <div id="dayDropdown" class="form-group hidden">
+                        <label class="form-label">Responsible Day</label>
+                        <select class="form-control" name="responsibleDay">
+                            <option value="" disabled selected>Select a day</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
                     <!-- Password -->
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-control" placeholder="Enter password" th:field="*{password}" />
+                        <input type="password" class="form-control" placeholder="Enter password" name="password" required />
                     </div>
                     <!-- Submit Button -->
                     <div class="form-footer">
@@ -76,5 +102,17 @@
 <!-- Bootstrap JS Bundle (includes Popper.js) -->
 <script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleDayDropdown() {
+        const roleSelect = document.getElementById("roleSelect");
+        const dayDropdown = document.getElementById("dayDropdown");
+
+        if (roleSelect.value === "ROLE_ADVISOR") {
+            dayDropdown.classList.remove("hidden");
+        } else {
+            dayDropdown.classList.add("hidden");
+        }
+    }
+</script>
 </body>
 </html>

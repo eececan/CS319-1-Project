@@ -50,10 +50,10 @@ public class UIUserController {
         }
 
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
-            return "member-list-directorSpecific";
+            return "member-list";
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE")) ||
                 authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
-            return "member-list-guideSpecific";
+            return "member-list";
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
             roleUser = "ADVISOR";
             model.addAttribute("roleUser", roleUser);

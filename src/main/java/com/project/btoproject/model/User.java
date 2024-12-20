@@ -25,22 +25,22 @@ public class User {
     @Column(name = "password", nullable = true)
     private String password = "";
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", nullable = true)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name", nullable = true)
     private String lastName;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true, nullable = true)
     private String email;
 
     @Column(name = "picture")
     private String picture;
 
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date", nullable = true)
     private Date startDate;
 
     @Column(name = "description")

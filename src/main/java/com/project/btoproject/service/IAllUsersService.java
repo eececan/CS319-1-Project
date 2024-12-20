@@ -21,4 +21,5 @@ public interface IAllUsersService {
     boolean hasMissingInformation(User user, UserEntity userEntity);
     boolean hasUserWithId(Long id);
     void updateProfile(Long id, Map<String, Object> dtoMap);
+    boolean responsibleDayAvailable(String day);
 }

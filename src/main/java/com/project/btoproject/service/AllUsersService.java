@@ -103,96 +103,83 @@ public class AllUsersService implements IAllUsersService {
 
     }
 */
-    @Override
-    public boolean hasMissingInformation(User user, UserEntity userEntity) {
-        boolean missing = false;
-
-        if(userEntity.getRoles()
-                .stream()
-                .anyMatch(role -> "ROLE_GUIDE".equalsIgnoreCase(role.getName()))){
-            Guide guide = guideService.getGuideById(user.getId());
-            if (guide.getSchedule().isEmpty() ||
-                    guide.getDepartment().isEmpty() ||
-                    guide.getGrade() == null ||
-                    guide.getFirstName().isEmpty() ||
-                    guide.getLastName().isEmpty() ||
-                    guide.getPhoneNumber().isEmpty() ||
-                    guide.getEmail().isEmpty() ||
-
-                    guide.getDescription().isEmpty()) {
-                return true;
-            }
-        } else if(userEntity.getRoles()
-                .stream()
-                .anyMatch(role -> "ROLE_ADVISOR".equalsIgnoreCase(role.getName()))) {
-            Advisor advisor = advisorService.getAdvisorById(user.getId());
-            if (advisor.getDepartment().isEmpty() ||
-                    advisor.getGrade() == null ||
-                    advisor.getFirstName().isEmpty() ||
-                    advisor.getLastName().isEmpty() ||
-                    advisor.getPhoneNumber().isEmpty() ||
-                    advisor.getEmail().isEmpty()
-
-                ) { //  advisor.getResponsibleDay() == null
-                return true;
-            }
-        } else if(userEntity.getRoles()
-                .stream()
-                .anyMatch(role -> "ROLE_GUIDE_IN_TRAINING".equalsIgnoreCase(role.getName()))) {
-            GuideInTraining guideInTraining = guideInTrainingService.getGuideInTrainingById(user.getId());
-            if (guideInTraining.getSchedule().isEmpty() ||
-                    guideInTraining.getDepartment().isEmpty() ||
-                    guideInTraining.getGrade() == null ||
-                    guideInTraining.getFirstName().isEmpty() ||
-                    guideInTraining.getLastName().isEmpty() ||
-                    guideInTraining.getPhoneNumber().isEmpty() ||
-                    guideInTraining.getEmail().isEmpty()
-
-                  ) {
-                return true;
-            }
-        } else if(userEntity.getRoles()
-                .stream()
-                .anyMatch(role -> "ROLE_HEAD_SECRETARY".equalsIgnoreCase(role.getName()))) {
-            HeadSecretary headSecretary = headSecretaryService.getHeadSecretaryById(user.getId()).get();
-            if (headSecretary.getFirstName().isEmpty() ||
-                    headSecretary.getLastName().isEmpty() ||
-                    headSecretary.getPhoneNumber().isEmpty() ||
-                    headSecretary.getEmail().isEmpty()
-
-                 ) {
-                return true;
-            }
-        } else if(userEntity.getRoles()
-                .stream()
-                .anyMatch(role -> "ROLE_DIRECTOR".equalsIgnoreCase(role.getName()))) {
-            Director director = directorService.getDirectorById(user.getId()).get();
-            if (director.getFirstName().isEmpty() ||
-                    director.getLastName().isEmpty() ||
-                    director.getPhoneNumber().isEmpty() ||
-                    director.getEmail().isEmpty()
-
-                ) {
-                return true;
-            }
-        } else if(userEntity.getRoles()
-                .stream()
-                .anyMatch(role -> "ROLE_COORDINATOR".equalsIgnoreCase(role.getName()))) {
-            Coordinator coordinator = coordinatorService.getCoordinatorById(user.getId());
-            if (coordinator.getFirstName().isEmpty() ||
-                    coordinator.getLastName().isEmpty() ||
-                    coordinator.getPhoneNumber().isEmpty() ||
-                    coordinator.getEmail().isEmpty() ||
-
-
-                    coordinator.getDepartment().isEmpty() ||
-                    coordinator.getGrade() == null) {
-                return true;
-            }
-        }
-
-        return missing;
+@Override
+public boolean hasMissingInformation(User user, UserEntity userEntity) {
+    // Check for Guide Role
+    if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_GUIDE".equalsIgnoreCase(role.getName()))) {
+        Guide guide = guideService.getGuideById(user.getId());
+        return isNullOrEmpty(guide.getSchedule()) ||
+                isNullOrEmpty(guide.getDepartment()) ||
+                guide.getGrade() == null ||
+                isNullOrEmpty(guide.getFirstName()) ||
+                isNullOrEmpty(guide.getLastName()) ||
+                isNullOrEmpty(guide.getPhoneNumber()) ||
+                isNullOrEmpty(guide.getEmail()) ||
+                isNullOrEmpty(guide.getDescription());
     }
+
+    // Check for Advisor Role
+    if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_ADVISOR".equalsIgnoreCase(role.getName()))) {
+        Advisor advisor = advisorService.getAdvisorById(user.getId());
+        return isNullOrEmpty(advisor.getDepartment()) ||
+                advisor.getGrade() == null ||
+                isNullOrEmpty(advisor.getFirstName()) ||
+                isNullOrEmpty(advisor.getLastName()) ||
+                isNullOrEmpty(advisor.getPhoneNumber()) ||
+                isNullOrEmpty(advisor.getEmail());
+    }
+
+    // Check for Guide In Training Role
+    if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_GUIDE_IN_TRAINING".equalsIgnoreCase(role.getName()))) {
+        GuideInTraining guideInTraining = guideInTrainingService.getGuideInTrainingById(user.getId());
+        return isNullOrEmpty(guideInTraining.getSchedule()) ||
+                isNullOrEmpty(guideInTraining.getDepartment()) ||
+                guideInTraining.getGrade() == null ||
+                isNullOrEmpty(guideInTraining.getFirstName()) ||
+                isNullOrEmpty(guideInTraining.getLastName()) ||
+                isNullOrEmpty(guideInTraining.getPhoneNumber()) ||
+                isNullOrEmpty(guideInTraining.getEmail());
+    }
+
+    // Check for Head Secretary Role
+    if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_HEAD_SECRETARY".equalsIgnoreCase(role.getName()))) {
+        HeadSecretary headSecretary = headSecretaryService.getHeadSecretaryById(user.getId()).orElse(null);
+        if (headSecretary == null) return true;
+        return isNullOrEmpty(headSecretary.getFirstName()) ||
+                isNullOrEmpty(headSecretary.getLastName()) ||
+                isNullOrEmpty(headSecretary.getPhoneNumber()) ||
+                isNullOrEmpty(headSecretary.getEmail());
+    }
+
+    // Check for Director Role
+    if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_DIRECTOR".equalsIgnoreCase(role.getName()))) {
+        Director director = directorService.getDirectorById(user.getId()).orElse(null);
+        if (director == null) return true;
+        return isNullOrEmpty(director.getFirstName()) ||
+                isNullOrEmpty(director.getLastName()) ||
+                isNullOrEmpty(director.getPhoneNumber()) ||
+                isNullOrEmpty(director.getEmail());
+    }
+
+    // Check for Coordinator Role
+    if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_COORDINATOR".equalsIgnoreCase(role.getName()))) {
+        Coordinator coordinator = coordinatorService.getCoordinatorById(user.getId());
+        return isNullOrEmpty(coordinator.getFirstName()) ||
+                isNullOrEmpty(coordinator.getLastName()) ||
+                isNullOrEmpty(coordinator.getPhoneNumber()) ||
+                isNullOrEmpty(coordinator.getEmail()) ||
+                isNullOrEmpty(coordinator.getDepartment()) ||
+                coordinator.getGrade() == null;
+    }
+
+    return false; // No missing information found
+}
+
+    // Utility method to handle null or empty checks
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
 
     @Override
     public boolean hasUserWithId(Long id) {
@@ -310,6 +297,21 @@ public class AllUsersService implements IAllUsersService {
         }
 
     }
+
+    @Override
+    public boolean responsibleDayAvailable(String day) {
+        List<Advisor> advisors = advisorService.getAllAdvisors();
+        for (Advisor advisor : advisors) {
+            if (advisor.getResponsibleDay() != null) { // Check for null responsibleDay
+                if (day.equalsIgnoreCase(advisor.getResponsibleDay().toString())) {
+                    return false; // Day is already taken
+                }
+            }
+        }
+        return true; // Day is available
+    }
+
+
 
     //dogru mu checkle
     @Override

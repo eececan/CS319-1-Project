@@ -1,23 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"  lang="en" dir="ltr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+    <title>Profile</title>
+    <!-- Bootstrap Core and vendor -->
+    <link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet"  >
+
+    <!-- Plugins css -->
+    <link  th:href="@{/assets/plugins/charts-c3/c3.min.css}"  rel="stylesheet">
+
+    <!-- Core css -->
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/theme1.css}" rel="stylesheet" >
     <style>
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ccc; /* Optional border for better aesthetics */
-            display: block;
-            margin: 0 auto; /* Centers the image */
+        .square-card {
+            height: 300px; /* Adjust for desired square size */
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        .alert-danger {
+            background-color: #dc3545 !important; /* Bootstrap default danger color */
+            color: #fff !important; /* White text color */
+            border-color: #dc3545 !important; /* Border matches the background */
         }
 
-        .avatar-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%; /* Ensures it matches the table row height */
-            overflow: hidden;
+        .alert-danger .btn-close {
+            color: #fff; /* Close button matches the white text */
+            opacity: 1;
+            filter: invert(1); /* Ensures close button is visible */
         }
 
         /* The close button */
@@ -36,8 +56,6 @@
         .closebtn:hover {
             color: black;
         }
-
-
         /* Force Success Alert to Green */
         .alert-success {
             background-color: #28a745 !important;
@@ -51,24 +69,23 @@
             opacity: 1;
             filter: invert(1); /* Makes the close button white */
         }
+
+        .disabled-sidebar {
+            pointer-events: none; /* Disables all clicks */
+            opacity: 0.5; /* Makes it visually appear inactive */
+        }
+        .card {
+            margin-bottom: 20px; /* Adds space between cards */
+            background-color: #f8f9fa; /* Dirty white color */
+            border: 1px solid #dee2e6; /* Slightly darker border for better contrast */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+        .card-body {
+            padding: 20px; /* Adds consistent padding inside the card */
+        }
+
     </style>
-
-    <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
-
-<title>::  :: Contact</title>
-
-<!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
-<link rel="stylesheet" href="../assets/plugins/sweetalert/sweetalert.css"/>
-<link rel="stylesheet" href="../assets/plugins/dropify/css/dropify.min.css">
-
-<!-- Core css -->
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/theme1.css"/>
 </head>
 
 <body class="font-montserrat">
@@ -77,10 +94,8 @@
     <div class="loader">
     </div>
 </div>
-<!-- Overlay For Sidebars -->
 
 <div id="main_content">
-
 
     <div id="header_top" class="header_top">
         <div class="container">
@@ -280,50 +295,52 @@
             </div>
         </div>
     </div>
+
+
     <div class="user_div">
-        <h5 class="brand-name mb-4" th:text="${roleUser}"><a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
+        <h5 class="brand-name mb-4">Guide<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
         <div class="card-body">
             <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
             <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
             <span th:text="${user.email}"></span>
+
             <hr>
         </div>
     </div>
 
-    <div id="left-sidebar" class="sidebar ">
-        <h5 class="brand-name" th:text="${roleUser}"><a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+
+    <!-- Sidebar -->
+    <div id="left-sidebar" class="sidebar">
+        <h5 class="brand-name">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+            <span th:if="${role != 'ROLE_GUIDE' && role != 'ROLE_HEAD_SECRETARY' && role != 'ROLE_ADVISOR' && role != 'ROLE_GUIDE_IN_TRAINING' && role != 'ROLE_COORDINATOR' && role != 'ROLE_DIRECTOR'}" th:text="${role}"></span>
+            <a href="javascript:void(0)" class="menu_option float-right">
+                <i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i>
+            </a>
+        </h5>
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
-                <li class="g_heading"></li>
-                <li class="active">
-                    <a th:href="@{/dashboard}">
-                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a th:href="@{/getAllUsers}">
-                        <i class="fa fa-user"></i><span>Clients</span>
-                    </a>
-                </li>
-                <li>
-                    <a th:href="@{/getAllRecords}">
-                        <i class="fa fa-user"></i><span>Point Records</span>
-                    </a>
-                </li>
-                <li>
-                    <a th:href="@{/ui/task/todo}">
-                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
-                    </a>
-                </li>
-                <li class="g_heading"></li>
-                <li>
-                    <a th:href="@{/calender}">
-                        <i class="fa fa-calendar"></i><span>Calendar</span>
-                    </a>
-                </li>
+                <li class="g_heading">Project</li>
+                <li class="active"><a href="/dashboard"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
+                <li><a th:href="@{/ui/task/todo}"><i class="fa fa-check-square-o"></i><span>Todo List</span></a></li>
+                <li th:if="${role == 'ROLE_GUIDE'}"><a th:href="@{/getRecordsOfGuide}"><i class="fa fa-user"></i><span>Event Records</span></a></li>
+                <li><a th:href="@{/getAllUsers}"><i class="fa fa-user"></i><span>All Members</span></a></li>
+                <li class="g_heading">App</li>
+                <li><a href="app-calendar.html"><i class="fa fa-calendar"></i><span>Calendar</span></a></li>
+                <li><a href="app-contact.html"><i class="fa fa-address-book"></i><span>Contact</span></a></li>
+                <li><a href="app-setting.html"><i class="fa fa-gear"></i><span>Setting</span></a></li>
             </ul>
         </nav>
     </div>
+
+
+
+
 
 
     <div class="page">
@@ -332,11 +349,14 @@
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">Dashboard</h1>
+                        <h1 class="page-title" th:text="${user.firstName + ' ' + user.lastName}"></h1>
                     </div>
+
+
                     <div class="right">
 
                         <div class="notification d-flex">
+
                             <div class="dropdown d-flex">
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                     <ul class="right_chat list-unstyled w350 p-0">
@@ -389,6 +409,7 @@
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
                                 </div>
                             </div>
+
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
@@ -434,11 +455,12 @@
                                 </div>
                             </div>
                             <div class="dropdown d-flex">
-                                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a><div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                        <a class="dropdown-item" th:href="@{/ui/UserProfile/profile}"><i class="dropdown-icon fe fe-user}"></i> Profile</a>
-                                        <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
+                                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                    <a class="dropdown-item" th:href="@{/ui/UserProfile/profile}"><i class="dropdown-icon fe fe-user}"></i> Profile</a>
+                                    <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
                                 </div>
                             </div>
                         </div>
@@ -446,106 +468,228 @@
                 </div>
             </div>
         </div>
-        <div class="section-body mt-3">
+
+        <style>
+            .card {
+                margin-bottom: 20px; /* Adds space between cards */
+                background-color: #f8f9fa; /* Dirty white color */
+                border: 1px solid #dee2e6; /* Slightly darker border for better contrast */
+                border-radius: 10px; /* Rounded corners */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            }
+            .card-body {
+                padding: 20px; /* Adds consistent padding inside the card */
+            }
+            .form-group-inline {
+                display: flex;
+                align-items: center;
+                gap: 15px; /* Space between inputs */
+            }
+        </style>
+
+        <div th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING' || role == 'ROLE_ADVISOR' || role == 'ROLE_COORDINATOR'}" id="profile_section" class="section-body mt-4">
             <div class="container-fluid">
                 <div class="row clearfix">
-                    <div th:if="${successMessage != null and successMessage != ''}"
-                         class="alert alert-success alert-dismissible fade show" role="alert">
-                        <span th:text="${successMessage}"></span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <!-- Left Card -->
+                    <div class="col-lg-4 col-md-12">
+                        <div class="card">
+                            <img class="card-img-top"
+                                 th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
+                                 alt="Card image cap">
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
+                                    <li class="list-group-item"
+                                        th:text="${role == 'ROLE_GUIDE' ? 'Guide'
+                                         : role == 'ROLE_GUIDE_IN_TRAINING' ? 'Guide in Training'
+                                         : role == 'ROLE_ADVISOR' ? 'Advisor'
+                                         : role == 'ROLE_COORDINATOR' ? 'Coordinator' : ''}">
+                                    </li>
+                                    <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
+                                    <li class="list-group-item" th:if="${role == 'ROLE_ADVISOR'}">
+                                        Responsible Day: <span th:text="${user.responsibleDay}"></span>
+                                    </li>
+                                </ul>
+
+                                <div th:if="${userRole == 'ROLE_COORDINATOR' && (role == 'ROLE_ADVISOR')}" class="mt-3">
+                                    <form th:action="@{/ui/UserProfile/changeResponsibleDay}" method="post" class="form-group">
+                                        <input type="hidden" name="userId" th:value="${user.id}">
+
+                                        <!-- Label for Dropdown -->
+                                        <label for="responsibleDayDropdown" class="form-label">Change Responsible Day</label>
+
+                                        <!-- Dropdown for Selecting Responsible Day -->
+                                        <select id="responsibleDayDropdown" class="form-select" name="day" required>
+                                            <option value="Monday" th:selected="${user.responsibleDay == 'Monday'}">Monday</option>
+                                            <option value="Tuesday" th:selected="${user.responsibleDay == 'Tuesday'}">Tuesday</option>
+                                            <option value="Wednesday" th:selected="${user.responsibleDay == 'Wednesday'}">Wednesday</option>
+                                            <option value="Thursday" th:selected="${user.responsibleDay == 'Thursday'}">Thursday</option>
+                                            <option value="Friday" th:selected="${user.responsibleDay == 'Friday'}">Friday</option>
+                                            <option value="Saturday" th:selected="${user.responsibleDay == 'Saturday'}">Saturday</option>
+                                            <option value="Sunday" th:selected="${user.responsibleDay == 'Sunday'}">Sunday</option>
+                                        </select>
+
+                                        <!-- Submit Button -->
+                                        <button type="submit" class="btn btn-primary mt-3">Change Responsible Day</button>
+                                    </form>
+                                </div>
+
+
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-12">
+
+                    <!-- Right Card -->
+                    <div class="col-lg-8 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-md-flex justify-content-between align-items-center">
-                                    <!-- Tabs -->
-                                    <ul class="nav nav-tabs b-none">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="list-tab" data-toggle="tab" href="#list">
-                                                <i class="fa fa-list-ul"></i> List
-                                            </a>
-                                        </li>
-                                    </ul>
+                                <div class="row clearfix">
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">First Name</label>
+                                            <input type="text" class="form-control" name="firstName" placeholder="First Name" th:value="${user.firstName}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" name="lastName" placeholder="Last Name" th:value="${user.lastName}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email address</label>
+                                            <input type="email" class="form-control" name="email" placeholder="Email" th:value="${user.email}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="text" class="form-control" name="phoneNumber" placeholder="Phone Number" th:value="${user.phoneNumber}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Grade</label>
+                                            <input type="number" class="form-control" name="grade" placeholder="Grade" th:value="${user.grade}" readonly>
+                                        </div>
+                                    </div>
+                                    <div th:if="${userRole == 'ROLE_COORDINATOR' && (role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING' || role == 'ROLE_ADVISOR')}" class="form-group">
+                                        <form th:action="@{/ui/UserProfile/changeRole}" method="post">
+                                            <input type="hidden" name="userId" th:value="${user.id}">
+                                            <label for="roleDropdown" class="form-label">Change Role</label>
+                                            <select id="roleDropdown" class="form-select" name="roleName">
+                                                <!-- Options for Guide in Training -->
+                                                <option value="ROLE_GUIDE_IN_TRAINING" th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}" th:selected="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</option>
+                                                <option value="ROLE_GUIDE" th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide</option>
 
-                                    <!-- Register Button - Visible only for ROLE_COORDINATOR -->
-                                    <div>
-                                        <a th:if="${role == 'ROLE_COORDINATOR'}"
-                                           th:href="@{/ui/auth/register}"
-                                           class="btn btn-primary">
-                                            Add New Member
-                                        </a>
+                                                <!-- Options for Guide -->
+                                                <option value="ROLE_GUIDE" th:if="${role == 'ROLE_GUIDE'}" th:selected="${role == 'ROLE_GUIDE'}">Guide</option>
+                                                <option value="ROLE_ADVISOR" th:if="${role == 'ROLE_GUIDE'}">Advisor</option>
+
+                                                <!-- Options for Advisor -->
+                                                <option value="ROLE_ADVISOR" th:if="${role == 'ROLE_ADVISOR'}" th:selected="${role == 'ROLE_ADVISOR'}">Advisor</option>
+                                                <option value="ROLE_COORDINATOR" th:if="${role == 'ROLE_ADVISOR'}">Coordinator</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary mt-2">Change Role</button>
+                                        </form>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div th:if="${successMessage != null and successMessage != ''}"
+                             class="alert alert-success alert-dismissible fade show" role="alert">
+                            <span th:text="${successMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div th:if="${errorMessage != null and errorMessage != ''}"
+                             class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <div th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING'}" class="card">
+                                <div class="card-body widgets1">
+                                    <div class="details">
+                                        <h6 class="mb-0 font600">Tour History</h6>
+                                        <span class="mb-0">
+                                    <span th:text="${sum}"></span>
+                                </span>
                                     </div>
                                 </div>
-
-                                <!-- Search Bar -->
-                                <div class="input-group mt-2">
-                                    <input type="text" class="form-control search" placeholder="Search...">
-                                </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-lg-12 text-right mt-4">
+                        <button type="button" class="btn btn-primary" th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING'}" onclick="function viewEditSchedule() {
+                    window.location.href = '/updateSchedule';
+                } viewEditSchedule()">View Schedule</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Users Table -->
-        <div class="section-body">
+
+
+
+
+
+        <div th:if="${role == 'ROLE_HEAD_SECRETARY' || role == 'ROLE_DIRECTOR'}" id="secretary_section" class="section-body mt-4">
             <div class="container-fluid">
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="list" role="tabpanel">
-                        <div class="row clearfix">
-                            <div class="col-lg-12">
-                                <div class="table-responsive" id="users">
-                                    <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
-                                        <tbody>
-                                        <!-- Check if the users list is empty -->
-                                        <tr th:if="${#lists.isEmpty(all_users)}">
-                                            <td colspan="6" style="text-align: center; color: #888;">
-                                                No users found.
-                                            </td>
-                                        </tr>
+                <div class="row clearfix">
+                    <!-- Left Card -->
+                    <div class="col-lg-4 col-md-12">
+                        <div class="row">
+                            <div class="card">
+                                <img class="card-img-top"
+                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
+                                     alt="Card image cap">
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
+                                        <li class="list-group-item" th:text="${role == 'ROLE_HEAD_SECRETARY' ? 'Head Secretary' : 'Director'}"></li>
+                                        <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                        <!-- Populate rows dynamically if the users list is not empty -->
-                                        <tr th:each="user : ${all_users}">
-                                            <td class="width35 hidden-xs"></td>
-                                            <td class="text-center width40">
-                                                <div class="avatar-container">
-                                                    <img class="avatar"
-                                                         th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                                                         alt="avatar">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <!-- Link user's name to an action passing user.id -->
-                                                    <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" th:text="${user.firstName + ' ' + user.lastName}"></a>
-                                                </div>
-                                                <div class="text-muted" th:text="${user.phoneNumber != null ? user.phoneNumber : 'N/A'}"></div>
-                                            </td>
-                                            <td class="hidden-xs">
-                                                <div class="text-muted" th:text="${user.email != null ? user.email : 'N/A'}"></div>
-                                            </td>
-                                            <td class="hidden-xs">
-                                                <div class="text-muted" th:text="${user.id != null ? user.id : 'N/A'}"></div>
-                                            </td>
-                                            <td class="text-right">
-                                                <div class="user-actions">
-                                                    <!-- Link to edit page, passing user.id -->
-                                                    <a href="javascript:void(0);" class="edit" th:href="@{'/edit/' + ${user.id}}" title="Edit">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                    <!-- Link to delete page, passing user.id -->
-                                                    <a th:href="@{'deleteUser/' + ${user.id}}"
-                                                       th:onclick="return confirm('Are you sure you want to delete this user?')"
-                                                       title="Delete">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
+                    <!-- Right Card -->
+                    <div class="col-lg-8 col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row clearfix">
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">First Name</label>
+                                            <input type="text" class="form-control" th:value="${user.firstName}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" th:value="${user.lastName}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" th:value="${user.email}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="text" class="form-control" th:value="${user.phoneNumber}" readonly>
+                                        </div>
+                                    </div>
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -553,9 +697,6 @@
                 </div>
             </div>
         </div>
-
-
-
 
 
 
@@ -564,39 +705,14 @@
 </div>
 
 
-<script src="../assets/bundles/lib.vendor.bundle.js"></script>
 
-<script src="../assets/bundles/sweetalert.bundle.js"></script>
-<script src="../assets/plugins/dropify/js/dropify.min.js"></script>
-
-<script src="../assets/js/core.js"></script>
-<script src="assets/js/page/sweetalert.js"></script>
-<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
+<script th:src="@{/assets/bundles/knobjs.bundle.js}"></script>
+<script th:src="@{/assets/bundles/c3.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+<script th:src="@{/assets/js/page/project-index.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-$(function() {
-    "use strict";
-    
-    $('.dropify').dropify();
-
-    var drEvent = $('#dropify-event').dropify();
-    drEvent.on('dropify.beforeClear', function(event, element) {
-        return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-    });
-
-    drEvent.on('dropify.afterClear', function(event, element) {
-        alert('File deleted');
-    });
-
-    $('.dropify-fr').dropify({
-        messages: {
-            default: 'Glissez-déposez un fichier ici ou cliquez',
-            replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
-            remove: 'Supprimer',
-            error: 'Désolé, le fichier trop volumineux'
-        }
-    });
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

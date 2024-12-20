@@ -19,6 +19,13 @@ public class AdvisorService implements IAdvisorService {
     }
 
     @Override
+    public void setResponsibleDay(Long advisorId, DayOfWeek day) {
+        Advisor advisor = advisorRepository.getAdvisorById(advisorId);
+        advisor.setResponsibleDay(day);
+        advisorRepository.save(advisor);
+    }
+
+    @Override
     public Advisor getAdvisorById(Long advisorId) {
         return advisorRepository.getAdvisorById(advisorId);
     }

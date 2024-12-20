@@ -1,11 +1,11 @@
 package com.project.btoproject.service;
 
-import com.project.btoproject.dto.AuthResponseDTO;
-import com.project.btoproject.dto.ErrorResponseDto;
-import com.project.btoproject.dto.LoginDto;
-import com.project.btoproject.dto.RegisterDto;
+import com.project.btoproject.dto.*;
+import com.project.btoproject.model.Advisor;
 import com.project.btoproject.model.Role;
+import com.project.btoproject.model.User;
 import com.project.btoproject.model.UserEntity;
+import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.security.JWTGenerator;
@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.Locale;
 
@@ -35,7 +36,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTGenerator jwtGenerator;
-
+    private final IAllUsersRepository allUsersRepository;
 
     public ResponseEntity<?> login(LoginDto loginDto, HttpServletRequest request) {
         try {
@@ -86,4 +87,41 @@ public class AuthService {
 
         return "User registered successfully!";
     }
+
+    @Transactional
+    public String registerAdvisor(AdvisorRegisterDto registerDto) {
+        // Check if the username is already taken
+        if (userRepository.existsByUsername(registerDto.getUsername())) {
+            return "Username is already taken!";
+        }
+
+        // Validate the role and retrieve it
+        Role role = roleRepository.findByName(registerDto.getRole().toUpperCase(Locale.ROOT))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid role: " + registerDto.getRole()));
+
+        // Create and populate the UserEntity
+        UserEntity user = new UserEntity();
+        user.setUsername(registerDto.getUsername());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        user.setRoles(Collections.singletonList(role));
+
+        // Create and populate the Advisor
+        Advisor advisor = new Advisor();
+        advisor.setId(Long.parseLong(registerDto.getUsername())); // Assuming ID is based on username
+        advisor.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        try {
+            // Parse and validate the responsible day
+            DayOfWeek dayOfWeek = DayOfWeek.valueOf(registerDto.getResponsibleDay().trim().toUpperCase(Locale.ENGLISH));
+            advisor.setResponsibleDay(dayOfWeek);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid responsible day: " + registerDto.getResponsibleDay(), e);
+        }
+
+        // Save the user and advisor entities
+        userRepository.save(user);
+        allUsersRepository.save(advisor);
+
+        return "User registered successfully!";
+    }
+
 }

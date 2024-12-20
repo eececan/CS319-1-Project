@@ -77,34 +77,48 @@ public class UIAuthController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        RegisterDto registerDto = new RegisterDto();
-        model.addAttribute("registerDto", registerDto);
+        model.addAttribute("registerDto", new RegisterDto());
+        model.addAttribute("advisorRegisterDto", new AdvisorRegisterDto());
         return "register";
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("registerDto") RegisterDto registerDto, RedirectAttributes redirectAttributes, Model model) {
+    public String register(
+            @RequestParam String role,
+            @ModelAttribute("registerDto") RegisterDto registerDto,
+            @ModelAttribute("advisorRegisterDto") AdvisorRegisterDto advisorRegisterDto,
+            RedirectAttributes redirectAttributes,
+            Model model) {
         try {
-            String response = authService.register(registerDto);
-            if (response.equals("User registered successfully!")) {
-                // Success: Add flash attribute for success message
-                redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
-                return "redirect:/getAllUsers"; // Redirect to /getAllUsers
-            } else if (response.equals("Username is already taken!")) {
-                // Failure: Stay on registration page
-                model.addAttribute("errorMessage", "There is an existing user registered with this Bilkent ID!");
-                return "register";
+            if ("ROLE_ADVISOR".equals(role)) {
+                String response = authService.registerAdvisor(advisorRegisterDto);
+                if (response.equals("User registered successfully!")) {
+                    redirectAttributes.addFlashAttribute("successMessage", "Advisor registered successfully!");
+                    return "redirect:/getAllUsers";
+                } else {
+                    model.addAttribute("errorMessage", response);
+                    return "register";
+                }
             } else {
-                // Failure: General error
-                model.addAttribute("errorMessage", "User could not be registered! Please try again!");
-                return "register";
+                String response = authService.register(registerDto);
+                if (response.equals("User registered successfully!")) {
+                    redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
+                    return "redirect:/getAllUsers";
+                } else if (response.equals("Username is already taken!")) {
+                    model.addAttribute("errorMessage", "There is an existing user registered with this Bilkent ID!");
+                    return "register";
+                } else {
+                    model.addAttribute("errorMessage", "User could not be registered! Please try again!");
+                    return "register";
+                }
             }
         } catch (Exception e) {
-            // Handle unexpected errors
             model.addAttribute("errorMessage", "An error occurred: " + e.getMessage());
             return "register";
         }
     }
+
+
 
 
 
