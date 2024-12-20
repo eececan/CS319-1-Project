@@ -72,7 +72,8 @@ public class SecurityConfig {
                                 "/ui/auth/head-secretary-tables",
                                 "/api/tours/**",
                                 "/deleteUser/**",
-                                "/updateSchedule"
+                                "/updateSchedule",
+                                "/src/main/resources/static/bilkent.png"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
