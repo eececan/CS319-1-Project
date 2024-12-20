@@ -5,6 +5,7 @@ import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.IGuideInTrainingRepository;
 import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,8 +44,9 @@ public class UIAuthController {
     private final CoordinatorService coordinatorService;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final IGuideInTrainingRepository guideInTrainingRepository;
 
-    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService) {
+    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService, IGuideInTrainingRepository guideInTrainingRepository) {
         this.authService = _authService;
         this.eventService = eventService;
         this.guideService = guideService;
@@ -54,6 +56,7 @@ public class UIAuthController {
         this.coordinatorService = coordinatorService;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.guideInTrainingRepository = guideInTrainingRepository;
     }
 
     @GetMapping("/logout")
@@ -327,7 +330,33 @@ public class UIAuthController {
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
                        return "Guide-Dashboard"; // Guide's page
-                   } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+                   }
+                   else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+
+
+                       // Fetch advisor of the day
+                       Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                       // Fetch associated tours and fairs
+                       List<Tour> tours = eventService.getAllTours();
+                       List<Fair> fairs = eventService.getAllFairs();
+                       List<UserTask> tasks = allUsersService.seeAllTasks(user);
+                       // Add advisor, tours, and fairs to the model
+                       List<User> users = allUsersService.getAllUsers();
+                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       int sum=0;
+                       for (int i = 0; i < pointRecords.size(); i++) {
+                           sum+=pointRecords.get(0).getPoint();
+                       }
+                       long upComing = eventService.getUpcomingEventsCount();
+                       model.addAttribute("upComing", upComing);
+                       model.addAttribute("sum",sum);
+                       model.addAttribute("users", users);
+                       model.addAttribute("tasks", tasks);
+                       model.addAttribute("advisor", advisor);
+                       model.addAttribute("tours", tours);
+                       model.addAttribute("fairs", fairs);
+                       return "Guide-Dashboard"; // Guide's page
+                   }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
 
                        Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                        // Fetch associated tours and fairs
