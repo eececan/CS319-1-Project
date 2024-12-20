@@ -3,15 +3,17 @@ package com.project.btoproject.controller.UIcontroller;
 import com.project.btoproject.dto.SchoolTourCountDTO;
 import com.project.btoproject.enums.SchoolType;
 import com.project.btoproject.enums.Tier;
-import com.project.btoproject.model.Fair;
-import com.project.btoproject.model.HighSchoolForStatistics;
-import com.project.btoproject.model.School;
-import com.project.btoproject.model.Tour;
+import com.project.btoproject.model.*;
 import com.project.btoproject.repository.HighSchoolRepository;
 import com.project.btoproject.repository.SchoolRepository;
+import com.project.btoproject.service.AllUsersService;
 import com.project.btoproject.service.EventService;
 import com.project.btoproject.service.SchoolService;
+import com.project.btoproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,18 +31,40 @@ public class UIAnalyticsController {
     private final EventService eventService;
     private final HighSchoolRepository highSchoolRepository;
     private final SchoolRepository schoolRepository;
-    @Autowired
     private final SchoolService schoolService;
+    private final AllUsersService allUsersService;
 
-    public UIAnalyticsController(HighSchoolRepository highSchoolRepository, SchoolService schoolService, EventService eventService, SchoolRepository schoolRepository) {
+    public UIAnalyticsController(HighSchoolRepository highSchoolRepository, SchoolService schoolService, EventService eventService, SchoolRepository schoolRepository, AllUsersService allUsersService) {
         this.highSchoolRepository = highSchoolRepository;
         this.schoolService = schoolService;
         this.eventService = eventService;
         this.schoolRepository = schoolRepository;
+        this.allUsersService = allUsersService;
     }
 
     @GetMapping("/tour-counts")
     public String getSchoolTourCounts(@RequestParam(required = false) String schoolName, Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        String roleUser="";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+        }
+        User user = allUsersService.getUserById(Long.parseLong(username));
+        List<UserTask> tasks = allUsersService.seeAllTasks(user);
+        model.addAttribute("user", user);
+        model.addAttribute("tasks", tasks);
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            roleUser ="DIRECTOR";
+            model.addAttribute("roleUser", roleUser);
+        }
+        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+            roleUser ="COORDINATOR";
+            model.addAttribute("roleUser", roleUser);
+        }
+
 
         List<School> schools = schoolRepository.findAll();
         List<HighSchoolForStatistics> highSchools = highSchoolRepository.findAll();

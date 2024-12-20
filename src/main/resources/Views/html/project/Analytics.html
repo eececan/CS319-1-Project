@@ -7,7 +7,7 @@
 
     <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
 
-    <title>Bilkent Tours</title>
+    <title>Tours Statistics</title>
 
     <!-- Bootstrap Core and Vendor -->
     <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
@@ -474,13 +474,23 @@
     </div>
 
     <div class="user_div" id="user-profile">
-        <h5 class="brand-name mb-4">Director
+        <h5 class="brand-name mb-4" th:text="${roleUser}">
             <a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a>
         </h5>
+        <div class="card-body">
+            <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
+            <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
+            <span th:text="${user.email}"></span>
+            <hr>
+            <p>Activity</p>
+            <ul class="new_timeline" id="activity-list">
+                <!-- Activities will be dynamically inserted here -->
+            </ul>
+        </div>
     </div>
 
     <div id="left-sidebar" class="sidebar ">
-        <h5 class="brand-name">Advisor <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+        <h5 class="brand-name" th:text="${roleUser}"><a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
                 <li class="g_heading"></li>
@@ -490,8 +500,13 @@
                     </a>
                 </li>
                 <li>
+                    <a th:href="@{/ui/schools/tour-counts}">
+                        <i class="fa fa-dashboard"></i><span>Analytics</span>
+                    </a>
+                </li>
+                <li>
                     <a th:href="@{/getAllUsers}">
-                        <i class="fa fa-user"></i><span>Clients</span>
+                        <i class="fa fa-user"></i><span>Members</span>
                     </a>
                 </li>
                 <li>
@@ -519,7 +534,7 @@
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">Dashboard</h1>
+                        <h1 class="page-title">Analytics</h1>
                     </div>
                     <div class="right">
 
@@ -620,18 +635,9 @@
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
                                 </div>
                             </div>
-                            <div class="dropdown d-flex">
-                                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                    <a class="dropdown-item" href="head-secretary-profile.html"><i class="dropdown-icon fe fe-user"></i> Profile</a>
-                                    <a class="dropdown-item" href="app-setting.html"><i class="dropdown-icon fe fe-settings"></i> Settings</a>
-                                    <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
-                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-send"></i> Message</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-help-circle"></i> Need help?</a>
-                                    <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
-                                </div>
-                            </div>
+                            <a class="signout-link" th:href="@{/ui/auth/logout}">
+                                <i class="fa fa-sign-out"></i> Sign Out
+                            </a>
                         </div>
                     </div>
                 </div>

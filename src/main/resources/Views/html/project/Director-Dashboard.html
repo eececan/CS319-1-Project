@@ -229,7 +229,7 @@
     </div>
 
     <div class="user_div">
-        <h5 class="brand-name mb-4">Director<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
+        <h5 class="brand-name mb-4">DIRECTOR<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
         <div class="card-body">
             <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
             <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
@@ -249,13 +249,13 @@
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/analytics}">
-                        <i class="fa fa-calendar-check-o"></i><span>Analytics</span>
+                    <a th:href="@{/ui/schools/tour-counts}">
+                        <i class="fa fa-dashboard"></i><span>Analytics</span>
                     </a>
                 </li>
                 <li>
                     <a th:href="@{/getAllUsers}">
-                        <i class="fa fa-user"></i><span>Clients</span>
+                        <i class="fa fa-user"></i><span>Members</span>
                     </a>
                 </li>
                 <li>
@@ -272,11 +272,6 @@
                 <li>
                     <a th:href="@{/calender}">
                         <i class="fa fa-calendar"></i><span>Calendar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="@{/app-setting.html}">
-                        <i class="fa fa-gear"></i><span>Setting</span>
                     </a>
                 </li>
             </ul>
