@@ -17,6 +17,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            font-family: 'Montserrat', sans-serif; /* Ensure font is applied */
         }
         .auth-container {
             display: flex;
@@ -24,7 +25,7 @@
             height: 100%;
         }
         .auth-left {
-            background-color: #031961; /* Blue color 0d3b66 */
+            background-color: #031961; /* Blue color */
             width: 35%;
             display: flex;
             align-items: center;
@@ -33,20 +34,31 @@
         .auth-right {
             background-color: #ffffff;
             width: 65%;
-            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+        }
+        .auth-right img.background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            z-index: -1; /* Ensure the background image is behind the login card */
         }
         .login-card {
-            position: absolute;
-            left: -30px;
-            transform: translateX(-50%);
-            width: 450px; /* Increased from 350px to 450px */
+            width: 450px;
             background-color: #ffffff;
-            padding: 30px; /* Increased padding for larger container */
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            left: 310px;
+            z-index: 1; /* Ensure the card is above the background image */
         }
         .login-card h3 {
             color: #333;
@@ -67,26 +79,30 @@
             margin-top: -10px;
             margin-bottom: 15px;
         }
-        .auth-right img {
+        .logo-image {
+            max-width: 100px;
+            height: 100px;
+            margin-bottom: 18px;
+        }
+        .auth-right img.background-image {
             position: absolute;
-            right: 0; /* Align to the right */
-            height: 100%; /* Cover the right section */
+            top: 0;
+            left: 0;
             width: 100%;
-            object-fit: cover;
+            height: 100%;
+            object-fit: cover; /* Ensures the image scales to cover the entire container */
+            z-index: 0; /* Keep the image behind other elements */
         }
     </style>
 </head>
-<body class="font-montserrat">
+<body>
 <div class="auth-container">
     <!-- Left side (Blue Section) -->
-    <div class="auth-left"></div>
-
-    <!-- Right side (Image Section) -->
-    <div class="auth-right">
-        <!-- Add your background image here -->
-        <img src="/bilkent_pic.png" alt="Background Image">
-        <!-- Login Card positioned between blue and image sections -->
+    <div class="auth-left">
         <div class="login-card">
+            <div class="text-center">
+                <img src="/bilkent.png" alt="Bilkent Logo" class="logo-image">
+            </div>
             <h3 class="mb-4 text-center">Login to your account</h3>
             <form action="/ui/auth/login" method="post">
                 <div class="form-group">
@@ -105,6 +121,9 @@
                 </div>
             </form>
         </div>
+    </div>
+    <div class="auth-right">
+        <img src="/bilkent_pic.png" alt="Background Image" class="background-image">
     </div>
 </div>
 <script src="../assets/bundles/lib.vendor.bundle.js"></script>
