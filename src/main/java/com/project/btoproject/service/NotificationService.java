@@ -133,11 +133,14 @@ public class NotificationService {
                     eventType,
                     tour.getSchool().getName(),
                     new SimpleDateFormat("dd/MM/yyyy").format(tour.getDate()));
+            if (tour.getStatus() == Status.UPCOMING_TOUR) {
 
-            for (Guide guide : tour.getGuides()) {
+                for (Guide guide : guideService.getAllGuides()) {
 
-                createNotification(guide.getId(), message);
+                    createNotification(guide.getId(), message);
+                }
             }
+
             if (tour.getStatus() == Status.BTO_ACCEPTED) {
                 notifyHeadSecretaryTourApproved(tour);
                 
@@ -150,8 +153,12 @@ public class NotificationService {
                     fair.getSchool().getName(),
                     new SimpleDateFormat("dd/MM/yyyy").format(fair.getDate()));
 
-            for (Guide guide : fair.getGuides()) {
-                createNotification(guide.getId(), message);
+            if (fair.getStatus() == Status.UPCOMING_FAIR) {
+
+                for (Guide guide : guideService.getAllGuides()) {
+
+                    createNotification(guide.getId(), message);
+                }
             }
 
         } else {
