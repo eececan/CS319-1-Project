@@ -1027,6 +1027,16 @@ public class EventService implements IEventService {
         String sqlDayNumber = String.valueOf((dayFilter % 7));
         return eventRepository.findFairsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
     }
+    public Page<Fair> searchFairApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 7));
+        return eventRepository.findFairsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
+    }
     public Page<Tour> searchTourApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
         List<Status> applicationStatuses = List.of(
                 Status.NEW_TOUR_APPLICATION,

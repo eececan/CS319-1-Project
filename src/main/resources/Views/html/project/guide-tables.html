@@ -292,7 +292,7 @@
                 </div>
             </div>
         </div>
-
+        <div th:replace="fragments:: searchFilterBar('eventDaySelect')"></div>
         <div class="section-body">
             <div class="container-fluid">
                 <div class="row">
@@ -599,7 +599,7 @@
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${fairs.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/guideTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size})}">
+                                                           th:href="@{/guideTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
@@ -607,14 +607,14 @@
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, fairs.totalPages - 1)}"
                                                         th:classappend="${i == fairs.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/guideTables(fairsPage=${i}, fairsSize=${fairs.size})}"
+                                                           th:href="@{/guideTables(fairsPage=${i}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <!-- Next Button -->
                                                     <li class="page-item" th:if="${fairs.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/guideTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size})}">
+                                                           th:href="@{/guideTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -760,7 +760,7 @@
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${individualTours.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/guideTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size})}">
+                                                           th:href="@{/guideTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
@@ -768,14 +768,14 @@
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTours.totalPages - 1)}"
                                                         th:classappend="${i == individualTours.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/guideTables(individualToursPage=${i}, individualToursSize=${individualTours.size})}"
+                                                           th:href="@{/guideTables(individualToursPage=${i}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <!-- Next Button -->
                                                     <li class="page-item" th:if="${individualTours.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/guideTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size})}">
+                                                           th:href="@{/guideTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>

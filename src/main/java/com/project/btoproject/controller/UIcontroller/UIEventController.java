@@ -69,33 +69,59 @@ public class UIEventController {
             @RequestParam(defaultValue = "12") int individualTourApplicationsSize,
             @RequestParam(defaultValue = "0") int individualToursPage,
             @RequestParam(defaultValue = "12") int individualToursSize,
+            @RequestParam(required = false) Integer dayFilter,
+            @RequestParam(required = false) String search,
             Model model) {
 
         try {
             List<Guide> guides = guideService.getAllGuides();
             model.addAttribute("guides", guides);
-            // -----Tours-----
-            Page<Tour> tourApplicationsPageable = eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
-            Page<Tour> toursPageable = eventService.getToursPageable(toursPage, toursSize);
-            model.addAttribute("tourApplications", tourApplicationsPageable);
-            model.addAttribute("tours", toursPageable);
-            model.addAttribute("tourApplicationsCurrentPage", tourApplicationsPage);
-            model.addAttribute("tourApplicationsTotalPages", tourApplicationsPageable.getTotalPages());
-            model.addAttribute("toursCurrentPage", toursPage);
-            model.addAttribute("toursTotalPages", toursPageable.getTotalPages());
-            // -----Tours-----
+            Page<Tour> tourApplicationsPageable;
+            Page<Tour> toursPageable;
+            Page<Fair> fairsPageable;
+            Page<Fair> fairApplicationsPageable;
+            Page<IndividualTour> individualTourApplicationsPageable;
+            Page<IndividualTour> individualToursPageable;
+            //If search bar is empty
+            if (search != null && !search.trim().isEmpty()) {
+                if (dayFilter != null) {
+                    // Both search and day filter
+                    tourApplicationsPageable = eventService.searchTourApplicationsByDay(search, dayFilter, tourApplicationsPage, tourApplicationsSize);
+                    toursPageable = eventService.searchToursByDay(search, dayFilter, toursPage, toursSize);
+                    fairsPageable = eventService.searchFairsByDay(search, dayFilter, fairsPage, fairsSize);
+                    fairApplicationsPageable = eventService.searchFairApplicationsByDay(search, dayFilter, fairApplicationsPage, fairsSize);
+                    individualTourApplicationsPageable = eventService.searchIndividualTourApplicationsByDay(search, dayFilter, individualTourApplicationsPage, individualTourApplicationsSize);
+                    individualToursPageable = eventService.searchIndividualToursByDay(search, dayFilter, individualToursPage, individualToursSize);
+                } else {
+                    // Only search
+                    fairApplicationsPageable= eventService.searchFairApplications(search,fairApplicationsPage,fairApplicationsSize);
+                    tourApplicationsPageable = eventService.searchTourApplications(search, tourApplicationsPage, tourApplicationsSize);
+                    toursPageable = eventService.searchTours(search, toursPage, toursSize);
+                    fairsPageable = eventService.searchFairs(search, fairsPage, fairsSize);
+                    individualTourApplicationsPageable = eventService.searchIndividualTourApplications(search, individualTourApplicationsPage, individualTourApplicationsSize);
+                    individualToursPageable = eventService.searchIndividualTours(search, individualToursPage, individualToursSize);
+                }
 
+            }
+            //Search Bar is not empty and Filter applied
+            else if (dayFilter != null) {
+                // Only day filter
+                fairApplicationsPageable= eventService.getFairApplicationsByDayPageable(fairApplicationsPage,fairApplicationsSize,dayFilter);
+                tourApplicationsPageable = eventService.getTourApplicationsByDayPageable(tourApplicationsPage, tourApplicationsSize, dayFilter);
+                toursPageable = eventService.getToursByDayPageable(toursPage, toursSize, dayFilter);
+                fairsPageable = eventService.getFairsByDayPageable(fairsPage, fairsSize, dayFilter);
+                individualTourApplicationsPageable = eventService.getIndividualTourApplicationsByDayPageable(individualTourApplicationsPage, individualTourApplicationsSize, dayFilter);
+                individualToursPageable = eventService.getIndividualToursByDayPageable(individualToursPage, individualToursSize, dayFilter);
+            } else {
+                // No filters
+                fairApplicationsPageable= eventService.getFairApplicationsPageable(fairApplicationsPage,fairApplicationsSize);
+                tourApplicationsPageable = eventService.getTourApplicationsPageable(tourApplicationsPage, tourApplicationsSize);
+                toursPageable = eventService.getToursPageable(toursPage, toursSize);
+                fairsPageable = eventService.getFairsPageable(fairsPage, fairsSize);
+                individualTourApplicationsPageable = eventService.getIndividualTourApplicationsPageable(individualTourApplicationsPage, individualTourApplicationsSize);
+                individualToursPageable = eventService.getIndividualToursPageable(individualToursPage, individualToursSize);
+            }
 
-            // -----Fairs-----
-            Page<Fair> fairApplicationsPageable = eventService.getFairApplicationsPageable(fairApplicationsPage, fairApplicationsSize);
-            Page<Fair> fairsPageable = eventService.getFairsPageable(fairsPage, fairsSize);
-            // Add paginated data to the model
-            model.addAttribute("fairApplications", fairApplicationsPageable);
-            model.addAttribute("fairs", fairsPageable);
-            model.addAttribute("fairApplicationsCurrentPage", fairApplicationsPage);
-            model.addAttribute("fairApplicationsTotalPages", fairApplicationsPageable.getTotalPages());
-            model.addAttribute("fairsCurrentPage", fairsPage);
-            model.addAttribute("fairsTotalPages", fairsPageable.getTotalPages());
             List<Fair> fairs = eventService.getFairs();
             // Create guideCounts map for fairs
             Map<Long, List<Integer>> guideCounts = new HashMap<>();
@@ -106,17 +132,27 @@ public class UIEventController {
                 guideCounts.put(fair.getId(), counts);
             }
             model.addAttribute("guideCounts", guideCounts);
-            // -----Fairs-----
-
-            // -----Individual Tours-----
-            Page<IndividualTour> individualTourApplicationsPageable = eventService.getIndividualTourApplicationsPageable(individualTourApplicationsPage, individualTourApplicationsSize);
-            Page<IndividualTour> individualToursPageable = eventService.getIndividualToursPageable(individualToursPage, individualToursSize);
             model.addAttribute("individualTourApplications", individualTourApplicationsPageable);
             model.addAttribute("individualTours", individualToursPageable);
             model.addAttribute("individualTourApplicationsCurrentPage", individualTourApplicationsPage);
             model.addAttribute("individualTourApplicationsTotalPages", individualTourApplicationsPageable.getTotalPages());
             model.addAttribute("individualToursCurrentPage", individualToursPage);
             model.addAttribute("individualToursTotalPages", individualToursPageable.getTotalPages());
+            model.addAttribute("tourApplications", tourApplicationsPageable);
+            model.addAttribute("tours", toursPageable);
+            model.addAttribute("tourApplicationsCurrentPage", tourApplicationsPage);
+            model.addAttribute("tourApplicationsTotalPages", tourApplicationsPageable.getTotalPages());
+            model.addAttribute("toursCurrentPage", toursPage);
+            model.addAttribute("toursTotalPages", toursPageable.getTotalPages());
+            model.addAttribute("fairApplications", fairApplicationsPageable);
+            model.addAttribute("fairs", fairsPageable);
+            model.addAttribute("fairApplicationsCurrentPage", fairApplicationsPage);
+            model.addAttribute("fairApplicationsTotalPages", fairApplicationsPageable.getTotalPages());
+            model.addAttribute("fairsCurrentPage", fairsPage);
+            model.addAttribute("fairsTotalPages", fairsPageable.getTotalPages());
+            model.addAttribute("searchTerm", search);
+            model.addAttribute("selectedDay", dayFilter);
+            model.addAttribute("dayFilter", dayFilter);
             // -----Individual Tours-----
 
             return "director-coordinator-tables";  // Match template name exactly
@@ -135,6 +171,8 @@ public class UIEventController {
             @RequestParam(defaultValue = "12") int individualToursSize,
             @RequestParam(defaultValue = "0") int fairsPage,
             @RequestParam(defaultValue = "12") int fairsSize,
+            @RequestParam(required = false) Integer dayFilter,
+            @RequestParam(required = false) String search,
             Model model) {
 
         try {
@@ -153,7 +191,9 @@ public class UIEventController {
             model.addAttribute("individualTours", individualToursPageable);
             model.addAttribute("individualToursCurrentPage", individualToursPage);
             model.addAttribute("individualToursTotalPages", individualToursPageable.getTotalPages());
-
+            model.addAttribute("searchTerm", search);
+            model.addAttribute("selectedDay", dayFilter);
+            model.addAttribute("dayFilter", dayFilter);
             // -----Fairs-----
             Page<Fair> fairsPageable = eventService.getFairsPageable(fairsPage, fairsSize);
             model.addAttribute("fairs", fairsPageable);
@@ -180,6 +220,8 @@ public class UIEventController {
             @RequestParam(defaultValue = "12") int individualToursSize,
             @RequestParam(defaultValue = "0") int fairsPage,
             @RequestParam(defaultValue = "12") int fairsSize,
+            @RequestParam(required = false) Integer dayFilter,
+            @RequestParam(required = false) String search,
             Model model) {
 
         try{// ----- Active Guide -----
@@ -245,6 +287,9 @@ public class UIEventController {
             model.addAttribute("fairConflicts", fairConflicts);
             model.addAttribute("fairsCurrentPage", fairsPage);
             model.addAttribute("fairsTotalPages", fairsPageable.getTotalPages());
+            model.addAttribute("searchTerm", search);
+            model.addAttribute("selectedDay", dayFilter);
+            model.addAttribute("dayFilter", dayFilter);
             // Get current date as java.util.Date
             Date currentDate = new Date();
             model.addAttribute("currentDate", currentDate);

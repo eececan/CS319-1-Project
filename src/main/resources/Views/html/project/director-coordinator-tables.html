@@ -292,6 +292,7 @@
                 </div>
             </div>
         </div>
+        <div th:replace="fragments:: searchFilterBar('eventDaySelect')"></div>
         <div class="section-body">
             <div class="container-fluid">
                 <div class="row">
@@ -376,20 +377,20 @@
                                                 <ul class="pagination d-inline-flex">
                                                     <li class="page-item" th:if="${fairApplications.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(fairApplicationsPage=${fairApplications.number - 1}, fairApplicationsSize=${fairApplications.size})}">
+                                                           th:href="@{/directorCoordinatorTables(fairApplicationsPage=${fairApplications.number - 1}, fairApplicationsSize=${fairApplications.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, fairApplications.totalPages - 1)}"
                                                         th:classappend="${i == fairApplications.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(fairApplicationsPage=${i}, fairApplicationsSize=${fairApplications.size})}"
+                                                           th:href="@{/directorCoordinatorTables(fairApplicationsPage=${i}, fairApplicationsSize=${fairApplications.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <li class="page-item" th:if="${fairApplications.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(fairApplicationsPage=${fairApplications.number + 1}, fairApplicationsSize=${fairApplications.size})}">
+                                                           th:href="@{/directorCoordinatorTables(fairApplicationsPage=${fairApplications.number + 1}, fairApplicationsSize=${fairApplications.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -595,20 +596,20 @@
                                                 <ul class="pagination d-inline-flex" th:if="${fairs != null and fairs.totalPages > 0}">
                                                     <li class="page-item" th:if="${fairs.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size})}">
+                                                           th:href="@{/directorCoordinatorTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, fairs.totalPages - 1)}"
                                                         th:classappend="${i == fairs.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(fairsPage=${i}, fairsSize=${fairs.size})}"
+                                                           th:href="@{/directorCoordinatorTables(fairsPage=${i}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <li class="page-item" th:if="${fairs.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size})}">
+                                                           th:href="@{/directorCoordinatorTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -680,7 +681,7 @@
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${tourApplications.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(tourApplicationsPage=${tourApplications.number - 1}, tourApplicationsSize=${tourApplications.size})}">
+                                                           th:href="@{/directorCoordinatorTables(tourApplicationsPage=${tourApplications.number - 1}, tourApplicationsSize=${tourApplications.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
@@ -688,14 +689,14 @@
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, tourApplications.totalPages - 1)}"
                                                         th:classappend="${i == tourApplications.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(tourApplicationsPage=${i}, tourApplicationsSize=${tourApplications.size})}"
+                                                           th:href="@{/directorCoordinatorTables(tourApplicationsPage=${i}, tourApplicationsSize=${tourApplications.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <!-- Next Button -->
                                                     <li class="page-item" th:if="${tourApplications.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(tourApplicationsPage=${tourApplications.number + 1}, tourApplicationsSize=${tourApplications.size})}">
+                                                           th:href="@{/directorCoordinatorTables(tourApplicationsPage=${tourApplications.number + 1}, tourApplicationsSize=${tourApplications.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -790,7 +791,7 @@
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${tours.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(toursPage=${tours.number - 1}, toursSize=${tours.size})}">
+                                                           th:href="@{/directorCoordinatorTables(toursPage=${tours.number - 1}, toursSize=${tours.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
@@ -798,14 +799,14 @@
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, tours.totalPages - 1)}"
                                                         th:classappend="${i == tours.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(toursPage=${i}, toursSize=${tours.size})}"
+                                                           th:href="@{/directorCoordinatorTables(toursPage=${i}, toursSize=${tours.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <!-- Next Button -->
                                                     <li class="page-item" th:if="${tours.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(toursPage=${tours.number + 1}, toursSize=${tours.size})}">
+                                                           th:href="@{/directorCoordinatorTables(toursPage=${tours.number + 1}, toursSize=${tours.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -896,7 +897,7 @@
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${individualTours.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size})}">
+                                                           th:href="@{/directorCoordinatorTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
@@ -904,14 +905,14 @@
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTours.totalPages - 1)}"
                                                         th:classappend="${i == individualTours.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(individualToursPage=${i}, individualToursSize=${individualTours.size})}"
+                                                           th:href="@{/directorCoordinatorTables(individualToursPage=${i}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <!-- Next Button -->
                                                     <li class="page-item" th:if="${individualTours.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size})}">
+                                                           th:href="@{/directorCoordinatorTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
@@ -990,7 +991,7 @@
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${individualTourApplications.hasPrevious()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(individualTourApplicationsPage=${individualTourApplications.number - 1}, individualTourApplicationsSize=${individualTourApplications.size})}">
+                                                           th:href="@{/directorCoordinatorTables(individualTourApplicationsPage=${individualTourApplications.number - 1}, individualTourApplicationsSize=${individualTourApplications.size}, dayFilter=${selectedDay})}">
                                                             Previous
                                                         </a>
                                                     </li>
@@ -998,14 +999,14 @@
                                                     <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTourApplications.totalPages - 1)}"
                                                         th:classappend="${i == individualTourApplications.number} ? 'active'">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(individualTourApplicationsPage=${i}, individualTourApplicationsSize=${individualTourApplications.size})}"
+                                                           th:href="@{/directorCoordinatorTables(individualTourApplicationsPage=${i}, individualTourApplicationsSize=${individualTourApplications.size}, dayFilter=${selectedDay})}"
                                                            th:text="${i + 1}">
                                                         </a>
                                                     </li>
                                                     <!-- Next Button -->
                                                     <li class="page-item" th:if="${individualTourApplications.hasNext()}">
                                                         <a class="page-link"
-                                                           th:href="@{/directorCoordinatorTables(individualTourApplicationsPage=${individualTourApplications.number + 1}, individualTourApplicationsSize=${individualTourApplications.size})}">
+                                                           th:href="@{/directorCoordinatorTables(individualTourApplicationsPage=${individualTourApplications.number + 1}, individualTourApplicationsSize=${individualTourApplications.size}, dayFilter=${selectedDay})}">
                                                             Next
                                                         </a>
                                                     </li>
