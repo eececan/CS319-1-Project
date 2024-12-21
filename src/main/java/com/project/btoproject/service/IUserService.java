@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface IUserService {
     void deleteUserByUsername(Long id) ;
     void changePassword(Long id, String password) ;
-    void forgotPassword(Long id) ;
+    void forgotPassword(String email) throws InterruptedException;
     void changeRole(Long id, Role role);
     Optional<UserEntity> findUserByUsername(Long id) ;
     void addNewUser(Map<String, Object> dtoMap, String role, UserEntity user);

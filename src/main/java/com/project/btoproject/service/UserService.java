@@ -5,6 +5,7 @@ import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.UserRepository;
+import com.project.btoproject.security.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,16 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private IUserHelperService userHelperService;
+    private final PasswordGenerator passwordGenerator;
+    private final MailService mailService;
 
-
-    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, IUserHelperService userHelperService) {
+    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, IUserHelperService userHelperService, PasswordGenerator passwordGenerator, MailService mailService) {
         this.allUsersService = allUsersService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userHelperService = userHelperService;
+        this.passwordGenerator = passwordGenerator;
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -94,8 +98,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void forgotPassword(Long id) {
-        // Implementation if needed
+    public void forgotPassword(String email) throws InterruptedException {
+        String password = passwordGenerator.generatePassword(10);
+        mailService.sendForgotPasswordMail(email, password);
     }
 
     @Transactional

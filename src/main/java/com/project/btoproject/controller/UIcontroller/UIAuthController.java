@@ -5,6 +5,7 @@ import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.IGuideInTrainingRepository;
 import com.project.btoproject.repository.UserRepository;
 import com.project.btoproject.service.*;
@@ -47,8 +48,9 @@ public class UIAuthController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final IGuideInTrainingRepository guideInTrainingRepository;
+    private final IAllUsersRepository allUsersRepository;
 
-    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService, IGuideInTrainingRepository guideInTrainingRepository) {
+    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService, IGuideInTrainingRepository guideInTrainingRepository, IAllUsersRepository allUsersRepository) {
         this.authService = _authService;
         this.eventService = eventService;
         this.guideService = guideService;
@@ -59,6 +61,7 @@ public class UIAuthController {
         this.userRepository = userRepository;
         this.userService = userService;
         this.guideInTrainingRepository = guideInTrainingRepository;
+        this.allUsersRepository = allUsersRepository;
     }
 
     @GetMapping("/logout")
@@ -74,11 +77,23 @@ public class UIAuthController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(@ModelAttribute("successMessage") String successMessage,
+                        @ModelAttribute("errorMessage") String errorMessage,
+                        Model model) {
         LoginDto loginDto = new LoginDto();
         model.addAttribute("loginDto", loginDto);
+
+        // Add messages to the model (if any)
+        if (successMessage != null && !successMessage.isEmpty()) {
+            model.addAttribute("successMessage", successMessage);
+        }
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            model.addAttribute("errorMessage", errorMessage);
+        }
+
         return "login";
     }
+
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -414,6 +429,43 @@ public class UIAuthController {
         model.addAttribute("errorMessage", "Invalid username or password. Please try again.");
         return "login";
     }
+
+    @GetMapping("/forgotPassword")
+    public String forgotPassword(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) { // Basic email validation
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid email address.");
+            return "redirect:/ui/auth/forgotPasswordPage";
+        }
+        if(allUsersRepository.findUserByEmail(email) == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "There is no user registered with this email address. Please enter the email address you used in your profile!");
+            return "redirect:/ui/auth/forgotPasswordPage";
+        }
+
+        try {
+            userService.forgotPassword(email);
+            redirectAttributes.addFlashAttribute("successMessage", "Your new password has been sent to your email! Please login with your new password!");
+            return "redirect:/ui/auth/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while resetting your password. Please try again.");
+            return "redirect:/forgot-password.html";
+        }
+    }
+
+    @GetMapping("/forgotPasswordPage")
+    public String forgotPasswordPage(
+            @ModelAttribute("errorMessage") String errorMessage,
+            @ModelAttribute("successMessage") String successMessage,
+            Model model) {
+        // Add messages to the model if present
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            model.addAttribute("errorMessage", errorMessage);
+        }
+        if (successMessage != null && !successMessage.isEmpty()) {
+            model.addAttribute("successMessage", successMessage);
+        }
+        return "forgot-password"; // Name of the Thymeleaf template
+    }
+
 
 
     /*@GetMapping("/advisor-tables")

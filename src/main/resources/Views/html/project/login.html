@@ -93,6 +93,18 @@
             object-fit: cover; /* Ensures the image scales to cover the entire container */
             z-index: 0; /* Keep the image behind other elements */
         }
+        .alert-success {
+            background-color: #28a745 !important;
+            color: #fff !important;
+            border-color: #28a745 !important;
+        }
+
+        /* Close Button for Green Alerts */
+        .alert-success .btn-close {
+            color: #fff;
+            opacity: 1;
+            filter: invert(1); /* Makes the close button white */
+        }
     </style>
 </head>
 <body>
@@ -104,6 +116,11 @@
                 <img src="/bilkent.png" alt="Bilkent Logo" class="logo-image">
             </div>
             <h3 class="mb-4 text-center">Login to your account</h3>
+            <div th:if="${successMessage != null and successMessage != ''}"
+                 class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <div th:if="${errorMessage != null and errorMessage != ''}"
                  class="alert alert-danger alert-dismissible fade show" role="alert">
                 <span th:text="${errorMessage}"></span>
@@ -119,7 +136,7 @@
                     <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" required>
                 </div>
                 <div class="forgot-password">
-                    <a href="forgot-password.html" class="float-right small">I forgot my password</a>
+                    <a th:href="@{/ui/auth/forgotPasswordPage}" class="float-right small">I forgot my password</a>
                 </div>
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary btn-block w-100">Log in</button>
@@ -135,6 +152,6 @@
 <script src="../assets/bundles/lib.vendor.bundle.js"></script>
 <script src="../assets/js/core.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

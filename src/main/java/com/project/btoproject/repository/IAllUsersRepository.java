@@ -11,4 +11,6 @@ import java.util.List;
 public interface IAllUsersRepository extends JpaRepository<User, Long> {
     @Query("SELECT ut FROM UserTask ut WHERE ut.user.id = :id")
     List<UserTask> findUserTasksById(@Param("id") Long id);
+    User findUserByEmail(String email);
+
 }
