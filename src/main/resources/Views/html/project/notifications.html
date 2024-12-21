@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications</title>
+</head>
+<body>
+<div th:fragment="notifications-panel">
+  <div class="notifications-dropdown">
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+      <i class="fa fa-bell"></i>
+      <span class="notification-count badge"></span>
+    </a>
+    <div class="dropdown-menu notifications-panel">
+      <div class="notifications-header">
+        <h6>Notifications</h6>
+      </div>
+      <div class="notifications-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

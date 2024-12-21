@@ -1,9 +1,24 @@
+
 $(document).ready(function() {
     // Function to format timestamp
     function formatTime(timestamp) {
         return moment(timestamp).fromNow();
     }
+    let notificationDropdown = $('.notifications-dropdown');
 
+    // Toggle dropdown on click
+    notificationDropdown.on('click', function(e) {
+        e.preventDefault();
+        loadNotifications();
+        $(this).find('.dropdown-menu').toggle();
+    });
+
+    // Close dropdown when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.notifications-dropdown').length) {
+            $('.notifications-panel').hide();
+        }
+    })
     // Function to update notification count
     function updateNotificationCount() {
         $.get('/api/notifications/unread', function(notifications) {
