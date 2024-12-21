@@ -141,7 +141,7 @@ public class GuideService implements IGuideService
 
     @Override
     public int getTotalPoints(Guide guide) {
-        return guide.getPoints().stream().mapToInt(PointRecord::getPoint).sum();
+        return guide.getEvents().size();
     }
 
     @Override
