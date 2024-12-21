@@ -29,9 +29,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@Column(name = "date")
-    //private DateType date;
-
     @Column(name = "date", nullable = false)
     @Temporal(TemporalType.DATE) // Store as a DATE type in the database
     private Date date;
