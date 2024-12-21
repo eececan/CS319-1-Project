@@ -129,4 +129,14 @@ public class FairController {
         eventService.cancelFair(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/complete/{fairId}")
+    public ResponseEntity<String> markFairAsCompleted(@PathVariable Long fairId) {
+        try {
+            eventService.markEventAsCompleted(fairId);
+            return ResponseEntity.ok("Fair marked as completed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

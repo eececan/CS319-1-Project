@@ -331,3 +331,37 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+function markFairAsCompleted(fairId) {
+    console.log(`Marking fair as completed. Fair ID: ${fairId}`);
+    fetch(`/api/fairs/complete/${fairId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Fair ${fairId} marked as completed successfully!`);
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error marking fair as completed:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+// Attach the click event listener for the "Mark As Completed" button
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".complete-fair-button").forEach((button) => {
+        button.addEventListener("click", () => {
+            const fairId = button.getAttribute("data-fair-id");
+            markFairAsCompleted(fairId);
+        });
+    });
+});
