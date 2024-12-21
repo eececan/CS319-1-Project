@@ -1,5 +1,6 @@
 package com.project.btoproject.service;
 
+import com.project.btoproject.enums.Tier;
 import com.project.btoproject.model.School;
 import com.project.btoproject.repository.SchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,11 @@ public class SchoolService {
         newSchool.setAddress(address);
         newSchool.setFlag(false);
         return schoolRepository.save(newSchool); // Save and return the new School
+    }
+
+    public void setSchoolTier(School school, Tier tier){
+        school.setTier(tier);
+        schoolRepository.save(school);
     }
 }
 

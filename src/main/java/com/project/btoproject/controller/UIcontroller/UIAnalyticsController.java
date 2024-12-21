@@ -16,9 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -96,14 +94,14 @@ public class UIAnalyticsController {
                 .map(entry -> {
                     School school = entry.getKey();
                     Tier tier = school.getTier() != null ? school.getTier() : Tier.THIRD_TIER;
-                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier);
+                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier, school.getId());
                 })
                 .sorted((a, b) -> b.getTourCount().compareTo(a.getTourCount())) // Sort by tour count descending
                 .collect(Collectors.toList());
         // Extract top 4 schools
         List<SchoolTourCountDTO> topSchools = tourCountDTOs.stream().limit(4).collect(Collectors.toList());
         List<SchoolTourCountDTO> allSchoolsTour = tourCounts.entrySet().stream()
-                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue(),entry.getKey().getTier()))
+                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue(),entry.getKey().getTier(), entry.getKey().getId()))
                 .collect(Collectors.toList());
 
         model.addAttribute("allSchoolsTour", allSchoolsTour);
@@ -196,4 +194,21 @@ public class UIAnalyticsController {
         model.addAttribute("topCities", topCities);
         return "Analytics"; // Name of the Thymeleaf template
     }
+
+    @PostMapping("/setTierStatus")
+    public String saveTiers(@RequestParam Long id, @RequestParam Tier tier, Model model) {
+        School school = schoolRepository.findById(id).get();
+        schoolService.setSchoolTier(school,tier);
+        return "redirect:/ui/schools/tour-counts"; // Redirect to a page after the update
+    }
+    @PostMapping("/seeSchoolTours")
+    public String schoolTours(@RequestParam(required = false) String schoolName, @RequestParam Long id, Model model) {
+        School school = schoolRepository.findById(id).get();
+        List<Tour> allTours = eventService.getAllTours();
+        Map<School, List<Tour>> tours = allTours.stream()
+                .filter(tour -> schoolName == null || tour.getSchool().getName().equals(schoolName))
+                .collect(Collectors.groupingBy(Tour::getSchool));
+        return "redirect:/ui/schools/tour-counts"; // Redirect to a page after the update
+    }
+
 }

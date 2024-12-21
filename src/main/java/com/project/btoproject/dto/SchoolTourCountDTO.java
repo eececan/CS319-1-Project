@@ -9,12 +9,14 @@ import lombok.Setter;
 public class SchoolTourCountDTO {
     private String schoolName;
     private Long tourCount;
-    private Tier tier;
+    public Tier tier;
+    public Long id;
     // Constructor, getters, and setters
-    public SchoolTourCountDTO(String schoolName, Long tourCount, Tier tier) {
+    public SchoolTourCountDTO(String schoolName, Long tourCount, Tier tier, Long id) {
         this.schoolName = schoolName;
         this.tourCount = tourCount;
         this.tier = tier;
+        this.id = id;
     }
 
 }

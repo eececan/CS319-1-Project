@@ -39,7 +39,7 @@ public class TourStatisticsController {
 
         // Prepare data for the view
         List<SchoolTourCountDTO> tourCountDTOs = tourCounts.entrySet().stream()
-                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue(), entry.getKey().getTier()))
+                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue(), entry.getKey().getTier(), entry.getKey().getId()))
                 .sorted((a, b) -> b.getTourCount().compareTo(a.getTourCount())) // Sort by tour count descending
                 .collect(Collectors.toList());
 

@@ -264,6 +264,83 @@
         }
 
     </style>
+    <style>
+        .task-completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+        /* Form Wrapper */
+        .status-form {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+        .table tbody tr {
+            vertical-align: middle;
+        }
+        /* Dropdown Container */
+        .status-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Styled Dropdown */
+        .status-dropdown {
+            appearance: none; /* Remove default dropdown styles */
+            -webkit-appearance: none; /* Safari */
+            -moz-appearance: none; /* Firefox */
+            padding: 5px 26px;
+            padding-left: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            cursor: pointer;
+            background-color: #f1f5f9;
+            color: #333;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        /* Hover and Focus Effects */
+        .status-dropdown:hover,
+        .status-dropdown:focus {
+            border-color: #6c757d;
+            background-color: #e2e6ea;
+        }
+
+        /* Optional: Add a dropdown arrow icon */
+        .status-dropdown-wrapper::after {
+            content: "▼";
+            font-size: 12px;
+            color: #6c757d;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Option Styles */
+        .status-dropdown option {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* Specific Colors for Each Status */
+        .status-dropdown option[value="new_issue"] {
+            color: #fd5555; /* Red */
+        }
+
+        .status-dropdown option[value="investigating"] {
+            color: #e39200; /* Orange */
+        }
+
+        .status-dropdown option[value="resolved"] {
+            color: #21c346; /* Green */
+        }
+
+    </style>
 </head>
 <body class="font-montserrat">
 <!-- Page Loader -->
@@ -764,27 +841,46 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-striped text-nowrap table-vcenter mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>School Name</th>
-                                            <th>Tour Count</th>
-                                            <th>Preference Rate</th>
-                                            <th>Tier</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="schoolTour : ${tourCountDTOs}">
-                                            <td th:text="${schoolTour.schoolName}"></td>
-                                            <td th:text="${schoolTour.tourCount}"></td>
-                                            <td th:text="${schoolStudentCounts[schoolTour.schoolName] != null ?
-                #numbers.formatDecimal((schoolStudentCounts[schoolTour.schoolName] / totalStudentCount) * 100, 0, 1) : '0.0'} + '%'"></td>
-                                            <td><span class="tag tag-bos" th:text="${schoolTour.tier}"></span></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                        <table class="table table-hover table-striped text-nowrap table-vcenter mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th>School Name</th>
+                                                <th>Tour Count</th>
+                                                <th>Preference Rate</th>
+                                                <th>Tier</th>
+                                                <th>Tours</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="schoolTour : ${tourCountDTOs}">
+                                                <td th:text="${schoolTour.schoolName}"></td>
+                                                <td th:text="${schoolTour.tourCount}"></td>
+                                                <td th:text="${schoolStudentCounts[schoolTour.schoolName] != null ?
+                    #numbers.formatDecimal((schoolStudentCounts[schoolTour.schoolName] / totalStudentCount) * 100, 0, 1) : '0.0'} + '%'"></td>
+                                                <td><span class="tag tag-bos" th:text="${schoolTour.tier}"></span></td>
+                                                <!-- Correct the binding of the tier field -->
+                                                <td>
+                                                    <form th:action="@{/ui/schools/setTierStatus}" method="post" class="status-form">
+                                                        <!-- Hidden Field to pass schoolId -->
+                                                        <input type="hidden" name="id" th:value="${schoolTour.id}" />
 
+                                                        <!-- Custom Dropdown -->
+                                                        <div class="status-dropdown-wrapper">
+                                                            <select class="status-dropdown" name="tier" onchange="this.form.submit()">
+                                                                <option value="FIRST_TIER" th:selected="${schoolTour.tier == T(com.project.btoproject.enums.Tier).FIRST_TIER}">First Tier</option>
+                                                                <option value="SECOND_TIER" th:selected="${schoolTour.tier == T(com.project.btoproject.enums.Tier).SECOND_TIER}">Second Tier</option>
+                                                                <option value="THIRD_TIER" th:selected="${schoolTour.tier == T(com.project.btoproject.enums.Tier).THIRD_TIER}">Third Tier</option>
+                                                            </select>
+                                                        </div>
+                                                    </form>
 
+                                                </td>
+                                                <td>
+                                                        <button>See Tours</button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                 </div>
                             </div>
                         </div>
@@ -799,11 +895,5 @@
 
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
-
-<script th:src="@{/assets/js/all-event-actions.js}"></script>
-<script th:src="@{/assets/js/all-fair-actions.js}"></script>
-
-
-
 </body>
 </html>
