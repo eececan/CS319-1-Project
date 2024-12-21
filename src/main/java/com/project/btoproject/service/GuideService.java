@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -123,6 +125,15 @@ public class GuideService implements IGuideService
         newSchedule.setCharAt(position, status);
         guide.setSchedule(newSchedule.toString());
         guideRepository.save(guide);
+    }
+
+    @Override
+    public Event getUpcomingEventOfGuide(Guide guide) {
+        List<Event> events = guide.getEvents();
+        Optional<Event> upcomingEvent = events.stream()
+                .filter(event -> event.getDate().after(new Date()))
+                .min(Comparator.comparing(Event::getDate));
+        return upcomingEvent.orElse(null);
     }
 
     @Override

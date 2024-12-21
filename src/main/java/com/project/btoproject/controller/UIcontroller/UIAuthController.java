@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.lang.Long.parseLong;
+
 @Controller
 @RequestMapping("ui/auth")
 public class UIAuthController {
@@ -159,12 +161,12 @@ public class UIAuthController {
             }
             model.addAttribute("auth", authentication);
 
-            if(!allUsersService.hasUserWithId(Long.parseLong(username))){
+            if(!allUsersService.hasUserWithId(parseLong(username))){
                 model.addAttribute("showPopUp", "true");
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
                     model.addAttribute("sum", 0);
                     HeadSecretary user = new HeadSecretary();
-                    user.setId(Long.parseLong(username));
+                    user.setId(parseLong(username));
                     model.addAttribute("user", user);
                     model.addAttribute("role", roleF);
                     return "guide-profile";
@@ -172,7 +174,7 @@ public class UIAuthController {
                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
                    model.addAttribute("role", roleF);
                    Director user = new Director();
-                   user.setId(Long.parseLong(username));
+                   user.setId(parseLong(username));
                    model.addAttribute("user", user);
                    return "director-profile";
                 }
@@ -180,28 +182,27 @@ public class UIAuthController {
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
                     model.addAttribute("role", roleF);
                     Coordinator user = new Coordinator();
-                    user.setId(Long.parseLong(username));
+                    user.setId(parseLong(username));
                     model.addAttribute("user", user);
                     return "director-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
                     Advisor user = new Advisor();
-                    user.setId(Long.parseLong(username));
+                    user.setId(parseLong(username));
                     model.addAttribute("user", user);
                     return "advisor-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
                     model.addAttribute("sum", 0);
                     Guide user = new Guide();
-                    user.setId(Long.parseLong(username));
+                    user.setId(parseLong(username));
                     model.addAttribute("user", user);
                     model.addAttribute("role", roleF);
-
                     return "guide-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
                     GuideInTraining guideInTraining = new GuideInTraining();
-                    guideInTraining.setId(Long.parseLong(username));
+                    guideInTraining.setId(parseLong(username));
                     model.addAttribute("user", guideInTraining);
                     model.addAttribute("sum", 0);
                     model.addAttribute("role", roleF);
@@ -211,9 +212,9 @@ public class UIAuthController {
 
             }
            else{
-                User user = allUsersService.getUserById(Long.parseLong(username)).get();
+                User user = allUsersService.getUserById(parseLong(username)).get();
                 model.addAttribute("user", user);
-                UserEntity userEntity = userService.findUserByUsername(Long.parseLong(username)).get();
+                UserEntity userEntity = userService.findUserByUsername(parseLong(username)).get();
                if(allUsersService.hasMissingInformation(user, userEntity)){
                    model.addAttribute("showPopUp", "true");
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
@@ -332,6 +333,14 @@ public class UIAuthController {
                            sum+=pointRecords.get(0).getPoint();
                        }
                        long upComing = eventService.getUpcomingEventsCount();
+                       Long id = parseLong(username);
+                       Guide userr = guideService.getGuideById(id);
+                       Event event = guideService.getUpcomingEventOfGuide(userr);
+                       if (event != null) {
+                           model.addAttribute("eventDate", event.getDate()); // Assuming event.getDate() returns a LocalDateTime or Date
+                       } else {
+                           model.addAttribute("eventDate", null); // No upcoming event
+                       }
                        model.addAttribute("upComing", upComing);
                        model.addAttribute("sum",sum);
                        model.addAttribute("users", users);

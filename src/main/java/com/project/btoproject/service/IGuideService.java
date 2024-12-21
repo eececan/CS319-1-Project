@@ -7,8 +7,6 @@ import java.util.List;
 public interface IGuideService {
     void saveGuide(Guide guide);
     List<Event> seeAssignedEvents(Guide g);
-
-    //void selfAssignIndividualTour(Guide guide, IndividualTour tour);
     int seeCurrentPoints(Guide g);
     int getTotalPoints(Guide guide);
     Guide getGuideByName(String firstName, String lastName);
@@ -24,10 +22,8 @@ public interface IGuideService {
     Guide getGuideWithLowestPoints();
     Guide getGuideWithHighestPoints();
     int getGuideRanking(Long guideId);
-
     String getSchedule(Long guideId);
-
     void setSchedule(Long guideId, int position, char status);
-
+    Event getUpcomingEventOfGuide(Guide guide);
 
 }

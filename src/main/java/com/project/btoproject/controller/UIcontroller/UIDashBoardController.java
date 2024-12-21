@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -65,6 +66,7 @@ public class UIDashBoardController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
+
         User user = allUserService.getUserById(Long.parseLong(username)).get();
        populateModelWithUserData(model,user);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
