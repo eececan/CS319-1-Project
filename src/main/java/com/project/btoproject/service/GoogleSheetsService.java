@@ -26,6 +26,7 @@ import java.util.List;
 @Service
 public class GoogleSheetsService {
 
+    private final NotificationService notificationService;
     // Sheets API client
     private Sheets sheetsService;
 
@@ -57,7 +58,7 @@ public class GoogleSheetsService {
      * to process and validate fetched data.
      */
     @Autowired
-    public GoogleSheetsService(SchoolService schoolService, SchoolCounselorService schoolCounselorService, StudentService studentService, EventService eventService) {
+    public GoogleSheetsService(SchoolService schoolService, SchoolCounselorService schoolCounselorService, StudentService studentService, EventService eventService, NotificationService notificationService) {
         this.schoolService = schoolService;
         this.schoolCounselorService = schoolCounselorService;
         this.studentService = studentService;
@@ -71,6 +72,7 @@ public class GoogleSheetsService {
             throw new RuntimeException("Failed to initialize Google Sheets Service", e);
         }
         this.eventService = eventService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -174,6 +176,7 @@ public class GoogleSheetsService {
 
                     // Add the new tour to the list
                     newTours.add(tour);
+                    notificationService.notifyNewTourApplication(tour);
                 } catch (ParseException e) {
                     // Handle date parsing issues
                     System.err.println("Error parsing timestamp for row: " + row);
@@ -364,6 +367,7 @@ public class GoogleSheetsService {
 
                     // Add the new fair to the list
                     newFairs.add(fair);
+                    notificationService.notifyNewFairApplication(fair);
                 } catch (ParseException e) {
                     // Handle date parsing issues
                     System.err.println("Error parsing timestamp for row: " + row);
@@ -533,6 +537,7 @@ public class GoogleSheetsService {
 
                     // Add to the list
                     newIndividualTours.add(individualTour);
+                    notificationService.notifyNewIndividualTourApplication(individualTour);
                 } catch (ParseException e) {
                     System.err.println("Error parsing timestamp for row: " + row);
                     e.printStackTrace();

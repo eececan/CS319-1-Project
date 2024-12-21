@@ -50,10 +50,43 @@ public class NotificationService {
             createNotification(advisor.getId(), message);
         }
 
-        // Notify available guides
-        List<Guide> guides = guideService.getAllGuides();
-        for (Guide guide : guides) {
-            createNotification(guide.getId(), message);
+
+    }
+    public void notifyNewIndividualTourApplication(IndividualTour tour) {
+        // Notify all advisors
+        String advisorMessage = String.format("New individual tour application received from %s for date %s",
+                tour.getStudent().getName(),
+                new SimpleDateFormat("dd/MM/yyyy").format(tour.getDate()));
+
+        List<Advisor> advisors = advisorService.getAllAdvisors();
+        for (Advisor advisor : advisors) {
+            createNotification(advisor.getId(), advisorMessage);
+        }
+    }
+
+    public void notifyNewFairApplication(Fair fair) {
+        // Notify coordinator and director
+        String message = String.format("New fair application received from %s for date %s",
+                fair.getSchool().getName(),
+                new SimpleDateFormat("dd/MM/yyyy").format(fair.getDate()));
+
+        // Notify coordinator
+        List<Coordinator> coordinators = coordinatorService.getAllCoordinators();
+        if (coordinators != null) {
+            for (Coordinator coordinator : coordinators) {
+                createNotification(coordinator.getId(), message);
+            }
+
+        }
+
+        // Notify director
+        List<User> users = allUsersService.getAllUsers();
+        Optional<User> director = users.stream()
+                .filter(user -> user instanceof Director)
+                .findFirst();
+
+        if (director.isPresent()) {
+            createNotification(director.get().getId(), message);
         }
     }
     public List<Notification> getUnreadNotifications(Long userId) {
@@ -102,6 +135,7 @@ public class NotificationService {
                     new SimpleDateFormat("dd/MM/yyyy").format(tour.getDate()));
 
             for (Guide guide : tour.getGuides()) {
+
                 createNotification(guide.getId(), message);
             }
             if (tour.getStatus() == Status.BTO_ACCEPTED) {
