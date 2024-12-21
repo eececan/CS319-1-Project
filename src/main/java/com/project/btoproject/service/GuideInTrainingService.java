@@ -25,6 +25,19 @@ public class GuideInTrainingService implements IGuideInTrainingService {
     }
 
     @Override
+    public void setSchedule(Long guideId, int position, char status) {
+        GuideInTraining guide = guideInTrainingRepository.getById(guideId);
+        String currentSchedule = guide.getSchedule();
+        if(currentSchedule == null){
+            currentSchedule = "eeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        }
+        StringBuilder newSchedule = new StringBuilder(currentSchedule);
+        newSchedule.setCharAt(position, status);
+        guide.setSchedule(newSchedule.toString());
+        guideInTrainingRepository.save(guide);
+    }
+
+    @Override
     public List<Event> seeAssignedEvents(Long id) {
         Optional<GuideInTraining> guideInTraining = guideInTrainingRepository.findById(id);
         if(guideInTraining.isPresent()) {

@@ -184,6 +184,7 @@ public class UIAuthController {
                     user.setId(parseLong(username));
                     model.addAttribute("user", user);
                     model.addAttribute("role", roleF);
+                    model.addAttribute("isUser", "false");
                     return "guide-profile";
                 }
                if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
@@ -213,6 +214,7 @@ public class UIAuthController {
                     user.setId(parseLong(username));
                     model.addAttribute("user", user);
                     model.addAttribute("role", roleF);
+                    model.addAttribute("isUser", "false");
                     return "guide-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
@@ -221,6 +223,7 @@ public class UIAuthController {
                     model.addAttribute("user", guideInTraining);
                     model.addAttribute("sum", 0);
                     model.addAttribute("role", roleF);
+                    model.addAttribute("isUser", "true");
                     return "guide-profile";
                 }
 
@@ -244,6 +247,8 @@ public class UIAuthController {
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
                        model.addAttribute("sum", 0);  //should i delete this
                        model.addAttribute("role", "ROLE_HEAD_SECRETARY");
+                       model.addAttribute("isUser", "true");
+
                        return "guide-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
@@ -252,11 +257,18 @@ public class UIAuthController {
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
                        model.addAttribute("sum", 0);  //should i delete this
                        model.addAttribute("role", "ROLE_GUIDE");
+                       model.addAttribute("isUser", "true");
+                       Guide guide = (Guide) user;
+                       model.addAttribute("guide", guide);
                        return "guide-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
                        model.addAttribute("user", new GuideInTraining());
-                       return "guide-in-training-profile";
+                       model.addAttribute("role", "ROLE_GUIDE_IN_TRAINING");
+                       model.addAttribute("isUser", "true");
+                       GuideInTraining guide = (GuideInTraining) user;
+                       model.addAttribute("guide", guide);
+                       return "guide-profile";
                    }
 
                }

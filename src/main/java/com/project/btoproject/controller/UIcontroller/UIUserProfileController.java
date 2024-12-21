@@ -60,7 +60,13 @@ public class UIUserProfileController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username)).get();
+        Optional<User> user = allUsersService.getUserById(Long.parseLong(username));
+        if(!user.isPresent()) {
+            model.addAttribute("isUser", "false");
+        }
+        else{
+            model.addAttribute("isUser", "true");
+        }
 
         if (successMessage != null && !successMessage.isEmpty()) {
             model.addAttribute("successMessage", successMessage);
@@ -69,7 +75,7 @@ public class UIUserProfileController {
             model.addAttribute("errorMessage", errorMessage);
         }
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", user.get());
 
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
             model.addAttribute("role", "ROLE_DIRECTOR");
@@ -80,7 +86,7 @@ public class UIUserProfileController {
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
             return "advisor-profile"; // Advisor's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
-            Guide guide = (Guide) user;
+            Guide guide = (Guide) user.get();
             List<Event> event = guide.getEvents();
 
             int sum = 0;
@@ -93,15 +99,16 @@ public class UIUserProfileController {
                 }
             }
             model.addAttribute("sum", sum);
-
+            model.addAttribute("guide", guide);
             model.addAttribute("role", "ROLE_GUIDE");
+            model.addAttribute("isUser", "true");
             return "guide-profile"; // Guide's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
             model.addAttribute("sum", 0);  //should i delete this
             model.addAttribute("role", "ROLE_HEAD_SECRETARY");
             return "guide-profile";
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
-            GuideInTraining guide = (GuideInTraining) user;
+            GuideInTraining guide = (GuideInTraining) user.get();
             List<Event> event = guide.getEvents();
 
             int sum = 0;
@@ -113,13 +120,14 @@ public class UIUserProfileController {
                 }
             }
             model.addAttribute("role", "ROLE_GUIDE");
+            model.addAttribute("guide", guide);
             model.addAttribute("sum", sum);
+            model.addAttribute("isUser", "true");
             return "guide-profile";
         } else {
             return "page-empty";
         }
     }
-
 
     @PostMapping("/updateProfile")
     public String updateProfile(@RequestParam Map<String, Object> dtoMap, Model model) {
@@ -215,6 +223,11 @@ public class UIUserProfileController {
 
                 User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
+                Guide guide = (Guide) allUser;
+                if(((Guide) allUser).getSchedule() == null){
+                    guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                }
+                model.addAttribute("guide", guide);
                 // Fetch advisor of the day
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                 // Fetch associated tours and fairs
@@ -241,6 +254,11 @@ public class UIUserProfileController {
 
                 User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
+                Guide guide = (Guide) allUser;
+                if(((Guide) allUser).getSchedule() == null){
+                    guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                }
+                model.addAttribute("guide", guide);
                 // Fetch advisor of the day
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                 // Fetch associated tours and fairs
@@ -385,6 +403,20 @@ public class UIUserProfileController {
                         .orElse(null);
                 model.addAttribute("role", roleName);
                 model.addAttribute("user", all_user);
+               if(roleName.equals("ROLE_GUIDE")){
+                   Guide guide = (Guide) all_user;
+                   if(((Guide) all_user).getSchedule() == null){
+                       guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                   }
+                   model.addAttribute("guide", guide);
+               }
+                if(roleName.equals("ROLE_GUIDE_IN_TRAINING")){
+                    GuideInTraining guide = (GuideInTraining) all_user;
+                    if(((GuideInTraining) all_user).getSchedule() == null){
+                        guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                    }
+                    model.addAttribute("guide", guide);
+                }
                 return "view-profile";
             }
         }

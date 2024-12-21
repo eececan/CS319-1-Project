@@ -11,4 +11,5 @@ public interface IGuideInTrainingService {
     List<Event> seeAssignedEvents(Long id);
     void convertToGuide(Long id);
     GuideInTraining getGuideInTrainingById(Long id);
+    void setSchedule(Long guideId, int position, char status);
 }

@@ -121,6 +121,9 @@ public class GuideService implements IGuideService
     public void setSchedule(Long guideId, int position, char status) {
         Guide guide = guideRepository.getGuideById(guideId);
         String currentSchedule = guide.getSchedule();
+        if(currentSchedule == null){
+            currentSchedule = "eeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        }
         StringBuilder newSchedule = new StringBuilder(currentSchedule);
         newSchedule.setCharAt(position, status);
         guide.setSchedule(newSchedule.toString());
