@@ -572,3 +572,37 @@ document.addEventListener('DOMContentLoaded', function() {
         daySelect.value = params.get('dayFilter') || '';
     }
 });
+
+function markTourAsCompleted(tourId) {
+    console.log(`Marking tour as completed. Tour ID: ${tourId}`);
+    fetch(`/api/tours/complete/${tourId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Tour ${tourId} marked as completed successfully!`);
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error marking tour as completed:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+// Attach the click event listener for the "Mark As Completed" button
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".complete-tour-button").forEach((button) => {
+        button.addEventListener("click", () => {
+            const tourId = button.getAttribute("data-tour-id");
+            markTourAsCompleted(tourId);
+        });
+    });
+});

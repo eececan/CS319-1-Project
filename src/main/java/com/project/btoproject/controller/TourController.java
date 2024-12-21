@@ -156,5 +156,15 @@ public class TourController {
         }
     }
 
+    @PostMapping("/complete/{tourId}")
+    public ResponseEntity<String> markTourAsCompleted(@PathVariable Long tourId) {
+        try {
+            eventService.markEventAsCompleted(tourId);
+            return ResponseEntity.ok("Tour marked as completed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 
 }

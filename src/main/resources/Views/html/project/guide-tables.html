@@ -12,8 +12,10 @@
 
 <!-- Bootstrap Core and Vendor -->
 <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+<link th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}" rel="stylesheet">
 
-<!-- Core CSS -->
+
+    <!-- Core CSS -->
 <link rel="stylesheet" th:href="@{/assets/css/status-legend.css}" />
 <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
 <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
@@ -330,6 +332,7 @@
                                             <table class=" table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
+                                                    <th style="width: 1%;">Action</th>
                                                     <th style="width: 1%;">Date</th>
                                                     <th style="width: 1%;">Day</th>
                                                     <th style="width: 1%;">Hour</th>
@@ -350,6 +353,19 @@
                                                     th:classappend="
                                                                         ${tour.status.name() == 'COMPLETED_TOUR'} ? 'completed-tour' :
                                                                         (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')">
+
+                                                    <!-- Show "Mark As Completed" Button if already assigned -->
+                                                    <td>
+                                                        <div th:if="${#lists.contains(guide.events, tour) && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                            <button
+                                                                    class="btn btn-sm btn-success complete-tour-button"
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-guide-id="${guide.id}">
+                                                                <i class="fas fa-check"></i> <!-- Tick icon only -->
+                                                            </button>
+                                                        </div>
+                                                    </td>
+
                                                     <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
                                                     <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
                                                     <td th:switch="${tour.hour.name()}">

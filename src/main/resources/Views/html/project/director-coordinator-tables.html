@@ -592,7 +592,7 @@
                                         </div>
                                         <div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
-                                                <ul class="pagination d-inline-flex">
+                                                <ul class="pagination d-inline-flex" th:if="${fairs != null and fairs.totalPages > 0}">
                                                     <li class="page-item" th:if="${fairs.hasPrevious()}">
                                                         <a class="page-link"
                                                            th:href="@{/directorCoordinatorTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size})}">

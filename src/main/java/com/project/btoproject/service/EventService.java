@@ -1038,6 +1038,40 @@ public class EventService implements IEventService {
         String sqlDayNumber = String.valueOf((dayFilter % 7));
         return eventRepository.findToursByStatusesAndSearchTermAndDay(applicationStatuses, searchTerm, sqlDayNumber, pageable);
     }
+
+    public void markEventAsCompleted(Long eventId) throws Exception {
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        if (event instanceof Tour) {
+            Tour tour = (Tour) event;
+            if (tour.getStatus() == Status.UPCOMING_TOUR) {
+                tour.setStatus(Status.COMPLETED_TOUR);
+                eventRepository.save(tour);
+            } else {
+                throw new Exception("Tour cannot be marked as completed. Current status: " + tour.getStatus());
+            }
+        } else if (event instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) event;
+            if (individualTour.getStatus() == Status.UPCOMING_INDIVIDUAL_TOUR) {
+                individualTour.setStatus(Status.COMPLETED_INDIVIDUAL_TOUR);
+                eventRepository.save(individualTour);
+            } else {
+                throw new Exception("Individual Tour cannot be marked as completed. Current status: " + individualTour.getStatus());
+            }
+        } else if (event instanceof Fair) {
+            Fair fair = (Fair) event;
+            if (fair.getStatus() == Status.UPCOMING_FAIR) {
+                fair.setStatus(Status.COMPLETED_FAIR);
+                eventRepository.save(fair);
+            } else {
+                throw new Exception("Fair cannot be marked as completed. Current status: " + fair.getStatus());
+            }
+        } else {
+            throw new Exception("Unknown event type.");
+        }
+    }
 }
 
 
