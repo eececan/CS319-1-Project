@@ -47,7 +47,7 @@ public class UIPointRecordController {
         Guide guide = guideService.getGuideById(Long.parseLong(username));
         List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
         model.addAttribute("guide_records", pointRecords);
-        model.addAttribute("guide", guide); // Display guide details on frontend
+        model.addAttribute("guide", guide);
         return "point-record-list";
     }
 
