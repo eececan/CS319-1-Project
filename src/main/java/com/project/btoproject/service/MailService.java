@@ -94,7 +94,7 @@ public class MailService {
             mail.setTo(email);
             mail.setFrom("dilekyildizbto@gmail.com");
             mail.setSubject("You can login with your new password!");
-            mail.setText("Your new password is set as: " + password + ". You can change your password once you log in! \n\n\nHave a good day!");
+            mail.setText("Your new password is set as: " + password + "\n You can change your password once you log in! \n\n\nHave a good day!");
             User user = allUsersRepository.findUserByEmail(email);
             userService.changePassword(user.getId(), password);
             javaMailSender.send(mail);
