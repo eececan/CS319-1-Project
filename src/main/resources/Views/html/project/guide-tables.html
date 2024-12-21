@@ -577,26 +577,20 @@
                                                     <td>
 
                                                         <!-- Show "Join Fair" Button if there's no conflict -->
-                                                        <div th:if="${fair.guides.size() < fair.guideCount
-                                                                        && fair.status.name() == 'UPCOMING_FAIR'
-                                                                        && !#lists.contains(guide.events, fair)
-                                                                        && !fairConflicts[fair.id]}">
-                                                            <button
-                                                                    class="btn btn-sm join-fair-button"
-                                                                    th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${guide.id}">
-                                                                Join Fair
-                                                            </button>
-                                                        </div>
-
-                                                        <!-- Show "Leave Fair" Button if already assigned -->
                                                         <div th:if="${#lists.contains(guide.events, fair) && fair.status.name() == 'UPCOMING_FAIR'}">
-                                                            <button
-                                                                    class="btn btn-sm leave-fair-button"
-                                                                    th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${guide.id}">
-                                                                Leave Fair
-                                                            </button>
+                                                            <!-- Check if there are less than 7 days to the fair -->
+                                                            <div th:if="${fair.date.time - currentDate.time >= 7 * 24 * 60 * 60 * 1000}">
+                                                                <button
+                                                                        class="btn btn-sm leave-fair-button"
+                                                                        th:data-fair-id="${fair.id}"
+                                                                        th:data-guide-id="${guide.id}">
+                                                                    Leave Fair
+                                                                </button>
+                                                            </div>
+                                                            <!-- If less than 7 days are left, show "Cannot Leave" -->
+                                                            <div th:if="${fair.date.time - currentDate.time < 7 * 24 * 60 * 60 * 1000}">
+                                                                <span class="text-danger fw-bold">Locked</span>
+                                                            </div>
                                                         </div>
 
                                                         <!-- Show "Time Conflict" Message if there's a conflict -->
