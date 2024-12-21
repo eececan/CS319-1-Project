@@ -178,6 +178,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+function markIndividualTourAsCompleted(individualTourId) {
+    console.log(`Marking individual tour as completed. Individual Tour ID: ${individualTourId}`);
+    fetch(`/api/individual-tours/complete/${individualTourId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert(`Individual Tour ${individualTourId} marked as completed successfully!`);
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                return response.text().then((message) => {
+                    throw new Error(message);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error marking individual tour as completed:", error);
+            alert(`Error: ${error.message}`);
+        });
+}
+
+// Attach the click event listener for the "Mark As Completed" button for individual tours
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".complete-individualTour-button").forEach((button) => {
+        button.addEventListener("click", () => {
+            const individualTourId = button.getAttribute("data-individualTour-id");
+            markIndividualTourAsCompleted(individualTourId);
+        });
+    });
+});
+
+
 
 
 

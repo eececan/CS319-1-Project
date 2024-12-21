@@ -65,4 +65,15 @@ public class IndividualTourController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/complete/{individualTourId}")
+    public ResponseEntity<String> markIndividualTourAsCompleted(@PathVariable Long individualTourId) {
+        try {
+            eventService.markEventAsCompleted(individualTourId);
+            return ResponseEntity.ok("Individual Tour marked as completed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
 }

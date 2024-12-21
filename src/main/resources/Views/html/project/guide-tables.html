@@ -641,6 +641,7 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
+                                                    <th style="width: 1%;">Action</th>
                                                     <th style="width: 1%;">Date</th>
                                                     <th style="width: 1%;">Day</th>
                                                     <th style="width: 1%;">Hour</th>
@@ -657,6 +658,18 @@
                                                 <tr id="individual-tours-row-${individualTour.id}" th:each="individualTour : ${individualTours}"
                                                     th:classappend="${individualTour.status.name() == 'COMPLETED_INDIVIDUAL_TOUR'} ? 'completed-tour' :
                                                                     (${individualTour.status.name() == 'CANCELED_INDIVIDUAL_TOUR'} ? 'canceled-tour' : '')">
+
+                                                    <!-- Show "Mark As Completed" Button if already assigned -->
+                                                    <td>
+                                                        <div th:if="${#lists.contains(guide.events, individualTour) && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                            <button
+                                                                    class="btn btn-sm btn-success complete-individualTour-button"
+                                                                    th:data-individualTour-id="${individualTour.id}">
+                                                                <i class="fas fa-check"></i> <!-- Tick icon only -->
+                                                            </button>
+                                                        </div>
+                                                    </td>
+
                                                     <!-- Date -->
                                                     <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
 
@@ -721,6 +734,13 @@
                                                                         && !#lists.contains(guide.events, individualTour)
                                                                         && individualTourConflicts[individualTour.id]}">
                                                             <span class="text-danger fw-bold">CONFLICT</span>
+                                                        </div>
+
+                                                        <!-- Show "No Guide Slot" Message if there's no slot -->
+                                                        <div th:if="${individualTour.guides.size() == individualTour.guideCount
+                                                                        && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'
+                                                                        && !#lists.contains(guide.events, individualTour)}">
+                                                            <span class="text-danger fw-bold">NO SLOT</span>
                                                         </div>
 
                                                     </td>
