@@ -420,7 +420,8 @@
                                                         <div th:if="${tour.guides.size() < tour.guideCount
                                                                         && tour.status.name() == 'UPCOMING_TOUR'
                                                                         && !#lists.contains(guide.events, tour)
-                                                                        && !tourConflicts[tour.id]}">
+                                                                        && !tourConflicts[tour.id]
+                                                                        && tour.date > currentDate}">
                                                             <button
                                                                     class="btn btn-sm join-tour-button"
                                                                     th:data-tour-id="${tour.id}"
@@ -431,12 +432,19 @@
 
                                                         <!-- Show "Leave Tour" Button if already assigned -->
                                                         <div th:if="${#lists.contains(guide.events, tour) && tour.status.name() == 'UPCOMING_TOUR'}">
-                                                            <button
-                                                                    class="btn btn-sm leave-tour-button"
-                                                                    th:data-tour-id="${tour.id}"
-                                                                    th:data-guide-id="${guide.id}">
-                                                                Leave Tour
-                                                            </button>
+                                                            <!-- Check if there are less than 7 days to the fair -->
+                                                            <div th:if="${tour.date.time - currentDate.time >= 7 * 24 * 60 * 60 * 1000}">
+                                                                <button
+                                                                        class="btn btn-sm leave-tour-button"
+                                                                        th:data-tour-id="${tour.id}"
+                                                                        th:data-guide-id="${guide.id}">
+                                                                    Leave Tour
+                                                                </button>
+                                                            </div>
+                                                            <!-- If less than 7 days are left, show "Cannot Leave" -->
+                                                            <div th:if="${tour.date.time - currentDate.time < 7 * 24 * 60 * 60 * 1000}">
+                                                                <span class="text-danger fw-bold">Locked</span>
+                                                            </div>
                                                         </div>
 
                                                         <!-- Show "Time Conflict" Message if there's a conflict -->
@@ -460,7 +468,7 @@
                                             </table>
                                         </div>
                                         <div class="pagination-container text-center">
-                                            <nav aria-label="Page navigation">
+                                            <nav aria-label="Page navigation" th:if="${tours != null and tours.totalPages > 0}">
                                                 <ul class="pagination d-inline-flex">
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${tours.hasPrevious()}">
@@ -575,8 +583,21 @@
 
                                                     <!-- Action Buttons -->
                                                     <td>
-
                                                         <!-- Show "Join Fair" Button if there's no conflict -->
+                                                        <div th:if="${fair.guides.size() < fair.guideCount
+                                                                        && fair.status.name() == 'UPCOMING_FAIR'
+                                                                        && !#lists.contains(guide.events, fair)
+                                                                        && !fairConflicts[fair.id]
+                                                                        && fair.date > currentDate}">
+                                                            <button
+                                                                    class="btn btn-sm join-fair-button"
+                                                                    th:data-fair-id="${fair.id}"
+                                                                    th:data-guide-id="${guide.id}">
+                                                                Join Fair
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Show "Leave Fair" Button if already assigned -->
                                                         <div th:if="${#lists.contains(guide.events, fair) && fair.status.name() == 'UPCOMING_FAIR'}">
                                                             <!-- Check if there are less than 7 days to the fair -->
                                                             <div th:if="${fair.date.time - currentDate.time >= 7 * 24 * 60 * 60 * 1000}">
@@ -745,7 +766,7 @@
                                                             </button>
                                                         </div>
 
-                                                        <!-- Show "Leave Tour" Button if already assigned -->
+                                                        <!-- Show "Leave Individual Tour" Button if already assigned -->
                                                         <div th:if="${#lists.contains(guide.events, individualTour) && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
                                                             <button
                                                                     class="btn btn-sm leave-individual-tour-button"
@@ -753,6 +774,23 @@
                                                                     th:data-guide-id="${guide.id}">
                                                                 Leave Tour
                                                             </button>
+                                                        </div>
+
+                                                        <!-- Show "Leave Individual Tour" Button if already assigned -->
+                                                        <div th:if="${#lists.contains(guide.events, individualTour) && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                            <!-- Check if there are less than 7 days to the fair -->
+                                                            <div th:if="${individualTour.date.time - currentDate.time >= 7 * 24 * 60 * 60 * 1000}">
+                                                                <button
+                                                                        class="btn btn-sm leave-individual-tour-button"
+                                                                        th:data-tour-id="${individualTour.id}"
+                                                                        th:data-guide-id="${guide.id}">
+                                                                    Leave Tour
+                                                                </button>
+                                                            </div>
+                                                            <!-- If less than 7 days are left, show "Cannot Leave" -->
+                                                            <div th:if="${individualTour.date.time - currentDate.time < 7 * 24 * 60 * 60 * 1000}">
+                                                                <span class="text-danger fw-bold">Locked</span>
+                                                            </div>
                                                         </div>
 
                                                         <!-- Show "Time Conflict" Message if there's a conflict -->
