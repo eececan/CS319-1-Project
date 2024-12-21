@@ -33,6 +33,24 @@ public class UIGuideController {
         model.addAttribute("guides", guides);
         return "guideRankings";
     }
+    @GetMapping("/getGuideRankingsDate")
+    public String getGuideRankingsDate(Model model) {
+        List<Guide> guides = guideService.getGuidesByExperience();
+        model.addAttribute("guides", guides);
+        return "guideRankingsDate";
+    }
+    @GetMapping("/getReverseGuideRankings")
+    public String getReverseGuideRankings(Model model) {
+        List<Guide> guides = guideService.getReverseGuideRankings();
+        model.addAttribute("guides", guides);
+        return "reverseGuideRankings";
+    }
+    @GetMapping("/getReverseGuideRankingsDate")
+    public String getReverseGuideRankingsDate(Model model) {
+        List<Guide> guides = guideService.getGuidesByLowestExperience();
+        model.addAttribute("guides", guides);
+        return "guideReverseRankingsDate";
+    }
     @GetMapping("/updateSchedule")
     public String updateSchedule(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
