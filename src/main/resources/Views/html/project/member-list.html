@@ -54,21 +54,21 @@
     </style>
 
     <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 
-<title>::  :: Contact</title>
+    <title>::  :: Contact</title>
 
-<!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
-<link rel="stylesheet" href="../assets/plugins/sweetalert/sweetalert.css"/>
-<link rel="stylesheet" href="../assets/plugins/dropify/css/dropify.min.css">
+    <!-- Bootstrap Core and vandor -->
+    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/plugins/sweetalert/sweetalert.css"/>
+    <link rel="stylesheet" href="../assets/plugins/dropify/css/dropify.min.css">
 
-<!-- Core css -->
-<link rel="stylesheet" href="../assets/css/main.css"/>
-<link rel="stylesheet" href="../assets/css/theme1.css"/>
+    <!-- Core css -->
+    <link rel="stylesheet" href="../assets/css/main.css"/>
+    <link rel="stylesheet" href="../assets/css/theme1.css"/>
 </head>
 
 <body class="font-montserrat">
@@ -281,17 +281,45 @@
         </div>
     </div>
     <div class="user_div">
-        <h5 class="brand-name mb-4" th:text="${roleUser}"><a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
+        <h5 class="brand-name mb-4">
+        <span th:switch="${roleUser}">
+            <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
+            <span th:case="'ROLE_GUIDE'">Guide</span>
+            <span th:case="'ROLE_ADVISOR'">Advisor</span>
+            <span th:case="'ROLE_USER'">User</span>
+            <span th:case="'ROLE_DIRECTOR'">Director</span>
+            <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
+            <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
+            <span th:default>N/A</span>
+        </span>
+            <a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a>
+        </h5>
         <div class="card-body">
-            <a th:href="@{/ui/UserProfile/profile}"><img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture"></a>
+            <a th:href="@{/ui/UserProfile/profile}">
+                <img th:src="${user.picture}" class="card-profile-img" alt="Profile Picture">
+            </a>
             <h6 class="mb-0" th:text="${user.firstName + ' ' + user.lastName}"></h6>
             <span th:text="${user.email}"></span>
             <hr>
         </div>
     </div>
 
-    <div id="left-sidebar" class="sidebar ">
-        <h5 class="brand-name" th:text="${roleUser}"><a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+    <div id="left-sidebar" class="sidebar">
+        <h5 class="brand-name">
+        <span th:switch="${roleUser}">
+            <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
+            <span th:case="'ROLE_GUIDE'">Guide</span>
+            <span th:case="'ROLE_ADVISOR'">Advisor</span>
+            <span th:case="'ROLE_USER'">User</span>
+            <span th:case="'ROLE_DIRECTOR'">Director</span>
+            <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
+            <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
+
+        </span>
+            <a href="javascript:void(0)" class="menu_option float-right">
+                <i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i>
+            </a>
+        </h5>
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
                 <li class="g_heading"></li>
@@ -329,6 +357,7 @@
             </ul>
         </nav>
     </div>
+
 
 
     <div class="page">
@@ -440,11 +469,11 @@
                             </div>
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a><div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                        <a class="dropdown-item" th:href="@{/ui/UserProfile/profile}"><i class="dropdown-icon fe fe-user}"></i> Profile</a>
-                                        <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
-                                </div>
+                                <a class="dropdown-item" th:href="@{/ui/UserProfile/profile}"><i class="dropdown-icon fe fe-user}"></i> Profile</a>
+                                <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -462,18 +491,34 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-md-flex justify-content-between align-items-center">
-                                    <!-- Tabs -->
-                                    <ul class="nav nav-tabs b-none">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="list-tab" data-toggle="tab" href="#list">
-                                                <i class="fa fa-list-ul"></i> List
-                                            </a>
-                                        </li>
-                                    </ul>
-
-                                    <!-- Register Button - Visible only for ROLE_COORDINATOR -->
-                                    <div>
+                                <!-- Role Filter Buttons and Add New Member Button -->
+                                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                    <!-- Role Filter Buttons -->
+                                    <div class="d-flex flex-wrap gap-3 align-items-center">
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="resetFilter()">Show All</a>
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="filterByRole('ROLE_GUIDE')">Guide</a>
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="filterByRole('ROLE_GUIDE_IN_TRAINING')">Guide in Training</a>
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="filterByRole('ROLE_ADVISOR')">Advisor</a>
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="filterByRole('ROLE_COORDINATOR')">Coordinator</a>
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="filterByRole('ROLE_HEAD_SECRETARY')">Head Secretary</a>
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-primary"
+                                           onclick="filterByRole('ROLE_DIRECTOR')">Director</a>
+                                    </div>
+                                    <!-- Add New Member Button -->
+                                    <div class="d-flex align-items-center">
                                         <a th:if="${role == 'ROLE_COORDINATOR'}"
                                            th:href="@{/ui/auth/register}"
                                            class="btn btn-primary">
@@ -481,11 +526,85 @@
                                         </a>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <!-- Search Bar -->
-                                <div class="input-group mt-2">
-                                    <input type="text" class="form-control search" placeholder="Search...">
-                                </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- Filter Buttons -->
+
+
+        <div class="container px-3">
+            <div class="row mx-1">
+                <div class="col-lg-12">
+                    <div class="card" style="background-color: #f8f9fa;">
+                        <div class="card-body">
+                            <div class="table-responsive" id="users">
+                                <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
+                                    <tbody>
+                                    <!-- Check if the users list is empty -->
+                                    <tr th:if="${#lists.isEmpty(all_users)}">
+                                        <td colspan="6" style="text-align: center; color: #888;">
+                                            No users found.
+                                        </td>
+                                    </tr>
+
+                                    <!-- Filter Rows Dynamically -->
+                                    <tr th:each="user : ${all_users}" th:if="${roleFilter == null || user.role == roleFilter}">
+                                        <td class="width35 hidden-xs"></td>
+                                        <td class="text-center width40">
+                                            <div class="avatar-container">
+                                                <img class="avatar"
+                                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
+                                                     alt="avatar">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" th:text="${user.firstName + ' ' + user.lastName}"></a>
+                                            </div>
+                                            <div class="text-muted" th:text="${user.phoneNumber != null ? user.phoneNumber : 'N/A'}"></div>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <div class="text-muted" th:text="${user.email != null ? user.email : 'N/A'}"></div>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <div class="text-muted" th:text="${user.id != null ? user.id : 'N/A'}"></div>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <div class="text-muted">
+                                        <span th:switch="${user.role}">
+                                            <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
+                                            <span th:case="'ROLE_GUIDE'">Guide</span>
+                                            <span th:case="'ROLE_ADVISOR'">Advisor</span>
+                                            <span th:case="'ROLE_USER'">User</span>
+                                            <span th:case="'ROLE_DIRECTOR'">Director</span>
+                                            <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
+                                            <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
+                                        </span>
+                                            </div>
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="user-actions" th:if="${roleUser == 'ROLE_COORDINATOR'}">
+                                                <!-- Link to edit page, passing user.id -->
+                                                <a href="javascript:void(0);" class="edit" th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <!-- Link to delete page, passing user.id -->
+                                                <a th:href="@{'deleteUser/' + ${user.id}}"
+                                                   th:onclick="return confirm('Are you sure you want to delete this user?')"
+                                                   title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -493,71 +612,6 @@
             </div>
         </div>
 
-        <!-- Users Table -->
-        <div class="section-body">
-            <div class="container-fluid">
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="list" role="tabpanel">
-                        <div class="row clearfix">
-                            <div class="col-lg-12">
-                                <div class="table-responsive" id="users">
-                                    <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
-                                        <tbody>
-                                        <!-- Check if the users list is empty -->
-                                        <tr th:if="${#lists.isEmpty(all_users)}">
-                                            <td colspan="6" style="text-align: center; color: #888;">
-                                                No users found.
-                                            </td>
-                                        </tr>
-
-                                        <!-- Populate rows dynamically if the users list is not empty -->
-                                        <tr th:each="user : ${all_users}">
-                                            <td class="width35 hidden-xs"></td>
-                                            <td class="text-center width40">
-                                                <div class="avatar-container">
-                                                    <img class="avatar"
-                                                         th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                                                         alt="avatar">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <!-- Link user's name to an action passing user.id -->
-                                                    <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" th:text="${user.firstName + ' ' + user.lastName}"></a>
-                                                </div>
-                                                <div class="text-muted" th:text="${user.phoneNumber != null ? user.phoneNumber : 'N/A'}"></div>
-                                            </td>
-                                            <td class="hidden-xs">
-                                                <div class="text-muted" th:text="${user.email != null ? user.email : 'N/A'}"></div>
-                                            </td>
-                                            <td class="hidden-xs">
-                                                <div class="text-muted" th:text="${user.id != null ? user.id : 'N/A'}"></div>
-                                            </td>
-                                            <td class="text-right">
-                                                <div class="user-actions">
-                                                    <!-- Link to edit page, passing user.id -->
-                                                    <a href="javascript:void(0);" class="edit" th:href="@{'/edit/' + ${user.id}}" title="Edit">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                    <!-- Link to delete page, passing user.id -->
-                                                    <a th:href="@{'deleteUser/' + ${user.id}}"
-                                                       th:onclick="return confirm('Are you sure you want to delete this user?')"
-                                                       title="Delete">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
 
@@ -579,29 +633,41 @@
 <script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-$(function() {
-    "use strict";
-    
-    $('.dropify').dropify();
+    $(function() {
+        "use strict";
 
-    var drEvent = $('#dropify-event').dropify();
-    drEvent.on('dropify.beforeClear', function(event, element) {
-        return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-    });
+        $('.dropify').dropify();
 
-    drEvent.on('dropify.afterClear', function(event, element) {
-        alert('File deleted');
-    });
+        var drEvent = $('#dropify-event').dropify();
+        drEvent.on('dropify.beforeClear', function(event, element) {
+            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+        });
 
-    $('.dropify-fr').dropify({
-        messages: {
-            default: 'Glissez-déposez un fichier ici ou cliquez',
-            replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
-            remove: 'Supprimer',
-            error: 'Désolé, le fichier trop volumineux'
-        }
+        drEvent.on('dropify.afterClear', function(event, element) {
+            alert('File deleted');
+        });
+
+        $('.dropify-fr').dropify({
+            messages: {
+                default: 'Glissez-déposez un fichier ici ou cliquez',
+                replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                remove: 'Supprimer',
+                error: 'Désolé, le fichier trop volumineux'
+            }
+        });
     });
-});
+    function filterByRole(role) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('roleFilter', role);
+        window.location.search = urlParams.toString();
+    }
+
+    // Function to reset the role filter
+    function resetFilter() {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.delete('roleFilter');
+        window.location.search = urlParams.toString();
+    }
 </script>
 </body>
 </html>
