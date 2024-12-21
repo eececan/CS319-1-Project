@@ -1,6 +1,8 @@
 package com.project.btoproject.controller.UIcontroller;
+import com.project.btoproject.dto.UserDto;
 import com.project.btoproject.model.Role;
 import com.project.btoproject.model.User;
+import com.project.btoproject.model.UserEntity;
 import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IUserService;
 import org.springframework.security.core.Authentication;
@@ -9,12 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 public class UIUserController {
     private final IAllUsersService allUsersService;
@@ -24,8 +26,13 @@ public class UIUserController {
         this.allUsersService = userService;
         this.userService = allUsersService;
     }
+
     @GetMapping("/getAllUsers")
-    public String getUsersPage(Model model, @ModelAttribute("successMessage") String successMessage) {
+    public String getUsersPage(
+            Model model,
+            @ModelAttribute("successMessage") String successMessage,
+            @RequestParam(required = false) String roleFilter) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
         String roleUser = "";
@@ -38,11 +45,38 @@ public class UIUserController {
                     .map(GrantedAuthority::getAuthority)
                     .orElse("ROLE_UNKNOWN");
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+
+        User userE = allUsersService.getUserById(Long.parseLong(username));
         List<User> users = allUsersService.getAllUsers();
-        model.addAttribute("all_users", users);
-        model.addAttribute("user", user);
+        List<UserDto> userDTOs = new ArrayList<>();
+
+        for (User user : users) {
+            UserDto userDTO = new UserDto();
+            userDTO.setId(user.getId());
+            userDTO.setFirstName(user.getFirstName());
+            userDTO.setLastName(user.getLastName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+
+            // Fetch the UserEntity and determine the role
+            UserEntity userEntity = userService.findUserByUsername(user.getId()).get();
+            List<Role> roles = userEntity.getRoles(); // Retrieve the list of roles
+            String role = roles != null && !roles.isEmpty() ? roles.get(0).getName() : null;
+            userDTO.setRole(role);
+            userDTO.setPicture(user.getPicture());
+            userDTO.setDescription(user.getDescription());
+            userDTO.setStartDate(user.getStartDate());
+
+            // Add to list only if roleFilter matches or no filter is applied
+            if (roleFilter == null || roleFilter.isEmpty() || role.equals(roleFilter)) {
+                userDTOs.add(userDTO);
+            }
+        }
+
+        model.addAttribute("all_users", userDTOs);
+        model.addAttribute("user", userE);
         model.addAttribute("role", roleUser);
+        model.addAttribute("roleFilter", roleFilter); // Pass the filter to the view
 
         // Pass success message to the model (if present)
         if (successMessage != null && !successMessage.isEmpty()) {
@@ -50,13 +84,18 @@ public class UIUserController {
         }
 
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            model.addAttribute("roleUser", roleUser);
             return "member-list";
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE")) ||
                 authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+            model.addAttribute("roleUser", roleUser);
             return "member-list";
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
             roleUser = "ADVISOR";
             model.addAttribute("roleUser", roleUser);
+            return "member-list";
+        } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+            model.addAttribute("roleUser", "ROLE_COORDINATOR");
             return "member-list";
         } else {
             roleUser = "HEAD SECRETARY";
@@ -64,6 +103,7 @@ public class UIUserController {
             return "member-list";
         }
     }
+
 
 
     @GetMapping("/deleteUser/{id}")
