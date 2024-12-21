@@ -488,6 +488,11 @@
                         <span th:text="${successMessage}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
+                    <div th:if="${errorMessage != null and errorMessage != ''}"
+                         class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
@@ -559,33 +564,36 @@
                                         <td class="text-center width40">
                                             <div class="avatar-container">
                                                 <img class="avatar"
-                                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
+                                                     th:src="${user.picture != null && !user.picture.isEmpty() ? user.picture : '/assets/images/default-avatar.png'}"
                                                      alt="avatar">
                                             </div>
                                         </td>
                                         <td>
                                             <div>
-                                                <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" th:text="${user.firstName + ' ' + user.lastName}"></a>
+                                                <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}"
+                                                   th:text="|${user.firstName != null && !user.firstName.isEmpty() ? user.firstName : 'Unknown'} ${user.lastName != null && !user.lastName.isEmpty() ? user.lastName : 'User'}|">
+                                                </a>
                                             </div>
-                                            <div class="text-muted" th:text="${user.phoneNumber != null ? user.phoneNumber : 'N/A'}"></div>
+                                            <div class="text-muted" th:text="${user.phoneNumber != null && !user.phoneNumber.isEmpty() ? user.phoneNumber : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
-                                            <div class="text-muted" th:text="${user.email != null ? user.email : 'N/A'}"></div>
+                                            <div class="text-muted" th:text="${user.email != null && !user.email.isEmpty() ? user.email : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
-                                            <div class="text-muted" th:text="${user.id != null ? user.id : 'N/A'}"></div>
+                                            <div class="text-muted" th:text="${user.id != null && !user.id.toString().isEmpty() ? user.id : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
                                             <div class="text-muted">
-                                        <span th:switch="${user.role}">
-                                            <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
-                                            <span th:case="'ROLE_GUIDE'">Guide</span>
-                                            <span th:case="'ROLE_ADVISOR'">Advisor</span>
-                                            <span th:case="'ROLE_USER'">User</span>
-                                            <span th:case="'ROLE_DIRECTOR'">Director</span>
-                                            <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
-                                            <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
-                                        </span>
+                                <span th:switch="${user.role}">
+                                    <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
+                                    <span th:case="'ROLE_GUIDE'">Guide</span>
+                                    <span th:case="'ROLE_ADVISOR'">Advisor</span>
+                                    <span th:case="'ROLE_USER'">User</span>
+                                    <span th:case="'ROLE_DIRECTOR'">Director</span>
+                                    <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
+                                    <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
+
+                                </span>
                                             </div>
                                         </td>
                                         <td class="text-right">

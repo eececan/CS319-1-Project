@@ -8,6 +8,7 @@ import com.project.btoproject.model.Role;
 import com.project.btoproject.model.UserEntity;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,4 +19,5 @@ public interface IUserService {
     void changeRole(Long id, Role role);
     Optional<UserEntity> findUserByUsername(Long id) ;
     void addNewUser(Map<String, Object> dtoMap, String role, UserEntity user);
+    List<UserEntity> getAllUserEntities();
 }

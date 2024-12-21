@@ -449,9 +449,10 @@
             </div>
         </div>
 
-        <!-- Guide Section -->
-        <div th:if="${role == 'ROLE_GUIDE'}" id="guide_section" class="section-body mt-4">
-            <div class="container-fluid">
+
+        <div th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING'}" id="guide_section" class="section-body mt-4">
+
+        <div class="container-fluid">
                 <div class="row clearfix">
                     <div class="col-lg-4 col-md-12">
                         <div class="row">

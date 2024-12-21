@@ -52,7 +52,7 @@ public class AllUsersService implements IAllUsersService {
     }
 
     @Override
-    public User getUserById(Long userId) { return repository.findById(userId).get(); }
+    public Optional<User> getUserById(Long userId) { return repository.findById(userId); }
 
     @Override
     public List<UserTask> seeAllTasks(User user) {

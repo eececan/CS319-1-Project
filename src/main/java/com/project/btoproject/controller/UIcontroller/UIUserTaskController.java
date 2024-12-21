@@ -37,7 +37,7 @@ public class UIUserTaskController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
         List<UserTask> tasks = allUsersService.seeAllTasks(user);
         model.addAttribute("user", user);
         model.addAttribute("tasks", tasks);
@@ -68,7 +68,7 @@ public class UIUserTaskController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
 
         UserTask newTask = new UserTask();
         newTask.setTaskName(taskName);  // Set task name
@@ -89,7 +89,7 @@ public class UIUserTaskController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
 
         boolean taskDeleted = allUsersService.deleteTaskFromUser(user, taskId);
         if (taskDeleted) {
@@ -110,7 +110,7 @@ public class UIUserTaskController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
 
         boolean marked = allUsersService.updateTaskStatus(user, taskId, true);
         if (marked) {
@@ -131,7 +131,7 @@ public class UIUserTaskController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
 
         boolean marked = allUsersService.updateTaskStatus(user, taskId, false);
         if (marked) {

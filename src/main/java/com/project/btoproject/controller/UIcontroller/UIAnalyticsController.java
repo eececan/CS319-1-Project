@@ -52,7 +52,7 @@ public class UIAnalyticsController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
         List<UserTask> tasks = allUsersService.seeAllTasks(user);
         model.addAttribute("user", user);
         model.addAttribute("tasks", tasks);

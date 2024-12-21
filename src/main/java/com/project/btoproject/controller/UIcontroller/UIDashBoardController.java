@@ -65,7 +65,7 @@ public class UIDashBoardController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUserService.getUserById(Long.parseLong(username));
+        User user = allUserService.getUserById(Long.parseLong(username)).get();
        populateModelWithUserData(model,user);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
             return "Director-Dashboard"; // Director's profile page
@@ -76,7 +76,7 @@ public class UIDashBoardController {
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
             return "Head-Secretary-Dashboard"; // Head Secretary's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
-            return"Guide-In-Training-Dashboard";
+            return"Guide-Dashboard";
         }
         else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
             return"Coordinator-Dashboard";
