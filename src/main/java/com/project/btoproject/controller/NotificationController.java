@@ -3,6 +3,7 @@ package com.project.btoproject.controller;
 import com.project.btoproject.model.Notification;
 import com.project.btoproject.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,9 +19,16 @@ public class NotificationController {
 
     @GetMapping("/unread")
     public ResponseEntity<List<Notification>> getUnreadNotifications(Authentication auth) {
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        Long userId = Long.parseLong(userDetails.getUsername());
-        return ResponseEntity.ok(notificationService.getUnreadNotifications(userId));
+        try {
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            Long userId = Long.parseLong(userDetails.getUsername());
+            List<Notification> notifications = notificationService.getUnreadNotifications(userId);
+            System.out.println("Found " + notifications.size() + " unread notifications for user " + userId);
+            return ResponseEntity.ok(notifications);
+        } catch (Exception e) {
+            System.err.println("Error getting notifications: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/{id}/read")
