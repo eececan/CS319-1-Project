@@ -374,7 +374,7 @@
                                         </div>
                                         <div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
-                                                <ul class="pagination d-inline-flex">
+                                                <ul class="pagination d-inline-flex" th:if="${fairApplications != null and fairApplications.totalPages > 0}">
                                                     <li class="page-item" th:if="${fairApplications.hasPrevious()}">
                                                         <a class="page-link"
                                                            th:href="@{/directorCoordinatorTables(fairApplicationsPage=${fairApplications.number - 1}, fairApplicationsSize=${fairApplications.size}, dayFilter=${selectedDay})}">
@@ -677,7 +677,7 @@
                                         </div>
                                         <div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
-                                                <ul class="pagination d-inline-flex">
+                                                <ul class="pagination d-inline-flex" th:if="${tourApplications != null and tourApplications.totalPages > 0}">
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${tourApplications.hasPrevious()}">
                                                         <a class="page-link"
@@ -787,7 +787,7 @@
                                         </div>
                                         <div class="pagination-container text-center">
                                             <nav aria-label="Page navigation">
-                                                <ul class="pagination d-inline-flex">
+                                                <ul class="pagination d-inline-flex"  th:if="${tours != null and tours.totalPages > 0}">
                                                     <!-- Previous Button -->
                                                     <li class="page-item" th:if="${tours.hasPrevious()}">
                                                         <a class="page-link"
