@@ -60,7 +60,7 @@ public class UIUserProfileController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        User user = allUsersService.getUserById(Long.parseLong(username));
+        User user = allUsersService.getUserById(Long.parseLong(username)).get();
 
         if (successMessage != null && !successMessage.isEmpty()) {
             model.addAttribute("successMessage", successMessage);
@@ -112,8 +112,9 @@ public class UIUserProfileController {
                     }
                 }
             }
+            model.addAttribute("role", "ROLE_GUIDE");
             model.addAttribute("sum", sum);
-            return "guide-in-training-profile";
+            return "guide-profile";
         } else {
             return "page-empty";
         }
@@ -140,7 +141,7 @@ public class UIUserProfileController {
             model.addAttribute("showPopUp", "false");
 
             if (role.equals("ROLE_DIRECTOR")) {
-                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                 List<Tour> tours = eventService.getAllTours();
@@ -163,7 +164,7 @@ public class UIUserProfileController {
                 return "Director-Dashboard";
             } else if (role.equals("ROLE_COORDINATOR")) {
 
-                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
                 List<Tour> tours = eventService.getAllTours();
@@ -186,7 +187,7 @@ public class UIUserProfileController {
                 return "Coordinator-Dashboard";// Coordinator's page
             } else if (role.equals("ROLE_ADVISOR")) {
 
-                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
                 // Fetch advisor of the day
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
@@ -212,7 +213,7 @@ public class UIUserProfileController {
                 return "Advisor-Dashboard"; // Advisor's page
             } else if (role.equals("ROLE_GUIDE")) {
 
-                User allUser = allUsersService.getUserById(Long.parseLong(username));
+                User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
                 // Fetch advisor of the day
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
@@ -236,6 +237,32 @@ public class UIUserProfileController {
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
                 return "Guide-Dashboard"; // Guide's page
+            }else if (role.equals("ROLE_GUIDE_IN_TRAINING")) {
+
+                User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
+                model.addAttribute("user", allUser);
+                // Fetch advisor of the day
+                Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
+                // Fetch associated tours and fairs
+                List<Tour> tours = eventService.getAllTours();
+                List<Fair> fairs = eventService.getAllFairs();
+                List<UserTask> tasks = allUsersService.seeAllTasks(allUser);
+                // Add advisor, tours, and fairs to the model
+                List<User> users = allUsersService.getAllUsers();
+                List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                int sum = 0;
+                for (int i = 0; i < pointRecords.size(); i++) {
+                    sum += pointRecords.get(0).getPoint();
+                }
+                long upComing = eventService.getUpcomingEventsCount();
+                model.addAttribute("upComing", upComing);
+                model.addAttribute("sum", sum);
+                model.addAttribute("users", users);
+                model.addAttribute("tasks", tasks);
+                model.addAttribute("advisor", advisor);
+                model.addAttribute("tours", tours);
+                model.addAttribute("fairs", fairs);
+                return "Guide-Dashboard";
             } else if (role.equals("ROLE_HEAD_SECRETARY")) {
 
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
@@ -314,6 +341,10 @@ public class UIUserProfileController {
             @RequestParam(required = false) String successMessage,
             @RequestParam(required = false) String errorMessage,
             Model model) {
+        Optional<User> all_user1 = allUsersService.getUserById(userId);
+        if (!all_user1.isPresent()) {
+            return "redirect:/redirectToUsersPage";
+        }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
@@ -342,7 +373,7 @@ public class UIUserProfileController {
         } else {
             model.addAttribute("userRole", role);
             Optional<UserEntity> user = userService.findUserByUsername(userId);
-            User all_user = allUsersService.getUserById(userId);
+            User all_user = allUsersService.getUserById(userId).get();
 
             if (!user.isPresent()) {
                 // Redirect to profile if the user is not found

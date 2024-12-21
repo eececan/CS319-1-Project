@@ -196,18 +196,22 @@ public class UIAuthController {
                     user.setId(Long.parseLong(username));
                     model.addAttribute("user", user);
                     model.addAttribute("role", roleF);
-                    System.out.println("showPopUp: " + model.getAttribute("showPopUp"));
+
                     return "guide-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
-                    model.addAttribute("user", new GuideInTraining());
-                    return "guide-in-training-profile";
+                    GuideInTraining guideInTraining = new GuideInTraining();
+                    guideInTraining.setId(Long.parseLong(username));
+                    model.addAttribute("user", guideInTraining);
+                    model.addAttribute("sum", 0);
+                    model.addAttribute("role", roleF);
+                    return "guide-profile";
                 }
 
 
             }
            else{
-                User user = allUsersService.getUserById(Long.parseLong(username));
+                User user = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", user);
                 UserEntity userEntity = userService.findUserByUsername(Long.parseLong(username)).get();
                if(allUsersService.hasMissingInformation(user, userEntity)){

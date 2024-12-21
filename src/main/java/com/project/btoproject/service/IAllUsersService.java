@@ -8,12 +8,13 @@ import com.project.btoproject.model.UserTask;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface IAllUsersService {
     List<User> getAllUsers();
     void addUser(User user);
     void deleteUserById(Long id);
-    User getUserById(Long userId);
+    Optional<User> getUserById(Long userId);
     List<UserTask> seeAllTasks(User user);
     void addTaskToUser(User user, UserTask newTask);
     boolean updateTaskStatus(User user, Long taskId, boolean b);

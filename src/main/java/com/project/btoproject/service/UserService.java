@@ -67,6 +67,11 @@ public class UserService implements IUserService {
         }
     }
 
+    @Override
+    public List<UserEntity> getAllUserEntities() {
+        return userRepository.findAll();
+    }
+
     @Transactional
     @Override
     public void deleteUserByUsername(Long id) {

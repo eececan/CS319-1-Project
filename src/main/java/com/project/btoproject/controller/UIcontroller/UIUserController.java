@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,6 +33,7 @@ public class UIUserController {
     public String getUsersPage(
             Model model,
             @ModelAttribute("successMessage") String successMessage,
+            @ModelAttribute("errorMessage") String errorMessage,
             @RequestParam(required = false) String roleFilter) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,7 +49,7 @@ public class UIUserController {
                     .orElse("ROLE_UNKNOWN");
         }
 
-        User userE = allUsersService.getUserById(Long.parseLong(username));
+        User userE = allUsersService.getUserById(Long.parseLong(username)).get();
         List<User> users = allUsersService.getAllUsers();
         List<UserDto> userDTOs = new ArrayList<>();
 
@@ -58,29 +61,45 @@ public class UIUserController {
             userDTO.setEmail(user.getEmail());
             userDTO.setPhoneNumber(user.getPhoneNumber());
 
-            // Fetch the UserEntity and determine the role
             UserEntity userEntity = userService.findUserByUsername(user.getId()).get();
-            List<Role> roles = userEntity.getRoles(); // Retrieve the list of roles
+            List<Role> roles = userEntity.getRoles();
             String role = roles != null && !roles.isEmpty() ? roles.get(0).getName() : null;
             userDTO.setRole(role);
             userDTO.setPicture(user.getPicture());
             userDTO.setDescription(user.getDescription());
             userDTO.setStartDate(user.getStartDate());
 
-            // Add to list only if roleFilter matches or no filter is applied
             if (roleFilter == null || roleFilter.isEmpty() || role.equals(roleFilter)) {
                 userDTOs.add(userDTO);
             }
         }
-
+/*
+        List<UserEntity> userEntities = userService.getAllUserEntities();
+        for (UserEntity userEntity : userEntities) {
+            Optional<User> all_user = allUsersService.getUserById(Long.parseLong(username));
+            if (all_user.isEmpty()) {
+                UserDto userDTO = new UserDto();
+                userDTO.setId(Long.parseLong(userEntity.getUsername()));
+                String roleName = userEntity.getRoles().stream()
+                        .findFirst()
+                        .map(Role::getName)
+                        .orElse(null);
+                userDTO.setRole(roleName);
+                userDTOs.add(userDTO);
+            }
+        }
+*/
         model.addAttribute("all_users", userDTOs);
         model.addAttribute("user", userE);
         model.addAttribute("role", roleUser);
-        model.addAttribute("roleFilter", roleFilter); // Pass the filter to the view
+        model.addAttribute("roleFilter", roleFilter);
 
-        // Pass success message to the model (if present)
         if (successMessage != null && !successMessage.isEmpty()) {
             model.addAttribute("successMessage", successMessage);
+        }
+
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            model.addAttribute("errorMessage", errorMessage);
         }
 
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
@@ -102,6 +121,12 @@ public class UIUserController {
             model.addAttribute("roleUser", roleUser);
             return "member-list";
         }
+    }
+
+    @GetMapping("/redirectToUsersPage")
+    public String redirectToUsersPageWithError(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", "This user has not logged in and entered their information yet! Please try to view their personal information later!");
+        return "redirect:/getAllUsers";
     }
 
 
