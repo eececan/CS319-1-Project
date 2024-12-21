@@ -302,8 +302,13 @@
                     <div class="right">
 
                         <div class="notification d-flex">
-                            <div th:replace="notifications::notifications-panel"></div>
+                            <div class="dropdown d-flex">
+                                <div th:replace="notifications::notifications-panel"></div>
+                            </div>
 
+                            <audio id="notification-sound" preload="auto">
+                                <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
+                            </audio>
 
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
@@ -453,6 +458,8 @@
 </div>
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js}"></script>
+
 <!-- <script th:src="@{/assets/bundles/counterup.bundle.js}"></script> -->
 <script th:src="@{/assets/bundles/knobjs.bundle.js}"></script>
 <script th:src="@{/assets/bundles/c3.bundle.js}"></script>
