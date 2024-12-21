@@ -356,7 +356,9 @@
 
                                                     <!-- Show "Mark As Completed" Button if already assigned -->
                                                     <td>
-                                                        <div th:if="${#lists.contains(guide.events, tour) && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                        <div th:if="${#lists.contains(guide.events, tour)
+                                                                        && tour.status.name() == 'UPCOMING_TOUR'
+                                                                        && tour.date <= currentDate}">
                                                             <button
                                                                     class="btn btn-sm btn-success complete-tour-button"
                                                                     th:data-tour-id="${tour.id}"
@@ -505,7 +507,9 @@
                                                                         (${fair.status.name() == 'CANCELED_FAIR'} ? 'canceled-tour' : '')">
                                                     <!-- Show "Mark As Completed" Button if already assigned -->
                                                     <td>
-                                                        <div th:if="${#lists.contains(guide.events, fair) && fair.status.name() == 'UPCOMING_FAIR'}">
+                                                        <div th:if="${#lists.contains(guide.events, fair)
+                                                         && fair.status.name() == 'UPCOMING_FAIR'
+                                                         && fair.date <= currentDate}">
                                                             <button
                                                                     class="btn btn-sm btn-success complete-fair-button"
                                                                     th:data-fair-id="${fair.id}"
@@ -661,7 +665,9 @@
 
                                                     <!-- Show "Mark As Completed" Button if already assigned -->
                                                     <td>
-                                                        <div th:if="${#lists.contains(guide.events, individualTour) && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                        <div th:if="${#lists.contains(guide.events, individualTour)
+                                                                      && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'
+                                                                      && individualTour.date <= currentDate}">
                                                             <button
                                                                     class="btn btn-sm btn-success complete-individualTour-button"
                                                                     th:data-individualTour-id="${individualTour.id}">

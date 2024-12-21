@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,6 +245,9 @@ public class UIEventController {
             model.addAttribute("fairConflicts", fairConflicts);
             model.addAttribute("fairsCurrentPage", fairsPage);
             model.addAttribute("fairsTotalPages", fairsPageable.getTotalPages());
+            // Get current date as java.util.Date
+            Date currentDate = new Date();
+            model.addAttribute("currentDate", currentDate);
             // ----- Model Attributes -----
 
             return "guide-tables";
