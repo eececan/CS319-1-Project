@@ -73,7 +73,12 @@ public class SecurityConfig {
                                 "/ui/auth/head-secretary-tables",
                                 "/api/tours/**",
                                 "/deleteUser/**",
-                                "/updateSchedule"
+                                "/updateSchedule",
+                                "/ui/auth/**",
+                                "/ui/auth/forgotPassword",
+                                "/ui/auth/forgotPasswordPage",
+                                "/forgot-password.html"
+
 
                         ).permitAll()
                         .anyRequest().authenticated()

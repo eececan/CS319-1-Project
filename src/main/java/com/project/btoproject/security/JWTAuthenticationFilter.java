@@ -53,4 +53,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/ui/auth/forgotPassword") || path.startsWith("/ui/auth/login");
+    }
 }
