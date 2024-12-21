@@ -26,4 +26,7 @@ public class IncidentReport {
     @Column(name = "author", nullable = false)
     private String author;
 
+    @Column(name = "status", nullable = false)
+    private String status = "New Issue";
+
 }

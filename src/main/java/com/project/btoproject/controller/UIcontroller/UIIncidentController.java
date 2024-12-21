@@ -37,4 +37,10 @@ public class UIIncidentController {
         incidentReportService.saveIncidentReport(newIncident);
         return "redirect:/getIncidentReports";
     }
+
+    @PostMapping("/setIncidentReportStatus")
+    public String setIncidentReportStatus(@RequestParam Long id, @RequestParam String status, Model model) {
+        incidentReportService.setStatusOfIncidentReport(id,status);
+        return "redirect:/getIncidentReports";
+    }
 }

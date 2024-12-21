@@ -22,4 +22,11 @@ public class IncidentReportService implements IIncidentReportService {
     public List<IncidentReport> getAllIncidentReports() {
         return incidentReportRepository.findAll();
     }
+
+    @Override
+    public void setStatusOfIncidentReport(Long id, String statusOfIncidentReport) {
+        IncidentReport report = incidentReportRepository.findById(id).get();
+        report.setStatus(statusOfIncidentReport);
+        incidentReportRepository.save(report);
+    }
 }
