@@ -5,6 +5,7 @@ import com.project.btoproject.repository.IGuideRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -58,21 +59,27 @@ public class GuideService implements IGuideService
     }
 
     @Override
-    public List<Long> getReverseGuideRankings() {
-        //TODO
-        return List.of();
+    public List<Guide> getReverseGuideRankings() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingInt(this::getTotalPoints))
+                .toList();
     }
 
     @Override
-    public List<Long> getGuidesByExperience() {
-        //TODO
-        return List.of();
+    public List<Guide> getGuidesByExperience() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Guide::getStartDate))
+                .toList();
     }
 
     @Override
     public List<Guide> getGuidesByLowestExperience() {
-        //TODO
-        return List.of();
+        return guideRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Guide::getStartDate).reversed())
+                .toList();
     }
 
     @Override
