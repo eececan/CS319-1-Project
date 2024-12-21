@@ -26,19 +26,16 @@ import java.util.List;
 @Service
 public class GoogleSheetsService {
 
-    private final EventService eventService;
     // Sheets API client
     private Sheets sheetsService;
 
     // Path to the credentials JSON file
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/credentials.json";
 
-    // Use SchoolService for database operations
+    // Services for database operations
+    private final EventService eventService;
     private SchoolService schoolService;
-
-    // Use SchoolCounselorService for database operations
     private SchoolCounselorService schoolCounselorService;
-
     private StudentService studentService;
 
     // Tour-specific Google Sheet attributes
@@ -53,6 +50,12 @@ public class GoogleSheetsService {
     private static final String INDIVIDUAL_TOUR_SPREADSHEET_ID = "1Z5is13p8dc2W3md4IbypdTzpmGUenpfcesNjOqw5wrg";
     private static final String INDIVIDUAL_TOUR_SPREADSHEET_RANGE = "A2:J";
 
+    /**
+     * Service for interacting with Google Sheets to fetch event data.
+     * This service integrates with multiple dependent services such as
+     * SchoolService, SchoolCounselorService, StudentService, and EventService
+     * to process and validate fetched data.
+     */
     @Autowired
     public GoogleSheetsService(SchoolService schoolService, SchoolCounselorService schoolCounselorService, StudentService studentService, EventService eventService) {
         this.schoolService = schoolService;
@@ -70,6 +73,15 @@ public class GoogleSheetsService {
         this.eventService = eventService;
     }
 
+    /**
+     * Initializes the Google Sheets API client.
+     * This method configures authentication and sets up the service for interacting
+     * with Google Sheets.
+     *
+     * @return An authorized instance of the Google Sheets service.
+     * @throws IOException If an I/O error occurs during initialization.
+     * @throws GeneralSecurityException If a security exception occurs during initialization.
+     */
     private Sheets initializeSheetsService() throws IOException, GeneralSecurityException {
         // Load service account credentials from the JSON file
         try (FileInputStream credentialsStream = new FileInputStream(CREDENTIALS_FILE_PATH)) {
@@ -87,6 +99,31 @@ public class GoogleSheetsService {
         }
     }
 
+    /**
+     * Periodically fetches and saves new tours.
+     * This method is scheduled to run every 10 seconds. It calls the {@link #saveNewTours()}
+     * method to fetch data from the Google Sheet and save it into the system.
+     * Any errors encountered during the process are logged to the console.
+     */
+    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    public void fetchAndSaveNewTours() {
+        try {
+            saveNewTours();
+            System.out.println("Scheduled task: Tours fetched and saved.");
+        } catch (IOException e) {
+            System.err.println("Error fetching and saving tours: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches tour data from the Google Sheet.
+     * This method calls the Google Sheets API to retrieve data from the specified
+     * spreadsheet and range, and returns the rows as a list of lists.
+     *
+     * @return A list of rows from the Google Sheet, where each row is represented
+     *         as a list of objects. Returns an empty list if no data is found.
+     * @throws IOException If an error occurs while communicating with the Google Sheets API.
+     */
     public List<List<Object>> fetchTourData() throws IOException {
         // Call the Sheets API to retrieve values and return the rows as a list of lists
         ValueRange response = sheetsService.spreadsheets().values()
@@ -102,36 +139,12 @@ public class GoogleSheetsService {
         return response.getValues();
     }
 
-    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
-    public void fetchAndSaveNewTours() {
-        try {
-            saveNewTours();
-            System.out.println("Scheduled task: Tours fetched and saved.");
-        } catch (IOException e) {
-            System.err.println("Error fetching and saving tours: " + e.getMessage());
-        }
-    }
-
-    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
-    public void fetchAndSaveNewFairs() {
-        try {
-            saveNewFairs();
-            System.out.println("Scheduled task: Fairs fetched and saved.");
-        } catch (IOException e) {
-            System.err.println("Error fetching and saving fairs: " + e.getMessage());
-        }
-    }
-
-    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
-    public void fetchAndSaveNewIndividualTours() {
-        try {
-            saveNewIndividualTours();
-            System.out.println("Scheduled task: Individual Tours fetched and saved.");
-        } catch (IOException e) {
-            System.err.println("Error fetching and saving individual tours: " + e.getMessage());
-        }
-    }
-
+    /**
+     * Saves new tours by fetching data from the Google Sheet and comparing timestamps
+     * to ensure only new entries are processed and stored in the database.
+     *
+     * @throws IOException If an error occurs while fetching data from Google Sheets.
+     */
     public void saveNewTours() throws IOException {
         // Get the latest applicationTimeStamp from the database
         Date latestTimestamp = eventService.findLatestTourApplicationTimeStamp();
@@ -178,6 +191,37 @@ public class GoogleSheetsService {
         }
     }
 
+    /**
+     * Maps a row of data from the Google Sheet to a {@link Tour} object.
+     *
+     * <p>This method parses and processes various fields in the row to construct
+     * a {@link Tour} object with the following mappings:
+     * <ul>
+     *   <li>Column A: Application timestamp (parsed into a {@link Date}).</li>
+     *   <li>Columns B and C: School name and city (mapped to a {@link School}).</li>
+     *   <li>Column D: Requested visit date (parsed into a {@link Date}).</li>
+     *   <li>Column E: Visit hour (converted to an {@link Hour} object).</li>
+     *   <li>Column F: Number of people and calculated guide count.</li>
+     *   <li>Columns G-J: School counselor details (name, role, phone, email).</li>
+     *   <li>Column K: Visitor notes (stored as a string).</li>
+     * </ul>
+     *
+     * <p>The method validates and ensures proper mapping for all required fields.
+     * If a school or counselor does not exist, it creates them using the
+     * appropriate service methods.</p>
+     *
+     * <p>Edge cases handled include:</p>
+     * <ul>
+     *   <li>Limiting the maximum number of guides to 3.</li>
+     *   <li>Ensuring counselor details (phone and email) are updated if they change.</li>
+     *   <li>Throwing a {@link ParseException} for invalid date or time formats.</li>
+     * </ul>
+     *
+     * @param row A list of objects representing a row of data from the Google Sheet.
+     *            The columns should correspond to the expected structure.
+     * @return A {@link Tour} object constructed from the row data.
+     * @throws ParseException If any date or time field fails to parse.
+     */
     private Tour mapRowToTour(List<Object> row) throws ParseException {
         Tour tour = new Tour();
 
@@ -210,7 +254,7 @@ public class GoogleSheetsService {
         if(guideCount > 3)  guideCount = 3; // Limit guide count to 3
         tour.setGuideCount(guideCount);
 
-        // Map School Counselor (Columns G: Name, H: Role, I: Phone Number, J: Email, K: Comment)
+        // Map School Counselor (Columns G: Name, H: Role, I: Phone Number, J: Email)
         String counselorName = row.get(6).toString();
         String counselorRole = row.get(7).toString();
         String counselorPhone = row.get(8).toString();
@@ -224,9 +268,7 @@ public class GoogleSheetsService {
         schoolCounselor.setEmail(counselorEmail);
         tour.setSchoolCounselor(schoolCounselor);
 
-        // Map Column K: Contact Person Role
         tour.setVisitorNotes(row.get(10).toString());
-
 
         return tour;
     }
@@ -247,6 +289,31 @@ public class GoogleSheetsService {
         }
     }
 
+    /**
+     * Periodically fetches and saves new fairs.
+     * This method is scheduled to run every 10 seconds. It calls the {@link #saveNewFairs()}
+     * method to fetch data from the Google Sheet and save it into the system.
+     * Any errors encountered during the process are logged to the console.
+     */
+    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    public void fetchAndSaveNewFairs() {
+        try {
+            saveNewFairs();
+            System.out.println("Scheduled task: Fairs fetched and saved.");
+        } catch (IOException e) {
+            System.err.println("Error fetching and saving fairs: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches fair data from the Google Sheet.
+     * This method calls the Google Sheets API to retrieve data from the specified
+     * spreadsheet and range, and returns the rows as a list of lists.
+     *
+     * @return A list of rows from the Google Sheet, where each row is represented
+     *         as a list of objects. Returns an empty list if no data is found.
+     * @throws IOException If an error occurs while communicating with the Google Sheets API.
+     */
     public List<List<Object>> fetchFairData() throws IOException {
         // Call the Sheets API to retrieve values and return the rows as a list of lists
         ValueRange response = sheetsService.spreadsheets().values()
@@ -262,6 +329,12 @@ public class GoogleSheetsService {
         return response.getValues();
     }
 
+    /**
+     * Saves new fairs by fetching data from the Google Sheet and comparing timestamps
+     * to ensure only new entries are processed and stored in the database.
+     *
+     * @throws IOException If an error occurs while fetching data from Google Sheets.
+     */
     public void saveNewFairs() throws IOException {
         // Get the latest applicationTimeStamp from the database (implement in FairService)
         Date latestTimestamp = eventService.findLatestFairApplicationTimeStamp();
@@ -308,6 +381,37 @@ public class GoogleSheetsService {
         }
     }
 
+    /**
+     * Maps a row of data from the Google Sheet to a {@link Fair} object.
+     *
+     * <p>This method parses and processes various fields in the row to construct
+     * a {@link Fair} object with the following mappings:
+     * <ul>
+     *   <li>Column A: Application timestamp (parsed into a {@link Date}).</li>
+     *   <li>Columns B, C, D: School name, address, and city (mapped to a {@link School}).</li>
+     *   <li>Columns E-H: Contact person details (name, role, phone, and email, mapped to {@link SchoolCounselor}).</li>
+     *   <li>Columns I, J: Preferred date (parsed into a {@link Date}) and time (stored as a string).</li>
+     *   <li>Column K: Estimated student count (parsed into an integer).</li>
+     *   <li>Column L: Event details or visitor notes (stored as a string).</li>
+     * </ul>
+     *
+     * <p>The method validates and ensures proper mapping for all required fields.
+     * If a school or counselor does not exist, it creates them using the
+     * appropriate service methods. Additionally, the guide count is calculated based
+     * on the estimated student count, with a maximum limit of 3 guides.</p>
+     *
+     * <p>Edge cases handled include:</p>
+     * <ul>
+     *   <li>Ensuring proper date and time parsing using {@link SimpleDateFormat}.</li>
+     *   <li>Creating or updating schools and counselors dynamically based on the input.</li>
+     *   <li>Limiting the maximum number of guides to 3.</li>
+     * </ul>
+     *
+     * @param row A list of objects representing a row of data from the Google Sheet.
+     *            The columns should correspond to the expected structure.
+     * @return A {@link Fair} object constructed from the row data.
+     * @throws ParseException If any date or time field fails to parse.
+     */
     private Fair mapRowToFair(List<Object> row) throws ParseException {
         Fair fair = new Fair();
 
@@ -357,6 +461,31 @@ public class GoogleSheetsService {
         return fair;
     }
 
+    /**
+     * Periodically fetches and saves new individual tours.
+     * This method is scheduled to run every 10 seconds. It calls the {@link #saveNewIndividualTours()}
+     * method to fetch data from the Google Sheet and save it into the system.
+     * Any errors encountered during the process are logged to the console.
+     */
+    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    public void fetchAndSaveNewIndividualTours() {
+        try {
+            saveNewIndividualTours();
+            System.out.println("Scheduled task: Individual Tours fetched and saved.");
+        } catch (IOException e) {
+            System.err.println("Error fetching and saving individual tours: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches individual tour data from the Google Sheet.
+     * This method calls the Google Sheets API to retrieve data from the specified
+     * spreadsheet and range, and returns the rows as a list of lists.
+     *
+     * @return A list of rows from the Google Sheet, where each row is represented
+     *         as a list of objects. Returns an empty list if no data is found.
+     * @throws IOException If an error occurs while communicating with the Google Sheets API.
+     */
     public List<List<Object>> fetchIndividualTourData() throws IOException {
         ValueRange response = sheetsService.spreadsheets().values()
                 .get(INDIVIDUAL_TOUR_SPREADSHEET_ID, INDIVIDUAL_TOUR_SPREADSHEET_RANGE)
@@ -370,6 +499,12 @@ public class GoogleSheetsService {
         return response.getValues();
     }
 
+    /**
+     * Saves new fairs by fetching data from the Google Sheet and comparing timestamps
+     * to ensure only new entries are processed and stored in the database.
+     *
+     * @throws IOException If an error occurs while fetching data from Google Sheets.
+     */
     public void saveNewIndividualTours() throws IOException {
         // Get the latest applicationTimeStamp from the database
         Date latestTimestamp = eventService.findLatestIndividualTourApplicationTimeStamp();
@@ -414,6 +549,35 @@ public class GoogleSheetsService {
         }
     }
 
+    /**
+     * Maps a row of data from the Google Sheet to an {@link IndividualTour} object.
+     *
+     * <p>This method parses and processes various fields in the row to construct
+     * an {@link IndividualTour} object with the following mappings:
+     * <ul>
+     *   <li>Column A: Application timestamp (parsed into a {@link Date}).</li>
+     *   <li>Columns B, C, D: Student details (name, email, phone).</li>
+     *   <li>Columns E, F: School name and city (mapped to a {@link School}).</li>
+     *   <li>Column G: Preferred visit date (parsed into a {@link Date}).</li>
+     *   <li>Column H: Preferred visit time (stored as a string).</li>
+     *   <li>Column I: Area of interest (stored as a string).</li>
+     *   <li>Column J: Visitor notes or additional comments (stored as a string).</li>
+     * </ul>
+     *
+     * <p>The method dynamically creates or updates related entities such as
+     * {@link School} and {@link Student} using the appropriate service methods.</p>
+     *
+     * <p>Edge cases handled include:</p>
+     * <ul>
+     *   <li>Graceful handling of invalid date formats for timestamps and visit dates.</li>
+     *   <li>Ensuring associated entities like schools and students are created or updated.</li>
+     * </ul>
+     *
+     * @param row A list of objects representing a row of data from the Google Sheet.
+     *            The columns should correspond to the expected structure.
+     * @return An {@link IndividualTour} object constructed from the row data.
+     * @throws ParseException If any date field fails to parse (if not handled locally).
+     */
     private IndividualTour mapRowToIndividualTour(List<Object> row) throws ParseException {
         IndividualTour individualTour = new IndividualTour();
 
@@ -455,7 +619,5 @@ public class GoogleSheetsService {
 
         return individualTour;
     }
-
-
 
 }
