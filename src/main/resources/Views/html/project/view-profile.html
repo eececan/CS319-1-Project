@@ -27,6 +27,7 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
         .alert-danger {
             background-color: #dc3545 !important; /* Bootstrap default danger color */
@@ -56,6 +57,7 @@
         .closebtn:hover {
             color: black;
         }
+
         /* Force Success Alert to Green */
         .alert-success {
             background-color: #28a745 !important;
@@ -67,23 +69,9 @@
         .alert-success .btn-close {
             color: #fff;
             opacity: 1;
-            filter: invert(1); /* Makes the close button white */
+            filter: invert(1);
         }
 
-        .disabled-sidebar {
-            pointer-events: none; /* Disables all clicks */
-            opacity: 0.5; /* Makes it visually appear inactive */
-        }
-        .card {
-            margin-bottom: 20px; /* Adds space between cards */
-            background-color: #f8f9fa; /* Dirty white color */
-            border: 1px solid #dee2e6; /* Slightly darker border for better contrast */
-            border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        }
-        .card-body {
-            padding: 20px; /* Adds consistent padding inside the card */
-        }
 
     </style>
 </head>
@@ -501,45 +489,86 @@
                                     <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
                                     <li class="list-group-item"
                                         th:text="${role == 'ROLE_GUIDE' ? 'Guide'
-                                         : role == 'ROLE_GUIDE_IN_TRAINING' ? 'Guide in Training'
-                                         : role == 'ROLE_ADVISOR' ? 'Advisor'
-                                         : role == 'ROLE_COORDINATOR' ? 'Coordinator' : ''}">
+                     : role == 'ROLE_GUIDE_IN_TRAINING' ? 'Guide in Training'
+                     : role == 'ROLE_ADVISOR' ? 'Advisor'
+                     : role == 'ROLE_COORDINATOR' ? 'Coordinator' : ''}">
                                     </li>
                                     <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
-                                    <li class="list-group-item" th:if="${role == 'ROLE_ADVISOR'}">
-                                        Responsible Day: <span th:text="${user.responsibleDay}"></span>
-                                    </li>
                                     <li class="list-group-item" th:text="'Start Date: ' + ${#dates.format(user.startDate, 'dd MMMM yyyy')}"></li>
-
                                 </ul>
+                            </div>
+                        </div>
 
-                                <div th:if="${userRole == 'ROLE_COORDINATOR' && (role == 'ROLE_ADVISOR')}" class="mt-3">
-                                    <form th:action="@{/ui/UserProfile/changeResponsibleDay}" method="post" class="form-group">
-                                        <input type="hidden" name="userId" th:value="${user.id}">
-
-                                        <!-- Label for Dropdown -->
-                                        <label for="responsibleDayDropdown" class="form-label">Change Responsible Day</label>
-
-                                        <!-- Dropdown for Selecting Responsible Day -->
-                                        <select id="responsibleDayDropdown" class="form-select" name="day" required>
-                                            <option value="Monday" th:selected="${user.responsibleDay == 'Monday'}">Monday</option>
-                                            <option value="Tuesday" th:selected="${user.responsibleDay == 'Tuesday'}">Tuesday</option>
-                                            <option value="Wednesday" th:selected="${user.responsibleDay == 'Wednesday'}">Wednesday</option>
-                                            <option value="Thursday" th:selected="${user.responsibleDay == 'Thursday'}">Thursday</option>
-                                            <option value="Friday" th:selected="${user.responsibleDay == 'Friday'}">Friday</option>
-                                            <option value="Saturday" th:selected="${user.responsibleDay == 'Saturday'}">Saturday</option>
-                                            <option value="Sunday" th:selected="${user.responsibleDay == 'Sunday'}">Sunday</option>
-                                        </select>
-
-                                        <!-- Submit Button -->
-                                        <button type="submit" class="btn btn-primary mt-3">Change Responsible Day</button>
-                                    </form>
-                                </div>
-
-
+                        <!-- Schedule Table (Visible only to ROLE_GUIDE and ROLE_GUIDE_IN_TRAINING) -->
+                        <div th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING'}" class="card mt-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Availability Schedule</h5>
+                                <p>Blue slots indicate unavailable times, while white slots are available.</p>
+                                <table class="table table-bordered" style="table-layout: fixed; font-size: 8px;">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%;">Time</th>
+                                        <th style="width: 12%;">Mon</th>
+                                        <th style="width: 12%;">Tue</th>
+                                        <th style="width: 12%;">Wed</th>
+                                        <th style="width: 12%;">Thu</th>
+                                        <th style="width: 12%;">Fri</th>
+                                        <th style="width: 12%;">Sat</th>
+                                        <th style="width: 12%;">Sun</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Row for 09:00 -->
+                                    <tr>
+                                        <td>09.00</td>
+                                        <td th:class="${guide.schedule[0] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[1] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[2] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[3] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[4] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[5] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[6] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    <!-- Row for 11:00 -->
+                                    <tr>
+                                        <td>11.00</td>
+                                        <td th:class="${guide.schedule[7] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[8] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[9] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[10] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[11] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[12] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[13] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    <!-- Row for 13:30 -->
+                                    <tr>
+                                        <td>13.30</td>
+                                        <td th:class="${guide.schedule[14] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[15] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[16] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[17] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[18] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[19] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[20] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    <!-- Row for 16:00 -->
+                                    <tr>
+                                        <td>16.00</td>
+                                        <td th:class="${guide.schedule[21] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[22] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[23] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[24] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[25] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[26] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide.schedule[27] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+
+
 
                     <!-- Right Card -->
                     <div class="col-lg-8 col-md-12">
@@ -715,7 +744,6 @@
 <script th:src="@{/assets/bundles/c3.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/page/project-index.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

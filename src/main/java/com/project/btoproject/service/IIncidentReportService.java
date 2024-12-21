@@ -7,4 +7,5 @@ import java.util.List;
 public interface IIncidentReportService {
     void saveIncidentReport(IncidentReport incidentReport);
     List<IncidentReport> getAllIncidentReports();
+    void setStatusOfIncidentReport(Long id, String statusOfIncidentReport);
 }

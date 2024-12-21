@@ -60,6 +60,39 @@
              opacity: 0.5; /* Makes it visually appear inactive */
          }
 
+        .schedule-component table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedule-component th, .schedule-component td {
+            border: 1px solid #ddd; ;
+            text-align: center;
+            padding: 8px;
+        }
+        .table th {
+            font-size: 8px; !important;
+        }
+        .table td {
+            font-size: 8px; !important;
+        }
+        .schedule-component td.full {
+            background-color: #031961;
+        }
+
+        .schedule-component td.empty {
+            background-color: white;
+        }
+
+        .full {
+            background-color: #031961 !important;
+        }
+
+        .empty {
+            background-color: white !important;
+        }
+
+
 
     </style>
 </head>
@@ -452,25 +485,87 @@
 
         <div th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING'}" id="guide_section" class="section-body mt-4">
 
-        <div class="container-fluid">
+            <div class="container-fluid">
                 <div class="row clearfix">
                     <div class="col-lg-4 col-md-12">
-                        <div class="row">
-                            <div class="card">
-                                <img class="card-img-top"
-                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                                     alt="Card image cap">
-                                <div class="card-body">
-                                    <div class="row"></div>
-                                </div>
-                                <div th:if="${user != null}">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
-                                        <li class="list-group-item">GUIDE</li>
-                                        <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
-                                        <li class="list-group-item" th:text="'Start Date: ' + ${#dates.format(user.startDate, 'dd MMMM yyyy')}"></li>
-                                    </ul>
-                                </div>
+                        <div class="card">
+                            <img class="card-img-top" th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}" alt="Card image cap">
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
+                                    <li class="list-group-item">GUIDE</li>
+                                    <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
+                                    <li class="list-group-item" th:text="'Start Date: ' + ${#dates.format(user.startDate, 'dd MMMM yyyy')}"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card mt-4">
+                            <div class="card-body" style="overflow-x: auto;">
+                                <h2>Guide Availability Schedule</h2>
+                                <p>Blue slots indicate unavailable times, while white slots are available.</p>
+                                <table class="table table-bordered" style="table-layout: fixed; font-size: 8px;">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%;">Time</th>
+                                        <th style="width: 12%;">Mon</th>
+                                        <th style="width: 12%;">Tue</th>
+                                        <th style="width: 12%;">Wed</th>
+                                        <th style="width: 12%;">Thu</th>
+                                        <th style="width: 12%;">Fri</th>
+                                        <th style="width: 12%;">Sat</th>
+                                        <th style="width: 12%;">Sun</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Row for 09:00 -->
+                                    <tr>
+                                        <td>09.00</td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[0] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[1] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[2] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[3] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[4] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[5] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[6] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    <!-- Row for 11:00 -->
+                                    <tr>
+                                        <td>11.00</td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[7] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[8] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[9] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[10] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[11] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[12] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[13] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    <!-- Row for 13:30 -->
+                                    <tr>
+                                        <td>13.30</td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[14] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[15] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[16] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[17] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[18] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[19] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[20] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    <!-- Row for 16:00 -->
+                                    <tr>
+                                        <td>16.00</td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[21] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[22] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[23] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[24] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[25] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[26] == 'f' ? 'full' : 'empty'}"></td>
+                                        <td th:class="${guide != null && guide.schedule != null && guide.schedule[27] == 'f' ? 'full' : 'empty'}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+
                             </div>
                         </div>
                     </div>
@@ -549,10 +644,36 @@
                                                 </div>
                                             </div>
                                             <div class="card-footer text-right">
-                                                <button type="button" class="btn btn-primary float-left" onclick="function viewEditSchedule() {
-                                                    window.location.href = '/updateSchedule';
-                                                }
-                                                viewEditSchedule()">View/Edit Schedule</button>
+                                                <!-- Alert Message -->
+                                                <div id="alertMessage"
+                                                     class="alert alert-warning alert-dismissible fade d-none align-items-center"
+                                                     role="alert"
+                                                     style="font-size: 14px; display: flex; justify-content: space-between; padding: 12px; background-color: #2196F3; color: #fff; border-color: #0b79d0;">
+                                                    <span><strong>Warning:</strong> Please fill out your personal information before entering your schedule!</span>
+                                                    <button type="button"
+                                                            class="btn-close"
+                                                            data-bs-dismiss="alert"
+                                                            aria-label="Close"
+                                                            style="color: white; font-size: 20px; font-weight: bold; border: none; background: none; cursor: pointer; line-height: 1;">
+                                                        &times;
+                                                    </button>
+                                                </div>
+
+                                                <!-- View/Edit Schedule Button -->
+                                                <button type="button"
+                                                        class="btn btn-primary float-left"
+                                                        th:if="${isUser}"
+                                                        onclick="window.location.href = '/updateSchedule';">
+                                                    View/Edit Schedule
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-primary float-left"
+                                                        th:if="${!isUser}"
+                                                        onclick="showAlert();">
+                                                    View/Edit Schedule
+                                                </button>
+
+                                                <!-- Update Profile Button -->
                                                 <button type="submit" class="btn btn-primary">Update Profile</button>
                                             </div>
                                         </div>
@@ -564,6 +685,9 @@
                 </div>
             </div>
         </div>
+
+
+
 
 
         <div th:if="${role == 'ROLE_HEAD_SECRETARY'}" id="secretary_section" class="section-body mt-4">
@@ -658,7 +782,22 @@
     </div>
 </div>
 
+<script>
+    function showAlert() {
+        // Get the alert message div
+        const alertMessage = document.getElementById('alertMessage');
 
+        // Make the alert visible
+        alertMessage.classList.remove('d-none');
+        alertMessage.classList.add('show');
+
+        // Optionally, auto-hide the alert after 5 seconds
+        setTimeout(() => {
+            alertMessage.classList.remove('show');
+            alertMessage.classList.add('d-none');
+        }, 5000);
+    }
+</script>
 
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>

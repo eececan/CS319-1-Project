@@ -9,6 +9,77 @@
             text-decoration: line-through;
             color: gray;
         }
+        /* Form Wrapper */
+        .status-form {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+        .table tbody tr {
+            vertical-align: middle;
+        }
+        /* Dropdown Container */
+        .status-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Styled Dropdown */
+        .status-dropdown {
+            appearance: none; /* Remove default dropdown styles */
+            -webkit-appearance: none; /* Safari */
+            -moz-appearance: none; /* Firefox */
+            padding: 5px 26px;
+            padding-left: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            cursor: pointer;
+            background-color: #f1f5f9;
+            color: #333;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        /* Hover and Focus Effects */
+        .status-dropdown:hover,
+        .status-dropdown:focus {
+            border-color: #6c757d;
+            background-color: #e2e6ea;
+        }
+
+        /* Optional: Add a dropdown arrow icon */
+        .status-dropdown-wrapper::after {
+            content: "▼";
+            font-size: 12px;
+            color: #6c757d;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Option Styles */
+        .status-dropdown option {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* Specific Colors for Each Status */
+        .status-dropdown option[value="new_issue"] {
+            color: #fd5555; /* Red */
+        }
+
+        .status-dropdown option[value="investigating"] {
+            color: #e39200; /* Orange */
+        }
+
+        .status-dropdown option[value="resolved"] {
+            color: #21c346; /* Green */
+        }
+
     </style>
 
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
@@ -296,79 +367,98 @@
                 </div>
             </div>
         </div>
-        <div class="section-body">
-            <div class="container-fluid">
-                <div class="d-flex justify-content-between align-items-center">
-                    <ul class="nav nav-tabs page-header-tab">
-                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#inc-list">Incident Reports</a></li>
-                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inc-add">Add Incident Report</a></li>
-                    </ul>
+        <div id="main_content">
+            <div class="section-body">
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <ul class="nav nav-tabs page-header-tab">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#inc-list">Incident Reports</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inc-add">Add Incident Report</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="section-body mt-3">
-            <div class="container-fluid">
-                <div class="tab-content">
-                    <!-- Incident Report List -->
-                    <div class="tab-pane fade show active" id="inc-list" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Author</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="report : ${all_reports}">
-                                        <td th:text="${report.title}"></td>
-                                        <td th:text="${report.description}"></td>
-                                        <td th:text="${report.author}"></td>
-                                        <td class="text-right">
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+
+            <div class="section-body mt-3">
+                <div class="container-fluid">
+                    <div class="tab-content">
+                        <!-- Incident Report List -->
+                        <div class="tab-pane fade show active" id="inc-list" role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Author</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="report : ${all_reports}">
+                                            <td th:text="${report.title}"></td>
+                                            <td th:text="${report.description}"></td>
+                                            <td th:text="${report.author}"></td>
+                                            <td>
+                                                <!-- Form to submit the updated status -->
+                                                <form th:action="@{/setIncidentReportStatus}" method="post" class="status-form">
+                                                    <!-- Hidden ID Field -->
+                                                    <input type="hidden" name="id" th:value="${report.id}" />
+
+                                                    <!-- Custom Dropdown -->
+                                                    <div class="status-dropdown-wrapper">
+                                                        <select class="status-dropdown" name="status" onchange="this.form.submit()">
+                                                            <option value="new_issue" th:selected="${report.status == 'new_issue'}">New Issue</option>
+                                                            <option value="investigating" th:selected="${report.status == 'investigating'}">Investigating!</option>
+                                                            <option value="resolved" th:selected="${report.status == 'resolved'}">Resolved</option>
+                                                        </select>
+                                                    </div>
+                                                </form>
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Add Incident -->
-                    <div class="tab-pane fade" id="inc-add" role="tabpanel">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Add Incident</h3>
-                                <div class="card-options ">
-                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                        <!-- Add Incident -->
+                        <div class="tab-pane fade" id="inc-add" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Add Incident</h3>
+                                    <div class="card-options">
+                                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    </div>
                                 </div>
+                                <form th:action="@{/postIncidentReport}" method="post" class="card-body">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label">Incident Title <span class="text-danger">*</span></label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control" name="title" required>
+                                        </div>
+                                        <label class="col-md-3 col-form-label">Author <span class="text-danger">*</span></label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control" name="author" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label">Incident Description <span class="text-danger">*</span></label>
+                                        <div class="col-md-7">
+                                            <textarea rows="4" class="form-control no-resize" name="description" placeholder="Please type what you want to report..." required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label"></label>
+                                        <div class="col-md-7">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/getIncidentReports'">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <form th:action="@{/postIncidentReport}" method="post" class="card-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label">Incident Title <span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <input type="text" class="form-control" name="title" required>
-                                    </div>
-                                    <label class="col-md-3 col-form-label">Author <span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <input type="text" class="form-control" name="author" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label">Incident Description <span class="text-danger">*</span></label>
-                                    <div class="col-md-7">
-                                        <textarea rows="4" class="form-control no-resize" name="description" placeholder="Please type what you want to report..." required></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label"></label>
-                                    <div class="col-md-7">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                        <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/getIncidentReports'">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -383,6 +473,9 @@
 <script th:src="@{/assets/bundles/c3.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/page/project-index.js}"></script>
+<script>
 
+
+</script>
 </body>
 </html>
