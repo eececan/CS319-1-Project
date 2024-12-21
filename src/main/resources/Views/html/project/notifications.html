@@ -5,6 +5,9 @@
   <title>Notifications</title>
 </head>
 <body>
+<audio id="notification-sound" preload="auto">
+  <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
+</audio>
 <div th:fragment="notifications-panel">
   <div class="notifications-dropdown">
     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">

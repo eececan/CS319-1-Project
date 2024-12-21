@@ -1,29 +1,62 @@
-
 $(document).ready(function() {
     // Function to format timestamp
     function formatTime(timestamp) {
         return moment(timestamp).fromNow();
     }
     let notificationDropdown = $('.notifications-dropdown');
+    let notificationPanel = $('.notifications-panel');
+    let isOpen = false;
+    let lastNotificationCount = 0;
+    // Function to play notification sound
+    function playNotificationSound() {
+        const audio = document.getElementById('notification-sound');
+        if (audio) {
+            audio.play().catch(function(error) {
+                console.log("Sound play failed:", error);
+            });
+        }
+    }
+
 
     // Toggle dropdown on click
     notificationDropdown.on('click', function(e) {
         e.preventDefault();
-        loadNotifications();
-        $(this).find('.dropdown-menu').toggle();
+        e.stopPropagation();
+
+        if (!isOpen) {
+            loadNotifications();
+            notificationPanel.show();
+            isOpen = true;
+        } else {
+            notificationPanel.hide();
+            isOpen = false;
+        }
     });
 
     // Close dropdown when clicking outside
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.notifications-dropdown').length) {
-            $('.notifications-panel').hide();
+            notificationPanel.hide();
+            isOpen = false;
         }
-    })
+    });
+
+    // Prevent dropdown from closing when clicking inside
+    notificationPanel.on('click', function(e) {
+        e.stopPropagation();
+    });
+
     // Function to update notification count
     function updateNotificationCount() {
         $.get('/api/notifications/unread', function(notifications) {
             const count = notifications.length;
             $('.notification-count').text(count);
+
+            // Play sound if new notifications arrived
+            if (count > lastNotificationCount) {
+                playNotificationSound();
+            }
+            lastNotificationCount = count;
 
             if (count > 0) {
                 $('.notification-count').show();
@@ -39,19 +72,29 @@ $(document).ready(function() {
             const notificationsList = $('.notifications-list');
             notificationsList.empty();
 
-            notifications.forEach(notification => {
-                const notificationHtml = `
-                    <div class="notification-item unread" data-id="${notification.id}">
+            if (notifications.length === 0) {
+                notificationsList.append(`
+                    <div class="notification-item">
                         <div class="notification-content">
-                            ${notification.message}
-                        </div>
-                        <div class="notification-time">
-                            ${formatTime(notification.timestamp)}
+                            No new notifications
                         </div>
                     </div>
-                `;
-                notificationsList.append(notificationHtml);
-            });
+                `);
+            } else {
+                notifications.forEach(notification => {
+                    const notificationHtml = `
+                        <div class="notification-item unread" data-id="${notification.id}">
+                            <div class="notification-content">
+                                ${notification.message}
+                            </div>
+                            <div class="notification-time">
+                                ${formatTime(notification.timestamp)}
+                            </div>
+                        </div>
+                    `;
+                    notificationsList.append(notificationHtml);
+                });
+            }
 
             updateNotificationCount();
         });
