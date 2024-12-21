@@ -97,16 +97,17 @@ public class DataInitializer {
             roleRepository.save(guideInTraining);
         }
     }
-
+    @Bean
+    public ApplicationRunner initializeGuides() {
+        return args -> initializeGuideData();
+    }
+    /*
   @Bean
     public ApplicationRunner initializeAdvisors() {
         return args -> initializeAdvisorData();
     }
 
-    @Bean
-    public ApplicationRunner initializeGuides() {
-        return args -> initializeGuideData();
-    }
+
 
     @Bean
     public ApplicationRunner initializeGuideInTrainings() {
@@ -127,7 +128,7 @@ public class DataInitializer {
     public ApplicationRunner initializeDirector() {
         return args -> initializeDirectorData();
     }
-
+*/
     @Transactional
     public void initializeAdvisorData() {
         if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
@@ -182,24 +183,24 @@ public class DataInitializer {
 
     @Transactional
     public void initializeGuideData() {
-        if (guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()) {
+        if (guideRepository.findByFirstNameAndLastName("Aycakeeeee", "Atac").isEmpty()) {
             RegisterDto registerDto = new RegisterDto();
-            registerDto.setUsername("2");
-            registerDto.setPassword("2");
+            registerDto.setUsername("23");
+            registerDto.setPassword("23");
             registerDto.setRole("ROLE_GUIDE");
 
             authService.register(registerDto);
 
-            UserEntity user = userService.findUserByUsername(2L)
+            UserEntity user = userService.findUserByUsername(23L)
                     .orElseThrow(() -> new IllegalStateException("User not found"));
 
             UserGuideDto guideDto = new UserGuideDto();
-            guideDto.setSchedule("example guide schedule");
-            guideDto.setFirstName("Ayca");
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            guideDto.setFirstName("Aycakeeeee");
             guideDto.setLastName("Atac");
             guideDto.setDescription("Ayca Atac added as a guide as an example.");
             guideDto.setPhoneNumber("05370527736");
-            guideDto.setEmail("candan.atac@ug.bilkent.edu.tr");
+            guideDto.setEmail("cccandan.atac@ug.bilkent.edu.tr");
             guideDto.setGrade(3);
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
