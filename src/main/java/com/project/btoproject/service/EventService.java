@@ -4,6 +4,7 @@ import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IEventRepository;
 import com.project.btoproject.repository.IGuideRepository;
+import com.project.btoproject.repository.IPointRecordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,15 @@ public class EventService implements IEventService {
 
     private IEventRepository eventRepository;
     private IGuideRepository guideRepository;
+    private IPointRecordRepository pointRecordRepository;
     private final NotificationService notificationService;
     private MailService mailService;
 
     @Autowired
-    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository, NotificationService notificationService, MailService mailService) {
+    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository, IPointRecordRepository pointRecordRepository, NotificationService notificationService, MailService mailService) {
         this.eventRepository = eventRepository;
         this.guideRepository = guideRepository;
+        this.pointRecordRepository = pointRecordRepository;
         this.notificationService = notificationService;
         this.mailService = mailService;
     }
@@ -1059,6 +1062,23 @@ public class EventService implements IEventService {
             if (tour.getStatus() == Status.UPCOMING_TOUR) {
                 tour.setStatus(Status.COMPLETED_TOUR);
                 eventRepository.save(tour);
+                //point record TODO
+                if(event.getGuides().size() > 1) {
+                    for(Guide guide : event.getGuides()) {
+                        PointRecord pr = new PointRecord();
+                        pr.setEvent(event);
+                        pr.setGuide(guide);
+                        pr.setPoint(1);
+                        pointRecordRepository.save(pr);
+                    }
+                }
+                else {
+                    PointRecord pr = new PointRecord();
+                    pr.setEvent(event);
+                    pr.setGuide(event.getGuides().get(0));
+                    pr.setPoint(1);
+                    pointRecordRepository.save(pr);
+                }
             } else {
                 throw new Exception("Tour cannot be marked as completed. Current status: " + tour.getStatus());
             }
