@@ -59,7 +59,7 @@
 
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 
-    <title>::  :: Contact</title>
+    <title>Member List</title>
 
     <!-- Bootstrap Core and vandor -->
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
@@ -133,116 +133,6 @@
                     </label>
                 </div>
             </div>
-            <hr>
-            <div class="mb-4">
-                <h6 class="font-14 font-weight-bold text-muted">Dropdown Menu Icon</h6>
-                <div class="custom-controls-stacked arrow_option">
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-a">
-                        <span class="custom-control-label">A</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-b">
-                        <span class="custom-control-label">B</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-c" checked="">
-                        <span class="custom-control-label">C</span>
-                    </label>
-                </div>
-                <h6 class="font-14 font-weight-bold mt-4 text-muted">SubMenu List Icon</h6>
-                <div class="custom-controls-stacked list_option">
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="listicon" value="list-a" checked="">
-                        <span class="custom-control-label">A</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="listicon" value="list-b">
-                        <span class="custom-control-label">B</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="listicon" value="list-c">
-                        <span class="custom-control-label">C</span>
-                    </label>
-                </div>
-            </div>
-            <hr>
-            <div>
-                <h6 class="font-14 font-weight-bold mt-4 text-muted">General Settings</h6>
-                <ul class="setting-list list-unstyled mt-1 setting_switch">
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Night Mode</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-darkmode">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Fix Navbar top</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-fixnavbar">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Header Dark</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-pageheader" checked="">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Min Sidebar Dark</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-min_sidebar">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Sidebar Dark</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-sidebar">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Icon Color</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-iconcolor">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Gradient Color</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-gradient">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Box Shadow</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxshadow">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">RTL Support</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-rtl">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Box Layout</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxlayout">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                </ul>
-            </div>
-            <hr>
             <div class="form-group">
                 <label class="d-block">Storage <span class="float-right">77%</span></label>
                 <div class="progress progress-sm">
@@ -330,7 +220,7 @@
                 </li>
                 <li>
                     <a th:href="@{/getAllUsers}">
-                        <i class="fa fa-user"></i><span>Clients</span>
+                        <i class="fa fa-user"></i><span>Member List</span>
                     </a>
                 </li>
                 <li>
@@ -366,7 +256,7 @@
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">Dashboard</h1>
+                        <h1 class="page-title">Member List</h1>
                     </div>
                     <div class="right">
 
