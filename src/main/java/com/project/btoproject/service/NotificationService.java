@@ -134,10 +134,15 @@ public class NotificationService {
                     tour.getSchool().getName(),
                     new SimpleDateFormat("dd/MM/yyyy").format(tour.getDate()));
             if (tour.getStatus() == Status.UPCOMING_TOUR) {
-
+                String newMessage = message+ " You can assign yourself";
                 for (Guide guide : guideService.getAllGuides()) {
 
-                    createNotification(guide.getId(), message);
+                    createNotification(guide.getId(), newMessage);
+                }
+                String newMessageAd = message+ " You can assign guides";
+                for (Advisor advisor : advisorService.getAllAdvisors()) {
+
+                    createNotification(advisor.getId(), newMessageAd);
                 }
             }
 
@@ -154,10 +159,10 @@ public class NotificationService {
                     new SimpleDateFormat("dd/MM/yyyy").format(fair.getDate()));
 
             if (fair.getStatus() == Status.UPCOMING_FAIR) {
-
+                String newMessage = message+ " You can assign yourself";
                 for (Guide guide : guideService.getAllGuides()) {
 
-                    createNotification(guide.getId(), message);
+                    createNotification(guide.getId(), newMessage);
                 }
             }
 

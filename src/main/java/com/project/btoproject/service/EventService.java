@@ -48,6 +48,7 @@ public class EventService implements IEventService {
             }
             fair.setStatus(Status.UPCOMING_FAIR);
             eventRepository.save(fair);
+            notificationService.notifyEventApproved(fair);
         }
 
     else {
@@ -146,6 +147,7 @@ public class EventService implements IEventService {
             tour.setStatus(Status.UPCOMING_TOUR); // Set status to advisor approved
             eventRepository.save(tour);
             mailService.sendApprovalMail(tour);
+            notificationService.notifyEventApproved(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }

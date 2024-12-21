@@ -8,6 +8,8 @@
     border-bottom: 1px solid #eee;
     cursor: pointer;
     transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
 }
 
 .notification-item:hover {
@@ -21,6 +23,8 @@
 .notification-content {
     color: #333;
     margin-bottom: 5px;
+    flex-grow: 1;
+    padding-left: 10px; /* Add padding to separate from checkbox */
 }
 
 .notification-time {
@@ -45,6 +49,7 @@
     min-width: 300px;
     max-width: 400px;
 }
+
 /* Update dropdown container positioning */
 .dropdown {
     position: relative;
@@ -55,4 +60,8 @@
     right: 0;
     left: auto;
     max-width: 100vw;
+}
+
+.mark-as-read {
+    margin-right: 10px; /* Add margin to separate from content */
 }
