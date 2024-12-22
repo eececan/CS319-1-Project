@@ -2,24 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org"  lang="en" dir="ltr">
 <head>
     <style>
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ccc; /* Optional border for better aesthetics */
-            display: block;
-            margin: 0 auto; /* Centers the image */
-        }
-
-        .avatar-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%; /* Ensures it matches the table row height */
-            overflow: hidden;
-        }
-
         /* The close button */
         .closebtn {
             margin-left: 15px;
@@ -37,7 +19,6 @@
             color: black;
         }
 
-
         /* Force Success Alert to Green */
         .alert-success {
             background-color: #28a745 !important;
@@ -50,6 +31,35 @@
             color: #fff;
             opacity: 1;
             filter: invert(1); /* Makes the close button white */
+        }
+
+        .card-body {
+            padding: 10px; /* Adjusted to reduce space inside the card */
+        }
+
+        .avatar-container {
+            margin: 0; /* Remove extra margin */
+            padding: 0; /* Remove extra padding */
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc; /* Optional border for better aesthetics */
+            display: block;
+            margin: 0; /* Ensures no additional margin */
+        }
+
+        /* Remove vertical lines between columns */
+        .table-custom th,
+        .table-custom td {
+            border: none; /* Removes the borders */
+        }
+
+        .table-custom {
+            border-collapse: collapse; /* Ensures no spacing between cells */
         }
     </style>
 
@@ -440,6 +450,18 @@
                         <div class="card-body">
                             <div class="table-responsive" id="users">
                                 <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
+                                    <thead style="border-bottom: 1px solid #ddd;">
+                                    <tr>
+                                        <!-- Empty Header for Avatar Column -->
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Bilkent ID</th>
+                                        <th>Role</th>
+                                        <!-- Conditional Header for Actions -->
+                                        <th th:if="${roleUser == 'ROLE_COORDINATOR'}" class="text-right" style="border-right: none;">Actions</th>
+                                    </tr>
+                                    </thead>
                                     <tbody>
                                     <!-- Check if the users list is empty -->
                                     <tr th:if="${#lists.isEmpty(all_users)}">
@@ -450,7 +472,6 @@
 
                                     <!-- Filter Rows Dynamically -->
                                     <tr th:each="user : ${all_users}" th:if="${roleFilter == null || user.role == roleFilter}">
-                                        <td class="width35 hidden-xs"></td>
                                         <td class="text-center width40">
                                             <div class="avatar-container">
                                                 <img class="avatar"
@@ -459,35 +480,30 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div>
-                                                <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}"
-                                                   th:text="|${user.firstName != null && !user.firstName.isEmpty() ? user.firstName : 'Unknown'} ${user.lastName != null && !user.lastName.isEmpty() ? user.lastName : 'User'}|">
-                                                </a>
-                                            </div>
-                                            <div class="text-muted" th:text="${user.phoneNumber != null && !user.phoneNumber.isEmpty() ? user.phoneNumber : 'N/A'}"></div>
+                                            <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}"
+                                               th:text="|${user.firstName != null && !user.firstName.isEmpty() ? user.firstName : 'Unknown'} ${user.lastName != null && !user.lastName.isEmpty() ? user.lastName : 'User'}|">
+                                            </a>
+                                            <div th:text="${user.phoneNumber != null && !user.phoneNumber.isEmpty() ? user.phoneNumber : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
-                                            <div class="text-muted" th:text="${user.email != null && !user.email.isEmpty() ? user.email : 'N/A'}"></div>
+                                            <div th:text="${user.email != null && !user.email.isEmpty() ? user.email : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
-                                            <div class="text-muted" th:text="${user.id != null && !user.id.toString().isEmpty() ? user.id : 'N/A'}"></div>
+                                            <div th:text="${user.id != null && !user.id.toString().isEmpty() ? user.id : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
-                                            <div class="text-muted">
-                                <span th:switch="${user.role}">
-                                    <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
-                                    <span th:case="'ROLE_GUIDE'">Guide</span>
-                                    <span th:case="'ROLE_ADVISOR'">Advisor</span>
-                                    <span th:case="'ROLE_USER'">User</span>
-                                    <span th:case="'ROLE_DIRECTOR'">Director</span>
-                                    <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
-                                    <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
-
-                                </span>
-                                            </div>
+        <span th:switch="${user.role}">
+            <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
+            <span th:case="'ROLE_GUIDE'">Guide</span>
+            <span th:case="'ROLE_ADVISOR'">Advisor</span>
+            <span th:case="'ROLE_USER'">User</span>
+            <span th:case="'ROLE_DIRECTOR'">Director</span>
+            <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
+            <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
+        </span>
                                         </td>
-                                        <td class="text-right">
-                                            <div class="user-actions" th:if="${roleUser == 'ROLE_COORDINATOR'}">
+                                        <td class="text-right" th:if="${roleUser == 'ROLE_COORDINATOR'}">
+                                            <div class="user-actions">
                                                 <!-- Link to edit page, passing user.id -->
                                                 <a href="javascript:void(0);" class="edit" th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" title="Edit">
                                                     <i class="fa fa-edit"></i>
@@ -504,6 +520,7 @@
                                     </tbody>
                                 </table>
                             </div>
+
                         </div>
                     </div>
                 </div>

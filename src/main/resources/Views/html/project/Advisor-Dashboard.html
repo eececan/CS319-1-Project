@@ -377,60 +377,51 @@
                   </div>
               </div>
 
-              <div class="row clearfix row-deck mt-12">
-                  <!-- Members Card -->
-                  <div class="col-12 col-md-3 mt-12">
-                      <a th:href="@{/getAllUsers}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
-                          <div class="card" style="border-radius: 16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                              <div class="card-body" style="border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                                  <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Members</h3>
-                                  <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${users.size()}"></h5>
-                                  <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all members of BTO</span>
-                              </div>
-                          </div>
-                      </a>
+            <div class="row clearfix row-deck">
+              <!-- Members Card -->
+              <div class="col">
+                <a th:href="@{/getAllUsers}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                  <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                      <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Members</h3>
+                      <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${users.size()}"></h5>
+                      <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all members of BTO</span>
+                    </div>
                   </div>
-
-                  <!-- Rankings Card -->
-                  <div class="col-12 col-md-3 mt-12">
-                      <a th:href="@{/getGuideRankings}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
-                          <div class="card" style="border-radius: 16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                              <div class="card-body" style="border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                                  <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Guide Rankings</h3>
-                                  <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${users.size()}"></h5>
-                                  <span class="font-12" style="color: #6e7687; margin-top: 5px;">View guide rankings and information</span>
-                              </div>
-                          </div>
-                      </a>
-                  </div>
-
-                  <!-- Display Feedback QR Card -->
-                  <div class="col-12 col-md-3 mt-12">
-                      <div class="card" style="border-radius: 16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                          <div class="card-body" style="border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                              <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Review Tour Applications</h3>
-                              <span class="font-12" style="color: #6e7687; margin-top: 5px;">Accept or reject tour applications</span>
-                          </div>
-                      </div>
-                  </div>
-
-                  <!-- To-Do List Card -->
-                  <div class="col-12 col-md-3 mt-12">
-                      <a th:href="@{/ui/task/todo}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
-                          <div class="card" style="border-radius: 16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                              <div class="card-body" style="border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
-                                  <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
-                                  <div th:each="tasks : ${tasks}" class="d-flex align-items-center" style="margin-bottom: 5px;">
-                                      <input type="checkbox" th:id="'task' + ${tasks.taskId}" th:checked="${tasks.state}" style="margin-right: 10px; vertical-align: middle;">
-                                      <label th:for="'task' + ${tasks.taskId}" style="vertical-align: middle;">
-                                          <span th:text="${tasks.taskDescription}">Task Description</span>
-                                      </label>
-                                  </div>
-                              </div>
-                          </div>
-                      </a>
-                  </div>
+                </a>
               </div>
+
+              <!-- Guide Rankings Card -->
+              <div class="col">
+                <a th:href="@{/getGuideRankings}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                  <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                      <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Guide Rankings</h3>
+                      <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${users.size()}"></h5>
+                      <span class="font-12" style="color: #6e7687; margin-top: 5px;">View guide rankings and information</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- To-Do List Card -->
+              <div class="col">
+                <a th:href="@{/ui/task/todo}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                  <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
+                      <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
+                      <div th:each="tasks : ${tasks}" class="d-flex align-items-center" style="margin-bottom: 5px;">
+                        <input type="checkbox" th:id="'task' + ${tasks.taskId}" th:checked="${tasks.state}" style="margin-right: 10px; vertical-align: middle;">
+                        <label th:for="'task' + ${tasks.taskId}" style="vertical-align: middle;">
+                          <span th:text="${tasks.taskDescription}">Task Description</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

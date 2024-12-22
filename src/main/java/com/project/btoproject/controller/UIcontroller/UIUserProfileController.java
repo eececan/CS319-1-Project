@@ -312,7 +312,7 @@ public class UIUserProfileController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
-                return "Guide-Dashboard";
+                return "Guide-in-training-Dashboard";
             } else if (role.equals("ROLE_HEAD_SECRETARY")) {
 
                 Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());

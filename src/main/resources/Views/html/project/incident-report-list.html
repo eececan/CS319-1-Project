@@ -299,19 +299,19 @@
                                             <td th:text="${report.description}"></td>
                                             <td th:text="${report.author}"></td>
                                             <td>
-                                                <form th:action="@{/setIncidentReportStatus}" method="post" class="status-form">
+                                                <div th:if="${report.status == 'resolved'}">
+                                                    <span>Resolved ✔</span>
+                                                </div>
+                                                <form th:if="${report.status != 'resolved'}" th:action="@{/setIncidentReportStatus}" method="post" class="status-form">
                                                     <input type="hidden" name="id" th:value="${report.id}" />
                                                     <div class="status-dropdown-wrapper">
-                                                        <select class="status-dropdown" name="status" onchange="this.form.submit()"
-                                                                th:disabled="${report.status == 'resolved'}">
+                                                        <select class="status-dropdown" name="status" onchange="this.form.submit()">
                                                             <option value="new_issue" th:selected="${report.status == 'new_issue'}">New Issue</option>
                                                             <option value="investigating" th:selected="${report.status == 'investigating'}">Investigating</option>
                                                             <option value="resolved" th:selected="${report.status == 'resolved'}">Resolved</option>
                                                         </select>
-
                                                     </div>
                                                 </form>
-                                                <span th:if="${report.status == 'resolved'}" class="tick-icon">✔</span>
                                             </td>
                                         </tr>
                                         </tbody>

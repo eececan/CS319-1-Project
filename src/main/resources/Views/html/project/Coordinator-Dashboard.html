@@ -388,6 +388,7 @@
                     </h3>
                   </div>
                 </div>
+            </div>
 
             <div class="row clearfix row-deck mt-12">
               <!-- Tours and Fairs Card -->
@@ -441,16 +442,19 @@
                 </div>
 
                 <!-- Display Feedback QR Card -->
-                <div class="col-12 col-md-3 mt-12">
-                    <div class="card" style="border-radius:16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Review Tour Applications</h3>
-                            <span class="font-12" style="color: #6e7687; margin-top: 5px;">Accept or reject tour applications</span>
-                        </div>
+              <div class="col-12 col-md-3">
+                <a th:href="@{/ui/schools/tour-counts}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                  <div class="card" style="border-radius:16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                      <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Data & Analysis</h3>
+                      <span class="font-12" style="color: #6e7687; margin-top: 5px;">View tour and high school information and analysis</span>
                     </div>
-                </div>
+                  </div>
+                </a>
+              </div>
 
-                <!-- To-Do List Card -->
+
+              <!-- To-Do List Card -->
                 <div class="col-12 col-md-3 mt-12">
                     <a th:href="@{/ui/task/todo}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
                         <div class="card" style="border-radius:16px; min-height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
@@ -476,7 +480,6 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
