@@ -588,9 +588,14 @@
 
                                                     <td>
                                                         <div th:if="${fair.status.name() == 'UPCOMING_FAIR'}">
-                                                            <button class="btn btn-danger btn-cancel" th:onclick="'handleFairCancellation(' + ${fair.id} + ')'">Cancel</button>
+                                                            <button class="btn btn-danger btn-cancel"
+                                                                    th:data-fair-id="${fair.id}"
+                                                                    th:data-school-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleFairCancellation(this)">
+                                                                Cancel
+                                                            </button>
                                                         </div>
-
                                                     </td>
 
                                                 </tr>

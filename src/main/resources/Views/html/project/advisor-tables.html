@@ -845,14 +845,20 @@
                                                     <!-- Render Action Buttons -->
                                                     <td>
                                                         <div th:if="${individualTour.status.name() == 'NEW_INDIVIDUAL_TOUR_APPLICATION' and #dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
-                                                            <!-- Approve Button -->
                                                             <button class="btn btn-success"
-                                                                    th:onclick="'handleIndividualTourApproval(' + ${individualTour.id} + ')'">
+                                                                    th:data-individual-tour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleIndividualTourApproval(this)">
                                                                 Approve
                                                             </button>
+
                                                             <!-- Reject Button -->
                                                             <button class="btn btn-danger"
-                                                                    th:onclick="'handleIndividualTourRejection(' + ${individualTour.id} + ')'">
+                                                                    th:data-individual-tour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleIndividualTourRejection(this)">
                                                                 Reject
                                                             </button>
                                                         </div>

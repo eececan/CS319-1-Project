@@ -129,29 +129,71 @@ function handleFairRejection(buttonElement) {
 }
 
 
-function handleFairCancellation(fairId) {
-    console.log("Cancelling fair with ID:", fairId);
-    fetch(`/api/fairs/${fairId}/cancel`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Fair ID ${fairId} cancelled successfully!`);
-                location.reload();
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+function handleFairCancellation(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const fairId = buttonElement.getAttribute("data-fair-id");
+    const schoolName = buttonElement.getAttribute("data-school-name");
+    const fairDate = buttonElement.getAttribute("data-fair-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to cancel the fair for ${schoolName} on ${fairDate}? Note that the high school will be notified and the guides assigned to this tour will be removed. This action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific cancellation logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the fair cancellation API
+        fetch(`/api/fairs/${fairId}/cancel`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error cancelling fair:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Fair for ${schoolName} on ${fairDate} canceled successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error canceling fair:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const guideDropdowns = document.querySelectorAll('.guide-fair-dropdown');
