@@ -428,11 +428,10 @@
                         <!-- Legend -->
                         <div class="status-legend-container">
                             <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
-                                <li class="legend-item new">New</li>
-                                <li class="legend-item approved-tour">Approved</li>
-                                <li class="legend-item bto-approved-tour">BTO Approved</li>
-                                <li class="legend-item bto-rejected-tour">BTO Rejected</li>
-                                <li class="legend-item canceled-tour">Canceled</li>
+                                <li class="legend-item new">NEW</li>
+                                <li class="legend-item approved-tour">APPROVED</li>
+                                <li class="legend-item bto-approved-tour">BTO APPROVED</li>
+                                <li class="legend-item bto-rejected-tour">BTO REJECTED</li>
                             </ul>
                         </div>
 
@@ -668,8 +667,8 @@
                         <div class="status-legend-container">
                             <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
                                 <li class="legend-item new">UPCOMING</li>
-                                <li class="legend-item completed-tour">Completed</li>
-                                <li class="legend-item canceled-tour">Canceled</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item canceled-tour">CANCELED</li>
                             </ul>
                         </div>
                     </div>
@@ -999,7 +998,11 @@
                                                     <!-- Actions -->
                                                     <td>
                                                         <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
-                                                            <button class="btn btn-danger" th:onclick="'cancelIndividualTour(' + ${individualTour.id} + ')'">
+                                                            <button class="btn btn-danger"
+                                                                    th:data-individual-tour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd-MM-yyyy')}"
+                                                                    onclick="cancelIndividualTour(this)">
                                                                 Cancel
                                                             </button>
                                                         </div>
