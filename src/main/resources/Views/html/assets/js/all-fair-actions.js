@@ -636,36 +636,86 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-function markFairAsCompleted(fairId) {
-    console.log(`Marking fair as completed. Fair ID: ${fairId}`);
-    fetch(`/api/fairs/complete/${fairId}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Fair ${fairId} marked as completed successfully!`);
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error("Error marking fair as completed:", error);
-            alert(`Error: ${error.message}`);
-        });
-}
-
-// Attach the click event listener for the "Mark As Completed" button
 document.addEventListener("DOMContentLoaded", () => {
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedFairId = null;
+
+    // Attach the click event listener for the "Mark As Completed" button
     document.querySelectorAll(".complete-fair-button").forEach((button) => {
         button.addEventListener("click", () => {
-            const fairId = button.getAttribute("data-fair-id");
-            markFairAsCompleted(fairId);
+            selectedFairId = button.getAttribute("data-fair-id");
+            const highSchoolName = button.getAttribute("data-highschool-name");
+            const fairDate = button.getAttribute("data-fair-date");
+
+            if (!selectedFairId) {
+                showNotification("Fair ID is missing.", "error");
+                return;
+            }
+
+            // Set the confirmation message
+            confirmMessage.innerHTML = `Are you sure you want to mark the fair for <strong>${highSchoolName}</strong> on <strong>${fairDate}</strong> as completed?`;
+
+            // Show the confirmation modal
+            confirmModal.show();
         });
     });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", () => {
+        if (selectedFairId) {
+            fetch(`/api/fairs/complete/${selectedFairId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Show success notification
+                        showNotification("Fair marked as completed successfully!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error marking fair as completed:", error);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
+                    resetSelections();
+                });
+        }
+    });
+
+    // Handle No button click
+    cancelButton.addEventListener("click", () => {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener("click", () => {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Reset the selected fair ID
+    function resetSelections() {
+        selectedFairId = null;
+    }
 });
+
+

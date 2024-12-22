@@ -362,7 +362,9 @@
                                                             <button
                                                                     class="btn btn-sm btn-success complete-tour-button"
                                                                     th:data-tour-id="${tour.id}"
-                                                                    th:data-guide-id="${guide.id}">
+                                                                    th:data-guide-id="${guide.id}"
+                                                                    th:data-highschool-name="${tour.school.name}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
                                                                 <i class="fas fa-check"></i> <!-- Tick icon only -->
                                                             </button>
                                                         </div>
@@ -552,7 +554,9 @@
                                                             <button
                                                                     class="btn btn-sm btn-success complete-fair-button"
                                                                     th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${guide.id}">
+                                                                    th:data-guide-id="${guide.id}"
+                                                                    th:data-highschool-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd/MM/yyyy')}">
                                                                 <i class="fas fa-check"></i> <!-- Tick icon only -->
                                                             </button>
                                                         </div>
@@ -720,7 +724,9 @@
                                                                       && individualTour.date <= currentDate}">
                                                             <button
                                                                     class="btn btn-sm btn-success complete-individualTour-button"
-                                                                    th:data-individualTour-id="${individualTour.id}">
+                                                                    th:data-individualTour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
                                                                 <i class="fas fa-check"></i> <!-- Tick icon only -->
                                                             </button>
                                                         </div>

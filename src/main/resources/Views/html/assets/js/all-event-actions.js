@@ -831,39 +831,88 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function markTourAsCompleted(tourId) {
-    console.log(`Marking tour as completed. Tour ID: ${tourId}`);
-    fetch(`/api/tours/complete/${tourId}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Tour ${tourId} marked as completed successfully!`);
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error("Error marking tour as completed:", error);
-            alert(`Error: ${error.message}`);
-        });
-}
-
-// Attach the click event listener for the "Mark As Completed" button
 document.addEventListener("DOMContentLoaded", () => {
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedTourId = null;
+
+    // Attach the click event listener for the "Mark As Completed" button
     document.querySelectorAll(".complete-tour-button").forEach((button) => {
         button.addEventListener("click", () => {
-            const tourId = button.getAttribute("data-tour-id");
-            markTourAsCompleted(tourId);
+            selectedTourId = button.getAttribute("data-tour-id");
+            const highSchoolName = button.getAttribute("data-highschool-name");
+            const tourDate = button.getAttribute("data-tour-date");
+
+            if (!selectedTourId) {
+                showNotification("Tour ID is missing.", "error");
+                return;
+            }
+
+            // Set the confirmation message
+            confirmMessage.innerHTML = `Are you sure you want to mark the tour for <strong>${highSchoolName}</strong> on <strong>${tourDate}</strong> as completed?`;
+
+            // Show the confirmation modal
+            confirmModal.show();
         });
     });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", () => {
+        if (selectedTourId) {
+            fetch(`/api/tours/complete/${selectedTourId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Show success notification
+                        showNotification("Tour marked as completed successfully!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error marking tour as completed:", error);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
+                    resetSelections();
+                });
+        }
+    });
+
+    // Handle No button click
+    cancelButton.addEventListener("click", () => {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener("click", () => {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Reset the selected tour ID
+    function resetSelections() {
+        selectedTourId = null;
+    }
 });
+
 
 function showNotification(message, type = "success") {
     const notificationBox = document.getElementById("notification-box");
