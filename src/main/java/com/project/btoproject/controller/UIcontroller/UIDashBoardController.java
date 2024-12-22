@@ -72,18 +72,26 @@ public class UIDashBoardController {
         User user = allUserService.getUserById(Long.parseLong(username)).get();
        populateModelWithUserData(model,user);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            model.addAttribute("roleUser", "Director");
             return "Director-Dashboard"; // Director's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            model.addAttribute("roleUser", "Advisor");
             return "Advisor-Dashboard"; // Advisor's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
+            model.addAttribute("roleUser", "Guide");
 
             return "Guide-Dashboard"; // Guide's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+            model.addAttribute("roleUser", "Head Secretary");
+
             return "Head-Secretary-Dashboard"; // Head Secretary's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+            model.addAttribute("roleUser", "Guide in Training");
+
             return"Guide-in-training-Dashboard";
         }
         else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+            model.addAttribute("roleUser", "Coordinator");
             return"Coordinator-Dashboard";
         }
         else

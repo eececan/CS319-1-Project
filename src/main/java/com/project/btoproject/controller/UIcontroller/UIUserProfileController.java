@@ -87,6 +87,7 @@ public class UIUserProfileController {
             model.addAttribute("role", "ROLE_COORDINATOR");
             return "director-profile"; // Director's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            model.addAttribute("role", "ROLE_ADVISOR");
             return "advisor-profile"; // Advisor's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
             Guide guide = (Guide) user.get();
@@ -126,7 +127,7 @@ public class UIUserProfileController {
                     }
                 }
             }
-            model.addAttribute("role", "ROLE_GUIDE");
+            model.addAttribute("role", "ROLE_GUIDE_IN_TRAINING");
             model.addAttribute("guide", guide);
             model.addAttribute("sum", sum);
             model.addAttribute("isUser", "true");
@@ -200,7 +201,7 @@ public class UIUserProfileController {
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
 
-
+                model.addAttribute("roleUser", "Director");
                 return "Director-Dashboard";
             } else if (role.equals("ROLE_COORDINATOR")) {
 
@@ -224,6 +225,7 @@ public class UIUserProfileController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
+                model.addAttribute("roleUser", "Coordinator");
                 return "Coordinator-Dashboard";// Coordinator's page
             } else if (role.equals("ROLE_ADVISOR")) {
 
@@ -250,6 +252,7 @@ public class UIUserProfileController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
+                model.addAttribute("roleUser", "Advisor");
                 return "Advisor-Dashboard"; // Advisor's page
             } else if (role.equals("ROLE_GUIDE")) {
 
@@ -281,6 +284,7 @@ public class UIUserProfileController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
+                model.addAttribute("roleUser", "Guide");
                 return "Guide-Dashboard"; // Guide's page
             }else if (role.equals("ROLE_GUIDE_IN_TRAINING")) {
 
@@ -312,6 +316,7 @@ public class UIUserProfileController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
+                model.addAttribute("roleUser", "Guide in Training");
                 return "Guide-in-training-Dashboard";
             } else if (role.equals("ROLE_HEAD_SECRETARY")) {
 
@@ -341,6 +346,7 @@ public class UIUserProfileController {
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
                 model.addAttribute("users", users);*/
+                model.addAttribute("roleUser", "Head Secretary");
                 return "Head-Secretary-Dashboard"; // Head Secretary's page
             } else {
                 return "page-empty"; // Default page for unrecognized roles
@@ -504,6 +510,8 @@ public class UIUserProfileController {
                     }
                     model.addAttribute("guide", guide);
                 }
+                model.addAttribute("rolee", role);
+
                 return "view-profile";
             }
         }
