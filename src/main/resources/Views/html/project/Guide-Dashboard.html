@@ -336,21 +336,27 @@
                             </div>
 
                             <div class="card" style="border-radius: 16px; width: 300px; margin-bottom: 25px; background-color: white;">
-                                <div class="card-header mt-12 d-flex justify-content-center" style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                                    <h3 class="card-title">
-                                        View Today's Advisor:
-                                        <!-- Display advisor's name if advisor is not null -->
-                                        <span th:if="${advisor != null}" style="color: #2f93ff;"
-                                              th:text="${advisor.firstName} + ' ' + ${advisor.lastName}">
-
-            </span>
-                                        <!-- Display fallback message if advisor is null -->
-                                        <span th:if="${advisor == null}" style="color: #ff0000;">
-                No Responsible Advisor assigned
-            </span>
+                                <a th:if="${advisor != null}"
+                                   th:href="@{'/ui/UserProfile/getUserProfile'(userId=${advisor.id})}"
+                                   style="text-decoration: none; color: inherit;">
+                                    <div class="card-header mt-12 d-flex justify-content-center"
+                                         style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">
+                                        <h3 class="card-title">
+                                            View Today's Advisor:
+                                            <span style="color: #2f93ff;" th:text="${advisor.firstName} + ' ' + ${advisor.lastName}"></span>
+                                        </h3>
+                                    </div>
+                                </a>
+                                <div th:if="${advisor == null}"
+                                     class="card-header mt-12 d-flex justify-content-center"
+                                     style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                    <h3 class="card-title" style="color: #ff0000;">
+                                        No Responsible Advisor assigned
                                     </h3>
                                 </div>
                             </div>
+
+
 
                         </div>
 
@@ -402,13 +408,15 @@
 
                             <!-- Points Card -->
                             <div class="col-12 col-md-3">
-                                <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                                        <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Event Records</h3>
-                                        <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text ="${sum}"></h5>
-                                        <span class="font-12" style="color: #6e7687; margin-top: 5px;">View your event records</span>
+                                <a th:href="@{/getRecordsOfGuide}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                    <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Event Records</h3>
+                                            <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text ="${sum}"></h5>
+                                            <span class="font-12" style="color: #6e7687; margin-top: 5px;">View your event records</span>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
 
                             <!-- Display Feedback QR Card -->
