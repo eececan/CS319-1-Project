@@ -17,7 +17,7 @@ public class ValidationService {
     private final EventService eventService;
 
 
-    public String validateAndReturn(String role, Map<String, Object> dtoMap, Model model, String errorMessage, Long userId) {
+    public String validateAndReturn(String role, Map<String, Object> dtoMap, Model model, String errorMessage, Long userId, int sum) {
         // Add the error message to the model
         model.addAttribute("errorMessage", errorMessage);
 
@@ -79,7 +79,7 @@ public class ValidationService {
                     Optional<User> user = allUsersService.getUserById(userId);
                     if(user.isPresent()){
                         model.addAttribute("user", user.get());
-                        model.addAttribute("sum", 0);
+                        model.addAttribute("sum", sum);
                     }
                 }
                 else{
@@ -99,9 +99,8 @@ public class ValidationService {
                     Optional<User> user = allUsersService.getUserById(userId);
                     if(user.isPresent()){
                         model.addAttribute("user", user.get());
-                        model.addAttribute("sum", 0);
+                        model.addAttribute("sum", sum);
                         model.addAttribute("isUser", "true");
-
                     }
                 }
                 else{

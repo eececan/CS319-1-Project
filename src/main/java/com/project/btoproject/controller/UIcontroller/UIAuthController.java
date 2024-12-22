@@ -3,6 +3,7 @@ package com.project.btoproject.controller.UIcontroller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
+import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
@@ -299,7 +300,7 @@ public class UIAuthController {
                        return "director-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
-                       model.addAttribute("sum", 0);  //should i delete this
+                       model.addAttribute("sum", 0);
                        model.addAttribute("role", "ROLE_HEAD_SECRETARY");
                        model.addAttribute("isUser", "true");
 
@@ -309,18 +310,50 @@ public class UIAuthController {
                        return "advisor-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
-                       model.addAttribute("sum", 0);  //should i delete this
+                       Guide guide = (Guide) user;
+                       List<Event> event = guide.getEvents();
+                       int sum = 0;
+                       if(event != null){
+                           sum = 0;
+                           for (int i = 0; i < event.size(); i++) {
+                               System.out.println(event.get(i).getId());
+                               if (event.get(i).getEventType() == EventType.TOUR) {
+                                   if ((event.get(i).getStatus() == Status.COMPLETED_TOUR)) {
+                                       sum++;
+                                   }
+                               }
+                           }
+                           model.addAttribute("sum", sum);
+                       }
+                       else {
+                           model.addAttribute("sum", 0);
+                       }
                        model.addAttribute("role", "ROLE_GUIDE");
                        model.addAttribute("isUser", "true");
-                       Guide guide = (Guide) user;
                        model.addAttribute("guide", guide);
                        return "guide-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
-                       model.addAttribute("user", new GuideInTraining());
+                       GuideInTraining guide = (GuideInTraining) user;
+                       List<Event> event = guide.getEvents();
+                       int sum = 0;
+                       if(event != null){
+                           sum = 0;
+                           for (int i = 0; i < event.size(); i++) {
+                               System.out.println(event.get(i).getId());
+                               if (event.get(i).getEventType() == EventType.TOUR) {
+                                   if ((event.get(i).getStatus() == Status.COMPLETED_TOUR)) {
+                                       sum++;
+                                   }
+                               }
+                           }
+                           model.addAttribute("sum", sum);
+                       }
+                       else {
+                           model.addAttribute("sum", 0);
+                       }
                        model.addAttribute("role", "ROLE_GUIDE_IN_TRAINING");
                        model.addAttribute("isUser", "true");
-                       GuideInTraining guide = (GuideInTraining) user;
                        model.addAttribute("guide", guide);
                        return "guide-profile";
                    }
