@@ -83,3 +83,15 @@
     padding: 10px;
     text-align: center;
 }
+.notifications-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f9fa;
+}
+
+.notifications-header h6 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
