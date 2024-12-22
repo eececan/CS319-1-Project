@@ -142,14 +142,4 @@ public class ValidationService {
         return "false";
     }
 
-    public String validatePersonalInfo(Map<String, Object> dtoMap) {
-        // Example: Check if the email contains "bilkent"
-        String email = (String) dtoMap.get("email");
-        if (email == null || !email.contains("bilkent@edu.tr")) {
-            return "The email you use must be a bilkent mail! Please enter your bilkent mail!";
-        }
-        // Other validation logic...
-        return "true";
-    }
-
 }

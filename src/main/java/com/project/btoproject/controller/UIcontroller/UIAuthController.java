@@ -104,12 +104,64 @@ public class UIAuthController {
 
     @PostMapping("/register")
     public String register(
-            @RequestParam String role,
+            @RequestParam(required = false) String role,
             @ModelAttribute("registerDto") RegisterDto registerDto,
             @ModelAttribute("advisorRegisterDto") AdvisorRegisterDto advisorRegisterDto,
             RedirectAttributes redirectAttributes,
             Model model) {
         try {
+           /*if(registerDto == null){
+                model.addAttribute("errorMessage", "Please fill all the required fields");
+                return "register";
+            }
+            if(registerDto.getRole() == null){
+                model.addAttribute("errorMessage", "Please select a role!");
+                return "register";
+            }
+            if (registerDto.getUsername() != null && !registerDto.getUsername().isEmpty()) {
+                // Check if the username contains only numbers
+                if (!registerDto.getUsername().matches("\\d+")) {
+
+                    model.addAttribute("errorMessage", "Username must contain only numbers!");
+                    return "register";
+                }
+            } else {
+                model.addAttribute("errorMessage", "Username cannot be empty!");
+                return "register";
+            }
+
+            if (registerDto.getPassword() != null && !registerDto.getPassword().isEmpty()) {
+                // Validate password constraints
+                String password = registerDto.getPassword();
+
+                if (password.length() < 8) {
+                    model.addAttribute("errorMessage", "Password must be at least 8 characters long!");
+                    return "register";
+                }
+
+                if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one special character!");
+                    return "register";
+                }
+
+                if (!password.matches(".*[A-Z].*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one uppercase letter!");
+                    return "register";
+                }
+
+                if (!password.matches(".*[a-z].*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one lowercase letter!");
+                    return "register";
+                }
+
+                if (!password.matches(".*\\d.*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one digit!");
+                    return "register";
+                }
+            } else {
+                model.addAttribute("errorMessage", "Password cannot be empty!");
+                return "register";
+            }*/
             if ("ROLE_ADVISOR".equals(role)) {
                 if(!allUsersService.responsibleDayAvailable(advisorRegisterDto.getResponsibleDay())){
                     model.addAttribute("errorMessage", "Another advisor is already responsible for this day! Please make the day available first!");
@@ -126,6 +178,8 @@ public class UIAuthController {
                     }
                 }
             } else {
+
+
                 String response = authService.register(registerDto);
                 if (response.equals("User registered successfully!")) {
                     redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
@@ -139,7 +193,7 @@ public class UIAuthController {
                 }
             }
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "An error occurred: " + e.getMessage());
+            model.addAttribute("errorMessage", "The user could not be registered! Please try again!");
             return "register";
         }
     }
