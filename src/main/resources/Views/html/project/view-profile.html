@@ -494,8 +494,34 @@
                      : role == 'ROLE_COORDINATOR' ? 'Coordinator' : ''}">
                                     </li>
                                     <li class="list-group-item" th:text="'Bilkent ID: ' + ${user.id}"></li>
-                                    <li class="list-group-item" th:text="'Start Date: ' + ${#dates.format(user.startDate, 'dd MMMM yyyy')}"></li>
+                                    <li class="list-group-item" th:if="${role == 'ROLE_ADVISOR'}">
+                                        Responsible Day: <span th:text="${user.responsibleDay}"></span>
+                                    </li>
                                 </ul>
+                                <div th:if="${userRole == 'ROLE_COORDINATOR' && role == 'ROLE_ADVISOR'}" class="form-group mt-3">
+                                    <form th:action="@{/ui/UserProfile/changeResponsibleDay}" method="post">
+                                        <!-- Pass userId as a hidden field -->
+                                        <input type="hidden" name="userId" th:value="${user.id}">
+
+                                        <!-- Dropdown for selecting the day -->
+                                        <label for="responsibleDayDropdown" class="form-label">Change Responsible Day</label>
+                                        <select id="responsibleDayDropdown" class="form-select" name="day">
+                                            <option value="Monday" th:selected="${user.responsibleDay == 'Monday'}">Monday</option>
+                                            <option value="Tuesday" th:selected="${user.responsibleDay == 'Tuesday'}">Tuesday</option>
+                                            <option value="Wednesday" th:selected="${user.responsibleDay == 'Wednesday'}">Wednesday</option>
+                                            <option value="Thursday" th:selected="${user.responsibleDay == 'Thursday'}">Thursday</option>
+                                            <option value="Friday" th:selected="${user.responsibleDay == 'Friday'}">Friday</option>
+                                            <option value="Saturday" th:selected="${user.responsibleDay == 'Saturday'}">Saturday</option>
+                                            <option value="Sunday" th:selected="${user.responsibleDay == 'Sunday'}">Sunday</option>
+                                        </select>
+
+                                        <!-- Submit button -->
+                                        <button type="submit" class="btn btn-primary mt-2">Change Responsible Day</button>
+                                    </form>
+                                </div>
+
+
+
                             </div>
                         </div>
 
