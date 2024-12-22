@@ -1,0 +1,16 @@
+package com.project.btoproject.controller.UIcontroller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class UISchoolEvents {
+
+    public UISchoolEvents() {
+
+    }
+    @GetMapping("/schoolEvent")
+    public String seeTours(){
+        return "events-of-school";
+    }
+}
