@@ -17,6 +17,19 @@
     <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
     <style>
+        .signout-link {
+            color: white; /* Match navbar background */
+            text-decoration: none; /* Remove underline */
+            margin-left: 15px; /* Add space from notification icon */
+            font-size: 16px; /* Adjust text size for better appearance */
+            display: flex; /* Ensures proper alignment */
+            align-items: center; /* Align icon and text vertically */
+        }
+
+        .signout-link:hover {
+            color: #007bff; /* Change to primary blue on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
         /* Container for the donut chart */
         .donut-chart-container {
             position: relative;
@@ -450,16 +463,6 @@
                         <h1 class="page-title">Analytics</h1>
                     </div>
                     <div class="right">
-                                <div class="notification d-flex">
-                                    <div class="dropdown d-flex">
-                                        <div th:replace="notifications :: notifications-panel"></div>
-                                        <audio id="notification-sound" preload="auto">
-                                            <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
-                                        </audio>
-
-                                    </div>
-                                </div>
-
                             <a class="signout-link" th:href="@{/ui/auth/logout}">
                                 <i class="fa fa-sign-out"></i> Sign Out
                             </a>
