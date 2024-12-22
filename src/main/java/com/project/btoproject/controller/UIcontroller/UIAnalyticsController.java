@@ -139,13 +139,18 @@ public class UIAnalyticsController {
                 .collect(Collectors.groupingBy(School::getCity, Collectors.counting()));
 
         // Sort cities by the number of schools (descending) and get the top 3 cities
-        List<Map.Entry<String, Long>> topCities = cityCounts.entrySet().stream()
+        Map<String, Long> topCities = cityCounts.entrySet().stream()
                 .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue())) // Sort by count descending
-                .limit(5) // Get the top 3 cities
-                .collect(Collectors.toList());
+                .limit(10)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey, // Use the key from the entry
+                        Map.Entry::getValue, // Use the value from the entry
+                        (oldValue, newValue) -> oldValue, // Merge function (not needed here as there are no duplicates)
+                        LinkedHashMap::new // Maintain insertion order for sorted elements
+                ));
 
         long totalCities = cityCounts.values().stream().mapToLong(Long::longValue).sum();
-        Map<String, Double> cityPercentages = cityCounts.entrySet().stream()
+        Map<String, Double> cityPercentages = topCities.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> {
@@ -155,13 +160,24 @@ public class UIAnalyticsController {
                         }// Calculate percentage
                 ));
         List<String> colors = Arrays.asList(
-                "#d0d0d2", "#30356c","#c80706", "#6c6f94"," #78b8c7"
+                "#AC0D0D", // Deep crimson red
+                "#30356E", // Rich dark blue
+                "#960000", // Bold ruby red
+                "#4A4A50", // Neutral dark gray
+                "#6C6F94", // Cool slate blue
+                "#C80706", // Vivid scarlet red
+                "#2E3A59", // Steely blue-gray
+                "#A60021", // Strong burgundy red
+                "#2C2F33", // Charcoal gray
+                "#5C6D92"  // Muted navy blue
         );
+
+
 
         Map<String, String> cityColors = new HashMap<>();
         int colorIndex = 0;
         for (String city : cityPercentages.keySet()) {
-            cityColors.put(city, colors.get(colorIndex % colors.size())); // Cycle through colors if needed
+            cityColors.put(city, colors.get(colorIndex % colors.size())); // Use modulo to cycle through colors
             colorIndex++;
         }
 

@@ -48,7 +48,9 @@ public class UIDashBoardController {
         List<PointRecord> pointRecords = pointRecordService.findAllRecords();
         int sum = pointRecords.stream().mapToInt(PointRecord::getPoint).sum();
         long upComing = eventService.getUpcomingEventsCount();
+        List<Guide> guides = guideService.getAllGuides();
 
+        model.addAttribute("guides", guides);
         model.addAttribute("user", user);
         model.addAttribute("advisor", advisor);
         model.addAttribute("tours", tours);
