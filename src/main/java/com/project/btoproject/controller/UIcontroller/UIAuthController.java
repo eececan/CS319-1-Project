@@ -409,6 +409,7 @@ public class UIAuthController {
                            sum+=pointRecords.get(0).getPoint();
                        }
                        long upComing = eventService.getUpcomingEventsCount();
+                       int guideCount = guideService.getAllGuides().size();
                        model.addAttribute("upComing", upComing);
                        model.addAttribute("sum",sum);
                        model.addAttribute("users", users);
@@ -416,6 +417,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("guideCount",guideCount);
                        return "Coordinator-Dashboard";// Coordinator's page
                    }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
 
