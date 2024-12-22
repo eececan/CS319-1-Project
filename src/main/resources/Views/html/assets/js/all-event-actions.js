@@ -30,7 +30,7 @@ function handleAdvisorApproval(buttonElement) {
             .then((response) => {
                 if (response.ok) {
                     // Show success notification
-                    showNotification(`Tour for ${highSchoolName} on ${tourDate} approved successfully!`, "success");
+                    showNotification(`Tour for ${highSchoolName} on ${tourDate} was approved successfully!`, "success");
 
                     // Optionally reload the page to reflect the changes
                     setTimeout(() => location.reload(), 2000);
@@ -121,7 +121,7 @@ function handleAdvisorRejection(buttonElement) {
             .then((response) => {
                 if (response.ok) {
                     // Show success notification
-                    showNotification(`Tour for ${highSchoolName} on ${tourDate} rejected successfully!`, "success");
+                    showNotification(`Tour for ${highSchoolName} on ${tourDate} was rejected successfully!`, "success");
 
                     // Optionally reload the page to reflect the changes
                     setTimeout(() => location.reload(), 2000);
@@ -154,28 +154,69 @@ function handleAdvisorRejection(buttonElement) {
     };
 }
 
+function handleSecretaryApproval(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const tourId = buttonElement.getAttribute("data-tour-id");
+    const highSchoolName = buttonElement.getAttribute("data-highschool-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
 
-function handleSecretaryApproval(tourId) {
-    fetch(`/api/tours/${tourId}/secretary/approve`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Tour ID ${tourId} approved successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to approve the tour for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific approval logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the approval API
+        fetch(`/api/tours/${tourId}/secretary/approve`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error approving tour:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Tour for ${highSchoolName} on ${tourDate} approved successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error approving tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
 
 function handleSecretaryRejection(tourId) {
@@ -201,28 +242,71 @@ function handleSecretaryRejection(tourId) {
         });
 }
 
-function handleTourCancellation(tourId) {
-    fetch(`/api/tours/${tourId}/secretary/cancel`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Tour ID ${tourId} canceled successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+function handleTourCancellation(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const tourId = buttonElement.getAttribute("data-tour-id");
+    const highSchoolName = buttonElement.getAttribute("data-highschool-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to cancel the tour for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.g`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific cancellation logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the cancellation API
+        fetch(`/api/tours/${tourId}/secretary/cancel`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error canceling tour:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Tour for ${highSchoolName} on ${tourDate} canceled successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error canceling tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const guideDropdowns = document.querySelectorAll('.guide-dropdown');
@@ -522,76 +606,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-/*document.addEventListener('DOMContentLoaded', function() {
-    // Get the day select dropdown
-    const daySelect = document.getElementById('eventDaySelect');
 
-    if (daySelect) {
-        daySelect.addEventListener('change', function() {
-            const selectedDay = this.value;
-
-            // Construct URL with day filter
-            let url = new URL(window.location.href);
-            if (selectedDay) {
-                url.searchParams.set('dayFilter', selectedDay);
-            } else {
-                url.searchParams.delete('dayFilter');
-            }
-
-            // Redirect to filtered URL
-            window.location.href = url.toString();
-        });
-
-        // Set initial value if there's a day filter in URL
-        const params = new URLSearchParams(window.location.search);
-        const dayFilter = params.get('dayFilter');
-        if (dayFilter) {
-            daySelect.value = dayFilter;
-        }
-    }
-});
-*/
-/*document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('schoolSearchInput');
-    const searchButton = document.getElementById('searchButton');
-
-    function performSearch() {
-        const searchTerm = searchInput.value.trim();
-        if (searchTerm) {
-            // Get current URL and parameters
-            let url = new URL(window.location.href);
-            let params = new URLSearchParams(url.search);
-
-            // Add search parameter
-            params.set('search', searchTerm);
-
-            // Reset page numbers
-            params.set('tourApplicationsPage', '0');
-            params.set('toursPage', '0');
-            params.set('fairsPage', '0');
-            params.set('individualTourApplicationsPage', '0');
-            params.set('individualToursPage', '0');
-
-            // Update URL and reload
-            url.search = params.toString();
-            window.location.href = url.toString();
-        }
-    }
-
-    // Search on button click
-    if (searchButton) {
-        searchButton.addEventListener('click', performSearch);
-    }
-
-    // Search on Enter key press
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
-    }
-});*/
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('schoolSearchInput');
     const searchButton = document.getElementById('searchButton');
