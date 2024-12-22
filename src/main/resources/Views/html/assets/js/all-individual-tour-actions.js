@@ -63,7 +63,6 @@ function handleIndividualTourApproval(buttonElement) {
     };
 }
 
-
 function handleIndividualTourRejection(buttonElement) {
     // Extract data from the button's data-* attributes
     const individualTourId = buttonElement.getAttribute("data-individual-tour-id");
@@ -129,87 +128,164 @@ function handleIndividualTourRejection(buttonElement) {
     };
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const guideDropdowns = document.querySelectorAll('.individual-guide-dropdown');
+    let selectedTourId = null;
+    let selectedGuideId = null;
+    let selectedDropdown = null; // Keep track of the specific dropdown
 
-function handleGuideSelection(selectElement) {
-    const tourId = selectElement.getAttribute("data-tour-id");
-    const guideId = selectElement.value;
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    if (!guideId || !tourId) {
-        alert("Invalid selection. Please try again.");
-        return;
-    }
+    // Handle dropdown change and show confirmation modal
+    guideDropdowns.forEach((dropdown) => {
+        dropdown.addEventListener('change', function () {
+            selectedTourId = this.getAttribute('data-tour-id'); // Extract individual tour ID from dropdown data attribute
+            selectedGuideId = this.value; // Get the selected guideId
+            selectedDropdown = this; // Keep a reference to the specific dropdown
 
-    assignIndividualTourGuide(tourId, guideId);
-}
+            const studentName = this.dataset.studentname;
+            const tourDate = this.dataset.tourdate;
+            const selectedOptionText = this.options[this.selectedIndex].text;
 
-function assignIndividualTourGuide(tourId, guideId) {
-    if (!guideId) {
-        alert('Please select a valid guide.');
-        return;
-    }
-
-    fetch(`/api/individual-tours/${tourId}/assign-guide`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guideId })
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Assignment is successful!');
-                location.reload(); // Reload to reflect changes
-            } else {
-                return response.json().then((errorData) => {
-                    throw new Error(errorData.error || 'Failed to assign guide.');
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error assigning guide:', error);
-
-            // Show a cleaner alert
-            alert(error.message);
-
-            // Reset the dropdown
-            const dropdown = document.querySelector(`#individual-guide-${tourId}`);
-            if (dropdown) {
-                dropdown.selectedIndex = 0; // Reset to "Select Guide"
-            }
+            confirmMessage.textContent = `You are about to assign guide "${selectedOptionText}" to the individual tour for ${studentName} on ${tourDate}. Are you sure?`;
+            confirmModal.show();
         });
-}
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener('click', function () {
+        if (selectedTourId && selectedGuideId) {
+            fetch(`/api/individual-tours/${selectedTourId}/assign-guide`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ guideId: selectedGuideId }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Show success notification
+                        showNotification('Guide assigned successfully!', 'success');
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        return response.json().then((json) => {
+                            throw new Error(json.error || 'An unknown error occurred.');
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error assigning guide:', error);
+
+                    // Show backend error notification
+                    showNotification(`Error: ${error.message}`, 'error');
+                    resetDropdown(); // Reset dropdown in case of error
+                })
+                .finally(() => {
+                    resetSelections();
+                });
+
+            confirmModal.hide();
+        }
+    });
+
+    // Handle No button click
+    cancelButton.addEventListener('click', function () {
+        resetDropdown();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalLabelButton.addEventListener('click', function () {
+        resetDropdown();
+        resetSelections();
+    });
+
+    // Reset the dropdown to its initial state
+    function resetDropdown() {
+        if (selectedDropdown) {
+            selectedDropdown.value = ''; // Reset the dropdown to its initial state
+        }
+    }
+
+    // Reset all selection-related variables
+    function resetSelections() {
+        selectedTourId = null;
+        selectedGuideId = null;
+        selectedDropdown = null;
+        confirmModal.hide();
+    }
+});
+
 
 function removeIndividualTourGuide(buttonElement) {
     // Extract tourId and guideId from the button's data attributes
     const tourId = buttonElement.getAttribute('data-tour-id');
     const guideId = buttonElement.getAttribute('data-guide-id');
+    const guideName = buttonElement.getAttribute('data-guide-name');
 
     if (!guideId) {
-        alert('No guide is assigned to this tour.');
+        showNotification('No guide is assigned to this tour.', 'error');
         return;
     }
 
-    console.log("Tour ID:", tourId, "Guide ID:", guideId);
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Make the fetch request to remove the guide
-    fetch(`/api/individual-tours/${tourId}/remove-guide`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guideId }) // Sending guideId in the request body
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert('Guide removed successfully!');
-                location.reload(); // Reload to reflect changes
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+    // Set the confirmation message dynamically
+    confirmMessage.textContent = `Are you sure you want to remove guide "${guideName}" from this individual tour?`;
+
+    // Show the confirmation modal
+    confirmModal.show();
+
+    // Remove any existing click event listener from the confirm button to avoid duplication
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Handle Yes button click
+    newConfirmButton.addEventListener('click', function () {
+        // Make the fetch request to remove the guide
+        fetch(`/api/individual-tours/${tourId}/remove-guide`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ guideId }) // Sending guideId in the request body
         })
-        .catch((error) => {
-            console.error('Error removing guide:', error);
-            alert('Failed to remove guide. ' + error.message);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification('Guide removed successfully!', 'success');
+
+                    // Reload the page after a slight delay
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error('Error removing guide:', error);
+
+                // Show error notification
+                showNotification(`Failed to remove guide. ${error.message}`, 'error');
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Handle No button click or modal close
+    cancelButton.addEventListener('click', () => confirmModal.hide());
+    closeModalButton.addEventListener('click', () => confirmModal.hide());
 }
+
 
 function cancelIndividualTour(buttonElement) {
     // Extract data from the button's data-* attributes
@@ -338,6 +414,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+function showNotification(message, type = "success") {
+    const notificationBox = document.getElementById("notification-box");
+
+    // Set the message
+    notificationBox.textContent = message;
+
+    // Set the background color based on the type
+    notificationBox.className = `notification ${type === "error" ? "error" : ""}`;
+
+    // Show the notification
+    notificationBox.style.display = "block";
+
+    // Automatically hide the notification after 3 seconds
+    setTimeout(() => {
+        notificationBox.style.display = "none";
+    }, 3000); // You can adjust the time as needed
+}
 
 
 
