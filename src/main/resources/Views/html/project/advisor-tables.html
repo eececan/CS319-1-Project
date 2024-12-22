@@ -360,7 +360,7 @@
                                                     <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
                                                     <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
                                                     <td>
-                                                        <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION'and #dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                        <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION' and #dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
                                                             <!-- responsibleDay is DayOfWeek TYPE not String !!! -->
                                                             <!-- Approve Button -->
                                                             <button class="btn btn-success"
@@ -496,10 +496,11 @@
                                                         <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 1}">
                                                             <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
                                                         </div>
-                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1}">
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1 }">
                                                             <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
                                                             <button
                                                                     class="btn ms-2 remove-guide"
+                                                                    th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
                                                                     th:data-tour-id="${tour.id}"
                                                                     th:data-guide-id="${tour.guides[0].id}"
                                                                     th:data-guide-name="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"
@@ -508,19 +509,25 @@
                                                             </button>
                                                         </div>
                                                         <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
-                                                            <select
-                                                                    class="form-select guide-dropdown"
-                                                                    th:id="'guide-' + ${tour.id} + '-1'"
-                                                                    th:name="'guide-' + ${tour.id} + '-1'"
-                                                                    th:data-highschoolname="${tour.school.name}"
-                                                                    th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
-                                                                    th:data-tourhour="${tour.hour}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
-
+                                                            <!-- Check if the advisor is responsible for the tour date -->
+                                                            <div th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                                <select
+                                                                        class="form-select guide-dropdown"
+                                                                        th:id="'guide-' + ${tour.id} + '-1'"
+                                                                        th:name="'guide-' + ${tour.id} + '-1'"
+                                                                        th:data-highschoolname="${tour.school.name}"
+                                                                        th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
+                                                                        th:data-tourhour="${tour.hour}">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <!-- Show "-" if the advisor is not responsible for the date -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
                                                         </div>
                                                     </td>
 
@@ -532,10 +539,14 @@
                                                         <div th:if="${tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
                                                             <!-- Add guide slot button only when guideCount is less than 2 -->
                                                             <button
-                                                                    class="btn btn-primary add-guide-slot"
+                                                                    class="btn btn-primary add-guide-slot" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
                                                                     th:data-tour-id="${tour.id}">
                                                                 Add Guide Slot
                                                             </button>
+                                                            <!-- Show "-" if the advisor is not responsible for the date -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
                                                         </div>
                                                         <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 2}">
                                                             <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
@@ -544,6 +555,7 @@
                                                             <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
                                                             <button
                                                                     class="btn ms-2 remove-guide"
+                                                                    th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
                                                                     th:data-tour-id="${tour.id}"
                                                                     th:data-guide-id="${tour.guides[1].id}"
                                                                     th:data-guide-name="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"
@@ -551,26 +563,32 @@
                                                                 -
                                                             </button>
                                                         </div>
-                                                        <div class="guide-slot-wrapper" th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
-                                                            <select
-                                                                    class="form-select guide-dropdown"
-                                                                    th:id="'guide-' + ${tour.id} + '-2'"
-                                                                    th:name="'guide-' + ${tour.id} + '-2'"
-                                                                    th:data-highschoolname="${tour.school.name}"
-                                                                    th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
-                                                                    th:data-tourhour="${tour.hour}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 1}">
-                                                                <button
-                                                                        class="btn btn-danger btn-sm remove-guide-slot"
-                                                                        th:data-tour-id="${tour.id}"
-                                                                        th:data-guide-index="2">
-                                                                    -
-                                                                </button>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
+                                                            <div class="guide-slot-wrapper" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                                <select
+                                                                        class="form-select guide-dropdown"
+                                                                        th:id="'guide-' + ${tour.id} + '-2'"
+                                                                        th:name="'guide-' + ${tour.id} + '-2'"
+                                                                        th:data-highschoolname="${tour.school.name}"
+                                                                        th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
+                                                                        th:data-tourhour="${tour.hour}">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 1}">
+                                                                    <button
+                                                                            class="btn btn-danger btn-sm remove-guide-slot"
+                                                                            th:data-tour-id="${tour.id}"
+                                                                            th:data-guide-index="2">
+                                                                        -
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Show "-" if the advisor is not responsible -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
                                                             </div>
 
                                                         </div>
@@ -583,10 +601,14 @@
                                                         </div>
                                                         <div th:if="${tour.guideCount == 2 && tour.status.name() == 'UPCOMING_TOUR'}">
                                                             <button
-                                                                    class="btn btn-primary add-guide-slot"
+                                                                    class="btn btn-primary add-guide-slot" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
                                                                     th:data-tour-id="${tour.id}">
                                                                 Add Guide Slot
                                                             </button>
+                                                            <!-- Show "-" if the advisor is not responsible for the date -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
                                                         </div>
                                                         <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 3}">
                                                             <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
@@ -595,6 +617,7 @@
                                                             <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
                                                             <button
                                                                     class="btn ms-2 remove-guide"
+                                                                    th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
                                                                     th:data-tour-id="${tour.id}"
                                                                     th:data-guide-id="${tour.guides[2].id}"
                                                                     th:data-guide-name="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"
@@ -602,26 +625,32 @@
                                                                 -
                                                             </button>
                                                         </div>
-                                                        <div class="guide-slot-wrapper" th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
-                                                            <select
-                                                                    class="form-select guide-dropdown"
-                                                                    th:id="'guide-' + ${tour.id} + '-3'"
-                                                                    th:name="'guide-' + ${tour.id} + '-3'"
-                                                                    th:data-highschoolname="${tour.school.name}"
-                                                                    th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
-                                                                    th:data-tourhour="${tour.hour}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 2}">
-                                                                <button
-                                                                        class="btn btn-danger btn-sm remove-guide-slot"
-                                                                        th:data-tour-id="${tour.id}"
-                                                                        th:data-guide-index="2">
-                                                                    -
-                                                                </button>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
+                                                            <div class="guide-slot-wrapper" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                                <select
+                                                                        class="form-select guide-dropdown"
+                                                                        th:id="'guide-' + ${tour.id} + '-3'"
+                                                                        th:name="'guide-' + ${tour.id} + '-3'"
+                                                                        th:data-highschoolname="${tour.school.name}"
+                                                                        th:data-tourdate="${#dates.format(tour.date, 'dd/MM/yyyy')}"
+                                                                        th:data-tourhour="${tour.hour}">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 2}">
+                                                                    <button
+                                                                            class="btn btn-danger btn-sm remove-guide-slot"
+                                                                            th:data-tour-id="${tour.id}"
+                                                                            th:data-guide-index="2">
+                                                                        -
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Show "-" if the advisor is not responsible -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
                                                             </div>
                                                         </div>
                                                     </td>
