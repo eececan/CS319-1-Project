@@ -2,6 +2,7 @@ package com.project.btoproject.controller.UIcontroller;
 
 import com.project.btoproject.dto.SchoolTourCountDTO;
 import com.project.btoproject.enums.SchoolType;
+import com.project.btoproject.enums.Status;
 import com.project.btoproject.enums.Tier;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.HighSchoolRepository;
@@ -84,28 +85,31 @@ public class UIAnalyticsController {
 
         // Fetch the tour counts
         List<Tour> allTours = eventService.getAllTours();
-
-        Map<School, Long> tourCounts = allTours.stream()
+        List<Tour> completedTours = allTours.stream()
+                .filter(tour -> tour.getStatus() == Status.COMPLETED_TOUR)
+                .collect(Collectors.toList());
+            System.out.println("completed tourssssssssssssss HERERERERERERERERE");
+        Map<School, Long> tourCounts = completedTours.stream()
                 .filter(tour -> schoolName == null || tour.getSchool().getName().equals(schoolName))
                 .collect(Collectors.groupingBy(Tour::getSchool, Collectors.counting()));
-
-
+        System.out.println("tour countssssssssssssssssssss ERERERERERERERERERRE");
         // Prepare data for the view
         List<SchoolTourCountDTO> tourCountDTOs = tourCounts.entrySet().stream()
                 .map(entry -> {
                     School school = entry.getKey();
                     Tier tier = school.getTier() != null ? school.getTier() : Tier.THIRD_TIER;
-                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier, school.getId());
+                    float percentage = 0.0f;
+                    if (schoolStudentCounts.containsKey(school.getName()) && totalStudentCount > 0) {
+                        percentage = (schoolStudentCounts.get(school.getName()) / (float) totalStudentCount) * 100;
+                    }
+                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier, school.getId(), percentage);
                 })
                 .sorted((a, b) -> b.getTourCount().compareTo(a.getTourCount())) // Sort by tour count descending
                 .collect(Collectors.toList());
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         // Extract top 4 schools
         List<SchoolTourCountDTO> topSchools = tourCountDTOs.stream().limit(4).collect(Collectors.toList());
-        List<SchoolTourCountDTO> allSchoolsTour = tourCounts.entrySet().stream()
-                .map(entry -> new SchoolTourCountDTO(entry.getKey().getName(), entry.getValue(),entry.getKey().getTier(), entry.getKey().getId()))
-                .collect(Collectors.toList());
-
-        model.addAttribute("allSchoolsTour", allSchoolsTour);
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         model.addAttribute("tourCounts", tourCounts);
         model.addAttribute("tourCountDTOs", tourCountDTOs); // Full list for table
         model.addAttribute("topSchools", topSchools);   // Top 4 for the chart
@@ -115,30 +119,31 @@ public class UIAnalyticsController {
                 .filter(tour -> schoolName == null || tour.getSchool().getName().equals(schoolName))
                 .map(Tour::getSchool) // Extract the School from the Tour
                 .collect(Collectors.toSet());
-
+        System.out.println("ALL SCHOOOOOOLLLLLSSSS");
         // Count the number of Public and Private schools
         long publicSchoolCount = allSchools.stream()
                 .filter(school -> SchoolType.STATE == school.getSchoolType())
                 .count();
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         long privateSchoolCount = allSchools.stream()
                 .filter(school -> SchoolType.PRIVATE == school.getSchoolType())
                 .count();
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         long totalSchools = allSchools.size();
         double privatePercentage = (double) privateSchoolCount / totalSchools * 100;
         double publicPercentage = (double) publicSchoolCount / totalSchools * 100;
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         String privateColor = "#303568"; // Example: Custom color for private schools
         String publicColor = "#c00d0a"; // Example: Custom color for public schools
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         model.addAttribute("privatePercentage", privatePercentage);
         model.addAttribute("publicPercentage", publicPercentage);
         model.addAttribute("privateColor", privateColor);
         model.addAttribute("publicColor", publicColor);
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         Map<String, Long> cityCounts = allSchools.stream()
                 .collect(Collectors.groupingBy(School::getCity, Collectors.counting()));
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         // Sort cities by the number of schools (descending) and get the top 3 cities
         Map<String, Long> topCities = cityCounts.entrySet().stream()
                 .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue())) // Sort by count descending
@@ -149,7 +154,7 @@ public class UIAnalyticsController {
                         (oldValue, newValue) -> oldValue, // Merge function (not needed here as there are no duplicates)
                         LinkedHashMap::new // Maintain insertion order for sorted elements
                 ));
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         long totalCities = cityCounts.values().stream().mapToLong(Long::longValue).sum();
         Map<String, Double> cityPercentages = topCities.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -160,6 +165,7 @@ public class UIAnalyticsController {
                             return Double.valueOf(String.format("%.1f", percentage));
                         }// Calculate percentage
                 ));
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
         List<String> colors = Arrays.asList(
                 "#AC0D0D", // Deep crimson red
                 "#30356E", // Rich dark blue
@@ -181,7 +187,7 @@ public class UIAnalyticsController {
             cityColors.put(city, colors.get(colorIndex % colors.size())); // Use modulo to cycle through colors
             colorIndex++;
         }
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
 // Prepare the conic-gradient string
         StringBuilder gradientBuilder = new StringBuilder();
         double cumulativePercentage = 0.0;
@@ -193,7 +199,7 @@ public class UIAnalyticsController {
                     .append(start).append("% ")
                     .append(cumulativePercentage).append("%, ");
         }
-
+        System.out.println("dtos are passedddddddddddddddddddddddd REREREREREREGGGHEGEGEG");
 // Remove the trailing comma and space
         String gradientString = gradientBuilder.substring(0, gradientBuilder.length() - 2);
 
@@ -203,7 +209,7 @@ public class UIAnalyticsController {
         int interval = (int) (maxTourCount / 10); // Adjust interval as needed
         model.addAttribute("maxTourCount", (int) maxTourCount); // Pass as integer for cleaner output
         model.addAttribute("interval", interval);
-
+        System.out.println("REREREREREREGGGHEGEGEG");
         // Prepare data for the view
         model.addAttribute("cityPercentages", cityPercentages);
         model.addAttribute("cityCounts", cityCounts);
