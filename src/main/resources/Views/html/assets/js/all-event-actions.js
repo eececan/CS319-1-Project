@@ -307,7 +307,6 @@ function handleTourCancellation(buttonElement) {
     };
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const guideDropdowns = document.querySelectorAll('.guide-dropdown');
     let selectedTourId = null;
@@ -349,8 +348,9 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert('Guide assigned successfully!');
-                        location.reload(); // Reload to reflect changes
+                        // Show success notification
+                        showNotification('Guide assigned successfully!', 'success');
+                        setTimeout(() => location.reload(), 2000);
                     } else {
                         return response.text().then((message) => {
                             throw new Error(message);
@@ -359,7 +359,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch((error) => {
                     console.error('Error assigning guide:', error);
-                    alert(`Error: ${error.message}`); // Display the backend error message
+
+                    // Show backend error notification
+                    showNotification(`Error: ${error.message}`, 'error');
                     resetDropdown(); // Reset dropdown in case of error
                 })
                 .finally(() => {
@@ -419,7 +421,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Increase the guide count
 document.addEventListener('DOMContentLoaded', function () {
     const addGuideSlotButtons = document.querySelectorAll('.add-guide-slot');
 
@@ -435,8 +436,9 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert('Guide slot added successfully!');
-                        location.reload(); // Reload to reflect changes
+                        // Show success notification
+                        showNotification('Guide slot added successfully!', 'success');
+                        setTimeout(() => location.reload(), 2000);
                     } else {
                         return response.text().then((message) => {
                             throw new Error(message);
@@ -444,7 +446,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 })
                 .catch((error) => {
-                    alert(`Error: ${error.message}`);
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, 'error');
                 });
         });
     });
@@ -459,31 +462,31 @@ document.addEventListener("DOMContentLoaded", function () {
             const tourId = this.dataset.tourId; // Extract tourId from button's data attribute
             const guideIndex = this.dataset.guideIndex; // Extract the guide index
 
-            // Confirmation dialog (optional, can be skipped)
-            if (confirm("Are you sure you want to remove this guide slot?")) {
-                // Send the request to the backend to decrease the guide count
-                fetch(`/api/tours/${tourId}/decrease-guide-count`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ guideIndex: guideIndex }),
+            // Send the request to the backend to decrease the guide count
+            fetch(`/api/tours/${tourId}/decrease-guide-count`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ guideIndex: guideIndex }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Show success notification
+                        showNotification("Guide slot removed successfully!", "success");
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
                 })
-                    .then((response) => {
-                        if (response.ok) {
-                            alert("Guide slot removed successfully!");
-                            location.reload(); // Reload the page to reflect changes
-                        } else {
-                            return response.text().then((message) => {
-                                throw new Error(message);
-                            });
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error removing guide slot:", error);
-                        alert(`Error: ${error.message}`);
-                    });
-            }
+                .catch((error) => {
+                    console.error("Error removing guide slot:", error);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                });
         });
     });
 });
@@ -491,28 +494,47 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener('DOMContentLoaded', function () {
     const removeGuideButtons = document.querySelectorAll('.remove-guide');
 
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    let selectedTourId = null;
+    let selectedGuideId = null;
+
     removeGuideButtons.forEach((button) => {
         button.addEventListener('click', function () {
-            const tourId = this.dataset.tourId; // Get tour ID
-            const guideId = this.dataset.guideId; // Get guide ID
+            // Store the tour and guide IDs
+            selectedTourId = this.dataset.tourId;
+            selectedGuideId = this.dataset.guideId;
 
-            // Confirmation dialog
-            if (!confirm("Are you sure you want to remove this guide from the tour?")) {
-                return; // Do nothing if the user cancels
-            }
+            // Set the confirmation message dynamically
+            const guideName = this.dataset.guideName;
+            const tourDate = this.dataset.tourDate;
+            confirmMessage.textContent = `Are you sure you want to remove guide "${guideName}" from the tour on ${tourDate}?`;
 
+            // Show the confirmation modal
+            confirmModal.show();
+        });
+    });
+
+    // Handle the confirmation action
+    confirmButton.addEventListener('click', function () {
+        if (selectedTourId && selectedGuideId) {
             // Send request to the server
-            fetch(`/api/tours/${tourId}/remove-guide`, {
+            fetch(`/api/tours/${selectedTourId}/remove-guide`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ guideId: guideId }),
+                body: JSON.stringify({ guideId: selectedGuideId }),
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert('Guide removed successfully!');
-                        location.reload(); // Reload the page to reflect changes
+                        // Show success notification
+                        showNotification('Guide removed successfully!', 'success');
+                        setTimeout(() => location.reload(), 2000);
                     } else {
                         return response.text().then((message) => {
                             throw new Error(message);
@@ -521,11 +543,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch((error) => {
                     console.error('Error removing guide:', error);
-                    alert(`Error: ${error.message}`);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, 'error');
+                })
+                .finally(() => {
+                    confirmModal.hide();
                 });
-        });
+        }
+    });
+
+    // Handle cancel action
+    cancelButton.addEventListener('click', function () {
+        confirmModal.hide();
+    });
+
+    // Handle close action
+    closeModalButton.addEventListener('click', function () {
+        confirmModal.hide();
     });
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const joinTourButtons = document.querySelectorAll(".join-tour-button");
