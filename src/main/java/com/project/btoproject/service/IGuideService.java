@@ -26,4 +26,9 @@ public interface IGuideService {
     void setSchedule(Long guideId, int position, char status);
     Event getUpcomingEventOfGuide(Guide guide);
 
+    List<Event> getGuideTours(Guide guide);
+
+    List<Event> getGuideFairs(Guide guide);
+
+    List<Event> getGuideIndividualTours(Guide guide);
 }

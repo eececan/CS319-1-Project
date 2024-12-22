@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -152,5 +153,26 @@ public class GuideService implements IGuideService
     @Override
     public Guide getGuideById(Long id) {
         return guideRepository.getGuideById(id);
+    }
+
+    @Override
+    public List<Event> getGuideTours(Guide guide) {
+        return guide.getEvents().stream()
+                .filter(event -> "TOUR".equals(event.getEventType()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> getGuideFairs(Guide guide) {
+        return guide.getEvents().stream()
+                .filter(event -> "FAIR".equals(event.getEventType()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> getGuideIndividualTours(Guide guide) {
+        return guide.getEvents().stream()
+                .filter(event -> "INDIVIDUAL_TOUR".equals(event.getEventType()))
+                .collect(Collectors.toList());
     }
 }

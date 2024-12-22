@@ -29,14 +29,19 @@ public class UIUserTaskController {
     // Get tasks page (To-Do List)
     @GetMapping("/todo")
     public String getTodoPage(Model model) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
-        String roleUser="";
+        String rolen="";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
+            rolen = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
         }
+        model.addAttribute("role", rolen);
         User user = allUsersService.getUserById(Long.parseLong(username)).get();
         List<UserTask> tasks = allUsersService.seeAllTasks(user);
         model.addAttribute("user", user);
@@ -48,13 +53,9 @@ public class UIUserTaskController {
             return"project-todo-guideSpecific";
         }
         else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
-            roleUser ="ADVISOR";
-            model.addAttribute("roleUser", roleUser);
             return"project-todo";
         }
         else{
-            roleUser ="HEAD SECRETARY";
-            model.addAttribute("roleUser", roleUser);
             return "project-todo";
         }
     }
@@ -64,9 +65,15 @@ public class UIUserTaskController {
     public String postTask(@RequestParam String taskName, @RequestParam String description, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
+        String rolen="";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
+            rolen = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
         }
         User user = allUsersService.getUserById(Long.parseLong(username)).get();
 

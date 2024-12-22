@@ -45,23 +45,24 @@ public class UIAnalyticsController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
-        String roleUser="";
+        String role="";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
         }
+        model.addAttribute("role", role);
+
+
         User user = allUsersService.getUserById(Long.parseLong(username)).get();
         List<UserTask> tasks = allUsersService.seeAllTasks(user);
         model.addAttribute("user", user);
         model.addAttribute("tasks", tasks);
-        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
-            roleUser ="DIRECTOR";
-            model.addAttribute("roleUser", roleUser);
-        }
-        else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
-            roleUser ="COORDINATOR";
-            model.addAttribute("roleUser", roleUser);
-        }
+
 
 
         List<School> schools = schoolRepository.findAll();
@@ -208,6 +209,7 @@ public class UIAnalyticsController {
         model.addAttribute("cityCounts", cityCounts);
         model.addAttribute("totalCities", totalCities);
         model.addAttribute("topCities", topCities);
+
         return "Analytics"; // Name of the Thymeleaf template
     }
 

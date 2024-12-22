@@ -54,7 +54,17 @@ public class UIEventController {
         model.addAttribute("individualTours", individualTours);
         model.addAttribute("tours", tours);
         model.addAttribute("fairs", fairs);
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         // Render a single template
         return "guide-tables"; // Thymeleaf template
     }
@@ -66,6 +76,17 @@ public class UIEventController {
         model.addAttribute("events", events);
         School school = schoolService.findSchoolById(schoolId);
         model.addAttribute("school", school);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         return "events-of-school";
     }
 
@@ -168,7 +189,17 @@ public class UIEventController {
             model.addAttribute("selectedDay", dayFilter);
             model.addAttribute("dayFilter", dayFilter);
             // -----Individual Tours-----
-
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String role = "";
+            if (authentication.getPrincipal() instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                role = userDetails.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .map(authority -> authority.getAuthority())
+                        .orElse("ROLE_UNKNOWN");
+            }
+            model.addAttribute("role", role);
             return "director-coordinator-tables";  // Match template name exactly
         } catch (Exception e) {
             e.printStackTrace();  // Log the error
@@ -239,6 +270,17 @@ public class UIEventController {
             model.addAttribute("searchTerm", search);
             model.addAttribute("selectedDay", dayFilter);
             model.addAttribute("dayFilter", dayFilter);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String role = "";
+            if (authentication.getPrincipal() instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                role = userDetails.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .map(authority -> authority.getAuthority())
+                        .orElse("ROLE_UNKNOWN");
+            }
+            model.addAttribute("role", role);
             return "head-secretary-tables";
         } catch (Exception e) {
             e.printStackTrace();  // Log the error
@@ -262,19 +304,22 @@ public class UIEventController {
             @RequestParam(required = false) Integer dayFilter,
             @RequestParam(required = false) String search,
             Model model) {
-
+            String role = "";
         try{// ----- Active Guide -----
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserEntity user = new UserEntity();
             Object principal = authentication.getPrincipal();
             UserDetails userDetails = (UserDetails) principal;
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
             String userId = userDetails.getUsername();
             long guideId = Long.parseLong(userId);
             Guide currentGuide = guideService.getGuideById(guideId);
             model.addAttribute("guide", currentGuide);
             // ----- Active Guide -----
-
-
 
             // ----- Paginated Data Fetch -----
             Page<Tour> toursPageable;
@@ -355,7 +400,7 @@ public class UIEventController {
             Date currentDate = new Date();
             model.addAttribute("currentDate", currentDate);
             // ----- Model Attributes -----
-
+            model.addAttribute("role", role);
             return "guide-tables";
 
         } catch (Exception e) {
@@ -379,12 +424,17 @@ public class UIEventController {
             @RequestParam(required = false) Integer dayFilter,
             @RequestParam(required = false) String search,
             Model model) {
+        String role = "";
     try {
         // Get logged in advisor
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         long advisorId = Long.parseLong(userDetails.getUsername());
-
+        role = userDetails.getAuthorities()
+                .stream()
+                .findFirst()
+                .map(authority -> authority.getAuthority())
+                .orElse("ROLE_UNKNOWN");
         Advisor advisor = advisorService.getAdvisorById(advisorId);
         DayOfWeek responsibleDay = advisor.getResponsibleDay();
         List<Guide> guides = guideService.getAllGuides();
@@ -471,7 +521,7 @@ public class UIEventController {
         model.addAttribute("pageSize", tourApplicationsSize);
         model.addAttribute("dayFilter", dayFilter);
         model.addAttribute("selectedDay", dayFilter);
-
+        model.addAttribute("role", role);
 
         return "advisor-tables";
     } catch (Exception e) {

@@ -6,18 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-    <title>:: Register ::</title>
+    <title>Register</title>
 
     <!-- Bootstrap Core and vendor -->
     <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
 
-    <!-- Custom CSS for dark red background -->
+    <!-- Custom CSS for background image -->
     <style>
         .auth_right {
-            background-color: #8B0000; /* Dark Red */
-            opacity: 0.9; /* Slight transparency for a softer appearance */
+            background-image: url('/bilkent_pic.png'); /* Add the correct path to your image */
+            background-size: cover; /* Make sure the image covers the entire div */
+            background-position: center; /* Center the image */
             height: 100vh; /* Full height */
             width: 100%;
         }
@@ -95,7 +96,7 @@
             </div>
         </div>
     </div>
-    <!-- Dark red background -->
+    <!-- Background image -->
     <div class="auth_right"></div>
 </div>
 

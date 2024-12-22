@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.Long.parseLong;
+
 @Controller
 public class UIDashBoardController {
 
@@ -72,18 +74,33 @@ public class UIDashBoardController {
         User user = allUserService.getUserById(Long.parseLong(username)).get();
        populateModelWithUserData(model,user);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+            model.addAttribute("roleUser", "Director");
             return "Director-Dashboard"; // Director's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+            model.addAttribute("roleUser", "Advisor");
             return "Advisor-Dashboard"; // Advisor's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
-
+            model.addAttribute("roleUser", "Guide");
+            Long id = parseLong(username);
+            Guide userr = guideService.getGuideById(id);
+            Event event = guideService.getUpcomingEventOfGuide(userr);
+            if (event != null) {
+                model.addAttribute("eventDate", event.getDate()); // Assuming event.getDate() returns a LocalDateTime or Date
+            } else {
+                model.addAttribute("eventDate", new Date()); // No upcoming event
+            }
             return "Guide-Dashboard"; // Guide's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
+            model.addAttribute("roleUser", "Head Secretary");
+
             return "Head-Secretary-Dashboard"; // Head Secretary's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
+            model.addAttribute("roleUser", "Guide in Training");
+
             return"Guide-in-training-Dashboard";
         }
         else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
+            model.addAttribute("roleUser", "Coordinator");
             return"Coordinator-Dashboard";
         }
         else
