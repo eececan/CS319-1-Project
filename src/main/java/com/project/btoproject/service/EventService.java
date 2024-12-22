@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -333,6 +334,21 @@ public class EventService implements IEventService {
     @Override
     public Date findLatestTourApplicationTimeStamp() {
         return eventRepository.findLatestTourApplicationTimeStamp();
+    }
+
+    @Override
+    public List<Event> findAllEventsBySchoolId(Long schoolId) {
+        List<Event> events = eventRepository.findAll();
+        List<Event> returnEvents = new ArrayList<>();
+        for (Event event : events) {
+            if (event instanceof Tour && ((Tour) event).getSchool().getId().equals(schoolId)) {
+                returnEvents.add(event);
+            }
+            else if (event instanceof Fair && ((Fair) event).getSchool().getId().equals(schoolId)) {
+                returnEvents.add(event);
+            }
+        }
+        return returnEvents;
     }
 
     public Date findLatestIndividualTourApplicationTimeStamp() {
