@@ -36,4 +36,16 @@ public class NotificationController {
         notificationService.markAsRead(id);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/mark-all-read")
+    public ResponseEntity<Void> markAllAsRead(Authentication auth) {
+        try {
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            Long userId = Long.parseLong(userDetails.getUsername());
+            notificationService.markAllAsRead(userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.err.println("Error marking all notifications as read: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

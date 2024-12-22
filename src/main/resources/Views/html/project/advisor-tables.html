@@ -1007,23 +1007,30 @@
                                                     <!-- Guide -->
                                                     <td>
                                                         <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR' && individualTour.guides.size() == 0 }">
-                                                            <select class="form-select individual-guide-dropdown"
-                                                                    th:id="'individual-guide-' + ${individualTour.id}"
-                                                                    th:name="'individual-guide-' + ${individualTour.id}"
-                                                                    th:data-tour-id="${individualTour.id}"
-                                                                    th:data-studentname="${individualTour.student.name}"
-                                                                    th:data-tourdate="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
-                                                                <option value="" disabled selected>Select Guide</option>
-                                                                <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
-                                                                    Guide Name
-                                                                </option>
-                                                            </select>
+                                                            <div th:if="${#dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                                <select class="form-select individual-guide-dropdown"
+                                                                        th:id="'individual-guide-' + ${individualTour.id}"
+                                                                        th:name="'individual-guide-' + ${individualTour.id}"
+                                                                        th:data-tour-id="${individualTour.id}"
+                                                                        th:data-studentname="${individualTour.student.name}"
+                                                                        th:data-tourdate="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div th:if="${!(#dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
+
                                                         </div>
                                                         <!-- Check if a guide is assigned -->
                                                         <div th:if="${individualTour.guides.size() > 0 && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
                                                             <span th:text="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}">Guide Name</span>
                                                             <!-- Remove button -->
                                                             <button class="btn ms-2 remove-guide-individual"
+                                                                    th:if="${#dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
                                                                     th:data-tour-id="${individualTour.id}"
                                                                     th:data-guide-id="${individualTour.guides[0].id}"
                                                                     th:data-guide-name="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}"
@@ -1034,7 +1041,7 @@
                                                     </td>
                                                     <!-- Actions -->
                                                     <td>
-                                                        <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                        <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR' and #dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}" >
                                                             <button class="btn btn-danger"
                                                                     th:data-individual-tour-id="${individualTour.id}"
                                                                     th:data-student-name="${individualTour.student.name}"

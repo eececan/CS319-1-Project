@@ -274,6 +274,7 @@ public class UIAuthController {
                     Advisor user = new Advisor();
                     user.setId(parseLong(username));
                     model.addAttribute("user", user);
+                    model.addAttribute("role", "ROLE_ADVISOR");
                     return "advisor-profile";
                 }
                 if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
@@ -320,6 +321,8 @@ public class UIAuthController {
                        return "guide-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
+                       model.addAttribute("role", "ROLE_ADVISOR");
+
                        return "advisor-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
@@ -393,6 +396,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("roleUser", "Director");
                        return "Director-Dashboard";
                    }
                    else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_COORDINATOR"))) {
@@ -409,7 +413,6 @@ public class UIAuthController {
                            sum+=pointRecords.get(0).getPoint();
                        }
                        long upComing = eventService.getUpcomingEventsCount();
-                       int guideCount = guideService.getAllGuides().size();
                        model.addAttribute("upComing", upComing);
                        model.addAttribute("sum",sum);
                        model.addAttribute("users", users);
@@ -417,7 +420,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
-                       model.addAttribute("guideCount",guideCount);
+                       model.addAttribute("roleUser", "Coordinator");
                        return "Coordinator-Dashboard";// Coordinator's page
                    }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
 
@@ -443,6 +446,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("roleUser", "Advisor");
                        return "Advisor-Dashboard"; // Advisor's page
                    } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
 
@@ -476,6 +480,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("roleUser", "Guide");
                        return "Guide-Dashboard"; // Guide's page
                    }
                    else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
@@ -502,6 +507,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("roleUser", "Guide in Training");
                        return "Guide-in-training-dashboard"; // Guide's page
                    }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
 
@@ -531,6 +537,7 @@ public class UIAuthController {
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
                 model.addAttribute("users", users);*/
+                       model.addAttribute("roleUser", "Head Secretary");
                        return "Head-Secretary-Dashboard"; // Head Secretary's page
                    } else {
                        return "page-empty"; // Default page for unrecognized roles

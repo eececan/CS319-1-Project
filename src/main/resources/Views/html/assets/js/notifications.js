@@ -79,6 +79,31 @@ $(document).ready(function() {
             });
     });
 
+    $('#markAllRead').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log('Mark all button clicked');
+
+        $.ajax({
+            url: '/api/notifications/mark-all-read',
+            type: 'POST',
+            beforeSend: function() {
+                console.log('Sending mark all request');
+            },
+            success: function() {
+                console.log('Mark all success');
+                $('.notification-item').removeClass('unread');
+                updateNotificationCount();
+                loadNotifications();
+            },
+            error: function(xhr, status, error) {
+                console.error('Mark all failed:', status, error);
+                console.error('Response:', xhr.responseText);
+            }
+        });
+    });
+
     notificationDropdown.on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();

@@ -71,7 +71,7 @@ public class ValidationService {
                     user.setId(userId);
                     model.addAttribute("user", user);
                 }
-
+                model.addAttribute("role", role);
                 return "advisor-profile"; // View for editing the advisor's profile
             }
             case "ROLE_GUIDE": {
