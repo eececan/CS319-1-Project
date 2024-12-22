@@ -425,7 +425,9 @@
                                                             <button
                                                                     class="btn btn-sm join-tour-button"
                                                                     th:data-tour-id="${tour.id}"
-                                                                    th:data-guide-id="${guide.id}">
+                                                                    th:data-guide-id="${guide.id}"
+                                                                    th:data-school-name="${tour.school.name}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
                                                                 Join Tour
                                                             </button>
                                                         </div>
@@ -437,7 +439,9 @@
                                                                 <button
                                                                         class="btn btn-sm leave-tour-button"
                                                                         th:data-tour-id="${tour.id}"
-                                                                        th:data-guide-id="${guide.id}">
+                                                                        th:data-guide-id="${guide.id}"
+                                                                        th:data-school-name="${tour.school.name}"
+                                                                        th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
                                                                     Leave Tour
                                                                 </button>
                                                             </div>
@@ -592,7 +596,9 @@
                                                             <button
                                                                     class="btn btn-sm join-fair-button"
                                                                     th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${guide.id}">
+                                                                    th:data-guide-id="${guide.id}"
+                                                                    th:data-fair-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd/MM/yyyy')}">
                                                                 Join Fair
                                                             </button>
                                                         </div>
@@ -604,7 +610,9 @@
                                                                 <button
                                                                         class="btn btn-sm leave-fair-button"
                                                                         th:data-fair-id="${fair.id}"
-                                                                        th:data-guide-id="${guide.id}">
+                                                                        th:data-guide-id="${guide.id}"
+                                                                        th:data-fair-name="${fair.school.name}"
+                                                                        th:data-fair-date="${#dates.format(fair.date, 'dd/MM/yyyy')}">
                                                                     Leave Fair
                                                                 </button>
                                                             </div>
@@ -758,10 +766,13 @@
                                                         <div th:if="${ individualTour.guides.isEmpty()
                                                                         && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'
                                                                         && !#lists.contains(guide.events, individualTour)
-                                                                        && !individualTourConflicts[individualTour.id]}">
+                                                                        && !individualTourConflicts[individualTour.id]
+                                                                        && individualTour.date > currentDate}">
                                                             <button class="btn btn-sm join-individual-tour-button"
                                                                     th:data-tour-id="${individualTour.id}"
-                                                                    th:data-guide-id="${guide.id}">
+                                                                    th:data-guide-id="${guide.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
                                                                 Join Tour
                                                             </button>
                                                         </div>
@@ -773,12 +784,14 @@
                                                                 <button
                                                                         class="btn btn-sm leave-individual-tour-button"
                                                                         th:data-tour-id="${individualTour.id}"
-                                                                        th:data-guide-id="${guide.id}">
+                                                                        th:data-guide-id="${guide.id}"
+                                                                        th:data-student-name="${individualTour.student.name}"
+                                                                        th:data-tour-date="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
                                                                     Leave Tour
                                                                 </button>
                                                             </div>
                                                             <!-- Show Locked message if < 7 days -->
-                                                            <div th:elseif="${individualTour.date.time - currentDate.time < 7 * 24 * 60 * 60 * 1000}">
+                                                            <div th:if="${individualTour.date.time - currentDate.time < 7 * 24 * 60 * 60 * 1000}">
                                                                 <span class="text-danger fw-bold">LOCKED</span>
                                                             </div>
                                                         </div>
@@ -851,6 +864,27 @@
         </div>
     </div>
 </div>
+
+<div id="notification-box" class="notification hidden"></div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmButton">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Include jQuery -->
 <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>

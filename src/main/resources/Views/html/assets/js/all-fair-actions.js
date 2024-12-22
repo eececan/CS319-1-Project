@@ -384,78 +384,175 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener("DOMContentLoaded", function () {
     const joinFairButtons = document.querySelectorAll(".join-fair-button");
 
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedFairId = null;
+    let selectedGuideId = null;
+
     joinFairButtons.forEach((button) => {
         button.addEventListener("click", function () {
-            const fairId = this.dataset.fairId;
-            const guideId = this.dataset.guideId;
+            // Get fair ID and guide ID from button's data attributes
+            selectedFairId = this.dataset.fairId;
+            selectedGuideId = this.dataset.guideId;
+            const fairName = this.dataset.fairName;
+            const fairDate = this.dataset.fairDate;
 
-            if (!guideId) {
-                alert("Guide ID is missing.");
+            if (!selectedGuideId) {
+                showNotification("Guide ID is missing.", "error");
                 return;
             }
 
-            fetch(`/api/fairs/${fairId}/join`, {
+            // Set the confirmation message
+            confirmMessage.innerHTML = `Are you sure you want to join the fair "${fairName}" on ${fairDate}? <br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
+
+            // Show the confirmation modal
+            confirmModal.show();
+        });
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", function () {
+        if (selectedFairId && selectedGuideId) {
+            fetch(`/api/fairs/${selectedFairId}/join`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ guideId: guideId }),
+                body: JSON.stringify({ guideId: selectedGuideId }),
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert("Successfully joined the fair!");
-                        location.reload();
+                        // Show success notification
+                        showNotification("Successfully joined the fair!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
-                        return response.text().then((message) => {
-                            throw new Error(message);
+                        return response.json().then((errorData) => {
+                            throw new Error(errorData.error || "Failed to join the fair.");
                         });
                     }
                 })
                 .catch((error) => {
                     console.error("Error joining fair:", error);
-                    alert(`Error: ${error.message}`);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
                 });
-        });
+        }
     });
+
+    // Handle No button click
+    cancelButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    function resetSelections() {
+        selectedFairId = null;
+        selectedGuideId = null;
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
     const leaveFairButtons = document.querySelectorAll(".leave-fair-button");
 
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedFairId = null;
+    let selectedGuideId = null;
+
     leaveFairButtons.forEach((button) => {
         button.addEventListener("click", function () {
-            const fairId = this.dataset.fairId;
-            const guideId = this.dataset.guideId;
+            // Get fair ID and guide ID from button's data attributes
+            selectedFairId = this.dataset.fairId;
+            selectedGuideId = this.dataset.guideId;
+            const fairName = this.dataset.fairName;
+            const fairDate = this.dataset.fairDate;
 
-            if (!guideId) {
-                alert("Guide ID is missing.");
+            if (!selectedGuideId) {
+                showNotification("Guide ID is missing.", "error");
                 return;
             }
 
-            fetch(`/api/fairs/${fairId}/leave`, {
+            // Set the confirmation message
+            confirmMessage.innerHTML = `Are you sure you want to leave the fair "${fairName}" scheduled on ${fairDate}?`;
+
+            // Show the confirmation modal
+            confirmModal.show();
+        });
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", function () {
+        if (selectedFairId && selectedGuideId) {
+            fetch(`/api/fairs/${selectedFairId}/leave`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ guideId: guideId }),
+                body: JSON.stringify({ guideId: selectedGuideId }),
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert("Successfully left the fair!");
-                        location.reload();
+                        // Show success notification
+                        showNotification("Successfully left the fair!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
-                        return response.text().then((message) => {
-                            throw new Error(message);
+                        return response.json().then((errorData) => {
+                            throw new Error(errorData.error || "Failed to leave the fair.");
                         });
                     }
                 })
                 .catch((error) => {
                     console.error("Error leaving fair:", error);
-                    alert(`Error: ${error.message}`);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
                 });
-        });
+        }
     });
+
+    // Handle No button click
+    cancelButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    function resetSelections() {
+        selectedFairId = null;
+        selectedGuideId = null;
+    }
 });
+
 
 function markFairAsCompleted(fairId) {
     console.log(`Marking fair as completed. Fair ID: ${fairId}`);

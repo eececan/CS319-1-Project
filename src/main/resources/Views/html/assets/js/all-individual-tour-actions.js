@@ -352,34 +352,101 @@ function cancelIndividualTour(buttonElement) {
     };
 }
 
-// Note that to join an individual tour, already defined js functions are used because the logic is the same
 document.addEventListener("DOMContentLoaded", () => {
-    // Event delegation for Join Individual Tour button
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedTourId = null;
+    let selectedGuideId = null;
+    let actionUrl = null; // Holds the API endpoint for the action
+
+    // Event delegation for Join and Leave Individual Tour buttons
     document.body.addEventListener("click", (event) => {
         if (event.target.classList.contains("join-individual-tour-button")) {
             const button = event.target;
-            const tourId = button.getAttribute("data-tour-id");
-            const guideId = button.getAttribute("data-guide-id");
+            selectedTourId = button.getAttribute("data-tour-id");
+            selectedGuideId = button.getAttribute("data-guide-id");
+            const studentName = button.getAttribute("data-student-name");
+            const tourDate = button.getAttribute("data-tour-date");
 
-            if (tourId && guideId) {
-                assignIndividualTourGuide(tourId, guideId);
+            if (!selectedTourId || !selectedGuideId) {
+                showNotification("Tour ID or Guide ID is missing.", "error");
+                return;
             }
-        }
-    });
 
-    // Event delegation for Leave Individual Tour button
-    document.body.addEventListener("click", (event) => {
+            // Set the confirmation message and API endpoint for joining
+            confirmMessage.innerHTML = `Are you sure you want to join the individual tour for "${studentName}" on ${tourDate}?<br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
+            actionUrl = `/api/individual-tours/${selectedTourId}/assign-guide`;
+
+            // Show confirmation modal
+            confirmModal.show();
+        }
+
         if (event.target.classList.contains("leave-individual-tour-button")) {
             const button = event.target;
-            const tourId = button.getAttribute("data-tour-id");
-            const guideId = button.getAttribute("data-guide-id");
+            selectedTourId = button.getAttribute("data-tour-id");
+            selectedGuideId = button.getAttribute("data-guide-id");
+            const studentName = button.getAttribute("data-student-name");
+            const tourDate = button.getAttribute("data-tour-date");
 
-            if (tourId && guideId) {
-                removeIndividualTourGuide(button);
+            if (!selectedTourId || !selectedGuideId) {
+                showNotification("Tour ID or Guide ID is missing.", "error");
+                return;
             }
+
+            // Set the confirmation message and API endpoint for leaving
+            confirmMessage.innerHTML = `Are you sure you want to leave the individual tour for "${studentName}" on ${tourDate}?`;
+            actionUrl = `/api/individual-tours/${selectedTourId}/remove-guide`;
+
+            // Show confirmation modal
+            confirmModal.show();
         }
     });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", () => {
+        if (selectedTourId && selectedGuideId && actionUrl) {
+            fetch(actionUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ guideId: selectedGuideId }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        const successMessage =
+                            actionUrl.includes("assign-guide")
+                                ? "Successfully joined the individual tour!"
+                                : "Successfully left the individual tour!";
+                        showNotification(successMessage, "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        return response.json().then((errorData) => {
+                            throw new Error(errorData.error || "An error occurred.");
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error processing request:", error);
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
+                });
+        }
+    });
+
+    // Handle No button or modal close
+    cancelButton.addEventListener("click", () => confirmModal.hide());
+    closeModalButton.addEventListener("click", () => confirmModal.hide());
 });
+
 
 function markIndividualTourAsCompleted(individualTourId) {
     console.log(`Marking individual tour as completed. Individual Tour ID: ${individualTourId}`);
