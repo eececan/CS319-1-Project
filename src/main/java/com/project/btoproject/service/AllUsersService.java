@@ -114,8 +114,7 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
                 isNullOrEmpty(guide.getFirstName()) ||
                 isNullOrEmpty(guide.getLastName()) ||
                 isNullOrEmpty(guide.getPhoneNumber()) ||
-                isNullOrEmpty(guide.getEmail()) ||
-                isNullOrEmpty(guide.getDescription());
+                isNullOrEmpty(guide.getEmail());
     }
 
     // Check for Advisor Role
@@ -164,6 +163,7 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
     // Check for Coordinator Role
     if (userEntity.getRoles().stream().anyMatch(role -> "ROLE_COORDINATOR".equalsIgnoreCase(role.getName()))) {
         Coordinator coordinator = coordinatorService.getCoordinatorById(user.getId());
+        if(coordinator == null) return true;
         return isNullOrEmpty(coordinator.getFirstName()) ||
                 isNullOrEmpty(coordinator.getLastName()) ||
                 isNullOrEmpty(coordinator.getPhoneNumber()) ||
