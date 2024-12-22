@@ -21,10 +21,17 @@
     <style>
         .alert {
             padding: 20px;
-            background-color: #2196F3; /* Blue */
+            background-color: #8B0000; /* Blue */
             color: white;
             margin-bottom: 15px;
         }
+        .auth_right {
+            background-color: #8B0000; /* Dark Red */
+            opacity: 0.9; /* Slight transparency for a softer appearance */
+            height: 100vh; /* Full height */
+            width: 100%;
+        }
+
 
         /* The close button */
         .closebtn {
@@ -383,8 +390,12 @@
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
                                 </div>
                             </div>
-                            <div th:if="${showPopUp == 'true'}" class="alert">
-                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                            <div th:if="${showPopUp == 'true'}" class="alert alert-info alert-dismissible fade show"
+                                 style="background-color: #2196F3; color: white; border-color: #0b79d0;">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';"
+          style="color: white; font-size: 20px; font-weight: bold; border: none; background: none; cursor: pointer; line-height: 1;">
+        &times;
+    </span>
                                 You have missing personal information! Please update your profile before continuing!
                             </div>
                             <div class="dropdown d-flex">
@@ -498,7 +509,11 @@
                                     <!-- Profile Edit Tab -->
                                     <div class="tab-pane active show" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                         <!-- ID Display Outside the Form -->
-
+                                        <div th:if="${errorMessage != null and errorMessage != ''}"
+                                             class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <span th:text="${errorMessage}"></span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
                                         <!-- Form -->
                                         <form th:action="@{/ui/UserProfile/updateProfile}" method="post">
                                             <div class="card">

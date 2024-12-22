@@ -23,4 +23,5 @@ public interface IAllUsersService {
     boolean hasUserWithId(Long id);
     void updateProfile(Long id, Map<String, Object> dtoMap);
     boolean responsibleDayAvailable(String day);
+    Optional<User> getUserByEmail(String email);
 }

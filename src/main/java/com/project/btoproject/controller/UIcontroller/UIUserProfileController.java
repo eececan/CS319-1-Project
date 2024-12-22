@@ -23,6 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.DayOfWeek;
 import java.util.*;
 
+import static java.lang.Long.parseLong;
+
 @Controller
 @RequestMapping("ui/UserProfile")
 public class UIUserProfileController {
@@ -37,8 +39,9 @@ public class UIUserProfileController {
     private final GuideService guideService;
     private final PointRecordService pointRecordService;
     private final RoleRepository roleRepository;
+    private final ValidationService validationService;
 
-    UIUserProfileController(AllUsersService allUsersService, UserService userService, PasswordEncoder passwordEncoder, AuthService authService, EventService eventService, AdvisorService advisorService, GuideService guideService, PointRecordService pointRecordService, RoleRepository roleRepository) {
+    UIUserProfileController(AllUsersService allUsersService, UserService userService, PasswordEncoder passwordEncoder, AuthService authService, EventService eventService, AdvisorService advisorService, GuideService guideService, PointRecordService pointRecordService, RoleRepository roleRepository, ValidationService validationService) {
         this.allUsersService = allUsersService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -48,6 +51,7 @@ public class UIUserProfileController {
         this.guideService = guideService;
         this.pointRecordService = pointRecordService;
         this.roleRepository = roleRepository;
+        this.validationService = validationService;
     }
 
     @GetMapping("/profile")
@@ -140,13 +144,36 @@ public class UIUserProfileController {
             role = userDetails.getAuthorities()
                     .stream()
                     .findFirst()
-                    .map(authority -> authority.getAuthority()) // Get the role name
+                    .map(authority -> authority.getAuthority())
                     .orElse("ROLE_UNKNOWN");
         }
+
         if (!allUsersService.hasUserWithId(Long.parseLong(username))) {
+            String email = dtoMap.get("email").toString();
+            if (email == null || email.trim().isEmpty()) {
+                return validationService.validateAndReturn(role, dtoMap, model,
+                        "Email cannot be empty. Please provide a valid bilkent email!", Long.parseLong(username));
+            }
+            else if (email != null && !email.isEmpty()) {
+                Optional<User> all_user = allUsersService.getUserByEmail(email);
+                if (all_user.isPresent()) {
+                    // Return the result of validationService to prevent further execution
+                    return validationService.validateAndReturn(role, dtoMap, model,
+                            "This email is linked to another user! Please enter another email!", Long.parseLong(username));
+                }
+
+            }
+            if (email == null || !email.contains("bilkent@edu.tr")) {
+                return validationService.validateAndReturn(role, dtoMap, model,
+                        "The email you use must be a bilkent mail! Please enter your bilkent mail!", Long.parseLong(username));
+            }
+
+
             UserEntity user = userService.findUserByUsername(Long.parseLong(username)).get();
             userService.addNewUser(dtoMap, role, user);
             model.addAttribute("showPopUp", "false");
+
+
 
             if (role.equals("ROLE_DIRECTOR")) {
                 User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
@@ -169,6 +196,8 @@ public class UIUserProfileController {
                 model.addAttribute("advisor", advisor);
                 model.addAttribute("tours", tours);
                 model.addAttribute("fairs", fairs);
+
+
                 return "Director-Dashboard";
             } else if (role.equals("ROLE_COORDINATOR")) {
 
@@ -315,8 +344,36 @@ public class UIUserProfileController {
             }
         }
         else
-
         {
+            String email = dtoMap.get("email").toString();
+            if (email == null || email.trim().isEmpty()) {
+                return validationService.validateAndReturn(role, dtoMap, model,
+                        "Email cannot be empty. Please provide a valid bilkent email!", Long.parseLong(username));
+            }
+            else if (email != null && !email.isEmpty()) {
+                Optional<User> all_user = allUsersService.getUserByEmail(email);
+                if (all_user.isPresent()) {
+                    if(all_user.get().getId() != Long.parseLong(username)){
+                        // Return the result of validationService to prevent further execution
+                        return validationService.validateAndReturn(role, dtoMap, model,
+                                "This email is linked to another user! Please enter another email!", Long.parseLong(username));
+                    }
+
+
+                    /*else{
+                        return validationService.validateAndReturn(role, dtoMap, model,
+                                "You are already registered with this email!", Long.parseLong(username));
+                    }*/
+
+                }
+                if (email == null || !email.contains("@")) {
+                    return validationService.validateAndReturn(role, dtoMap, model,
+                            "The email must contain '@'! Please enter a valid email address.", Long.parseLong(username));
+                } else if (!email.contains("bilkent.edu.tr")) {
+                    return validationService.validateAndReturn(role, dtoMap, model,
+                            "The email you use must be a Bilkent email! Please enter your Bilkent email!", Long.parseLong(username));
+                }
+            }
             allUsersService.updateProfile(Long.parseLong(username), dtoMap);
             return "redirect:/ui/UserProfile/profile";
         }
