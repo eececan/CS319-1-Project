@@ -5,8 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class UIHomeController {
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home() {
+        return "information-office-page";
+    }
+    @GetMapping("/")
+    public String login() {
         return "login";
     }
 }
