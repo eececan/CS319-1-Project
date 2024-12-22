@@ -126,7 +126,7 @@
                 <span th:text="${errorMessage}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <form action="/ui/auth/login" method="post">
+            <form action="/ui/auth/login" method="post" novalidate>
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" name="username" class="form-control" id="username" placeholder="Enter your username" required>
