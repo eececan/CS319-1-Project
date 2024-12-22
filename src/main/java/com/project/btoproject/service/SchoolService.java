@@ -55,5 +55,9 @@ public class SchoolService {
         school.setTier(tier);
         schoolRepository.save(school);
     }
+
+    public School findSchoolById(Long schoolId) {
+        return schoolRepository.findById(schoolId).get();
+    }
 }
 
