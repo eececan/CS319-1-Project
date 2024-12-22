@@ -199,7 +199,7 @@ public class UIGuideController {
             guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeee");
             model.addAttribute("guide", guide);
         }
-        return "guideSchedule";  // Returns the updated schedule view
+        return "guideSchedule";
     }
 
 

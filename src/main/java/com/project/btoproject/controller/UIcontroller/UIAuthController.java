@@ -47,8 +47,9 @@ public class UIAuthController {
     private final UserService userService;
     private final IGuideInTrainingRepository guideInTrainingRepository;
     private final IAllUsersRepository allUsersRepository;
+    private final IGuideInTrainingService guideInTrainingService;
 
-    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService, IGuideInTrainingRepository guideInTrainingRepository, IAllUsersRepository allUsersRepository) {
+    public UIAuthController(AuthService _authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, CoordinatorService coordinatorService, UserRepository userRepository, UserService userService, IGuideInTrainingRepository guideInTrainingRepository, IAllUsersRepository allUsersRepository, IGuideInTrainingService guideInTrainingService) {
         this.authService = _authService;
         this.eventService = eventService;
         this.guideService = guideService;
@@ -59,6 +60,7 @@ public class UIAuthController {
         this.userRepository = userRepository;
         this.userService = userService;
         this.guideInTrainingRepository = guideInTrainingRepository;
+        this.guideInTrainingService = guideInTrainingService;
         this.allUsersRepository = allUsersRepository;
     }
 
@@ -456,15 +458,15 @@ public class UIAuthController {
                        List<UserTask> tasks = allUsersService.seeAllTasks(user);
                        // Add advisor, tours, and fairs to the model
                        List<User> users = allUsersService.getAllUsers();
-                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       Long id = parseLong(username);
+                       Guide userr = guideService.getGuideById(parseLong(username));
+                       Event event = guideService.getUpcomingEventOfGuide(userr);
+                       List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(userr);
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
                            sum+=pointRecords.get(0).getPoint();
                        }
                        long upComing = eventService.getUpcomingEventsCount();
-                       Long id = parseLong(username);
-                       Guide userr = guideService.getGuideById(id);
-                       Event event = guideService.getUpcomingEventOfGuide(userr);
                        if (event != null) {
                            model.addAttribute("eventDate", event.getDate()); // Assuming event.getDate() returns a LocalDateTime or Date
                        } else {
@@ -491,7 +493,21 @@ public class UIAuthController {
                        List<UserTask> tasks = allUsersService.seeAllTasks(user);
                        // Add advisor, tours, and fairs to the model
                        List<User> users = allUsersService.getAllUsers();
-                       List<PointRecord> pointRecords = pointRecordService.findAllRecords();
+                       GuideInTraining guideInTraining = guideInTrainingService.getGuideInTrainingById(parseLong(username));
+                       Guide userr = new Guide();
+                       userr.setFirstName(guideInTraining.getFirstName());
+                       userr.setLastName(guideInTraining.getLastName());
+                       userr.setEmail(guideInTraining.getEmail());
+                       userr.setPhoneNumber(guideInTraining.getPhoneNumber());
+                       userr.setPassword(guideInTraining.getPassword());
+                       userr.setStartDate(guideInTraining.getStartDate());
+                       userr.setSchedule(guideInTraining.getSchedule());
+                       userr.setEvents(guideInTraining.getEvents());
+                       userr.setGrade(guideInTraining.getGrade());
+                       userr.setDepartment(guideInTraining.getDepartment());
+                       userr.setDescription(guideInTraining.getDescription());
+                       userr.setTasks(guideInTraining.getTasks());
+                       List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(userr);
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
                            sum+=pointRecords.get(0).getPoint();
