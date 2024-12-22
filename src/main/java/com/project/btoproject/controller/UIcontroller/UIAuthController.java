@@ -27,10 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -471,7 +468,7 @@ public class UIAuthController {
                        if (event != null) {
                            model.addAttribute("eventDate", event.getDate()); // Assuming event.getDate() returns a LocalDateTime or Date
                        } else {
-                           model.addAttribute("eventDate", null); // No upcoming event
+                           model.addAttribute("eventDate", new Date()); // No upcoming event
                        }
                        model.addAttribute("upComing", upComing);
                        model.addAttribute("sum",sum);

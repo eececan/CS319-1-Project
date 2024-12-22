@@ -47,19 +47,6 @@
             align-items: center;
         }
 
-        .signout-link {
-            color: white; /* Match navbar background */
-            text-decoration: none; /* Remove underline */
-            margin-left: 15px; /* Add space from notification icon */
-            font-size: 16px; /* Adjust text size for better appearance */
-            display: flex; /* Ensures proper alignment */
-            align-items: center; /* Align icon and text vertically */
-        }
-
-        .signout-link:hover {
-            color: #007bff; /* Change to primary blue on hover */
-            text-decoration: underline; /* Add underline on hover */
-        }
         /* Centered text */
         .donut-text {
             font-size: 1.2rem;
@@ -167,7 +154,6 @@
         }
 
         .bar-chart-bar {
-            background-color: #4CAF50; /* Green color for the bars */
             height: 20px; /* Height of the bars */
             margin-bottom: 10px; /* Space between bars */
             position: relative;
@@ -238,6 +224,7 @@
         }
 
         .bar-chart-bar {
+
             left: 15px;
             height: 2.25rem;
             display: flex;
@@ -245,7 +232,7 @@
             background-color: #30356c;
             color: white;
             font-weight: bold;
-            padding: 0 10px;
+            padding: 10px 10px;
             transition: width 0.3s ease;
             margin-bottom: 10px;
         }
@@ -380,19 +367,6 @@
             font-size: 14px;
         }
 
-        /* Specific Colors for Each Status */
-        .status-dropdown option[value="new_issue"] {
-            color: #fd5555; /* Red */
-        }
-
-        .status-dropdown option[value="investigating"] {
-            color: #e39200; /* Orange */
-        }
-
-        .status-dropdown option[value="resolved"] {
-            color: #21c346; /* Green */
-        }
-
     </style>
 </head>
 <body class="font-montserrat offcanvas-active">
@@ -476,10 +450,21 @@
                         <h1 class="page-title">Analytics</h1>
                     </div>
                     <div class="right">
-                        <a class="signout-link" th:href="@{/ui/auth/logout}">
-                            <i class="fa fa-sign-out"></i> Sign Out
-                        </a>
-                    </div>
+                                <div class="notification d-flex">
+                                    <div class="dropdown d-flex">
+                                        <div th:replace="notifications :: notifications-panel"></div>
+                                        <audio id="notification-sound" preload="auto">
+                                            <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
+                                        </audio>
+
+                                    </div>
+                                </div>
+
+                            <a class="signout-link" th:href="@{/ui/auth/logout}">
+                                <i class="fa fa-sign-out"></i> Sign Out
+                            </a>
+                        </div>
+
                 </div>
             </div>
         </div>
@@ -518,8 +503,8 @@
                                     </ul>
 
                                     <!-- Numbers (Labels) -->
-                                    <ul class="bar-chart-lines" th:attr="data-start=0, data-end=${maxTourCount}, data-major-interval=${maxTourCount / 4}">
-                                        <li th:each="i : ${#numbers.sequence(0, maxTourCount, maxTourCount / 4)}"
+                                    <ul class="bar-chart-lines" th:attr="data-start=0, data-end=${maxTourCount}, data-major-interval=${maxTourCount < 4 ? 1 : maxTourCount / 4}">
+                                        <li th:each="i : ${#numbers.sequence(0, maxTourCount, maxTourCount < 4 ? 1 : maxTourCount / 4)}"
                                             class="bar-chart-line">
                                             <span th:text="${i}"></span>
                                         </li>
@@ -611,6 +596,7 @@
                                                 <th>Tour Count</th>
                                                 <th>Preference Rate</th>
                                                 <th>Tier</th>
+                                                <th>Choose Tier</th>
                                                 <th>Tours</th>
                                             </tr>
                                             </thead>
@@ -618,19 +604,13 @@
                                             <tr th:each="schoolTour : ${tourCountDTOs}">
                                                 <td th:text="${schoolTour.schoolName}"></td>
                                                 <td th:text="${schoolTour.tourCount}"></td>
-                                                <td th:text="${schoolStudentCounts[schoolTour.schoolName] != null ?
-                    #numbers.formatDecimal((schoolStudentCounts[schoolTour.schoolName] / totalStudentCount) * 100, 0, 1) : '0.0'} + '%'"></td>
-                                                <td>
-                                                <td>
+                                                <td th:text="${schoolTour.percentage}"></td>
                                                 <td>
    <span class="tag tag-bos"
          th:classappend="${schoolTour.tier.name() == 'FIRST_TIER' ? 'tier-1' : (schoolTour.tier.name() == 'SECOND_TIER' ? 'tier-2' : 'tier-3')}"
          th:text="${schoolTour.tier.name()}"></span>
 
                                             </td>
-
-
-                                                </td>
 
                                                 <!-- Correct the binding of the tier field -->
                                                 <td>

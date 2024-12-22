@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.Long.parseLong;
+
 @Controller
 public class UIDashBoardController {
 
@@ -79,7 +81,14 @@ public class UIDashBoardController {
             return "Advisor-Dashboard"; // Advisor's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
             model.addAttribute("roleUser", "Guide");
-
+            Long id = parseLong(username);
+            Guide userr = guideService.getGuideById(id);
+            Event event = guideService.getUpcomingEventOfGuide(userr);
+            if (event != null) {
+                model.addAttribute("eventDate", event.getDate()); // Assuming event.getDate() returns a LocalDateTime or Date
+            } else {
+                model.addAttribute("eventDate", new Date()); // No upcoming event
+            }
             return "Guide-Dashboard"; // Guide's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
             model.addAttribute("roleUser", "Head Secretary");

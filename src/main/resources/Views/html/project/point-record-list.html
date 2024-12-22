@@ -232,23 +232,28 @@
         </div>
 
         <div class="container ml-30" style="width: 90%; margin: 0 auto;">
-            <!-- Check if event records list is empty -->
             <div th:if="${#lists.isEmpty(guide_records)}" class="no-records">
                 <p>No event records found.</p>
             </div>
-
-            <!-- Check if event records list is not empty -->
             <ul th:if="${!#lists.isEmpty(guide_records)}" class="record-list">
                 <li th:each="record : ${guide_records}" class="record-item">
-                    <h2 th:text="${record.guide.firstName + ' ' + record.guide.lastName}"></h2>
-                    <div class="record-details">
+                        <div class="record-details">
                         <p><strong>Guide:</strong> <span th:text="${record.guide.firstName + ' ' + record.guide.lastName}"></span></p>
                         <p><strong>Event:</strong> <span th:text="${record.event.eventType}"></span></p>
                         <p><strong>Date:</strong> <span th:text="${record.event.date}"></span></p>
+                        <p><strong>School:</strong>
+                            <span th:if="${record.event.eventType.name() == 'TOUR'}"
+                                  th:text="${tourMap[record.event.id].name}"></span>
+                            <span th:if="${record.event.eventType.name() == 'FAIR'}"
+                                  th:text="${fairMap[record.event.id].name}"></span>
+                            <span th:if="${record.event.eventType.name() == 'INDIVIDUAL_TOUR'}"
+                                  th:text="${individualMap[record.event.id].name}"></span>
+                        </p>
                     </div>
-                    <hr class="hr-divider" />
+                    <hr class="hr-divider"/>
                 </li>
             </ul>
+
         </div>
 
 
