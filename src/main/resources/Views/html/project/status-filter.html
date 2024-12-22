@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Status Filter</title>
+</head>
+<body>
+<div th:fragment="statusFilterButtons(eventType)" class="d-flex flex-wrap gap-3 align-items-center mb-3">
+    <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
+
+    <!-- Tour Applications -->
+    <div th:if="${eventType == 'tourApplications'}">
+        <button class="btn btn-primary" onclick="filterByStatus('NEW_TOUR_APPLICATION')">New Applications</button>
+        <button class="btn btn-primary" onclick="filterByStatus('BTO_ACCEPTED')">BTO Accepted</button>
+        <button class="btn btn-primary" onclick="filterByStatus('BTO_REJECTED')">BTO Rejected</button>
+        <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_TOUR')">Upcoming</button>
+    </div>
+
+    <!-- Tours -->
+    <div th:if="${eventType == 'tours'}">
+        <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_TOUR')">Upcoming</button>
+        <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_TOUR')">Completed</button>
+        <button class="btn btn-primary" onclick="filterByStatus('CANCELED_TOUR')">Canceled</button>
+    </div>
+
+    <!-- Fair Applications -->
+    <div th:if="${eventType == 'fairApplications'}">
+        <button class="btn btn-primary" onclick="filterByStatus('NEW_FAIR_APPLICATION')">New</button>
+        <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_FAIR')">Upcoming</button>
+        <button class="btn btn-primary" onclick="filterByStatus('REJECTED_FAIR')">Rejected</button>
+    </div>
+
+    <!-- Fairs -->
+    <div th:if="${eventType == 'fairs'}">
+        <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_FAIR')">Upcoming</button>
+        <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_FAIR')">Completed</button>
+        <button class="btn btn-primary" onclick="filterByStatus('CANCELED_FAIR')">Canceled</button>
+    </div>
+</div>
+</body>
+</html>

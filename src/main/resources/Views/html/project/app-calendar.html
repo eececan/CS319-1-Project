@@ -23,6 +23,19 @@
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js}"></script>
     <!-- Include FullCalendar.js -->
     <script th:src="@{https://fullcalendar.io/js/fullcalendar.min.js}"></script>
+    <style>.signout-link {
+        color: white; /* Match navbar background */
+        text-decoration: none; /* Remove underline */
+        margin-left: 15px; /* Add space from notification icon */
+        font-size: 16px; /* Adjust text size for better appearance */
+        display: flex; /* Ensures proper alignment */
+        align-items: center; /* Align icon and text vertically */
+    }
+
+    .signout-link:hover {
+        color: #007bff; /* Change to primary blue on hover */
+        text-decoration: underline; /* Add underline on hover */
+    }</style>
 </head>
 
 <body class="font-montserrat offcanvas-active">
@@ -108,17 +121,9 @@
 
                     </div>
                     <div class="right">
-                        <div class="notification d-flex">
-                            <div th:replace="notifications::notifications-panel"></div>
-                            <audio id="notification-sound" preload="auto">
-                                <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
-                            </audio>
-
-                            <a class="signout-link" th:href="@{/ui/auth/logout}">
-                                <i class="fa fa-sign-out"></i> Sign Out
-                            </a>
-
-                        </div>
+                        <a class="signout-link" th:href="@{/ui/auth/logout}">
+                            <i class="fa fa-sign-out"></i> Sign Out
+                        </a>
                     </div>
                 </div>
             </div>
