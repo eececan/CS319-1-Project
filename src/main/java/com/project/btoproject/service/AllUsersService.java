@@ -97,12 +97,7 @@ public class AllUsersService implements IAllUsersService {
         repository.save(user);
         return true;
     }
-/*
-    @Override
-    public void changeRole(User user, Role role) {
 
-    }
-*/
 @Override
 public boolean hasMissingInformation(User user, UserEntity userEntity) {
     // Check for Guide Role
@@ -334,6 +329,7 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
                 advisor.setDescription(((Guide) user).getDescription());
                 advisor.setId(user.getId());
                 advisor.setPassword(userEntity.getPassword());
+                advisor.setStartDate(user.getStartDate());
                 repository.delete(user);
                 repository.save(advisor);
             }
@@ -349,6 +345,7 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
                 guide.setDescription(((GuideInTraining) user).getDescription());
                 guide.setId(user.getId());
                 guide.setPassword(userEntity.getPassword());
+                guide.setStartDate(user.getStartDate());
                 repository.delete(user);
                 repository.save(guide);
             }
@@ -364,6 +361,7 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
                 coordinator.setDescription(((Advisor) user).getDescription());
                 coordinator.setId(user.getId());
                 coordinator.setPassword(userEntity.getPassword());
+                coordinator.setStartDate(user.getStartDate());
                 repository.delete(user);
                 repository.save(coordinator);
             }
