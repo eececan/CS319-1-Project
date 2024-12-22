@@ -206,6 +206,19 @@ public class UIAuthController {
 
     @PostMapping("/login")
     public String login(LoginDto loginDto, Model model, HttpServletRequest request) {
+        if(loginDto.getPassword().isEmpty() && loginDto.getUsername().isEmpty()){
+            model.addAttribute("errorMessage", "Bilkent ID and password cannot be empty!");
+            return "login";
+        }
+        else if(loginDto.getUsername() == null || loginDto.getUsername().isEmpty()){
+            model.addAttribute("errorMessage", "Bilkent ID cannot be empty!");
+            return "login";
+        }
+        else if(loginDto.getPassword() == null || loginDto.getPassword().isEmpty()){
+            model.addAttribute("errorMessage", "Bilkent password cannot be empty!");
+            return "login";
+        }
+
         System.out.println(loginDto.getPassword());
         System.out.println(loginDto.getUsername());
 
@@ -357,7 +370,6 @@ public class UIAuthController {
                        model.addAttribute("guide", guide);
                        return "guide-profile";
                    }
-
                }
                 else {
                    model.addAttribute("showPopUp", "false");
