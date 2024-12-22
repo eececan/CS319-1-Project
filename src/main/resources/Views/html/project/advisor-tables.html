@@ -501,7 +501,9 @@
                                                             <button
                                                                     class="btn ms-2 remove-guide"
                                                                     th:data-tour-id="${tour.id}"
-                                                                    th:data-guide-id="${tour.guides[0].id}">
+                                                                    th:data-guide-id="${tour.guides[0].id}"
+                                                                    th:data-guide-name="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
                                                                 -
                                                             </button>
                                                         </div>
@@ -543,7 +545,9 @@
                                                             <button
                                                                     class="btn ms-2 remove-guide"
                                                                     th:data-tour-id="${tour.id}"
-                                                                    th:data-guide-id="${tour.guides[0].id}">
+                                                                    th:data-guide-id="${tour.guides[1].id}"
+                                                                    th:data-guide-name="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
                                                                 -
                                                             </button>
                                                         </div>
@@ -592,7 +596,9 @@
                                                             <button
                                                                     class="btn ms-2 remove-guide"
                                                                     th:data-tour-id="${tour.id}"
-                                                                    th:data-guide-id="${tour.guides[0].id}">
+                                                                    th:data-guide-id="${tour.guides[2].id}"
+                                                                    th:data-guide-name="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
                                                                 -
                                                             </button>
                                                         </div>
