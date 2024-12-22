@@ -32,6 +32,19 @@ public class UIPointRecordController {
     public String getAllPointRecordsPage(Model model) {
         List<PointRecord> records = pointRecordService.findAllRecords().stream().toList();
         model.addAttribute("all_records", records);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+            model.addAttribute("role", role);
+        }
         return "all-point-record-list";
     }
 
@@ -40,10 +53,17 @@ public class UIPointRecordController {
     public String getPointRecordPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = "";
+        String role = "";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            username = userDetails.getUsername();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+            model.addAttribute("role", role);
         }
+
         Guide guide = guideService.getGuideById(Long.parseLong(username));
         List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
         model.addAttribute("guide_records", pointRecords);

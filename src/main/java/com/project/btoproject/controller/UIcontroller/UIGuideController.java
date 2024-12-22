@@ -35,30 +35,85 @@ public class UIGuideController {
     public String getAllGuides(Model model) {
         List<Guide> guides = guideService.getAllGuides();
         model.addAttribute("guides", guides);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         return "guides";
     }
     @GetMapping("/getGuideRankings")
     public String getGuideRankings(Model model) {
         List<Guide> guides = guideService.getGuideRankingsEntity();
         model.addAttribute("guides", guides);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         return "guideRankings";
     }
     @GetMapping("/getGuideRankingsDate")
     public String getGuideRankingsDate(Model model) {
         List<Guide> guides = guideService.getGuidesByExperience();
         model.addAttribute("guides", guides);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         return "guideRankingsDate";
     }
     @GetMapping("/getReverseGuideRankings")
     public String getReverseGuideRankings(Model model) {
         List<Guide> guides = guideService.getReverseGuideRankings();
         model.addAttribute("guides", guides);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         return "reverseGuideRankings";
     }
     @GetMapping("/getReverseGuideRankingsDate")
     public String getReverseGuideRankingsDate(Model model) {
         List<Guide> guides = guideService.getGuidesByLowestExperience();
         model.addAttribute("guides", guides);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+        }
+        model.addAttribute("role", role);
         return "guideReverseRankingsDate";
     }
     @GetMapping("/updateSchedule")
@@ -75,6 +130,7 @@ public class UIGuideController {
                     .map(authority -> authority.getAuthority()) // Get the role name
                     .orElse("ROLE_UNKNOWN");
         }
+        model.addAttribute("role", role);
         if(role.equals("ROLE_GUIDE")){
             Long guideId = Long.parseLong(username);
             Guide guide = guideService.getGuideById(guideId);
@@ -125,6 +181,7 @@ public class UIGuideController {
                     .map(authority -> authority.getAuthority()) // Get the role name
                     .orElse("ROLE_UNKNOWN");
         }
+        model.addAttribute("role", role);
         if(role.equals("ROLE_GUIDE")){
             Long guideId = Long.parseLong(username);
             guideService.setSchedule(guideId, position, status.charAt(0));
