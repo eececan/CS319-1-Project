@@ -65,3 +65,21 @@
 .mark-as-read {
     margin-right: 10px; /* Add margin to separate from content */
 }
+.mark-all-as-read {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.mark-all-as-read:hover {
+    background-color: #0056b3;
+}
+.notifications-footer {
+    padding: 10px;
+    text-align: center;
+}
