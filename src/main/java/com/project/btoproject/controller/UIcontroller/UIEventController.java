@@ -5,6 +5,7 @@ import com.project.btoproject.model.*;
 import com.project.btoproject.service.AdvisorService;
 import com.project.btoproject.service.EventService;
 import com.project.btoproject.service.GuideService;
+import com.project.btoproject.service.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,12 +34,14 @@ public class UIEventController {
     private final EventService eventService;
     private final GuideService guideService;
     private final AdvisorService advisorService;
+    private final SchoolService schoolService;
 
     @Autowired
-    public UIEventController(EventService eventService, GuideService guideService, AdvisorService advisorService) {
+    public UIEventController(EventService eventService, GuideService guideService, AdvisorService advisorService, SchoolService schoolService) {
         this.eventService = eventService;
         this.guideService = guideService;
         this.advisorService = advisorService;
+        this.schoolService = schoolService;
     }
 
     @GetMapping("/getAllEvents")
@@ -61,6 +64,8 @@ public class UIEventController {
         Long schoolId = 3L;
         List<Event> events = eventService.findAllEventsBySchoolId(schoolId);
         model.addAttribute("events", events);
+        School school = schoolService.findSchoolById(schoolId);
+        model.addAttribute("school", school);
         return "events-of-school";
     }
 
