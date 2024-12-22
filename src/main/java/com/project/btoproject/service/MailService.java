@@ -2,10 +2,7 @@ package com.project.btoproject.service;
 
 import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Hour;
-import com.project.btoproject.model.Event;
-import com.project.btoproject.model.IndividualTour;
-import com.project.btoproject.model.Tour;
-import com.project.btoproject.model.User;
+import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -32,59 +29,118 @@ public class MailService {
 
     @Async
     public void sendApprovalMail(Event event) throws MailException, InterruptedException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         if(event.getEventType().equals(EventType.TOUR)){
             System.out.println("Sending email...");
             Tour tour = (Tour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo("aycaatac88@gmail.com");
-            //mail.setTo(tour.getSchoolCounselor().getEmail());
+            mail.setTo(tour.getSchoolCounselor().getEmail());
             mail.setFrom("dilekyildizbto@gmail.com");
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             mail.setSubject("Bilkent Üniversitesi tur başvurunuz kabul edildi!");
             mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\n\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + formatter.format(tour.getDate()) + " tarihinde " + tour.getHour().toFormattedTime() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool().getName() + " öğrencilerini ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz " + tour.getPeopleCount() + " öğrenci içerecek ve " + (int) Math.ceil(tour.getPeopleCount() / 60.0) + " rehber içerecektir. Öğrenci sayısı veya tarih hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
         }
-        /*if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
+        if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
             System.out.println("Sending email...");
             IndividualTour tour = (IndividualTour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo(tour.getContactEmail());
+            mail.setTo(tour.getStudent().getEmail());
             mail.setFrom("dilekyildizbto@gmail.com");
             mail.setSubject("Bilkent Üniversitesi tur başvurunuz kabul edildi!");
-            mail.setText("Sayın " + tour.getContactPerson() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz " + tour.getPeopleCount() + " öğrenci içerecek ve yaptığınız başvuruda belirttiğiniz ilgi alanlarınıza en uygun rehber tarafından yönlendirilecektir. Öğrenci sayısı, tarih veya ilgi alanınız hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            mail.setText("Sayın " + tour.getStudent().getName() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + formatter.format(tour.getDate()) + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz yaptığınız başvuruda belirttiğiniz ilgi alanlarınıza en uygun rehber tarafından yönlendirilecektir. Öğrenci sayısı, tarih veya ilgi alanınız hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
-        }*/
+        }
+        if(event.getEventType().equals(EventType.FAIR)){
+            System.out.println("Sending email...");
+            Fair fair = (Fair) event;
+            SimpleMailMessage mail = new SimpleMailMessage();
+           mail.setTo(fair.getSchoolCounselor().getEmail());
+            mail.setFrom("dilekyildizbto@gmail.com");
+            mail.setSubject("Bilkent Üniversitesi fuar başvurunuz kabul edildi!");
+            mail.setText("Sayın " + fair.getSchoolCounselor().getName() + ",\n\nBilkent Üniversi'ni fuarınıza davet ettiğiniz için teşekkür ederiz! " + formatter.format(fair.getDate()) + " tarihinde " + fair.getHour() + " saatindeki fuar başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi " + fair.getSchool().getName() + " öğrencileri ile tanışmak için heyecanlanıyor!\nFuar adres veya tarihinde bir değişim yaşanırsa lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            javaMailSender.send(mail);
+            System.out.println("Email Sent!");
+        }
     }
 
     @Async
     public void sendRejectionMail(Event event) throws MailException, InterruptedException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         if(event.getEventType().equals(EventType.TOUR)){
             System.out.println("Sending email...");
             Tour tour = (Tour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo("aycaatac88@gmail.com");
-            //mail.setTo(tour.getSchoolCounselor().getEmail());
+            mail.setTo(tour.getSchoolCounselor().getEmail());
             mail.setFrom("dilekyildizbto@gmail.com");
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             mail.setSubject("Bilkent Üniversitesi turu için yeni bir tarih seçin!");
             mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\n\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " +            formatter.format(tour.getDate())
                     + " tarihinde " + tour.getHour().toFormattedTime() + " saatindeki tur başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool().getName() + " öğrencilerini ağırlamak için sabırsızlanıyor! Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
         }
-        /*if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
+        if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
             System.out.println("Sending email...");
             IndividualTour tour = (IndividualTour)event;
             SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo(tour.getContactEmail());
+            mail.setTo(tour.getStudent().getEmail());
             mail.setFrom("dilekyildizbto@gmail.com");
             mail.setSubject("Bilkent Üniversitesi turu için yeni bir tarih seçin!");
-            mail.setText("Sayın " + tour.getContactPerson() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için sabırsızlanıyor!Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            mail.setText("Sayın " +  tour.getStudent().getName()  + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + formatter.format(tour.getDate()) + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için sabırsızlanıyor!Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
-        }*/
+        }
+        if(event.getEventType().equals(EventType.FAIR)){
+            System.out.println("Sending email...");
+            Fair fair = (Fair) event;
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(fair.getSchoolCounselor().getEmail());
+            mail.setFrom("dilekyildizbto@gmail.com");
+            mail.setSubject("Bilkent Üniversitesi fuar başvurunuz reddedildi!");
+            mail.setText("Sayın " + fair.getSchoolCounselor().getName() + ",\n\nBilkent Üniversi'ni fuarınıza davet ettiğiniz için teşekkür ederiz! " + formatter.format(fair.getDate()) + " tarihinde " + fair.getHour() + " saatindeki fuar başvurunuz doluluk nedeniyle kabul edilememektedir. Ancak Bilkent Üniversitesi Tanıtım Ofisi " + fair.getSchool().getName() + " öğrencileri ile tanışmak için heyecanlanıyor!\nLütfen ilerideki fuarlarınzı hakkında bizi bilgilendirmeye devam edin!\nFuar adres veya tarihinde bir değişim yaşanırsa lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            javaMailSender.send(mail);
+            System.out.println("Email Sent!");
+        }
+    }
+
+    @Async
+    public void sendCancelationMail(Event event) throws MailException, InterruptedException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        if(event.getEventType().equals(EventType.TOUR)){
+            System.out.println("Sending email...");
+            Tour tour = (Tour)event;
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(tour.getSchoolCounselor().getEmail());
+            mail.setFrom("dilekyildizbto@gmail.com");
+            mail.setSubject("Bilkent Üniversitesi turunuz iptal edildi!");
+            mail.setText("Sayın " + tour.getSchoolCounselor().getName() + ",\n\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " +            formatter.format(tour.getDate())
+                    + " tarihinde " + tour.getHour().toFormattedTime() + " saatindeki tur başvurunuz elimizde olmayan şartlardan ötürü iptal edilmiştir. Ancak Bilkent Üniversitesi Tanıtım Ofisi " + tour.getSchool().getName() + " öğrencilerini ağırlamak için sabırsızlanıyor! Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            javaMailSender.send(mail);
+            System.out.println("Email Sent!");
+        }
+        if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
+            System.out.println("Sending email...");
+            IndividualTour tour = (IndividualTour)event;
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(tour.getStudent().getEmail());
+            mail.setFrom("dilekyildizbto@gmail.com");
+            mail.setSubject("Bilkent Üniversitesi turunuz iptal edildi!");
+            mail.setText("Sayın " +  tour.getStudent().getName()  + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + formatter.format(tour.getDate()) + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz elimizde olmayan şartlardan ötürü iptal edilmiştir. Ancak Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için sabırsızlanıyor!Lütfen turunuz için yeni bir başvuru yapınız!\n" + "\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            javaMailSender.send(mail);
+            System.out.println("Email Sent!");
+        }
+        if(event.getEventType().equals(EventType.FAIR)){
+            System.out.println("Sending email...");
+            Fair fair = (Fair) event;
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(fair.getSchoolCounselor().getEmail());
+            mail.setFrom("dilekyildizbto@gmail.com");
+            mail.setSubject("Bilkent Üniversitesi fuar başvurunuz iptal edildi!");
+            mail.setText("Sayın " + fair.getSchoolCounselor().getName() + ",\n\nBilkent Üniversi'ni fuarınıza davet ettiğiniz için teşekkür ederiz! " + formatter.format(fair.getDate()) + " tarihinde " + fair.getHour() + " saatindeki fuar başvurunuz elimizde olmayan şartlardan ötürü iptal edilmiştir. Ancak Bilkent Üniversitesi Tanıtım Ofisi " + fair.getSchool().getName() + " öğrencileri ile tanışmak için heyecanlanıyor!\nLütfen ilerideki fuarlarınzı hakkında bizi bilgilendirmeye devam edin!\nFuar adres veya tarihinde bir değişim yaşanırsa lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
+            javaMailSender.send(mail);
+            System.out.println("Email Sent!");
+        }
     }
 
     @Async
@@ -99,17 +155,6 @@ public class MailService {
             userService.changePassword(user.getId(), password);
             javaMailSender.send(mail);
             System.out.println("Email Sent!");
-        /*if(event.getEventType().equals(EventType.INDIVIDUAL_TOUR)){
-            System.out.println("Sending email...");
-            IndividualTour tour = (IndividualTour)event;
-            SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo(tour.getContactEmail());
-            mail.setFrom("dilekyildizbto@gmail.com");
-            mail.setSubject("Bilkent Üniversitesi tur başvurunuz kabul edildi!");
-            mail.setText("Sayın " + tour.getContactPerson() + ",\nBilkent Üniversitesi turlarına katılmak için başvuru yaptığınız için teşekkür ederiz! " + tour.getDate() + " tarihinde " + tour.getHour() + " saatindeki tur başvurunuz onaylanmıştır. Bilkent Üniversitesi Tanıtım Ofisi sizi ağırlamak için heyecanlanıyor!\nGirilen forma göre turumuz " + tour.getPeopleCount() + " öğrenci içerecek ve yaptığınız başvuruda belirttiğiniz ilgi alanlarınıza en uygun rehber tarafından yönlendirilecektir. Öğrenci sayısı, tarih veya ilgi alanınız hakkında değişim yapmak için lütfen bu mail adresi üzerinden bizimle iletişime geçin!\n\n\n\n\nSaygılarımla,\nDilek Yıldız\nBilkent Ofisi Baş Sekreteri");
-            javaMailSender.send(mail);
-            System.out.println("Email Sent!");
-        }*/
     }
 }
 

@@ -40,7 +40,7 @@ public class EventService implements IEventService {
         this.notificationService = notificationService;
         this.mailService = mailService;
     }
-    public void approveFair(Long fairId) {
+    public void approveFair(Long fairId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(fairId);
         if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
             Fair fair = (Fair) eventOptional.get();
@@ -50,6 +50,7 @@ public class EventService implements IEventService {
             fair.setStatus(Status.UPCOMING_FAIR);
             eventRepository.save(fair);
             notificationService.notifyEventApproved(fair);
+            mailService.sendApprovalMail(fair);
         }
 
     else {
@@ -57,7 +58,7 @@ public class EventService implements IEventService {
         }
     }
 
-    public void rejectFair(Long fairId) {
+    public void rejectFair(Long fairId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(fairId);
         if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
             Fair fair = (Fair) eventOptional.get();
@@ -66,6 +67,7 @@ public class EventService implements IEventService {
             }
             fair.setStatus(Status.REJECTED_FAIR);
             eventRepository.save(fair);
+            mailService.sendRejectionMail(fair);
         }
 
         else {
@@ -73,7 +75,7 @@ public class EventService implements IEventService {
         }
     }
     @Transactional
-    public void cancelFair(Long fairId) {
+    public void cancelFair(Long fairId) throws InterruptedException {
 
         Optional<Event> eventOptional = eventRepository.findById(fairId);
 
@@ -98,6 +100,7 @@ public class EventService implements IEventService {
             fair.setStatus(Status.CANCELED_FAIR);
 
             eventRepository.save(fair);
+            mailService.sendCancelationMail(fair);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + fairId);
         }
@@ -120,7 +123,7 @@ public class EventService implements IEventService {
         }
     }
 
-    public void rejectTourByAdvisor(Long tourId) {
+    public void rejectTourByAdvisor(Long tourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
@@ -131,6 +134,7 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.BTO_REJECTED); // Set status to advisor rejected
             eventRepository.save(tour);
+            mailService.sendRejectionMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
@@ -172,7 +176,7 @@ public class EventService implements IEventService {
     }
 
     @Transactional
-    public void cancelTourBySecretary(Long tourId) {
+    public void cancelTourBySecretary(Long tourId) throws InterruptedException {
         // Fetch the event and check if it is a tour
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
@@ -199,6 +203,7 @@ public class EventService implements IEventService {
 
             // Save the updated tour
             eventRepository.save(tour);
+            mailService.sendCancelationMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
@@ -548,12 +553,10 @@ public class EventService implements IEventService {
         if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
             IndividualTour individualTour = (IndividualTour) eventOptional.get();
 
-            // Ensure the individual tour is in a cancellable state
             if (!individualTour.getStatus().equals(Status.UPCOMING_INDIVIDUAL_TOUR)) {
                 throw new IllegalStateException("Individual Tour is not in a state to be canceled.");
             }
 
-            // Check if a guide is assigned
             List<Guide> assignedGuides = individualTour.getGuides();
             if (!assignedGuides.isEmpty()) {
                 // Remove the individual tour from the assigned guide's events list
@@ -731,7 +734,7 @@ public class EventService implements IEventService {
         return upcomingFairs.size() + upcomingTours.size() + upcomingToursInd.size();  // Sum up both
     }
 
-    public void approveIndividualTour(Long individualTourId) {
+    public void approveIndividualTour(Long individualTourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(individualTourId);
 
         // Check if the event exists and is of type IndividualTour
@@ -746,13 +749,14 @@ public class EventService implements IEventService {
             // Set the status to advisor approved
             individualTour.setStatus(Status.UPCOMING_INDIVIDUAL_TOUR); // Update status to approved
             eventRepository.save(individualTour); // Save changes to the repository
+            mailService.sendApprovalMail(individualTour);
         } else {
             // Handle case where the event doesn't exist or is not an IndividualTour
             throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
         }
     }
 
-    public void rejectIndividualTour(Long individualTourId) {
+    public void rejectIndividualTour(Long individualTourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(individualTourId);
 
         // Check if the event exists and is of type IndividualTour
@@ -767,6 +771,7 @@ public class EventService implements IEventService {
             // Set the status to REJECTED_INDIVIDUAL_TOUR_APPLICATION
             individualTour.setStatus(Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION);
             eventRepository.save(individualTour); // Save changes to the repository
+            mailService.sendRejectionMail(individualTour);
         } else {
             // Handle case where the event doesn't exist or is not an IndividualTour
             throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);

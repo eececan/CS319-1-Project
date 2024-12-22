@@ -25,13 +25,13 @@ public class IndividualTourController {
     }
 
     @PostMapping("/{id}/advisor/approve")
-    public ResponseEntity<?> approveIndividualTour(@PathVariable Long id) {
+    public ResponseEntity<?> approveIndividualTour(@PathVariable Long id) throws InterruptedException {
         eventService.approveIndividualTour(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/advisor/reject")
-    public ResponseEntity<?> rejectIndividualTour(@PathVariable Long id) {
+    public ResponseEntity<?> rejectIndividualTour(@PathVariable Long id) throws InterruptedException {
         eventService.rejectIndividualTour(id); // Call the service method for rejection
         return ResponseEntity.ok().build();
     }

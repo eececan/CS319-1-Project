@@ -28,13 +28,13 @@ public class FairController {
     }
 
     @PostMapping("/approve/{id}")
-    public ResponseEntity<Void> approveFair(@PathVariable Long id) {
+    public ResponseEntity<Void> approveFair(@PathVariable Long id) throws InterruptedException {
         eventService.approveFair(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/reject/{id}")
-    public ResponseEntity<Void> rejectFair(@PathVariable Long id) {
+    public ResponseEntity<Void> rejectFair(@PathVariable Long id) throws InterruptedException {
         eventService.rejectFair(id);
         return ResponseEntity.ok().build();
     }
@@ -123,7 +123,7 @@ public class FairController {
 
     // Cancel fair
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancelFair(@PathVariable Long id) {
+    public ResponseEntity<Void> cancelFair(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary cancellation
         System.out.println("Received ID for Cancellation: " + id);
         eventService.cancelFair(id);

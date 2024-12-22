@@ -32,7 +32,7 @@ public class TourController {
     }
 
     @PostMapping("/{id}/advisor/reject")
-    public ResponseEntity<Void> rejectTourByAdvisor(@PathVariable Long id) {
+    public ResponseEntity<Void> rejectTourByAdvisor(@PathVariable Long id) throws InterruptedException {
         // Logic for advisor rejection
         eventService.rejectTourByAdvisor(id);
         return ResponseEntity.ok().build();
@@ -58,7 +58,7 @@ public class TourController {
 
     // Cancel tour by Head Secretary
     @PostMapping("/{id}/secretary/cancel")
-    public ResponseEntity<Void> cancelTourBySecretary(@PathVariable Long id) {
+    public ResponseEntity<Void> cancelTourBySecretary(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary cancellation
         System.out.println("Received ID for Cancellation by Secretary: " + id);
         eventService.cancelTourBySecretary(id);
