@@ -77,7 +77,8 @@ public class SecurityConfig {
                                 "/ui/auth/**",
                                 "/ui/auth/forgotPassword",
                                 "/ui/auth/forgotPasswordPage",
-                                "/forgot-password.html"
+                                "/forgot-password.html",
+                                "/calendar"
 
 
                         ).permitAll()

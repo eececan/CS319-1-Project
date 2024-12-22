@@ -373,7 +373,7 @@ public class EventService implements IEventService {
 
     public List<Event> getEventsByDay(int dayFilter) {
 
-        String sqlDayNumber = String.valueOf((dayFilter % 7) );
+        String sqlDayNumber = String.valueOf((dayFilter % 8) );
         return eventRepository.findAllByDayOfWeek(sqlDayNumber);
     }
 
@@ -829,7 +829,7 @@ public class EventService implements IEventService {
                 Status.UPCOMING_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        return eventRepository.findToursApplicationsByStatusesPageable(applicationStatuses, pageable);
+        return eventRepository.findTourApplicationsByStatusesPageable(applicationStatuses, pageable);
     }
     public Page<Tour> getToursPageable(int page, int size) {
         List<Status> tourStatuses = List.of(
@@ -854,8 +854,8 @@ public class EventService implements IEventService {
                 Status.UPCOMING_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7) );
-        return eventRepository.findToursApplicationsByStatusesAndDayPageable(applicationStatuses, sqlDayNumber, pageable);
+        String sqlDayNumber = String.valueOf((dayFilter % 8) );
+        return eventRepository.findTourApplicationsByStatusesAndDayPageable(applicationStatuses, sqlDayNumber, pageable);
     }
 
     public Page<Tour> getToursByDayPageable(int page, int size, int dayFilter) {
@@ -865,7 +865,7 @@ public class EventService implements IEventService {
                 Status.UPCOMING_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7) );
+        String sqlDayNumber = String.valueOf((dayFilter % 8) );
         return eventRepository.findToursByStatusesAndDayPageable(tourStatuses, sqlDayNumber, pageable);
     }
 
@@ -876,7 +876,7 @@ public class EventService implements IEventService {
                 Status.UPCOMING_FAIR
         );
         Pageable pageable = PageRequest.of(page, size);
-        return eventRepository.findFairsByStatusesPageable(applicationStatuses, pageable);
+        return eventRepository.findFairApplicationsByStatusesPageable(applicationStatuses, pageable);
     }
     public Page<Fair> getFairApplicationsByDayPageable(int page, int size,int day) {
         List<Status> applicationStatuses = List.of(
@@ -886,7 +886,7 @@ public class EventService implements IEventService {
         );
         Pageable pageable = PageRequest.of(page, size);
 
-        return eventRepository.findFairsByStatusesAndDayPageable(applicationStatuses, String.valueOf(day),pageable);
+        return eventRepository.findFairApplicationsByStatusesAndDayPageable(applicationStatuses, String.valueOf(day),pageable);
     }
     public Page<Fair> getFairsByDayPageable(int page, int size, int day) {
         Pageable pageable = PageRequest.of(page, size);
@@ -901,7 +901,7 @@ public class EventService implements IEventService {
                 Status.UPCOMING_INDIVIDUAL_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        return eventRepository.findIndividualToursByStatusesAndDayPageable(individualTourStatuses, String.valueOf(day), pageable);
+        return eventRepository.findIndividualTourApplicationsByStatusesAndDayPageable(individualTourStatuses, String.valueOf(day), pageable);
     }
 
     public Page<IndividualTour> getIndividualToursByDayPageable(int page, int size, int day) {
@@ -943,13 +943,14 @@ public class EventService implements IEventService {
         );
 
         Pageable pageable = PageRequest.of(page, size);
-        return eventRepository.findIndividualToursByStatusesPageable(individualTourStatuses, pageable);
+        return eventRepository.findIndividualTourApplicationsByStatusesPageable(individualTourStatuses, pageable);
     }
     public Page<Tour> searchTourApplications(String searchTerm, int page, int size) {
         List<Status> applicationStatuses = List.of(
                 Status.NEW_TOUR_APPLICATION,
                 Status.BTO_ACCEPTED,
-                Status.BTO_REJECTED
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
         return eventRepository.findTourApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
@@ -991,6 +992,7 @@ public class EventService implements IEventService {
                 Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
                 Status.UPCOMING_INDIVIDUAL_TOUR
 
+
         );
         Pageable pageable = PageRequest.of(page, size);
         return eventRepository.findIndividualTourApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
@@ -1012,8 +1014,8 @@ public class EventService implements IEventService {
                 Status.UPCOMING_INDIVIDUAL_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7));
-        return eventRepository.findIndividualToursByStatusesAndSearchTermAndDay(applicationStatuses, searchTerm, sqlDayNumber, pageable);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findIndividualTourApplicationsByStatusesAndSearchTermAndDay(applicationStatuses, searchTerm, sqlDayNumber, pageable);
     }
 
     public Page<IndividualTour> searchIndividualToursByDay(String searchTerm, int dayFilter, int page, int size) {
@@ -1023,7 +1025,7 @@ public class EventService implements IEventService {
                 Status.CANCELED_INDIVIDUAL_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7));
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
         return eventRepository.findIndividualToursByStatusesAndSearchTermAndDay(tourStatuses, searchTerm, sqlDayNumber, pageable);
     }
 
@@ -1034,7 +1036,7 @@ public class EventService implements IEventService {
                 Status.CANCELED_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7));
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
         return eventRepository.findToursByStatusesAndSearchTermAndDay(tourStatuses, searchTerm, sqlDayNumber, pageable);
     }
 
@@ -1045,7 +1047,7 @@ public class EventService implements IEventService {
                 Status.CANCELED_FAIR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7));
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
         return eventRepository.findFairsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
     }
     public Page<Fair> searchFairApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
@@ -1055,8 +1057,8 @@ public class EventService implements IEventService {
                 Status.UPCOMING_FAIR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7));
-        return eventRepository.findFairsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findFairApplicationsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
     }
     public Page<Tour> searchTourApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
         List<Status> applicationStatuses = List.of(
@@ -1066,7 +1068,7 @@ public class EventService implements IEventService {
                 Status.UPCOMING_TOUR
         );
         Pageable pageable = PageRequest.of(page, size);
-        String sqlDayNumber = String.valueOf((dayFilter % 7));
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
         return eventRepository.findToursByStatusesAndSearchTermAndDay(applicationStatuses, searchTerm, sqlDayNumber, pageable);
     }
 
