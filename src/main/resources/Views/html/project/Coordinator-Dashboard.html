@@ -115,31 +115,11 @@
             <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
             <h1 class="page-title">Dashboard</h1>
           </div>
-          <div class="right">
-
-            <div class="notification d-flex">
-              <div class="dropdown d-flex">
-                <div th:replace="notifications :: notifications-panel"></div>
-                <audio id="notification-sound" preload="auto">
-                  <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
-                </audio>
-
-              </div>
-
-
-              <div class="dropdown d-flex">
-                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
-                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                  <a class="dropdown-item" href="head-secretary-profile.html"><i class="dropdown-icon fe fe-user"></i> Profile</a>
-                  <a class="dropdown-item" href="javascript:void(0)"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="dropdown-icon fe fe-mail"></i> Inbox</a>
-                  <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-send"></i> Message</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-help-circle"></i> Need help?</a>
-                  <a class="dropdown-item" th:href="@{/ui/auth/logout}"><i class="dropdown-icon fe fe-log-out"></i> Sign out</a>
-                </div>
-              </div>
+            <div class="right">
+                <a class="signout-link" th:href="@{/ui/auth/logout}">
+                    <i class="fa fa-sign-out"></i> Sign Out
+                </a>
             </div>
-          </div>
         </div>
       </div>
     </div>
