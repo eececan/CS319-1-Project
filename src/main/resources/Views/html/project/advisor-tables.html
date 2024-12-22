@@ -233,6 +233,9 @@
         </h5>
     </div>
 
+    <!-- Notification Container -->
+    <div id="notification-box" class="notification hidden"></div>
+
 
     <div id="left-sidebar" class="sidebar ">
         <h5 class="brand-name">Advisor <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
@@ -361,12 +364,19 @@
                                                             <!-- responsibleDay is DayOfWeek TYPE not String !!! -->
                                                             <!-- Approve Button -->
                                                             <button class="btn btn-success"
-                                                                    th:onclick="'handleAdvisorApproval(' + ${tour.id} + ')'">
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-highschool-name="${tour.school.name}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd-MM-yyy')}"
+                                                                    onclick="handleAdvisorApproval(this)">
                                                                 Approve
                                                             </button>
 
+
                                                             <button class="btn btn-danger"
-                                                                    th:onclick="'handleAdvisorRejection(' + ${tour.id} + ')'">
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-highschool-name="${tour.school.name}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'yyyy-MM-dd')}"
+                                                                    onclick="handleAdvisorRejection(this)">
                                                                 Reject
                                                             </button>
                                                         </div>
@@ -1048,7 +1058,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Confirm Assignment</h5>
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
                 <button type="button" id="closeModalLabelButton"class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

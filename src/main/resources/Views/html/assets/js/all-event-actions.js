@@ -1,4 +1,71 @@
-function handleAdvisorApproval(tourId) {
+function handleAdvisorApproval(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const tourId = buttonElement.getAttribute("data-tour-id");
+    const highSchoolName = buttonElement.getAttribute("data-highschool-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to approve the tour for ${highSchoolName} on ${tourDate}? Note that this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific approval logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the approval API
+        fetch(`/api/tours/${tourId}/advisor/approve`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Tour for ${highSchoolName} on ${tourDate} approved successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error approving tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
+}
+
+
+
+/*function handleAdvisorApproval(tourId) {
     console.log("Approving tour with ID:", tourId);
     fetch(`/api/tours/${tourId}/advisor/approve`, {
         method: "POST",
@@ -20,30 +87,73 @@ function handleAdvisorApproval(tourId) {
             console.error("Error approving tour:", error);
             alert(`Error: ${error.message}`);
         });
+}*/
+
+function handleAdvisorRejection(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const tourId = buttonElement.getAttribute("data-tour-id");
+    const highSchoolName = buttonElement.getAttribute("data-highschool-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to reject the tour application for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific rejection logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the rejection API
+        fetch(`/api/tours/${tourId}/advisor/reject`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Tour for ${highSchoolName} on ${tourDate} rejected successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error rejecting tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
 
-function handleAdvisorRejection(tourId) {
-    fetch(`/api/tours/${tourId}/advisor/reject`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Tour ID ${tourId} rejected successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error("Error rejecting tour:", error);
-            alert(`Error: ${error.message}`);
-        });
-}
 
 function handleSecretaryApproval(tourId) {
     fetch(`/api/tours/${tourId}/secretary/approve`, {
@@ -606,3 +716,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+function showNotification(message, type = "success") {
+    const notificationBox = document.getElementById("notification-box");
+
+    // Set the message
+    notificationBox.textContent = message;
+
+    // Set the background color based on the type
+    notificationBox.className = `notification ${type === "error" ? "error" : ""}`;
+
+    // Show the notification
+    notificationBox.style.display = "block";
+
+    // Automatically hide the notification after 3 seconds
+    setTimeout(() => {
+        notificationBox.style.display = "none";
+    }, 3000); // You can adjust the time as needed
+}
+

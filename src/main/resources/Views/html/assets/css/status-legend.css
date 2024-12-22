@@ -242,6 +242,31 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     pointer-events: none;
 }
 
+/* Notification Box Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745; /* Default: Success (Green) */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 14px;
+    display: none;
+}
+
+/* Error Style */
+.notification.error {
+    background-color: #dc3545; /* Error (Red) */
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
+}
+
 
 
 
