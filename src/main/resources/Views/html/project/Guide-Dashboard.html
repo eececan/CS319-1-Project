@@ -336,21 +336,27 @@
                             </div>
 
                             <div class="card" style="border-radius: 16px; width: 300px; margin-bottom: 25px; background-color: white;">
-                                <div class="card-header mt-12 d-flex justify-content-center" style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                                    <h3 class="card-title">
-                                        View Today's Advisor:
-                                        <!-- Display advisor's name if advisor is not null -->
-                                        <span th:if="${advisor != null}" style="color: #2f93ff;"
-                                              th:text="${advisor.firstName} + ' ' + ${advisor.lastName}">
-
-            </span>
-                                        <!-- Display fallback message if advisor is null -->
-                                        <span th:if="${advisor == null}" style="color: #ff0000;">
-                No Responsible Advisor assigned
-            </span>
+                                <a th:if="${advisor != null}"
+                                   th:href="@{'/ui/UserProfile/getUserProfile'(userId=${advisor.id})}"
+                                   style="text-decoration: none; color: inherit;">
+                                    <div class="card-header mt-12 d-flex justify-content-center"
+                                         style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">
+                                        <h3 class="card-title">
+                                            View Today's Advisor:
+                                            <span style="color: #2f93ff;" th:text="${advisor.firstName} + ' ' + ${advisor.lastName}"></span>
+                                        </h3>
+                                    </div>
+                                </a>
+                                <div th:if="${advisor == null}"
+                                     class="card-header mt-12 d-flex justify-content-center"
+                                     style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                    <h3 class="card-title" style="color: #ff0000;">
+                                        No Responsible Advisor assigned
                                     </h3>
                                 </div>
                             </div>
+
+
 
                         </div>
 

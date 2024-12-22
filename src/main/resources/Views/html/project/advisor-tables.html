@@ -982,7 +982,8 @@
                                                                     th:id="'individual-guide-' + ${individualTour.id}"
                                                                     th:name="'individual-guide-' + ${individualTour.id}"
                                                                     th:data-tour-id="${individualTour.id}"
-                                                                    onchange="handleGuideSelection(this)">
+                                                                    th:data-studentname="${individualTour.student.name}"
+                                                                    th:data-tourdate="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
                                                                 <option value="" disabled selected>Select Guide</option>
                                                                 <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
                                                                     Guide Name
@@ -996,6 +997,7 @@
                                                             <button class="btn ms-2 remove-guide-individual"
                                                                     th:data-tour-id="${individualTour.id}"
                                                                     th:data-guide-id="${individualTour.guides[0].id}"
+                                                                    th:data-guide-name="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}"
                                                                     onclick="removeIndividualTourGuide(this)">
                                                                 -
                                                             </button>
