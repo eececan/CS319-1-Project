@@ -306,6 +306,15 @@
             <div class="container-fluid">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-wrap gap-3 align-items-center">
+                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('NEW_TOUR_APPLICATION')">New Applications</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('BTO_ACCEPTED')">BTO Accepted</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('BTO_REJECTED')">BTO Rejected</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_TOUR')">Upcoming</button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -327,6 +336,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr id="tourApplications-row-${tour.id}" th:each="tour : ${tourApplications}"
+                                                    th:data-status="${tour.status.name()}"
                                                     th:classappend="
                                                                     ${tour.status.name() == 'BTO_ACCEPTED'} ? 'bto-approved-tour' :
                                                                     (${tour.status.name() == 'BTO_REJECTED'} ?  'bto-rejected-tour' :
@@ -419,6 +429,14 @@
                     </div>
 
                     <div class="tab-pane fade" id="Tours" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-wrap gap-3 align-items-center">
+                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_TOUR')">Upcoming</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_TOUR')">Completed</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('CANCELED_TOUR')">Canceled</button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -443,6 +461,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr id="tours-row-${tour.id}" th:each="tour : ${tours}"
+                                                    th:data-status="${tour.status.name()}"
                                                     th:classappend="
                                                                         ${tour.status.name() == 'COMPLETED_TOUR'} ? 'completed-tour' :
                                                                         (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')">
@@ -646,6 +665,14 @@
                     </div>
 
                     <div class="tab-pane fade" id="Fairs" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-wrap gap-3 align-items-center">
+                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_FAIR')">Upcoming</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_FAIR')">Completed</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('CANCELED_FAIR')">Canceled</button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -670,6 +697,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr id="fairs-row-${fair.id}" th:each="fair : ${fairs}"
+                                                    th:data-status="${fair.status.name()}"
                                                     th:classappend="    ${fair.status.name() == 'COMPLETED_FAIR'} ? 'completed-tour' :
                                                                         (${fair.status.name() == 'CANCELED_FAIR'} ? 'canceled-tour' : '')">
                                                     <td th:text="${#dates.format(fair.date, 'dd/MM/yyyy')}">Date</td>
@@ -746,6 +774,14 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="Individual-Tour-Applications" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-wrap gap-3 align-items-center">
+                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('NEW_INDIVIDUAL_TOUR_APPLICATION')">New Applications</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_INDIVIDUAL_TOUR')">Accepted</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('REJECTED_INDIVIDUAL_TOUR_APPLICATION')">Rejected</button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -768,6 +804,7 @@
                                                 <tbody>
                                                 <tr id="individualTourApplications-row-${individualTour.id}"
                                                        th:each="individualTour : ${individualTourApplications}"
+                                                    th:data-status="${individualTour.status.name()}"
                                                        th:classappend="
                                                                     ${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'} ? 'approved-tour' :
                                                                     (${individualTour.status.name() == 'REJECTED_INDIVIDUAL_TOUR_APPLICATION'} ? 'bto-rejected-tour')">
@@ -859,6 +896,14 @@
                     </div>
 
                     <div class="tab-pane fade" id="Individual-Tours" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-wrap gap-3 align-items-center">
+                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_INDIVIDUAL_TOUR')">Upcoming</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_INDIVIDUAL_TOUR')">Completed</button>
+                                <button class="btn btn-primary" onclick="filterByStatus('CANCELED_INDIVIDUAL_TOUR')">Canceled</button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -881,6 +926,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr id="individualTours-row-${individualTour.id}" th:each="individualTour : ${individualTours}"
+                                                    th:data-status="${individualTour.status.name()}"
                                                     th:classappend="
                                         ${individualTour.status.name() == 'COMPLETED_INDIVIDUAL_TOUR'} ? 'completed-tour' :
                                         (${individualTour.status.name() == 'CANCELED_INDIVIDUAL_TOUR'} ? 'canceled-tour' : '')">
@@ -1036,7 +1082,30 @@
 
 
 
+<script>
+    function filterByStatus(status) {
+        // Find the active tab-pane
+        const activeTab = document.querySelector('.tab-pane.active');
+        if (!activeTab) {
+            console.error("No active tab found.");
+            return;
+        }
 
+        // Get all rows in the active tab
+        const rows = activeTab.querySelectorAll('tbody tr');
+
+        // Filter rows based on status
+        rows.forEach(row => {
+            const rowStatus = row.getAttribute('data-status'); // Get the status from the row attribute
+            if (status === 'ALL' || rowStatus === status) {
+                row.style.display = ''; // Show row
+            } else {
+                row.style.display = 'none'; // Hide row
+            }
+        });
+    }
+
+</script>
 <!-- Include jQuery -->
 <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
 
