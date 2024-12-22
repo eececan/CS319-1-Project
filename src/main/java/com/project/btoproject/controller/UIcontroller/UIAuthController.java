@@ -500,7 +500,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
-                       return "Guide-Dashboard"; // Guide's page
+                       return "Guide-in-training-dashboard"; // Guide's page
                    }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
 
                        Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
