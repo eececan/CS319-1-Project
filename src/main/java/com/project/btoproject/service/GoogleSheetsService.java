@@ -14,7 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,8 +87,12 @@ public class GoogleSheetsService {
      * @throws GeneralSecurityException If a security exception occurs during initialization.
      */
     private Sheets initializeSheetsService() throws IOException, GeneralSecurityException {
-        // Load service account credentials from the JSON file
-        try (FileInputStream credentialsStream = new FileInputStream(CREDENTIALS_FILE_PATH)) {
+        // Load service account credentials from the JSON file in the classpath
+        try (InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("credentials.json")) {
+            if (credentialsStream == null) {
+                throw new FileNotFoundException("File 'credentials.json' not found in classpath");
+            }
+
             GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream)
                     .createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS_READONLY));
 
