@@ -357,12 +357,18 @@
                                                         <div th:if="${fair.status.name() == 'NEW_FAIR_APPLICATION'}">
                                                             <!-- Approve Button -->
                                                             <button class="btn btn-success"
-                                                                    th:onclick="'handleFairApproval(' + ${fair.id} + ')'">
+                                                                    th:data-fair-id="${fair.id}"
+                                                                    th:data-school-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleFairApproval(this)">
                                                                 Approve
                                                             </button>
 
                                                             <button class="btn btn-danger"
-                                                                    th:onclick="'handleFairRejection(' + ${fair.id} + ')'">
+                                                                    th:data-fair-id="${fair.id}"
+                                                                    th:data-school-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleFairRejection(this)">
                                                                 Reject
                                                             </button>
                                                         </div>
@@ -1034,6 +1040,9 @@
         </div>
     </div>
 </div>
+
+<!-- Notification Container -->
+<div id="notification-box" class="notification hidden"></div>
 
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">

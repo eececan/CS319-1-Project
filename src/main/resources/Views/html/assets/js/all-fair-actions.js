@@ -1,50 +1,133 @@
-function handleFairApproval(fairId) {
-    console.log("Approving fair with ID:", fairId);
-    fetch(`/api/fairs/approve/${fairId}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Fair ID ${fairId} approved successfully!`);
-                location.reload();
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+function handleFairApproval(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const fairId = buttonElement.getAttribute("data-fair-id");
+    const schoolName = buttonElement.getAttribute("data-school-name");
+    const fairDate = buttonElement.getAttribute("data-fair-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to approve the fair for ${schoolName} on ${fairDate}? Note that the high school will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific approval logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the fair approval API
+        fetch(`/api/fairs/approve/${fairId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error approving fair:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Fair for ${schoolName} on ${fairDate} approved successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error approving fair:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
 
-function handleFairRejection(fairId) {
-    console.log("Rejecting fair with ID:", fairId);
-    fetch(`/api/fairs/reject/${fairId}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Fair ID ${fairId} rejected successfully!`);
-                location.reload();
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+function handleFairRejection(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const fairId = buttonElement.getAttribute("data-fair-id");
+    const schoolName = buttonElement.getAttribute("data-school-name");
+    const fairDate = buttonElement.getAttribute("data-fair-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to reject the fair for ${schoolName} on ${fairDate}? Note that the high school will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific rejection logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the fair rejection API
+        fetch(`/api/fairs/reject/${fairId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error rejecting fair:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Fair for ${schoolName} on ${fairDate} rejected successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error rejecting fair:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
+
 
 function handleFairCancellation(fairId) {
     console.log("Cancelling fair with ID:", fairId);

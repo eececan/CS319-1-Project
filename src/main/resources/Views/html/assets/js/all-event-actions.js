@@ -256,7 +256,7 @@ function handleTourCancellation(buttonElement) {
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
     // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to cancel the tour for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.g`;
+    confirmMessage.textContent = `Do you want to cancel the tour for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
