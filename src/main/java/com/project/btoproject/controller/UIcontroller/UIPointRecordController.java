@@ -56,6 +56,7 @@ public class UIPointRecordController {
         String role = "";
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
             role = userDetails.getAuthorities()
                     .stream()
                     .findFirst()
