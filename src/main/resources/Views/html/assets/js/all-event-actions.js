@@ -568,82 +568,177 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener("DOMContentLoaded", function () {
     const joinTourButtons = document.querySelectorAll(".join-tour-button");
 
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedTourId = null;
+    let selectedGuideId = null;
+
     joinTourButtons.forEach((button) => {
         button.addEventListener("click", function () {
-            const tourId = this.dataset.tourId; // Get tour ID from button
-            const guideId = this.dataset.guideId; // Fetch guide ID from a hidden input or other source
+            // Get necessary data from button's data attributes
+            selectedTourId = this.dataset.tourId;
+            selectedGuideId = this.dataset.guideId;
+            const schoolName = this.dataset.schoolName;
+            const tourDate = this.dataset.tourDate;
 
             // Ensure guideId is available
-            if (!guideId) {
-                alert("Guide ID is missing.");
+            if (!selectedGuideId) {
+                showNotification("Guide ID is missing.", "error");
                 return;
             }
 
-            // Send POST request to join the tour
-            fetch(`/api/tours/${tourId}/join`, {
+            // Set the confirmation message
+            confirmMessage.innerHTML = `Are you sure you want to leave the tour for "${schoolName}" on ${tourDate}?<br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
+
+            // Show the confirmation modal
+            confirmModal.show();
+        });
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", function () {
+        if (selectedTourId && selectedGuideId) {
+            fetch(`/api/tours/${selectedTourId}/join`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ guideId: guideId }), // Pass guideId in the body
+                body: JSON.stringify({ guideId: selectedGuideId }), // Pass guideId in the body
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert("Successfully joined the tour!");
-                        location.reload(); // Reload the page
+                        // Show success notification
+                        showNotification("Successfully joined the tour!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
-                        return response.text().then((message) => {
-                            throw new Error(message);
+                        return response.json().then((errorData) => {
+                            throw new Error(errorData.error || "Failed to join the tour.");
                         });
                     }
                 })
                 .catch((error) => {
                     console.error("Error joining tour:", error);
-                    alert(`Error: ${error.message}`);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
                 });
-        });
+        }
     });
+
+    // Handle No button click
+    cancelButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    function resetSelections() {
+        selectedTourId = null;
+        selectedGuideId = null;
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
     const leaveTourButtons = document.querySelectorAll(".leave-tour-button");
 
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmButton = document.getElementById("confirmButton");
+    const cancelButton = document.querySelector(".btn-secondary[data-bs-dismiss='modal']");
+    const closeModalButton = document.querySelector(".btn-close[data-bs-dismiss='modal']");
+
+    let selectedTourId = null;
+    let selectedGuideId = null;
+
     leaveTourButtons.forEach((button) => {
         button.addEventListener("click", function () {
-            const tourId = this.dataset.tourId; // Get tour ID from button
-            const guideId = this.dataset.guideId; // Fetch guide ID from button data attribute
+            // Get tour ID and guide ID from button's data attributes
+            selectedTourId = this.dataset.tourId;
+            selectedGuideId = this.dataset.guideId;
+            const tourDate = this.dataset.tourDate;
+            const schoolName = this.dataset.schoolName;
 
             // Ensure guideId is available
-            if (!guideId) {
-                alert("Guide ID is missing.");
+            if (!selectedGuideId) {
+                showNotification("Guide ID is missing.", "error");
                 return;
             }
 
-            // Send POST request to leave the tour
-            fetch(`/api/tours/${tourId}/leave`, {
+            // Set the confirmation message
+            confirmMessage.innerHTML = `Are you sure you want to leave the tour for "${schoolName}" on ${tourDate}?`;
+
+            // Show the confirmation modal
+            confirmModal.show();
+        });
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener("click", function () {
+        if (selectedTourId && selectedGuideId) {
+            fetch(`/api/tours/${selectedTourId}/leave`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ guideId: guideId }), // Pass guideId in the body
+                body: JSON.stringify({ guideId: selectedGuideId }), // Pass guideId in the body
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert("Successfully left the tour!");
-                        location.reload(); // Reload the page
+                        // Show success notification
+                        showNotification("Successfully left the tour!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
-                        return response.text().then((message) => {
-                            throw new Error(message);
+                        return response.json().then((errorData) => {
+                            throw new Error(errorData.error || "Failed to leave the tour.");
                         });
                     }
                 })
                 .catch((error) => {
                     console.error("Error leaving tour:", error);
-                    alert(`Error: ${error.message}`);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                })
+                .finally(() => {
+                    confirmModal.hide();
                 });
-        });
+        }
     });
+
+    // Handle No button click
+    cancelButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener("click", function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    function resetSelections() {
+        selectedTourId = null;
+        selectedGuideId = null;
+    }
 });
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('schoolSearchInput');
