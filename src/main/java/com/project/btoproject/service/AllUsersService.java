@@ -311,6 +311,11 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
         return true; // Day is available
     }
 
+    @Override
+    public Optional<User> getUserByEmail(String email) {
+        return Optional.ofNullable(repository.findUserByEmail(email));
+    }
+
 
 
     //dogru mu checkle

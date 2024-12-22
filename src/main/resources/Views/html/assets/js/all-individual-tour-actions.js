@@ -1,50 +1,134 @@
-function handleIndividualTourApproval(individualTourId) {
-    console.log("Approving individual tour with ID:", individualTourId);
-    fetch(`/api/individual-tours/${individualTourId}/advisor/approve`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Individual Tour ID ${individualTourId} approved successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+function handleIndividualTourApproval(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const individualTourId = buttonElement.getAttribute("data-individual-tour-id");
+    const studentName = buttonElement.getAttribute("data-student-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to approve the individual tour for ${studentName} on ${tourDate}? Note that the student will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific approval logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the individual tour approval API
+        fetch(`/api/individual-tours/${individualTourId}/advisor/approve`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error approving individual tour:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Individual tour for ${studentName} on ${tourDate} approved successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error approving individual tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
 
-function handleIndividualTourRejection(individualTourId) {
-    console.log("Rejecting individual tour with ID:", individualTourId);
-    fetch(`/api/individual-tours/${individualTourId}/advisor/reject`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Individual Tour ID ${individualTourId} rejected successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+
+function handleIndividualTourRejection(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const individualTourId = buttonElement.getAttribute("data-individual-tour-id");
+    const studentName = buttonElement.getAttribute("data-student-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to reject the individual tour for ${studentName} on ${tourDate}? Note that the student will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific rejection logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the individual tour rejection API
+        fetch(`/api/individual-tours/${individualTourId}/advisor/reject`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error rejecting individual tour:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Individual tour for ${studentName} on ${tourDate} rejected successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error rejecting individual tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
+
 
 function handleGuideSelection(selectElement) {
     const tourId = selectElement.getAttribute("data-tour-id");
@@ -127,28 +211,71 @@ function removeIndividualTourGuide(buttonElement) {
         });
 }
 
-function cancelIndividualTour(tourId) {
-    fetch(`/api/individual-tours/${tourId}/cancel`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Individual Tour ID ${tourId} canceled successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
+function cancelIndividualTour(buttonElement) {
+    // Extract data from the button's data-* attributes
+    const individualTourId = buttonElement.getAttribute("data-individual-tour-id");
+    const studentName = buttonElement.getAttribute("data-student-name");
+    const tourDate = buttonElement.getAttribute("data-tour-date");
+
+    // Reference to the modal and its elements
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    // Set the modal message dynamically
+    confirmMessage.textContent = `Do you want to cancel the individual tour for ${studentName} on ${tourDate}? Note that the student will be notified and this action cannot be undone.`;
+
+    // Remove any previous event listeners to avoid conflicts
+    confirmButton.replaceWith(confirmButton.cloneNode(true));
+    const newConfirmButton = document.getElementById('confirmButton');
+
+    // Attach the specific cancellation logic to the "Yes" button
+    newConfirmButton.addEventListener('click', function () {
+        // Call the individual tour cancellation API
+        fetch(`/api/individual-tours/${individualTourId}/cancel`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .catch((error) => {
-            console.error("Error canceling individual tour:", error);
-            alert(`Error: ${error.message}`);
-        });
+            .then((response) => {
+                if (response.ok) {
+                    // Show success notification
+                    showNotification(`Individual tour for ${studentName} on ${tourDate} canceled successfully!`, "success");
+
+                    // Optionally reload the page to reflect the changes
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    return response.text().then((message) => {
+                        throw new Error(message);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error canceling individual tour:", error);
+
+                // Show error notification
+                showNotification(`Error: ${error.message}`, "error");
+            })
+            .finally(() => {
+                confirmModal.hide();
+            });
+    });
+
+    // Open the modal
+    confirmModal.show();
+
+    cancelButton.onclick = () => {
+        confirmModal.hide();
+    };
+
+    closeModalLabelButton.onclick = () => {
+        confirmModal.hide();
+    };
 }
+
 // Note that to join an individual tour, already defined js functions are used because the logic is the same
 document.addEventListener("DOMContentLoaded", () => {
     // Event delegation for Join Individual Tour button

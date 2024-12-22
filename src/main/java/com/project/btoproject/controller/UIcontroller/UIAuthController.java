@@ -3,6 +3,7 @@ package com.project.btoproject.controller.UIcontroller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.btoproject.controller.IndividualTourController;
 import com.project.btoproject.dto.*;
+import com.project.btoproject.enums.EventType;
 import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
@@ -104,12 +105,64 @@ public class UIAuthController {
 
     @PostMapping("/register")
     public String register(
-            @RequestParam String role,
+            @RequestParam(required = false) String role,
             @ModelAttribute("registerDto") RegisterDto registerDto,
             @ModelAttribute("advisorRegisterDto") AdvisorRegisterDto advisorRegisterDto,
             RedirectAttributes redirectAttributes,
             Model model) {
         try {
+           /*if(registerDto == null){
+                model.addAttribute("errorMessage", "Please fill all the required fields");
+                return "register";
+            }
+            if(registerDto.getRole() == null){
+                model.addAttribute("errorMessage", "Please select a role!");
+                return "register";
+            }
+            if (registerDto.getUsername() != null && !registerDto.getUsername().isEmpty()) {
+                // Check if the username contains only numbers
+                if (!registerDto.getUsername().matches("\\d+")) {
+
+                    model.addAttribute("errorMessage", "Username must contain only numbers!");
+                    return "register";
+                }
+            } else {
+                model.addAttribute("errorMessage", "Username cannot be empty!");
+                return "register";
+            }
+
+            if (registerDto.getPassword() != null && !registerDto.getPassword().isEmpty()) {
+                // Validate password constraints
+                String password = registerDto.getPassword();
+
+                if (password.length() < 8) {
+                    model.addAttribute("errorMessage", "Password must be at least 8 characters long!");
+                    return "register";
+                }
+
+                if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one special character!");
+                    return "register";
+                }
+
+                if (!password.matches(".*[A-Z].*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one uppercase letter!");
+                    return "register";
+                }
+
+                if (!password.matches(".*[a-z].*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one lowercase letter!");
+                    return "register";
+                }
+
+                if (!password.matches(".*\\d.*")) {
+                    model.addAttribute("errorMessage", "Password must contain at least one digit!");
+                    return "register";
+                }
+            } else {
+                model.addAttribute("errorMessage", "Password cannot be empty!");
+                return "register";
+            }*/
             if ("ROLE_ADVISOR".equals(role)) {
                 if(!allUsersService.responsibleDayAvailable(advisorRegisterDto.getResponsibleDay())){
                     model.addAttribute("errorMessage", "Another advisor is already responsible for this day! Please make the day available first!");
@@ -126,6 +179,8 @@ public class UIAuthController {
                     }
                 }
             } else {
+
+
                 String response = authService.register(registerDto);
                 if (response.equals("User registered successfully!")) {
                     redirectAttributes.addFlashAttribute("successMessage", "User registered successfully!");
@@ -139,7 +194,7 @@ public class UIAuthController {
                 }
             }
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "An error occurred: " + e.getMessage());
+            model.addAttribute("errorMessage", "The user could not be registered! Please try again!");
             return "register";
         }
     }
@@ -245,7 +300,7 @@ public class UIAuthController {
                        return "director-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
-                       model.addAttribute("sum", 0);  //should i delete this
+                       model.addAttribute("sum", 0);
                        model.addAttribute("role", "ROLE_HEAD_SECRETARY");
                        model.addAttribute("isUser", "true");
 
@@ -255,18 +310,50 @@ public class UIAuthController {
                        return "advisor-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
-                       model.addAttribute("sum", 0);  //should i delete this
+                       Guide guide = (Guide) user;
+                       List<Event> event = guide.getEvents();
+                       int sum = 0;
+                       if(event != null){
+                           sum = 0;
+                           for (int i = 0; i < event.size(); i++) {
+                               System.out.println(event.get(i).getId());
+                               if (event.get(i).getEventType() == EventType.TOUR) {
+                                   if ((event.get(i).getStatus() == Status.COMPLETED_TOUR)) {
+                                       sum++;
+                                   }
+                               }
+                           }
+                           model.addAttribute("sum", sum);
+                       }
+                       else {
+                           model.addAttribute("sum", 0);
+                       }
                        model.addAttribute("role", "ROLE_GUIDE");
                        model.addAttribute("isUser", "true");
-                       Guide guide = (Guide) user;
                        model.addAttribute("guide", guide);
                        return "guide-profile";
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
-                       model.addAttribute("user", new GuideInTraining());
+                       GuideInTraining guide = (GuideInTraining) user;
+                       List<Event> event = guide.getEvents();
+                       int sum = 0;
+                       if(event != null){
+                           sum = 0;
+                           for (int i = 0; i < event.size(); i++) {
+                               System.out.println(event.get(i).getId());
+                               if (event.get(i).getEventType() == EventType.TOUR) {
+                                   if ((event.get(i).getStatus() == Status.COMPLETED_TOUR)) {
+                                       sum++;
+                                   }
+                               }
+                           }
+                           model.addAttribute("sum", sum);
+                       }
+                       else {
+                           model.addAttribute("sum", 0);
+                       }
                        model.addAttribute("role", "ROLE_GUIDE_IN_TRAINING");
                        model.addAttribute("isUser", "true");
-                       GuideInTraining guide = (GuideInTraining) user;
                        model.addAttribute("guide", guide);
                        return "guide-profile";
                    }
