@@ -467,7 +467,11 @@
                                                             <button
                                                                     class="btn ms-2 remove-fair-guide"
                                                                     th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${fair.guides[0].id}">
+                                                                    th:data-guide-id="${fair.guides[0].id}"
+                                                                    th:data-guide-name="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"
+                                                                    th:data-fair-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd/MM/yyyy')}"
+                                                                    th:data-fair-hour="${fair.hour}">
                                                                 -
                                                             </button>
                                                         </div>
@@ -508,7 +512,11 @@
                                                             <button
                                                                     class="btn ms-2 remove-fair-guide"
                                                                     th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${fair.guides[1].id}">
+                                                                    th:data-guide-id="${fair.guides[1].id}"
+                                                                    th:data-guide-name="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"
+                                                                    th:data-fair-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd/MM/yyyy')}"
+                                                                    th:data-fair-hour="${fair.hour}">
                                                                 -
                                                             </button>
                                                         </div>
@@ -556,7 +564,11 @@
                                                             <button
                                                                     class="btn ms-2 remove-fair-guide"
                                                                     th:data-fair-id="${fair.id}"
-                                                                    th:data-guide-id="${fair.guides[2].id}">
+                                                                    th:data-guide-id="${fair.guides[2].id}"
+                                                                    th:data-guide-name="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"
+                                                                    th:data-fair-name="${fair.school.name}"
+                                                                    th:data-fair-date="${#dates.format(fair.date, 'dd/MM/yyyy')}"
+                                                                    th:data-fair-hour="${fair.hour}">
                                                                 -
                                                             </button>
                                                         </div>

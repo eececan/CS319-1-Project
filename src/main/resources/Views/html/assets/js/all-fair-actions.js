@@ -194,7 +194,6 @@ function handleFairCancellation(buttonElement) {
     };
 }
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const guideDropdowns = document.querySelectorAll('.guide-fair-dropdown');
     let selectedFairId = null;
@@ -209,8 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     guideDropdowns.forEach((dropdown) => {
         dropdown.addEventListener('change', function () {
-            selectedFairId = this.id.split('-')[1];
-            selectedGuideId = this.value;
+            selectedFairId = this.id.split('-')[1]; // Extract fair ID from dropdown ID
+            selectedGuideId = this.value; // Get the selected guide ID
             selectedDropdown = this;
 
             const highSchoolName = this.dataset.highschoolname;
@@ -218,7 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const fairHour = this.dataset.fairhour;
             const selectedOptionText = this.options[this.selectedIndex].text;
 
-            confirmMessage.textContent = `You are about to assign guide "${selectedOptionText}" to the fair for ${highSchoolName} on ${fairDate}. Are you sure?`;
+            // Set the confirmation message
+            confirmMessage.innerHTML = `You are about to assign guide <strong>"${selectedOptionText}"</strong> to the fair for <strong>${highSchoolName}</strong> on <strong>${fairDate} at ${fairHour}</strong>. Are you sure?`;
+
+            // Show confirmation modal
             confirmModal.show();
         });
     });
@@ -234,43 +236,59 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert('Guide assigned successfully!');
-                        location.reload();
+                        // Show success notification
+                        showNotification('Guide assigned successfully!', 'success');
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
+                        // Attempt to parse the error as JSON, fallback to plain text
                         return response.text().then((message) => {
-                            throw new Error(message);
+                            try {
+                                const errorData = JSON.parse(message);
+                                throw new Error(errorData.error || 'An unknown error occurred.');
+                            } catch (err) {
+                                throw new Error(message || 'An unknown error occurred.');
+                            }
                         });
                     }
                 })
                 .catch((error) => {
                     console.error('Error assigning guide:', error);
-                    alert(`Error: ${error.message}`);
-                    resetDropdown();
+
+                    // Show backend error notification
+                    showNotification(`Error: ${error.message}`, 'error');
+                    // Reload the page after a short delay
+                    setTimeout(() => location.reload(), 2000);
                 })
                 .finally(() => {
+                    confirmModal.hide();
                     resetSelections();
                 });
-
-            confirmModal.hide();
         }
     });
 
+
+    // Handle No button click
     cancelButton.addEventListener('click', function () {
         resetDropdown();
         resetSelections();
     });
 
+    // Handle Close (X) button click
     closeModalLabelButton.addEventListener('click', function () {
         resetDropdown();
         resetSelections();
     });
 
+    // Reset the dropdown to its initial state
     function resetDropdown() {
         if (selectedDropdown) {
-            selectedDropdown.value = '';
+            selectedDropdown.value = ''; // Reset dropdown to default state
         }
     }
 
+    // Reset all selection-related variables
     function resetSelections() {
         selectedFairId = null;
         selectedGuideId = null;
@@ -278,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmModal.hide();
     }
 });
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const addGuideSlotButtons = document.querySelectorAll('.add-fair-guide-slot');
@@ -294,8 +313,11 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert('Guide slot added successfully!');
-                        location.reload();
+                        // Show success notification
+                        showNotification('Guide slot added successfully!', 'success');
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
                         return response.text().then((message) => {
                             throw new Error(message);
@@ -303,11 +325,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 })
                 .catch((error) => {
-                    alert(`Error: ${error.message}`);
+                    console.error('Error adding guide slot:', error);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, 'error');
                 });
         });
     });
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const removeGuideSlotButtons = document.querySelectorAll(".remove-fair-guide-slot");
@@ -317,29 +343,32 @@ document.addEventListener("DOMContentLoaded", function () {
             const fairId = this.dataset.fairId;
             const guideIndex = this.dataset.guideIndex;
 
-            if (confirm("Are you sure you want to remove this guide slot?")) {
-                fetch(`/api/fairs/${fairId}/decrease-guide-count`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ guideIndex: guideIndex }),
+            fetch(`/api/fairs/${fairId}/decrease-guide-count`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ guideIndex: guideIndex }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Show success notification
+                        showNotification("Guide slot removed successfully!", "success");
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        return response.text().then((message) => {
+                            throw new Error(message);
+                        });
+                    }
                 })
-                    .then((response) => {
-                        if (response.ok) {
-                            alert("Guide slot removed successfully!");
-                            location.reload();
-                        } else {
-                            return response.text().then((message) => {
-                                throw new Error(message);
-                            });
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error removing guide slot:", error);
-                        alert(`Error: ${error.message}`);
-                    });
-            }
+                .catch((error) => {
+                    console.error("Error removing guide slot:", error);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, "error");
+                });
         });
     });
 });
@@ -347,26 +376,54 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener('DOMContentLoaded', function () {
     const removeGuideButtons = document.querySelectorAll('.remove-fair-guide');
 
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const closeModalButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
+
+    let selectedFairId = null;
+    let selectedGuideId = null;
+
     removeGuideButtons.forEach((button) => {
         button.addEventListener('click', function () {
-            const fairId = this.dataset.fairId;
-            const guideId = this.dataset.guideId;
+            selectedFairId = this.dataset.fairId;
+            selectedGuideId = this.dataset.guideId;
+            const guideName = this.dataset.guideName;
+            const fairName = this.dataset.fairName;
+            const fairDate = this.dataset.fairDate;
+            const fairHour = this.dataset.fairHour;
 
-            if (!confirm("Are you sure you want to remove this guide from the fair?")) {
+            if (!selectedFairId || !selectedGuideId) {
+                showNotification("Fair ID or Guide ID is missing.", "error");
                 return;
             }
 
-            fetch(`/api/fairs/${fairId}/remove-guide`, {
+            // Set the confirmation message
+            confirmMessage.innerHTML = `You are about to remove guide <strong>"${guideName}"</strong> from the fair <strong>${fairName}</strong> on <strong>${fairDate} at ${fairHour}</strong>. Are you sure?`;
+
+            // Show the confirmation modal
+            confirmModal.show();
+        });
+    });
+
+    // Handle Yes button click
+    confirmButton.addEventListener('click', function () {
+        if (selectedFairId && selectedGuideId) {
+            fetch(`/api/fairs/${selectedFairId}/remove-guide`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ guideId: guideId }),
+                body: JSON.stringify({ guideId: selectedGuideId }),
             })
                 .then((response) => {
                     if (response.ok) {
-                        alert('Guide removed successfully!');
-                        location.reload();
+                        // Show success notification
+                        showNotification('Guide removed successfully!', 'success');
+
+                        // Reload the page after a short delay
+                        setTimeout(() => location.reload(), 2000);
                     } else {
                         return response.text().then((message) => {
                             throw new Error(message);
@@ -375,10 +432,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch((error) => {
                     console.error('Error removing guide:', error);
-                    alert(`Error: ${error.message}`);
+
+                    // Show error notification
+                    showNotification(`Error: ${error.message}`, 'error');
+
+                })
+                .finally(() => {
+                    confirmModal.hide();
+                    resetSelections();
                 });
-        });
+        }
     });
+
+    // Handle No button click
+    cancelButton.addEventListener('click', function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Handle Close (X) button click
+    closeModalButton.addEventListener('click', function () {
+        confirmModal.hide();
+        resetSelections();
+    });
+
+    // Reset selected IDs
+    function resetSelections() {
+        selectedFairId = null;
+        selectedGuideId = null;
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
