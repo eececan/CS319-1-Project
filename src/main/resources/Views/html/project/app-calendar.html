@@ -176,8 +176,24 @@
                     url: '/api/events',  // The endpoint that returns events as JSON
                     dataType: 'json',
                     success: function(data) {
-                        // Pass the fetched events to FullCalendar
-                        callback(data);
+                        // Process and format the events
+                        var events = data.map(event => {
+                            // Update the title to include event type and school name
+                            var title = event.title;  // Event type
+                            if (event.school) {
+                                title += ' - ' + event.school;  // Append school name if available
+                            }
+
+                            return {
+                                title: title,
+                                start: event.start,
+                                end: event.end,
+                                description: event.description  // Keep description for tooltips
+                            };
+                        });
+
+                        // Pass the formatted events to FullCalendar
+                        callback(events);
                     },
                     error: function(xhr, status, error) {
                         console.error("Error fetching events: ", status, error);
@@ -194,7 +210,7 @@
             eventClick: function(calEvent, jsEvent, view) {
                 var eventModal = $('#eventEditModal');
                 eventModal.modal('show');
-                eventModal.find('input[name="event-type"]').val(calEvent.title);  // Using `title` for eventType
+                eventModal.find('input[name="event-type"]').val(calEvent.title);  // Display title with school name
                 eventModal.find('.save-btn').click(function() {
                     calEvent.title = eventModal.find("input[name='event-type']").val();
                     calendar.fullCalendar('updateEvent', calEvent);
@@ -203,6 +219,7 @@
             }
         });
     });
+
 </script>
 
 
