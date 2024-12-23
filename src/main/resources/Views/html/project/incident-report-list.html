@@ -202,8 +202,20 @@
                 <div class="container-fluid">
                     <div class="d-flex justify-content-between align-items-center">
                         <ul class="nav nav-tabs page-header-tab">
-                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#inc-list">Incident Reports</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inc-add">Add Incident Report</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#inc-list"
+                                   th:classappend="${role != 'ROLE_GUIDE' and role != 'ROLE_GUIDE_IN_TRAINING'} ? 'active' : ''"
+                                   th:if="${role != 'ROLE_GUIDE' and role != 'ROLE_GUIDE_IN_TRAINING'}">
+                                    Incident Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#inc-add"
+                                   th:classappend="${role == 'ROLE_GUIDE' or role == 'ROLE_GUIDE_IN_TRAINING'} ? 'active' : ''"
+                                    th:if="${role == 'ROLE_GUIDE' or role == 'ROLE_GUIDE_IN_TRAINING'}">
+                                    Add Incident Report
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -213,7 +225,7 @@
                 <div class="container-fluid">
                     <div class="tab-content">
                         <!-- Incident Report List -->
-                        <div class="tab-pane fade show active" id="inc-list" role="tabpanel">
+                        <div class="tab-pane fade show active" id="inc-list" role="tabpanel" th:if="${role != 'ROLE_GUIDE' and role != 'ROLE_GUIDE_IN_TRAINING'}">
                             <div class="card">
                                 <div class="card-body">
                                     <table class="table table-hover">
@@ -253,7 +265,7 @@
                         </div>
 
                         <!-- Add Incident -->
-                        <div class="tab-pane fade" id="inc-add" role="tabpanel">
+                        <div class="tab-pane fade show active" id="inc-add" role="tabpanel" th:if="${role == 'ROLE_GUIDE' or role == 'ROLE_GUIDE_IN_TRAINING'}">
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title">Add Incident</h3>
@@ -288,8 +300,6 @@
                                 </form>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
