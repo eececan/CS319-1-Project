@@ -76,7 +76,7 @@ public class UIPointRecordController {
         if(role.equals("ROLE_GUIDE")) {
             Guide guide = guideService.getGuideById(Long.parseLong(username));
             Long guideId = guide.getId();
-            List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
+            List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guideId);
             model.addAttribute("guide_records", pointRecords);
             List<Tour> tours = eventService.getAllTours().stream()
                     .filter(tour -> tour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
@@ -156,7 +156,7 @@ public class UIPointRecordController {
         if(currentRole.equals("ROLE_GUIDE")) {
             Guide guide = guideService.getGuideById(userId);
             Long guideId = guide.getId();
-            List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
+            List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guideId);
             model.addAttribute("guide_records", pointRecords);
             List<Tour> tours = eventService.getAllTours().stream()
                     .filter(tour -> tour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))

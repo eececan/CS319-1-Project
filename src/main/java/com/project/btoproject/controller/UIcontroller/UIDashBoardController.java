@@ -29,9 +29,10 @@ public class UIDashBoardController {
     private final IAdvisorService advisorService;
     private final AllUsersService allUsersService;
     private final PointRecordService pointRecordService;
+    private final GuideInTrainingService guideInTrainingService;
 
     @Autowired
-    UIDashBoardController(AllUsersService allUserService, AuthService authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController ){
+    UIDashBoardController(AllUsersService allUserService, AuthService authService, EventService eventService, GuideService guideService, IAdvisorService advisorService, AllUsersService allUsersService, PointRecordService pointRecordService, IndividualTourController individualTourController, GuideInTrainingService guideInTrainingService){
         this.allUserService = allUserService;
         this.authService = authService;
         this.eventService = eventService;
@@ -39,7 +40,7 @@ public class UIDashBoardController {
         this.advisorService = advisorService;
         this.allUsersService = allUsersService;
         this.pointRecordService = pointRecordService;
-
+        this.guideInTrainingService = guideInTrainingService;
     }
     public void populateModelWithUserData(Model model, User user) {
         Advisor advisor = advisorService.findAdvisorsByResponsibleDay(java.time.LocalDate.now().getDayOfWeek());
@@ -70,10 +71,29 @@ public class UIDashBoardController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-
+        List<Guide> guides = guideService.getAllGuides();
+        List<GuideInTraining> trainings = guideInTrainingService.getAllGuideInTrainings();
+        for(GuideInTraining guideInTraining : trainings){
+            Guide userr = new Guide();
+            userr.setFirstName(guideInTraining.getFirstName());
+            userr.setLastName(guideInTraining.getLastName());
+            userr.setEmail(guideInTraining.getEmail());
+            userr.setPhoneNumber(guideInTraining.getPhoneNumber());
+            userr.setPassword(guideInTraining.getPassword());
+            userr.setStartDate(guideInTraining.getStartDate());
+            userr.setSchedule(guideInTraining.getSchedule());
+            userr.setEvents(guideInTraining.getEvents());
+            userr.setGrade(guideInTraining.getGrade());
+            userr.setDepartment(guideInTraining.getDepartment());
+            userr.setDescription(guideInTraining.getDescription());
+            userr.setTasks(guideInTraining.getTasks());
+            guides.add(userr);
+        }
+        model.addAttribute("guides", guides);
         User user = allUserService.getUserById(Long.parseLong(username)).get();
        populateModelWithUserData(model,user);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_DIRECTOR"))) {
+
             model.addAttribute("roleUser", "Director");
             return "Director-Dashboard"; // Director's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
