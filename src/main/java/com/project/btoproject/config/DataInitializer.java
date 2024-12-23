@@ -460,6 +460,64 @@ public class DataInitializer {
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
         }
+        if (guideRepository.findByFirstNameAndLastName("Tolga", "Can").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("22200024");
+            registerDto.setPassword("Password123!!!");
+            registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(22200024L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            guideDto.setFirstName("Tolga");
+            guideDto.setLastName("Can");
+            guideDto.setDescription("Tolga Can added as a guide in training as an example.");
+            guideDto.setPhoneNumber("05371127736");
+            guideDto.setEmail("tolgacan@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date()); // Set the current date
+            calendar.add(Calendar.MONTH, -7); // Subtract 7 months
+            Date sevenMonthsAgo = calendar.getTime();
+            guideDto.setStartDate(sevenMonthsAgo);
+
+            userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
+        }
+        if (guideRepository.findByFirstNameAndLastName("Sinem", "Can").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("22200025");
+            registerDto.setPassword("Password123!!!");
+            registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(22200025L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            guideDto.setFirstName("Sinem");
+            guideDto.setLastName("Can");
+            guideDto.setDescription("Sinem Can added as a guide in training as an example.");
+            guideDto.setPhoneNumber("05371127736");
+            guideDto.setEmail("sinemcan@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date()); // Set the current date
+            calendar.add(Calendar.MONTH, -8); // Subtract 7 months
+            Date sevenMonthsAgo = calendar.getTime();
+            guideDto.setStartDate(sevenMonthsAgo);
+
+            userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
+        }
     }
 
     @Transactional

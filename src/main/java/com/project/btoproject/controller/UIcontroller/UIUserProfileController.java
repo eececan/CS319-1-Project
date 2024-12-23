@@ -441,14 +441,39 @@ public class UIUserProfileController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             username = userDetails.getUsername();
         }
-        if (newPassword1.equals(newPassword2)) {
+        if (!newPassword1.equals(newPassword2)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match!");
+            return "redirect:/ui/UserProfile/changePassword";
+
+        }
+       else if (newPassword1.length() < 8) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must be at least 8 characters long!");
+            return "redirect:/ui/UserProfile/changePassword";
+        }
+
+        else if (!newPassword1.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must contain at least one special character!");
+            return "redirect:/ui/UserProfile/changePassword";
+        }
+
+       else if (!newPassword1.matches(".*[A-Z].*")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must contain at least one uppercase letter!");
+            return "redirect:/ui/UserProfile/changePassword";
+        }
+
+        else if (!newPassword1.matches(".*[a-z].*")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must contain at least one lowercase letter!");
+            return "redirect:/ui/UserProfile/changePassword";
+        }
+
+       else if (!newPassword1.matches(".*\\d.*")) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must contain at least one digit!");
+            return "redirect:/ui/UserProfile/changePassword";
+        }
+       else{
             userService.changePassword(Long.parseLong(username), newPassword1);
             redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully!");
             return "redirect:/ui/UserProfile/profile"; // Redirect to a success page or profile page
-        } else {
-            // Handle errors (e.g., wrong current password)
-            redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match!");
-            return "redirect:/ui/UserProfile/changePassword"; // Redirect back to the form
         }
     }
 
