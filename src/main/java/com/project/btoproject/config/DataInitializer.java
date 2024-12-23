@@ -98,7 +98,6 @@ public class DataInitializer {
             roleRepository.save(guideInTraining);
         }
     }
-
     @Bean
     public ApplicationRunner initializeGuides() {
         return args -> initializeGuideData();
@@ -134,19 +133,17 @@ public class DataInitializer {
     }
 
 
-
-
     @Transactional
     public void initializeAdvisorData() {
         if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
             RegisterDto registerDto = new RegisterDto();
-            registerDto.setUsername("1");
-            registerDto.setPassword("1");
+            registerDto.setUsername("11");
+            registerDto.setPassword("11");
             registerDto.setRole("ROLE_ADVISOR");
 
             authService.register(registerDto);
 
-            UserEntity user = userService.findUserByUsername(1L)
+            UserEntity user = userService.findUserByUsername(11L)
                     .orElseThrow(() -> new IllegalStateException("User not found"));
 
             UserAdvisorDto advisorDto = new UserAdvisorDto();
@@ -154,7 +151,7 @@ public class DataInitializer {
             advisorDto.setLastName("Akyol");
             advisorDto.setDescription("Furkan Akyol added as an advisor as an example.");
             advisorDto.setPhoneNumber("0123456789");
-            advisorDto.setResponsibleDay(DayOfWeek.WEDNESDAY);
+            advisorDto.setResponsibleDay(DayOfWeek.MONDAY);
             advisorDto.setEmail("furkan.akyol@ug.bilkent.edu.tr");
             advisorDto.setGrade(3);
             advisorDto.setPicture("picture.jpg");
@@ -164,23 +161,95 @@ public class DataInitializer {
         }
         if (advisorRepository.findByFirstNameAndLastName("Mehmet", "Akyol").isEmpty()) {
             RegisterDto registerDto = new RegisterDto();
-            registerDto.setUsername("8");
-            registerDto.setPassword("8");
+            registerDto.setUsername("12");
+            registerDto.setPassword("12");
             registerDto.setRole("ROLE_ADVISOR");
 
             authService.register(registerDto);
 
-            UserEntity user = userService.findUserByUsername(8L)
+            UserEntity user = userService.findUserByUsername(12L)
                     .orElseThrow(() -> new IllegalStateException("User not found"));
 
             UserAdvisorDto advisorDto = new UserAdvisorDto();
             advisorDto.setFirstName("Mehmet");
             advisorDto.setLastName("Akyol");
-            advisorDto.setDescription("Furkan Akyoal added as an advisor as an example.");
+            advisorDto.setDescription("Mehmet Akyol added as an advisor as an example.");
             advisorDto.setPhoneNumber("0123456789");
-            advisorDto.setResponsibleDay(DayOfWeek.MONDAY);
+            advisorDto.setResponsibleDay(DayOfWeek.TUESDAY);
             advisorDto.setEmail("afurkan.akyol@ug.bilkent.edu.tr");
-            advisorDto.setGrade(3);
+            advisorDto.setGrade(4);
+            advisorDto.setPicture("picture.jpg");
+            advisorDto.setDepartment("CS");
+            advisorDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
+        }
+        if (advisorRepository.findByFirstNameAndLastName("Engin", "Haklı").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("13");
+            registerDto.setPassword("13");
+            registerDto.setRole("ROLE_ADVISOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(13L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserAdvisorDto advisorDto = new UserAdvisorDto();
+            advisorDto.setFirstName("Engin");
+            advisorDto.setLastName("Haklı");
+            advisorDto.setDescription("Engin Haklı added as an advisor as an example.");
+            advisorDto.setPhoneNumber("905555555555");
+            advisorDto.setResponsibleDay(DayOfWeek.WEDNESDAY);
+            advisorDto.setEmail("engin.duzenli@ug.bilkent.edu.tr");
+            advisorDto.setGrade(2);
+            advisorDto.setPicture("picture.jpg");
+            advisorDto.setDepartment("CS");
+            advisorDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
+        }
+        if (advisorRepository.findByFirstNameAndLastName("Hakan", "Kutucu").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("14");
+            registerDto.setPassword("14");
+            registerDto.setRole("ROLE_ADVISOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(14L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserAdvisorDto advisorDto = new UserAdvisorDto();
+            advisorDto.setFirstName("Hakan");
+            advisorDto.setLastName("Kutucu");
+            advisorDto.setDescription("Hakan Kutucu added as an advisor as an example.");
+            advisorDto.setPhoneNumber("9055555555");
+            advisorDto.setResponsibleDay(DayOfWeek.THURSDAY);
+            advisorDto.setEmail("hakan.kutucu@ug.bilkent.edu.tr");
+            advisorDto.setGrade(2);
+            advisorDto.setPicture("picture.jpg");
+            advisorDto.setDepartment("CS");
+            advisorDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
+        }
+        if (advisorRepository.findByFirstNameAndLastName("Osman", "Köksal").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("15");
+            registerDto.setPassword("15");
+            registerDto.setRole("ROLE_ADVISOR");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(15L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserAdvisorDto advisorDto = new UserAdvisorDto();
+            advisorDto.setFirstName("Osman");
+            advisorDto.setLastName("Köksal");
+            advisorDto.setDescription("Osman Köksal added as an advisor as an example.");
+            advisorDto.setPhoneNumber("9055555555");
+            advisorDto.setResponsibleDay(DayOfWeek.FRIDAY);
+            advisorDto.setEmail("osman.koksal@ug.bilkent.edu.tr");
+            advisorDto.setGrade(2);
             advisorDto.setPicture("picture.jpg");
             advisorDto.setDepartment("CS");
             advisorDto.setStartDate(new Date());
