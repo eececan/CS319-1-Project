@@ -10,9 +10,9 @@ Build Instructions
 
 4. Configure Database Settings
      Update the application.properties file to match your existing database configuration, or create a new database with the following properties listed in our application.properties file:
-     spring.datasource.url=jdbc:postgresql://localhost:5432/bto
+     spring.datasource.url=jdbc:postgresql://localhost:5432/
      spring.datasource.username=postgres
-     spring.datasource.password=btodb
+     spring.datasource.password=password
 
 5. Run the Application Twice
      From the IDE, simply run the application twice to initialize data. The first run will initialize the roles, and the second run will initialize the default users.
@@ -23,7 +23,7 @@ Build Instructions
      spring.mail.password=<your login password to smtp server>
 
      If not, make sure application.properties looks like this:
-     spring.mail.username=btoservice@gmail.com
+     spring.mail.username=dilekyildizbto@gmail.com
      spring.mail.password=qbie hzgf eesz wkfj
 
  7. Access the Application
