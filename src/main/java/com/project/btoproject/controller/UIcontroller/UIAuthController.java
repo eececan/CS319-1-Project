@@ -110,7 +110,7 @@ public class UIAuthController {
             RedirectAttributes redirectAttributes,
             Model model) {
         try {
-           /*if(registerDto == null){
+           if(registerDto == null){
                 model.addAttribute("errorMessage", "Please fill all the required fields");
                 return "register";
             }
@@ -161,7 +161,7 @@ public class UIAuthController {
             } else {
                 model.addAttribute("errorMessage", "Password cannot be empty!");
                 return "register";
-            }*/
+            }
             if ("ROLE_ADVISOR".equals(role)) {
                 if(!allUsersService.responsibleDayAvailable(advisorRegisterDto.getResponsibleDay())){
                     model.addAttribute("errorMessage", "Another advisor is already responsible for this day! Please make the day available first!");
