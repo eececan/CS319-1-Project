@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.util.Calendar;
 import java.util.Date;
 
 @Configuration
@@ -97,11 +98,12 @@ public class DataInitializer {
             roleRepository.save(guideInTraining);
         }
     }
+
     @Bean
     public ApplicationRunner initializeGuides() {
         return args -> initializeGuideData();
     }
-    /*
+
   @Bean
     public ApplicationRunner initializeAdvisors() {
         return args -> initializeAdvisorData();
@@ -109,10 +111,7 @@ public class DataInitializer {
 
 
 
-    @Bean
-    public ApplicationRunner initializeGuideInTrainings() {
-        return args -> initializeGuideInTrainingData();
-    }
+
 
     @Bean
     public ApplicationRunner initializeCoordinators() {
@@ -128,7 +127,15 @@ public class DataInitializer {
     public ApplicationRunner initializeDirector() {
         return args -> initializeDirectorData();
     }
-*/
+
+    @Bean
+    public ApplicationRunner initializeGuideInTrainings() {
+        return args -> initializeGuideInTrainingData();
+    }
+
+
+
+
     @Transactional
     public void initializeAdvisorData() {
         if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
@@ -248,7 +255,7 @@ public class DataInitializer {
                     .orElseThrow(() -> new IllegalStateException("User not found"));
 
             UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
-            guideDto.setSchedule("example guide in training schedule");
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
             guideDto.setFirstName("Ece");
             guideDto.setLastName("Can");
             guideDto.setDescription("Ece can added as a guide in training as an example.");
@@ -258,6 +265,64 @@ public class DataInitializer {
             guideDto.setPicture("picture.jpg");
             guideDto.setDepartment("CS");
             guideDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
+        }
+        if (guideRepository.findByFirstNameAndLastName("Alminacan", "Dag").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("21");
+            registerDto.setPassword("21");
+            registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(21L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            guideDto.setFirstName("Almina");
+            guideDto.setLastName("Dag");
+            guideDto.setDescription("Almina Dag added as a guide in training as an example.");
+            guideDto.setPhoneNumber("05371127736");
+            guideDto.setEmail("alminacandag@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date()); // Set the current date
+            calendar.add(Calendar.MONTH, -7); // Subtract 7 months
+            Date sevenMonthsAgo = calendar.getTime();
+            guideDto.setStartDate(sevenMonthsAgo);
+
+            userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
+        }
+        if (guideRepository.findByFirstNameAndLastName("Aycacan", "Dag").isEmpty()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername("20");
+            registerDto.setPassword("20");
+            registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
+
+            authService.register(registerDto);
+
+            UserEntity user = userService.findUserByUsername(20L)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
+
+            UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
+            guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            guideDto.setFirstName("Almina");
+            guideDto.setLastName("Dag");
+            guideDto.setDescription("Aycacan Dag added as a guide in training as an example.");
+            guideDto.setPhoneNumber("05371127736");
+            guideDto.setEmail("aycacan@ug.bilkent.edu.tr");
+            guideDto.setGrade(3);
+            guideDto.setPicture("picture.jpg");
+            guideDto.setDepartment("CS");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date()); // Set the current date
+            calendar.add(Calendar.MONTH, -7); // Subtract 7 months
+            Date sevenMonthsAgo = calendar.getTime();
+            guideDto.setStartDate(sevenMonthsAgo);
+
             userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
         }
     }

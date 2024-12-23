@@ -122,12 +122,7 @@
     <div id="left-sidebar" class="sidebar ">
         <h5 class="brand-name"
             style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
-            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
-            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
-            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
-            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
-            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
-            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+            Coordinator
         </h5>
 
         <nav id="left-sidebar-nav" class="sidebar-nav">
@@ -174,69 +169,16 @@
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">Member List</h1>
+                        <h1 class="page-title">Ready Guides in Training</h1>
                     </div>
                     <div class="right">
 
-                        <div class="notification d-flex">
-                            <div class="dropdown d-flex">
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                    <ul class="right_chat list-unstyled w350 p-0">
-                                        <li class="online">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Donald Gardner</span>
-                                                    <div class="message">It is a long established fact that a reader</div>
-                                                    <small>11 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="online">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object " src="../assets/images/xs/avatar5.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Wendy Keen</span>
-                                                    <div class="message">There are many variations of passages of Lorem Ipsum</div>
-                                                    <small>18 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="offline">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object " src="../assets/images/xs/avatar2.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Matt Rosales</span>
-                                                    <div class="message">Contrary to popular belief, Lorem Ipsum is not simply</div>
-                                                    <small>27 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="online">
-                                            <a href="javascript:void(0);" class="media">
-                                                <img class="media-object " src="../assets/images/xs/avatar3.jpg" alt="">
-                                                <div class="media-body">
-                                                    <span class="name">Phillip Smith</span>
-                                                    <div class="message">It has roots in a piece of classical Latin literature from 45 BC</div>
-                                                    <small>33 mins ago</small>
-                                                    <span class="badge badge-outline status"></span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="dropdown-divider"></div>
-                                    <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
-                                </div>
-                            </div>
-                            <div class="right">
+                        <div class="right">
                                 <a class="signout-link" th:href="@{/ui/auth/logout}">
                                     <i class="fa fa-sign-out"></i> Sign Out
                                 </a>
                             </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -254,55 +196,6 @@
                         <span th:text="${errorMessage}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <!-- Role Filter Buttons and Add New Member Button -->
-                                <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                    <!-- Role Filter Buttons -->
-                                    <div class="d-flex flex-wrap gap-3 align-items-center">
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="resetFilter()">Show All</a>
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="filterByRole('ROLE_GUIDE')">Guide</a>
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="filterByRole('ROLE_GUIDE_IN_TRAINING')">Guide in Training</a>
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="filterByRole('ROLE_ADVISOR')">Advisor</a>
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="filterByRole('ROLE_COORDINATOR')">Coordinator</a>
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="filterByRole('ROLE_HEAD_SECRETARY')">Head Secretary</a>
-                                        <a href="javascript:void(0);"
-                                           class="btn btn-primary"
-                                           onclick="filterByRole('ROLE_DIRECTOR')">Director</a>
-                                    </div>
-
-                                    <!-- Manage Guides in Training and Add New Member Buttons -->
-                                    <div class="d-flex align-items-center">
-                                        <a th:if="${role == 'ROLE_COORDINATOR'}"
-                                           th:href="@{/getGuideReadies}"
-                                           class="btn btn-primary">
-                                            Manage Guides in Training
-                                        </a>
-                                        <a th:if="${role == 'ROLE_COORDINATOR'}"
-                                           th:href="@{/ui/auth/register}"
-                                           class="btn btn-primary ms-2">
-                                            Add New Member
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
 
                 </div>
             </div>
@@ -313,6 +206,13 @@
         <div class="container px-3">
             <div class="row mx-1">
                 <div class="col-lg-12">
+                    <!-- Explanation Text -->
+                    <div class="mb-4" style="margin-top: 15px;">
+                        <p style="font-size: 15px; color: #555; font-weight: bold;">
+                            This table shows guide candidates that have been in training for 6 months or more!
+                            Approve them to be a guide or reject and delete them from the system!
+                        </p>
+                    </div>
                     <div class="card" style="background-color: #f8f9fa;">
                         <div class="card-body">
                             <div class="table-responsive" id="users">
@@ -324,9 +224,9 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Bilkent ID</th>
-                                        <th>Role</th>
+                                        <th>Start Date</th>
                                         <!-- Conditional Header for Actions -->
-                                        <th th:if="${roleUser == 'ROLE_COORDINATOR'}" class="text-right" style="border-right: none;">Actions</th>
+                                        <th class="text-right" style="border-right: none;">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -337,8 +237,8 @@
                                         </td>
                                     </tr>
 
-                                    <!-- Filter Rows Dynamically -->
-                                    <tr th:each="user : ${all_users}" th:if="${roleFilter == null || user.role == roleFilter}">
+                                    <!-- Loop through users and display Approve/Reject buttons -->
+                                    <tr th:each="user : ${all_users}">
                                         <td class="text-center width40">
                                             <div class="avatar-container">
                                                 <img class="avatar"
@@ -359,32 +259,41 @@
                                             <div th:text="${user.id != null && !user.id.toString().isEmpty() ? user.id : 'N/A'}"></div>
                                         </td>
                                         <td class="hidden-xs">
-        <span th:switch="${user.role}">
-            <span th:case="'ROLE_COORDINATOR'">Coordinator</span>
-            <span th:case="'ROLE_GUIDE'">Guide</span>
-            <span th:case="'ROLE_ADVISOR'">Advisor</span>
-            <span th:case="'ROLE_USER'">User</span>
-            <span th:case="'ROLE_DIRECTOR'">Director</span>
-            <span th:case="'ROLE_HEAD_SECRETARY'">Head Secretary</span>
-            <span th:case="'ROLE_GUIDE_IN_TRAINING'">Guide In Training</span>
-        </span>
+                                            <div th:text="${#dates.format(user.startDate, 'dd MMM yyyy')}"></div>
                                         </td>
-                                        <td class="text-right" th:if="${roleUser == 'ROLE_COORDINATOR'}">
+                                        <td class="text-right">
                                             <div class="user-actions">
-                                                <!-- Link to edit page, passing user.id -->
-                                                <a href="javascript:void(0);" class="edit" th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}" title="Edit">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <!-- Link to delete page, passing user.id -->
-                                                <a th:href="@{'deleteUser/' + ${user.id}}"
-                                                   th:onclick="return confirm('Are you sure you want to delete this user?')"
-                                                   title="Delete">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
+                                                <!-- Approve Button -->
+                                                <form th:action="@{/ui/UserProfile/changeToGuide}" method="post" style="display:inline;">
+                                                    <input type="hidden" name="userId" th:value="${user.id}">
+                                                    <button type="submit"
+                                                            class="btn btn-primary btn-sm"
+                                                            title="Approve"
+                                                            style="background-color: #007bff; border-color: #007bff;">
+                                                        Approve
+                                                    </button>
+                                                </form>
+
+                                                <!-- Reject Button -->
+                                                <form th:action="@{/ui/UserProfile/rejectGuide}" method="post" style="display:inline;">
+                                                    <input type="hidden" name="userId" th:value="${user.id}">
+                                                    <button type="submit"
+                                                            class="btn btn-primary btn-sm"
+                                                            title="Reject"
+                                                            style="background-color: #007bff; border-color: #007bff;"
+                                                            onclick="return confirm('Are you sure you want to reject this user?');">
+                                                        Reject
+                                                    </button>
+                                                </form>
                                             </div>
+
+
+
                                         </td>
+
                                     </tr>
                                     </tbody>
+
                                 </table>
                             </div>
 
@@ -414,42 +323,6 @@
 <script src="assets/js/page/sweetalert.js"></script>
 <script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    $(function() {
-        "use strict";
 
-        $('.dropify').dropify();
-
-        var drEvent = $('#dropify-event').dropify();
-        drEvent.on('dropify.beforeClear', function(event, element) {
-            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-        });
-
-        drEvent.on('dropify.afterClear', function(event, element) {
-            alert('File deleted');
-        });
-
-        $('.dropify-fr').dropify({
-            messages: {
-                default: 'Glissez-déposez un fichier ici ou cliquez',
-                replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
-                remove: 'Supprimer',
-                error: 'Désolé, le fichier trop volumineux'
-            }
-        });
-    });
-    function filterByRole(role) {
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('roleFilter', role);
-        window.location.search = urlParams.toString();
-    }
-
-    // Function to reset the role filter
-    function resetFilter() {
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.delete('roleFilter');
-        window.location.search = urlParams.toString();
-    }
-</script>
 </body>
 </html>
