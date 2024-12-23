@@ -32,10 +32,11 @@ public class DataInitializer {
     private final IDirectorService directorService;
     private final HighSchoolRepository highSchoolRepository;
     private final CsvService csvService;
+    private final IAllUsersService allUsersService;
 
     public DataInitializer(RoleRepository roleRepository, IGuideRepository guideRepository,
                            IAdvisorRepository advisorRepository, AuthService authService,
-                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService, IDirectorService directorService, HighSchoolRepository highSchoolRepository, CsvService csvService) {
+                           IUserService userService, CoordinatorService coordinatorService, UserHelperService userHelperService, HeadSecretaryService headSecretaryService, IDirectorService directorService, HighSchoolRepository highSchoolRepository, CsvService csvService, IAllUsersService allUsersService) {
         this.roleRepository = roleRepository;
         this.guideRepository = guideRepository;
         this.advisorRepository = advisorRepository;
@@ -47,6 +48,7 @@ public class DataInitializer {
         this.directorService = directorService;
         this.highSchoolRepository = highSchoolRepository;
         this.csvService = csvService;
+        this.allUsersService = allUsersService;
     }
 
     @Bean
@@ -132,7 +134,7 @@ public class DataInitializer {
     @Transactional
     public void initializeAdvisorData() {
         if (!roleRepository.findByName("ROLE_ADVISOR").isEmpty()) {
-            if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
+            if (allUsersService.getUserByEmail("furkan.akyol@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200011");
                 registerDto.setPassword("Password123!!!");
@@ -156,7 +158,7 @@ public class DataInitializer {
                 advisorDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
             }
-            if (advisorRepository.findByFirstNameAndLastName("Mehmet", "Akyol").isEmpty()) {
+            if (allUsersService.getUserByEmail("mehmet.akyol@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200012");
                 registerDto.setPassword("Password123!!!");
@@ -180,7 +182,7 @@ public class DataInitializer {
                 advisorDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
             }
-            if (advisorRepository.findByFirstNameAndLastName("Ali", "Akyol").isEmpty()) {
+            if (allUsersService.getUserByEmail("ali.akyol@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200013");
                 registerDto.setPassword("Password123!!!");
@@ -204,7 +206,7 @@ public class DataInitializer {
                 advisorDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
             }
-            if (advisorRepository.findByFirstNameAndLastName("Ömer", "Akyol").isEmpty()) {
+            if (allUsersService.getUserByEmail("omer.akyol@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200014");
                 registerDto.setPassword("Password123!!!");
@@ -228,7 +230,7 @@ public class DataInitializer {
                 advisorDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
             }
-            if (advisorRepository.findByFirstNameAndLastName("Mert", "Akyol").isEmpty()) {
+            if (allUsersService.getUserByEmail("mert.akyol@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200015");
                 registerDto.setPassword("Password123!!!");
@@ -258,7 +260,7 @@ public class DataInitializer {
     @Transactional
     public void initializeGuideData() {
         if (!roleRepository.findByName("ROLE_GUIDE").isEmpty()) {
-            if (guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()) {
+            if (allUsersService.getUserByEmail("candan.atac@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200001");
                 registerDto.setPassword("Password123!!!");
@@ -282,7 +284,7 @@ public class DataInitializer {
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuide(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Emel", "Atac").isEmpty()) {
+            if (allUsersService.getUserByEmail("emel.atac@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200002");
                 registerDto.setPassword("Password123!!!");
@@ -306,7 +308,7 @@ public class DataInitializer {
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuide(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Ece", "Atac").isEmpty()) {
+            if (allUsersService.getUserByEmail("ece.atac@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200003");
                 registerDto.setPassword("Password123!!!");
@@ -331,7 +333,7 @@ public class DataInitializer {
                 userHelperService.enterPersonalInformationGuide(user, guideDto);
             }
 
-            if (guideRepository.findByFirstNameAndLastName("Candan", "Atac").isEmpty()) {
+            if (allUsersService.getUserByEmail("ccandan.atac@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200004");
                 registerDto.setPassword("Password123!!!");
@@ -356,7 +358,7 @@ public class DataInitializer {
                 userHelperService.enterPersonalInformationGuide(user, guideDto);
             }
 
-            if (guideRepository.findByFirstNameAndLastName("Onur", "Atac").isEmpty()) {
+            if (allUsersService.getUserByEmail("onur.atac@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200005");
                 registerDto.setPassword("Password123!!!");
@@ -387,7 +389,7 @@ public class DataInitializer {
     @Transactional
     public void initializeGuideInTrainingData() {
         if (!roleRepository.findByName("ROLE_GUIDE_IN_TRAINING").isEmpty()) {
-            if (guideRepository.findByFirstNameAndLastName("Ece", "Can").isEmpty()) {
+            if (allUsersService.getUserByEmail("ececan@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200021");
                 registerDto.setPassword("Password123!!!");
@@ -411,7 +413,7 @@ public class DataInitializer {
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Kadriye", "Can").isEmpty()) {
+            if (allUsersService.getUserByEmail("kadriyecan@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200022");
                 registerDto.setPassword("Password123!!!");
@@ -435,7 +437,7 @@ public class DataInitializer {
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Poyraz", "Can").isEmpty()) {
+            if (allUsersService.getUserByEmail("poyrazcan@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200023");
                 registerDto.setPassword("Password123!!!");
@@ -459,7 +461,7 @@ public class DataInitializer {
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Tolga", "Can").isEmpty()) {
+            if (allUsersService.getUserByEmail("tolgacan@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200024");
                 registerDto.setPassword("Password123!!!");
@@ -488,7 +490,7 @@ public class DataInitializer {
 
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Sinem", "Can").isEmpty()) {
+            if (allUsersService.getUserByEmail("sinemcan@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200025");
                 registerDto.setPassword("Password123!!!");
@@ -524,7 +526,7 @@ public class DataInitializer {
     @Transactional
     public void initializeCoordinatorData() {
         if (!roleRepository.findByName("ROLE_COORDINATOR").isEmpty()) {
-            if (coordinatorService.getCoordinatorById(22200000L) == null) {
+            if (allUsersService.getUserByEmail("buray.guvenc@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22200000");
                 registerDto.setPassword("Password123!!!");
@@ -553,7 +555,7 @@ public class DataInitializer {
     @Transactional
     public void initializeHeadSecretaryData() {
         if (!roleRepository.findByName("ROLE_HEAD_SECRETARY").isEmpty()) {
-            if (!headSecretaryService.getHeadSecretaryById(222L).isPresent()) {
+            if (allUsersService.getUserByEmail("dilekyildiz@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("222");
                 registerDto.setPassword("Password123!!!");
@@ -580,7 +582,7 @@ public class DataInitializer {
     @Transactional
     public void initializeDirectorData() {
         if (!roleRepository.findByName("ROLE_DIRECTOR").isEmpty()) {
-            if (!directorService.getDirectorById(22L).isPresent()) {
+            if (allUsersService.getUserByEmail("orsanorge@ug.bilkent.edu.tr").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
                 registerDto.setUsername("22");
                 registerDto.setPassword("Password123!!!");
