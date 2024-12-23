@@ -297,7 +297,7 @@ public class UIUserProfileController {
                 User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
                 GuideInTraining guide = (GuideInTraining) allUser;
-                if(((Guide) allUser).getSchedule() == null){
+                if(((GuideInTraining) allUser).getSchedule() == null){
                     guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
                 }
                 model.addAttribute("guide", guide);
