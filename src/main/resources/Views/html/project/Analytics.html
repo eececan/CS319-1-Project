@@ -633,8 +633,13 @@
 
                                                 </td>
                                                 <td>
-                                                    <button class="styled-button" onclick="location.href='/schoolEvent';">See Tours</button>
+                                                    <button class="styled-button"
+                                                            th:onclick="'location.href=\'/schoolEvent?schoolId=' + ${schoolTour.id} + '\';'">
+                                                        See Tours
+                                                    </button>
                                                 </td>
+
+
                                             </tr>
                                             </tbody>
                                         </table>

@@ -69,9 +69,8 @@ public class UIEventController {
         return "guide-tables"; // Thymeleaf template
     }
 
-    @GetMapping("/school-events")
-    public String getEventsBySchoolId(Model model) {
-        Long schoolId = 3L;
+    @GetMapping("/schoolEvent")
+    public String getEventsBySchoolId(@RequestParam Long schoolId, Model model) {
         List<Event> events = eventService.findAllEventsBySchoolId(schoolId);
         model.addAttribute("events", events);
         School school = schoolService.findSchoolById(schoolId);
