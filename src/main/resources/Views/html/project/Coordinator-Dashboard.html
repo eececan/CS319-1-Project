@@ -116,9 +116,18 @@
             <h1 class="page-title">Dashboard</h1>
           </div>
             <div class="right">
+                <div class="notification d-flex">
+                    <div class="dropdown d-flex">
+                        <div th:replace="notifications :: notifications-panel"></div>
+                        <audio id="notification-sound" preload="auto">
+                            <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
                 <a class="signout-link" th:href="@{/ui/auth/logout}">
                     <i class="fa fa-sign-out"></i> Sign Out
                 </a>
+
             </div>
         </div>
       </div>
