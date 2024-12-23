@@ -624,9 +624,9 @@
                                                         <!-- Custom Dropdown -->
                                                         <div class="status-dropdown-wrapper">
                                                             <select class="status-dropdown" name="tier" onchange="this.form.submit()">
-                                                                <option value="FIRST_TIER" th:selected="${schoolTour.tier == T(com.project.btoproject.enums.Tier).FIRST_TIER}">First Tier</option>
-                                                                <option value="SECOND_TIER" th:selected="${schoolTour.tier == T(com.project.btoproject.enums.Tier).SECOND_TIER}">Second Tier</option>
-                                                                <option value="THIRD_TIER" th:selected="${schoolTour.tier == T(com.project.btoproject.enums.Tier).THIRD_TIER}">Third Tier</option>
+                                                                <option value="FIRST_TIER" th:selected="${schoolTour.tier.name() == T(com.project.btoproject.enums.Tier).FIRST_TIER}">First Tier</option>
+                                                                <option value="SECOND_TIER" th:selected="${schoolTour.tier.name() == T(com.project.btoproject.enums.Tier).SECOND_TIER}">Second Tier</option>
+                                                                <option value="THIRD_TIER" th:selected="${schoolTour.tier.name() == T(com.project.btoproject.enums.Tier).THIRD_TIER}">Third Tier</option>
                                                             </select>
                                                         </div>
                                                     </form>
