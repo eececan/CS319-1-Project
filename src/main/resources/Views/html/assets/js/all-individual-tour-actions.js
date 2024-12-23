@@ -12,7 +12,7 @@ function handleIndividualTourApproval(buttonElement) {
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
     // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to approve the individual tour for ${studentName} on ${tourDate}? Note that the student will be notified and this action cannot be undone.`;
+    confirmMessage.innerHTML = `Do you want to approve the individual tour for <b>${studentName}</b> on <b>${tourDate}</b>? Note that the student will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -77,7 +77,7 @@ function handleIndividualTourRejection(buttonElement) {
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
     // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to reject the individual tour for ${studentName} on ${tourDate}? Note that the student will be notified and this action cannot be undone.`;
+    confirmMessage.innerHTML = `Do you want to reject the individual tour for <b>${studentName}</b> on <b>${tourDate}</b>? Note that the student will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -151,7 +151,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const tourDate = this.dataset.tourdate;
             const selectedOptionText = this.options[this.selectedIndex].text;
 
-            confirmMessage.textContent = `You are about to assign guide "${selectedOptionText}" to the individual tour for ${studentName} on ${tourDate}. Are you sure?`;
+            // Set the modal message dynamically with bold formatting
+            confirmMessage.innerHTML = `You are about to assign guide <b>"${selectedOptionText}"</b> to the individual tour for <b>${studentName}</b> on <b>${tourDate}</b>. Are you sure?`;
+
             confirmModal.show();
         });
     });
@@ -239,8 +241,9 @@ function removeIndividualTourGuide(buttonElement) {
     const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
     const closeModalButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Set the confirmation message dynamically
-    confirmMessage.textContent = `Are you sure you want to remove guide "${guideName}" from this individual tour?`;
+    // Set the confirmation message dynamically with bold formatting
+    confirmMessage.innerHTML = `Are you sure you want to remove guide <b>"${guideName}"</b> from this individual tour?`;
+
 
     // Show the confirmation modal
     confirmModal.show();
@@ -300,8 +303,8 @@ function cancelIndividualTour(buttonElement) {
     const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to cancel the individual tour for ${studentName} on ${tourDate}? Note that the student will be notified and this action cannot be undone.`;
+    // Set the modal message dynamically with bold formatting
+    confirmMessage.innerHTML = `Do you want to cancel the individual tour for <b>${studentName}</b> on <b>${tourDate}</b>? Note that the student will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
