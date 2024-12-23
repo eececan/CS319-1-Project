@@ -230,9 +230,34 @@
                     <!-- Left Card -->
                     <div class="col-lg-4 col-md-12">
                         <div class="card">
-                            <img class="card-img-top"
-                                 th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                                 alt="Card image cap">
+                            <!-- Check if the role is HEAD_SECRETARY -->
+
+
+                            <!-- Check if the role is GUIDE -->
+                            <div th:if="${role == 'ROLE_GUIDE'}">
+                                <img class="card-img-top" th:src="@{/g.png}" alt="Card image cap">
+                                <!-- Additional content for GUIDE -->
+                            </div>
+                            <!-- Check if the role is GUIDE -->
+                            <div th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">
+                                <img class="card-img-top" th:src="@{/gt.png}" alt="Card image cap">
+                                <!-- Additional content for GUIDE -->
+                            </div>
+
+                            <!-- Check if the role is ADVISOR -->
+                            <div th:if="${role == 'ROLE_ADVISOR'}">
+                                <img class="card-img-top" th:src="@{/A.png}" alt="Card image cap">
+                                <!-- Additional content for ADVISOR -->
+                            </div>
+
+                            <!-- Check if the role is COORDINATOR -->
+                            <div th:if="${role == 'ROLE_COORDINATOR'}">
+                                <img class="card-img-top" th:src="@{/C.png}" alt="Card image cap">
+                                <!-- Additional content for COORDINATOR -->
+                            </div>
+
+
+
                             <div class="card-body">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
@@ -454,9 +479,21 @@
                     <div class="col-lg-4 col-md-12">
                         <div class="row">
                             <div class="card">
-                                <img class="card-img-top"
-                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
-                                     alt="Card image cap">
+                                <!-- Check if the role is HEAD_SECRETARY -->
+                                <div th:if="${role == 'ROLE_HEAD_SECRETARY'}">
+                                    <img class="card-img-top" th:src="@{/HS.png}" alt="Card image cap">
+                                    <!-- Additional content for HEAD_SECRETARY -->
+                                </div>
+
+                                <!-- Check if the role is DIRECTOR -->
+                                <div th:if="${role == 'ROLE_DIRECTOR'}">
+                                    <img class="card-img-top" th:src="@{/D.png}" alt="Card image cap">
+                                    <!-- Additional content for DIRECTOR -->
+                                </div>
+
+                                <!-- You can add more roles here with similar structure -->
+
+
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
