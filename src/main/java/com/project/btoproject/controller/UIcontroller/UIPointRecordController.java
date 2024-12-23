@@ -11,9 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -23,13 +25,15 @@ public class UIPointRecordController {
     private final IPointRecordService pointRecordService;
     private final EventService eventService;
     private final IndividualTourController individualTourController;
+    private final UserService userService;
 
-    public UIPointRecordController(IGuideService guideService, IGuideInTrainingService guideInTrainingService, IPointRecordService pointRecordService, EventService eventService, IndividualTourController individualTourController) {
+    public UIPointRecordController(IGuideService guideService, IGuideInTrainingService guideInTrainingService, IPointRecordService pointRecordService, EventService eventService, IndividualTourController individualTourController, UserService userService) {
         this.guideService = guideService;
         this.guideInTrainingService = guideInTrainingService;
         this.eventService = eventService;
         this.pointRecordService = pointRecordService;
         this.individualTourController = individualTourController;
+        this.userService = userService;
     }
 
     @GetMapping("/getAllRecords")
@@ -98,6 +102,86 @@ public class UIPointRecordController {
         }
         else if(role.equals("ROLE_GUIDE_IN_TRAINING")){
             GuideInTraining guide = guideInTrainingService.getGuideInTrainingById(Long.parseLong(username));
+            Long guideId = guide.getId();
+            List<Tour> tours = eventService.getAllTours().stream()
+                    .filter(tour -> tour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
+                    .collect(Collectors.toList());
+            List<Fair> fairs = eventService.getAllFairs().stream()
+                    .filter(fair -> fair.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
+                    .collect(Collectors.toList());
+            List<IndividualTour>individualTours = eventService.getAllIndividualTours().stream()
+                    .filter(individualTour -> individualTour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
+                    .collect(Collectors.toList());
+            model.addAttribute("tourMap", tours.stream()
+                    .collect(Collectors.toMap(Tour::getId, Tour::getSchool)));
+            model.addAttribute("fairMap", fairs.stream()
+                    .collect(Collectors.toMap(Fair::getId, fair -> fair.getSchool())));
+            model.addAttribute("individualMap", individualTours.stream()
+                    .collect(Collectors.toMap(IndividualTour::getId,
+                            individual -> individual.getStudent().getSchool())));
+
+            model.addAttribute("guide", guide);
+            return "point-record-list-training";
+        }
+        else {
+            return "point-record-list-training";
+        }
+    }
+
+    // Get point records page
+    @GetMapping("/getRecordsOfGuideById")
+    public String getPointRecordPageById(@RequestParam Long userId, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = "";
+        String role = "";
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername();
+            role = userDetails.getAuthorities()
+                    .stream()
+                    .findFirst()
+                    .map(authority -> authority.getAuthority())
+                    .orElse("ROLE_UNKNOWN");
+            model.addAttribute("role", role);
+        }
+        String currentRole = "";
+        Optional<UserEntity> optionalUser = userService.findUserByUsername(userId);
+        if(optionalUser.isPresent()) {
+            UserEntity user = optionalUser.get();
+            currentRole = user.getRoles().stream()
+                    .findFirst()
+                    .map(Role::getName)
+                    .orElse(null);
+        }
+        if(currentRole.equals("ROLE_GUIDE")) {
+            Guide guide = guideService.getGuideById(userId);
+            Long guideId = guide.getId();
+            List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
+            model.addAttribute("guide_records", pointRecords);
+            List<Tour> tours = eventService.getAllTours().stream()
+                    .filter(tour -> tour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
+                    .collect(Collectors.toList());
+            List<Fair> fairs = eventService.getAllFairs().stream()
+                    .filter(fair -> fair.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
+                    .collect(Collectors.toList());
+            List<IndividualTour>individualTours = eventService.getAllIndividualTours().stream()
+                    .filter(individualTour -> individualTour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
+                    .collect(Collectors.toList());
+
+            model.addAttribute("tourMap", tours.stream()
+                    .collect(Collectors.toMap(Tour::getId, Tour::getSchool)));
+            model.addAttribute("fairMap", fairs.stream()
+                    .collect(Collectors.toMap(Fair::getId, fair -> fair.getSchool())));
+            model.addAttribute("individualMap", individualTours.stream()
+                    .collect(Collectors.toMap(IndividualTour::getId,
+                            individual -> individual.getStudent().getSchool())));
+            List<Event> events = guide.getEvents();
+            model.addAttribute("guide", guide);
+            model.addAttribute("events",events);
+            return "point-record-list";
+        }
+        else if(currentRole.equals("ROLE_GUIDE_IN_TRAINING")){
+            GuideInTraining guide = guideInTrainingService.getGuideInTrainingById(userId);
             Long guideId = guide.getId();
             List<Tour> tours = eventService.getAllTours().stream()
                     .filter(tour -> tour.getGuides().stream().anyMatch(guidee -> guide.getId().equals(guideId)))
