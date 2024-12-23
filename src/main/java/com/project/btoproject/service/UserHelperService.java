@@ -104,6 +104,7 @@ public class UserHelperService implements IUserHelperService {
     }
 
     @Override
+    @Transactional
     public void enterPersonalInformationDirector(UserEntity userEntity, UserDirectorDto userDto) {
         Director director = new Director();
         director.setFirstName(userDto.getFirstName());
