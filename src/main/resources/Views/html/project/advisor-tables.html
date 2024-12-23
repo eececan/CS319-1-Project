@@ -146,13 +146,7 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('NEW_TOUR_APPLICATION')">New Applications</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('BTO_ACCEPTED')">BTO Accepted</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('BTO_REJECTED')">BTO Rejected</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_TOUR')">Upcoming</button>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -275,12 +269,7 @@
 
                     <div class="tab-pane fade" id="Tours" role="tabpanel">
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_TOUR')">Upcoming</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_TOUR')">Completed</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('CANCELED_TOUR')">Canceled</button>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -546,12 +535,7 @@
 
                     <div class="tab-pane fade" id="Fairs" role="tabpanel">
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_FAIR')">Upcoming</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_FAIR')">Completed</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('CANCELED_FAIR')">Canceled</button>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -655,12 +639,7 @@
                     </div>
                     <div class="tab-pane fade" id="Individual-Tour-Applications" role="tabpanel">
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('NEW_INDIVIDUAL_TOUR_APPLICATION')">New Applications</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_INDIVIDUAL_TOUR')">Accepted</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('REJECTED_INDIVIDUAL_TOUR_APPLICATION')">Rejected</button>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -783,12 +762,7 @@
 
                     <div class="tab-pane fade" id="Individual-Tours" role="tabpanel">
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <button class="btn btn-primary" onclick="filterByStatus('ALL')">Show All</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('UPCOMING_INDIVIDUAL_TOUR')">Upcoming</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('COMPLETED_INDIVIDUAL_TOUR')">Completed</button>
-                                <button class="btn btn-primary" onclick="filterByStatus('CANCELED_INDIVIDUAL_TOUR')">Canceled</button>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -984,30 +958,7 @@
 
 
 
-<script>
-    function filterByStatus(status) {
-        // Find the active tab-pane
-        const activeTab = document.querySelector('.tab-pane.active');
-        if (!activeTab) {
-            console.error("No active tab found.");
-            return;
-        }
 
-        // Get all rows in the active tab
-        const rows = activeTab.querySelectorAll('tbody tr');
-
-        // Filter rows based on status
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute('data-status'); // Get the status from the row attribute
-            if (status === 'ALL' || rowStatus === status) {
-                row.style.display = ''; // Show row
-            } else {
-                row.style.display = 'none'; // Hide row
-            }
-        });
-    }
-
-</script>
 <!-- Include jQuery -->
 <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
 
