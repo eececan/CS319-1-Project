@@ -341,9 +341,39 @@
                                     <tr th:each="user : ${all_users}" th:if="${roleFilter == null || user.role == roleFilter}">
                                         <td class="text-center width40">
                                             <div class="avatar-container">
-                                                <img class="avatar"
-                                                     th:src="${user.picture != null && !user.picture.isEmpty() ? user.picture : '/assets/images/default-avatar.png'}"
-                                                     alt="avatar">
+                                               <span th:switch="${user.role}">
+    <span th:case="'ROLE_COORDINATOR'">
+        <img class="card-img-top"
+             th:src="@{/C.png}"
+             alt="Card image for Coordinator">
+    </span>
+    <span th:case="'ROLE_GUIDE'">
+        <img class="card-img-top"
+             th:src="@{/g.png}"
+             alt="Card image for Guide">
+    </span>
+    <span th:case="'ROLE_ADVISOR'">
+        <img class="card-img-top"
+             th:src="@{/A.png}"
+             alt="Card image for Advisor">
+    </span>
+    <span th:case="'ROLE_DIRECTOR'">
+        <img class="card-img-top"
+             th:src="@{/D.png}"
+             alt="Card image for Director">
+    </span>
+    <span th:case="'ROLE_HEAD_SECRETARY'">
+        <img class="card-img-top"
+             th:src="@{/HS.png}"
+             alt="Card image for Head Secretary">
+    </span>
+    <span th:case="'ROLE_GUIDE_IN_TRAINING'">
+        <img class="card-img-top"
+             th:src="@{/gt.png}"
+             alt="Card image for Guide In Training">
+    </span>
+</span>
+
                                             </div>
                                         </td>
                                         <td>

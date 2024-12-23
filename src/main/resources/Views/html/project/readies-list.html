@@ -241,12 +241,12 @@
                                     <tr th:each="user : ${all_users}">
                                         <td class="text-center width40">
                                             <div class="avatar-container">
-                                                <img class="avatar"
-                                                     th:src="${user.picture != null && !user.picture.isEmpty() ? user.picture : '/assets/images/default-avatar.png'}"
-                                                     alt="avatar">
+                                                <img class="card-img-top"
+                                                     th:src="@{/gt.png}"
+                                                     alt="Card image for Guide In Training">
                                             </div>
-                                        </td>
-                                        <td>
+
+                                    <td>
                                             <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}"
                                                th:text="|${user.firstName != null && !user.firstName.isEmpty() ? user.firstName : 'Unknown'} ${user.lastName != null && !user.lastName.isEmpty() ? user.lastName : 'User'}|">
                                             </a>
