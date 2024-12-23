@@ -181,6 +181,7 @@
                         var events = data.map(event => {
                             var title = event.title;
                             if(event.title === 'INDIVIDUAL_TOUR') {
+                                title = 'INDT';
                                 title += ' - ' + event.student;
                             }
                             else {

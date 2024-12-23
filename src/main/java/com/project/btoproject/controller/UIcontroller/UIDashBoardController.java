@@ -104,11 +104,13 @@ public class UIDashBoardController {
             Long id = parseLong(username);
             Guide userr = guideService.getGuideById(id);
             Event event = guideService.getUpcomingEventOfGuide(userr);
+            long upComing = eventService.getUpcomingEventsCount();
             if (event != null) {
                 model.addAttribute("eventDate", event.getDate()); // Assuming event.getDate() returns a LocalDateTime or Date
             } else {
                 model.addAttribute("eventDate", new Date()); // No upcoming event
             }
+            model.addAttribute("upComing", upComing);
             return "Guide-Dashboard"; // Guide's profile page
         } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_HEAD_SECRETARY"))) {
             model.addAttribute("roleUser", "Head Secretary");

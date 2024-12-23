@@ -5,6 +5,8 @@ import com.project.btoproject.repository.IGuideRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -131,15 +133,16 @@ public class GuideService implements IGuideService
         guideRepository.save(guide);
     }
 
-    @Override
     public Event getUpcomingEventOfGuide(Guide guide) {
         List<Event> events = guide.getEvents();
+        Date today = Date.from(LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant());
         Optional<Event> upcomingEvent = events.stream()
-                .filter(event -> event.getDate().after(new Date()))
+                .filter(event -> event.getDate().after(today))
                 .min(Comparator.comparing(Event::getDate));
         return upcomingEvent.orElse(null);
     }
-
     @Override
     public int getTotalPoints(Guide guide) {
         return guide.getEvents().size();
