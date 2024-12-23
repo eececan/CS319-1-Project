@@ -289,7 +289,21 @@
                 <div class="row clearfix">
                     <div class="col-lg-4 col-md-12">
                         <div class="card">
-                            <img class="card-img-top" th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}" alt="Card image cap">
+                            <img class="card-img-top"
+                                 th:src="@{/HS.png}"
+                                 alt="Card image for Head Secretary"
+                                 th:if="${role == 'ROLE_HEAD_SECRETARY'}">
+
+                            <img class="card-img-top"
+                                 th:src="@{/g.png}"
+                                 alt="Card image for Guide"
+                                 th:if="${role == 'ROLE_GUIDE'}">
+
+                            <img class="card-img-top"
+                                 th:src="@{/gt.png}"
+                                 alt="Card image for Guide in Training"
+                                 th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">
+
                             <div class="card-body">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item" th:text="${user.firstName + ' ' + user.lastName}"></li>
@@ -504,7 +518,7 @@
                         <div class="row">
                             <div class="card">
                                 <img class="card-img-top"
-                                     th:src="${user.picture != null ? user.picture : '/assets/images/default-avatar.png'}"
+                                     th:src="@{/HS.png}"
                                      alt="Card image cap">
                                 <div class="card-body">
                                     <div class="row"></div>
