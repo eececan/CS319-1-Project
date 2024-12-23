@@ -100,13 +100,27 @@ public class UIAnalyticsController {
                     School school = entry.getKey();
                     Tier tier = school.getTier() != null ? school.getTier() : Tier.THIRD_TIER;
                     float percentage = 0.0f;
-                    if (schoolStudentCounts.containsKey(school.getName()) && totalStudentCount > 0) {
-                        percentage = (schoolStudentCounts.get(school.getName()) / (float) totalStudentCount) * 100;
+
+                    // Use case-insensitive key comparison
+                    String lowerCaseSchoolName = school.getName().toLowerCase(); // Convert the name to lowercase
+
+                    if (schoolStudentCounts.keySet().stream().anyMatch(name -> name.equalsIgnoreCase(lowerCaseSchoolName)) && totalStudentCount > 0) {
+                        percentage = (schoolStudentCounts.entrySet().stream()
+                                .filter(e -> e.getKey().equalsIgnoreCase(lowerCaseSchoolName))
+                                .mapToLong(Map.Entry::getValue)
+                                .findFirst()
+                                .orElse(0L) / (float) totalStudentCount) * 100;
                     }
-                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier, school.getId(), percentage);
+
+                    // Format percentage to 2 decimal places
+                    String formattedPercentage = String.format("%.2f", percentage);
+
+                    return new SchoolTourCountDTO(school.getName(), entry.getValue(), tier, school.getId(), Float.parseFloat(formattedPercentage));
                 })
                 .sorted((a, b) -> b.getTourCount().compareTo(a.getTourCount())) // Sort by tour count descending
                 .collect(Collectors.toList());
+
+
         // Extract top 4 schools
         List<SchoolTourCountDTO> topSchools = tourCountDTOs.stream().limit(4).collect(Collectors.toList());
         model.addAttribute("tourCounts", tourCounts);
