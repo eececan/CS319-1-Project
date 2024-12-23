@@ -56,6 +56,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
+                                "kampusTurlari",
+                                "/fuarDavet",
                                 "/",
                                 "/assets/**",
                                 "/bilkent_pic.png",
