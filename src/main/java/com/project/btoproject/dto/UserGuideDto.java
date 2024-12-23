@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -22,4 +23,5 @@ public class UserGuideDto {
     private String email;
     private String picture;
     private String description;
+    private Date startDate;
 }

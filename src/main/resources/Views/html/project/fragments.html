@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="searchFilterBar (daySelectId)">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="search-container mr-3">
+        <div class="input-group">
+          <input type="text" id="schoolSearchInput" class="form-control" placeholder="Search by school name...">
+          <button class="btn btn-primary" id="searchButton">Search</button>
+          <button class="btn btn-secondary" id="clearButton">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="filter-container">
+        <select th:id="${daySelectId}" class="form-select">
+          <option value="">All Days</option>
+          <option value="2">Monday</option>
+          <option value="3">Tuesday</option>
+          <option value="4">Wednesday</option>
+          <option value="5">Thursday</option>
+          <option value="6">Friday</option>
+          <option value="7">Saturday</option>
+          <option value="1">Sunday</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

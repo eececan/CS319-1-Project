@@ -1,0 +1,291 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .container {
+            width: auto;
+            margin: 60px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-guides {
+            text-align: center;
+            color: #888;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .guide-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .guide-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            transition: transform 0.2s;
+        }
+
+        .guide-item:hover {
+            transform: scale(1.02);
+        }
+
+        .rank {
+            font-size: 28px;
+            font-weight: bold;
+            color: #444;
+            margin-right: 20px;
+            text-align: center;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 50%;
+            background: #f4f4f4;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .guide-content {
+            flex: 1;
+        }
+
+        .guide-content h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .guide-content p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .hr-divider {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc; /* Optional border for better aesthetics */
+            display: block;
+            margin: 0 auto; /* Centers the image */
+        }
+
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* Ensures it matches the table row height */
+            overflow: hidden;
+        }
+        .signout-link {
+            color: white; /* Match navbar background */
+            text-decoration: none; /* Remove underline */
+            margin-left: 15px; /* Add space from notification icon */
+            font-size: 16px; /* Adjust text size for better appearance */
+            display: flex; /* Ensures proper alignment */
+            align-items: center; /* Align icon and text vertically */
+        }
+
+        .signout-link:hover {
+            color: #007bff; /* Change to primary blue on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+
+    <title>Event Records</title>
+
+    <!-- Bootstrap Core and vandor -->
+    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/plugins/sweetalert/sweetalert.css"/>
+    <link rel="stylesheet" href="../assets/plugins/dropify/css/dropify.min.css">
+
+    <!-- Core css -->
+    <link rel="stylesheet" href="../assets/css/main.css"/>
+    <link rel="stylesheet" href="../assets/css/theme1.css"/>
+</head>
+<body class="font-montserrat offcanvas-active">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+        </h5>
+
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Event Records</h1>
+                    </div>
+                    <div class="right">
+                        <a class="signout-link" th:href="@{/ui/auth/logout}">
+                            <i class="fa fa-sign-out"></i> Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="container-fluid">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="list" role="tabpanel">
+                        <div class="row clearfix">
+                            <div class="col-lg-12">
+                                <div class="table-responsive" id="users">
+                                    <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container ml-30" style="width: 90%; margin: 0 auto;">
+            <!-- Check if event records list is empty -->
+            <div th:if="${#lists.isEmpty(all_records)}" class="no-records">
+                <p>No event records found.</p>
+            </div>
+
+            <!-- Check if event records list is not empty -->
+            <ul th:if="${!#lists.isEmpty(all_records)}" class="record-list">
+                <li th:each="record : ${all_records}" class="record-item">
+                    <h2 th:text="${record.guide.firstName + ' ' + record.guide.lastName}"></h2>
+                    <div class="record-details">
+                        <p><strong>Guide:</strong> <span th:text="${record.guide.firstName + ' ' + record.guide.lastName}"></span></p>
+                        <p><strong>Event:</strong> <span th:text="${record.event.eventType}"></span></p>
+                        <p><strong>Date:</strong> <span th:text="${record.event.date}"></span></p>
+                    </div>
+                    <hr class="hr-divider" />
+                </li>
+            </ul>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+
+<script src="../assets/bundles/sweetalert.bundle.js"></script>
+<script src="../assets/plugins/dropify/js/dropify.min.js"></script>
+
+<script src="../assets/js/core.js"></script>
+<script src="assets/js/page/sweetalert.js"></script>
+<script>
+    $(function() {
+        "use strict";
+
+        $('.dropify').dropify();
+
+        var drEvent = $('#dropify-event').dropify();
+        drEvent.on('dropify.beforeClear', function(event, element) {
+            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+        });
+
+        drEvent.on('dropify.afterClear', function(event, element) {
+            alert('File deleted');
+        });
+
+        $('.dropify-fr').dropify({
+            messages: {
+                default: 'Glissez-déposez un fichier ici ou cliquez',
+                replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                remove: 'Supprimer',
+                error: 'Désolé, le fichier trop volumineux'
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -22,4 +23,5 @@ public class UserGuideInTrainingDto {
     private String email;
     private String picture;
     private String description;
+    private Date startDate;
 }

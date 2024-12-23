@@ -1,5 +1,6 @@
 package com.project.btoproject.model;
 
+import com.project.btoproject.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,4 +20,6 @@ public class Notification {
     private String message;
     private LocalDateTime timestamp;
     private boolean read;
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
 }

@@ -1,0 +1,14 @@
+package com.project.btoproject.enums;
+
+public enum NotificationType {
+    NEW_TOUR_APPLICATION,
+    TOUR_APPROVED,
+    TOUR_REJECTED,
+    TOUR_CANCELED,
+    GUIDE_ASSIGNED,
+    GUIDE_REMOVED,
+    NEW_FAIR_APPLICATION,
+    FAIR_APPROVED,
+    FAIR_REJECTED,
+    UPCOMING_TOUR_REMINDER
+}

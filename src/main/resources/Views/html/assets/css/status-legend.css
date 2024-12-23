@@ -1,3 +1,43 @@
+.search-filter-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 35px 30px;  /* Further increased margin */
+    padding: 0 30px;    /* Further increased padding */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    width: 350px;       /* Increased width */
+    margin: 0 30px;     /* Further increased margin */
+    gap: 15px;         /* Increased gap */
+}
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    width: 180px;       /* Increased width */
+    margin: 0 30px;     /* Further increased margin */
+    margin-left: auto;
+    padding: 0 15px;    /* Increased padding */
+}
+
+@media (max-width: 768px) {
+    .search-filter-wrapper {
+        flex-direction: column;
+        gap: 30px;      /* Increased gap */
+        margin: 35px 30px;
+        padding: 0 30px;
+    }
+
+    .search-container,
+    .filter-container {
+        width: calc(100% - 60px);  /* Adjusted for increased margins */
+        margin: 0 30px;
+    }
+}
+
 .status-legend-container {
     margin-top: 20px;
     padding: 10px;
@@ -72,6 +112,12 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     gap: 8px; /* Add some space between the dropdown and button */
 }
 
+.guide-slot-fair-wrapper {
+    display: inline-flex; /* Align items horizontally */
+    align-items: center; /* Vertically center align items */
+    gap: 8px; /* Add some space between the dropdown and button */
+}
+
 .guide-slot-wrapper .remove-guide-slot{
     padding: 0.25rem 0.5rem; /* Smaller padding for a compact button */
     font-size: 0.875rem; /* Smaller font size */
@@ -85,10 +131,25 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     display: inline-flex; /* Aligns properly next to the dropdown */
     align-items: center; /* Centers text/icon vertically */
     justify-content: center; /* Centers text/icon horizontally */
-
 }
 
-.remove-guide-slot, .remove-guide {
+.guide-slot-fair-wrapper .remove-fair-guide-slot {
+    padding: 0.25rem 0.5rem; /* Smaller padding for a compact button */
+    font-size: 0.875rem; /* Smaller font size */
+    line-height: 1; /* Compact height */
+    border-radius: 4px; /* Rounded corners for the button */
+    height: 100%; /* Ensures it aligns properly with the height of the dropdown */
+    background-color: #dc3545 !important; /* Bootstrap's danger color (red) */
+    color: #fff !important; /* White text for better visibility */
+    border: 1px solid #dc3545 !important; /* Add a border to match the button color */
+    cursor: pointer; /* Pointer cursor for better UX */
+    display: inline-flex; /* Aligns properly next to the dropdown */
+    align-items: center; /* Centers text/icon vertically */
+    justify-content: center; /* Centers text/icon horizontally */
+}
+
+
+ .remove-guide, .remove-guide-individual, .remove-fair-guide {
     padding: 0.25rem 0.5rem; /* Smaller padding for a compact button */
     font-size: 0.875rem; /* Smaller font size */
     line-height: 1; /* Compact height */
@@ -104,7 +165,7 @@ table.table.table-hover.table-striped tr.completed-tour > td {
 }
 
 
-.remove-guide-slot:hover, .remove-guide:hover {
+.remove-guide-slot:hover, .remove-guide:hover, .remove-guide-individual:hover, .remove-guide-fair-slot:hover, .remove-fair-guide:hover{
     background-color: #b02a37; /* Darker red on hover */
     border-color: #b02a37; /* Match border to hover color */
 }
@@ -113,11 +174,100 @@ table.table.table-hover.table-striped tr.completed-tour > td {
     flex: 1; /* Take up remaining space */
     text-align: left; /* Align guide name to the left */
 }
+
 .full-link {
     display: block;
     text-decoration: none;
     color: inherit;
 }
+
+.join-tour-button, .join-individual-tour-button, .join-fair-button {
+    background-color: #28a745; /* Green (success) color */
+    border-color: #28a745;
+    color: #fff;
+}
+
+.join-tour-button:hover, .join-individual-tour-button:hover, .join-fair-button:hover {
+    background-color: #218838; /* Darker green for hover effect */
+    border-color: #218838;
+}
+
+.leave-tour-button, .leave-fair-button, .leave-individual-tour-button {
+    background-color: #dc3545!important; /* Red (danger) color */
+    border-color: #dc3545!important;
+    color: #fff!important; /* White text for visibility */
+}
+
+.leave-tour-button:hover, .leave-fair-button:hover, .leave-individual-tour-button:hover {
+    background-color: #bd2130!important; /* Darker red for hover effect */
+    border-color: #bd2130!important;
+}
+
+.table tr, .table td, .table th {
+    padding: 4px 6px; /* Smaller padding for cells */
+    line-height: 1.2; /* Compact line height */
+}
+
+.table-hover > tbody > tr {
+    height: 50px; /* Set a smaller row height */
+}
+
+.table th {
+    vertical-align: middle; /* Center headers vertically */
+    text-align: center; /* Align headers */
+}
+
+.table td, .table th {
+    text-align: center; /* Center content horizontally */
+    vertical-align: middle; /* Center content vertically */
+}
+
+.pagination {
+    margin-top: 15px;
+}
+
+.pagination .page-item .page-link {
+    color: #007bff;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+}
+
+/* Notification Box Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745; /* Default: Success (Green) */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 14px;
+    display: none;
+}
+
+/* Error Style */
+.notification.error {
+    background-color: #dc3545; /* Error (Red) */
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
+}
+
+
 
 
 

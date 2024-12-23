@@ -32,7 +32,7 @@ public class TourController {
     }
 
     @PostMapping("/{id}/advisor/reject")
-    public ResponseEntity<Void> rejectTourByAdvisor(@PathVariable Long id) {
+    public ResponseEntity<Void> rejectTourByAdvisor(@PathVariable Long id) throws InterruptedException {
         // Logic for advisor rejection
         eventService.rejectTourByAdvisor(id);
         return ResponseEntity.ok().build();
@@ -40,7 +40,7 @@ public class TourController {
 
     // Approve tour by Head Secretary
     @PostMapping("/{id}/secretary/approve")
-    public ResponseEntity<Void> approveTourBySecretary(@PathVariable Long id) {
+    public ResponseEntity<Void> approveTourBySecretary(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary approval
         System.out.println("Received ID for Approval by Secretary: " + id);
         eventService.approveTourBySecretary(id);
@@ -49,7 +49,7 @@ public class TourController {
 
     // Reject tour by Head Secretary
     @PostMapping("/{id}/secretary/reject")
-    public ResponseEntity<Void> rejectTourBySecretary(@PathVariable Long id) {
+    public ResponseEntity<Void> rejectTourBySecretary(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary rejection
         System.out.println("Received ID for Rejection by Secretary: " + id);
         eventService.rejectTourBySecretary(id);
@@ -58,7 +58,7 @@ public class TourController {
 
     // Cancel tour by Head Secretary
     @PostMapping("/{id}/secretary/cancel")
-    public ResponseEntity<Void> cancelTourBySecretary(@PathVariable Long id) {
+    public ResponseEntity<Void> cancelTourBySecretary(@PathVariable Long id) throws InterruptedException {
         // Logic for Head Secretary cancellation
         System.out.println("Received ID for Cancellation by Secretary: " + id);
         eventService.cancelTourBySecretary(id);
@@ -116,6 +116,55 @@ public class TourController {
         return ResponseEntity.ok("Guide removed successfully");
     }
 
+    @PostMapping("/{tourId}/join")
+    public ResponseEntity<String> joinTour(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Long> request) {
+
+        Long guideId = request.get("guideId"); // Get guide ID from the request
+        try {
+            eventService.assignGuideToTour(tourId, guideId); // Call the service method
+            return ResponseEntity.ok("Successfully joined the tour.");
+        } catch (IllegalArgumentException e) {
+            // Handle specific cases, e.g., conflicts, already assigned, etc.
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Generic error handler
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred. Please try again.");
+        }
+    }
+
+    @PostMapping("/{tourId}/leave")
+    public ResponseEntity<String> leaveTour(
+            @PathVariable Long tourId,
+            @RequestBody Map<String, Long> request) {
+
+        Long guideId = request.get("guideId"); // Extract guide ID from the request
+
+        try {
+            // Call the service method to remove the guide from the tour
+            eventService.removeGuideFromTour(tourId, guideId);
+            return ResponseEntity.ok("Successfully left the tour!");
+        } catch (IllegalArgumentException e) {
+            // Handle specific IllegalArgumentException with a meaningful message
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Handle unexpected exceptions with a generic message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    @PostMapping("/complete/{tourId}")
+    public ResponseEntity<String> markTourAsCompleted(@PathVariable Long tourId) {
+        try {
+            eventService.markEventAsCompleted(tourId);
+            return ResponseEntity.ok("Tour marked as completed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
 
 }

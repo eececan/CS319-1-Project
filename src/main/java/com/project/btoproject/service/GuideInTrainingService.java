@@ -5,6 +5,7 @@ import com.project.btoproject.model.Guide;
 import com.project.btoproject.model.GuideInTraining;
 import com.project.btoproject.repository.IGuideInTrainingRepository;
 import com.project.btoproject.repository.IGuideRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,30 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GuideInTrainingService implements IGuideInTrainingService {
 
-    private IGuideInTrainingRepository guideInTrainingRepository;
-    private IGuideRepository guideRepository;
+    private final IGuideInTrainingRepository guideInTrainingRepository;
+    private final IGuideRepository guideRepository;
 
     @Override
     public void saveGuideInTraining(GuideInTraining guideInTraining) {
         guideInTrainingRepository.save(guideInTraining);
+    }
+
+    @Override
+    public void setSchedule(Long guideId, int position, char status) {
+        GuideInTraining guide = guideInTrainingRepository.getById(guideId);
+        String currentSchedule = guide.getSchedule();
+        if(currentSchedule == null){
+            currentSchedule = "eeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        }
+        StringBuilder newSchedule = new StringBuilder(currentSchedule);
+        newSchedule.setCharAt(position, status);
+        guide.setSchedule(newSchedule.toString());
+        guideInTrainingRepository.save(guide);
+    }
+
+    @Override
+    public List<GuideInTraining> getAllGuideInTrainings() {
+        return guideInTrainingRepository.findAll();
     }
 
     @Override
@@ -66,4 +85,15 @@ public class GuideInTrainingService implements IGuideInTrainingService {
             throw new IllegalArgumentException("Guide in training is not found with id: " + id);
         }
     }
+
+    @Override
+    public GuideInTraining getGuideInTrainingById(Long id) {
+        Optional<GuideInTraining> guideInTraining = guideInTrainingRepository.findById(id);
+        if (guideInTraining.isPresent()) {
+            return guideInTraining.get();
+        } else {
+            throw new EntityNotFoundException("GuideInTraining with ID " + id + " not found.");
+        }
+    }
+
 }

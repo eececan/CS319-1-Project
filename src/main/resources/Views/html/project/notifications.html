@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications</title>
+</head>
+<body>
+<audio id="notification-sound" preload="auto">
+  <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
+</audio>
+<div th:fragment="notifications-panel">
+  <div class="notifications-dropdown">
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+      <i class="fa fa-bell"></i>
+      <span class="notification-count badge"></span>
+    </a>
+    <div class="dropdown-menu notifications-panel">
+      <div class="notifications-header" style="margin-left: 14px;">
+        <h6>Notifications</h6>
+      </div>
+      <div class="notifications-list">
+        <!-- Populated by JS -->
+      </div>
+      <div class="notifications-footer">
+        <button type="button" id="markAllRead" class="mark-all-as-read btn btn-sm btn-primary">
+          Mark All as Read
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

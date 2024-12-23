@@ -64,6 +64,7 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity user = new UserEntity();
 
+
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof UserDetails) {
@@ -80,47 +81,26 @@ public class AuthController {
                 user.setPassword(password);
                 System.out.println("User ID: " + userId);
                 System.out.println("Password: " + password);
+                String role = userDetails.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .map(authority -> authority.getAuthority()) // Get the role name
+                        .orElse("ROLE_UNKNOWN");
+                userService.addNewUser(dtoMap, role, user);
             } else {
                 System.out.println("Principal is not an instance of UserDetails. Principal: " + principal);
                 return "Authentication error";
             }
 
             // Handle roles and deserialize the DTO accordingly
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
 
-                if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GUIDE"))) {
-                    UserGuideDto userGuideDto = objectMapper.convertValue(dtoMap, UserGuideDto.class);
-                    userService.enterPersonalInformationGuide(user, userGuideDto);
-                } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADVISOR"))) {
-                    UserAdvisorDto userAdvisorDto = objectMapper.convertValue(dtoMap, UserAdvisorDto.class);
-                    userService.enterPersonalInformationAdvisor(user, userAdvisorDto);
-                } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GUIDE_IN_TRAINING"))) {
-                    UserGuideInTrainingDto userGuideInTrainingDto = objectMapper.convertValue(dtoMap, UserGuideInTrainingDto.class);
-                    userService.enterPersonalInformationGuideInTraining(user, userGuideInTrainingDto);
-                } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_HEAD_SECRETARY"))) {
-                    System.out.println("User is a HEAD SECRETARY");
-                    // Add logic for HEAD_SECRETARY
-                } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_DIRECTOR"))) {
-                    System.out.println("User is a DIRECTOR");
-                    // Add logic for DIRECTOR
-                } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COORDINATOR"))) {
-                    System.out.println("User is a COORDINATOR");
-                    // Add logic for COORDINATOR
-                } else {
-                    System.out.println("User has no matching roles.");
-                    // Add logic for unmatched roles
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Failed to deserialize request body: " + e.getMessage());
-                return "Invalid request body";
-            }
         } else {
             System.out.println("No authenticated user found.");
             return "Authentication required";
         }
         return "User information updated successfully";
     }
+
 
 
 

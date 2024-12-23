@@ -1,0 +1,305 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+
+    <title>Dashboard</title>
+
+    <!-- Bootstrap Core and vendor -->
+    <link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet"  >
+
+    <!-- Plugins css -->
+    <link  th:href="@{/assets/plugins/charts-c3/c3.min.css}"  rel="stylesheet">
+
+    <!-- Core css -->
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/theme1.css}" rel="stylesheet" >
+    <link rel="stylesheet" th:href="@{/assets/css/notifications.css}">
+    <style>.signout-link {
+        color: white; /* Match navbar background */
+        text-decoration: none; /* Remove underline */
+        margin-left: 15px; /* Add space from notification icon */
+        font-size: 16px; /* Adjust text size for better appearance */
+        display: flex; /* Ensures proper alignment */
+        align-items: center; /* Align icon and text vertically */
+    }
+
+    .signout-link:hover {
+        color: #007bff; /* Change to primary blue on hover */
+        text-decoration: underline; /* Add underline on hover */
+    }</style>
+</head>
+
+<body class="font-montserrat">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;"
+            th:text="${roleUser}">
+        </h5>
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Dashboard</h1>
+                    </div>
+                    <div class="right">
+
+                        <div class="notification d-flex">
+                            <div class="dropdown d-flex">
+                                <div th:replace="notifications::notifications-panel"></div>
+                            </div>
+
+                            <audio id="notification-sound" preload="auto">
+                                <source th:src="@{/assets/sounds/notification.mp3}" type="audio/mpeg">
+                            </audio>
+
+                            <div class="right2">
+                                <a class="signout-link" th:href="@{/ui/auth/logout}">
+                                    <i class="fa fa-sign-out"></i> Sign Out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body mt-45">
+            <div class="container-fluid">
+                <div class="flex-column">
+                    <div class="col-lg-12">
+                        <h3><strong>Welcome<span th:text=" ' ' + ${user.firstName}+ ' ' + ${user.lastName}"></span>!</strong></h3>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <!-- Left Side: Text and Learn More Link -->
+                            <div>
+                                <small> <a href="#"></a></small>
+                            </div>
+
+                            <div class="card" style="border-radius: 16px; width: 300px; margin-bottom: 25px; background-color: white;">
+                                <a th:if="${advisor != null}"
+                                   th:href="@{'/ui/UserProfile/getUserProfile'(userId=${advisor.id})}"
+                                   style="text-decoration: none; color: inherit;">
+                                    <div class="card-header mt-12 d-flex justify-content-center"
+                                         style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">
+                                        <h3 class="card-title">
+                                            View Today's Advisor:
+                                            <span style="color: #2f93ff;" th:text="${advisor.firstName} + ' ' + ${advisor.lastName}"></span>
+                                        </h3>
+                                    </div>
+                                </a>
+                                <div th:if="${advisor == null}"
+                                     class="card-header mt-12 d-flex justify-content-center"
+                                     style="border-radius: 16px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                    <h3 class="card-title" style="color: #ff0000;">
+                                        No Responsible Advisor assigned
+                                    </h3>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row clearfix row-deck mt-12">
+                            <!-- Tours and Fairs Card -->
+                            <div class="col-6">
+                                <a th:href="@{/guideTables}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                    <div class="card" style="border-radius:16px; min-height: 200px; cursor: pointer;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Tours and Fairs</h3>
+                                            <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;"  th:text="${tours.size() + fairs.size()}"></h5>
+                                            <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all tours and fairs</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Upcoming Events Card -->
+                            <div class="col-6">
+                                <a th:href="@{/calendar}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                    <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                        <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Upcoming Events</h3>
+                                        <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${upComing}"></h5>
+                                        <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all scheduled events on the calendar</span>
+                                    </div>
+                                </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix row-deck">
+                            <!-- Members Card -->
+                            <div class="col">
+                                <a th:href="@{/getAllUsers}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                    <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Members</h3>
+                                            <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${users.size()}"></h5>
+                                            <span class="font-12" style="color: #6e7687; margin-top: 5px;">View all members of BTO</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Points Card -->
+                            <div class="col">
+                                <a th:href="@{/getRecordsOfGuide}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                    <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 0;">Event Records</h3>
+                                            <h5 class="number mb-0 font-32 counter" style="font-size: 32px; margin-top: 10px;" th:text="${sum}"></h5>
+                                            <span class="font-12" style="color: #6e7687; margin-top: 5px;">View your event records</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- To-Do List Card -->
+                            <div class="col">
+                                <a th:href="@{/ui/task/todo}" style="text-decoration: none; color: inherit; height: 100%; width: 100%;">
+                                    <div class="card" style="border-radius:16px; min-height: 200px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <div class="card-body" style="border-radius:16px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
+                                            <h3 class="card-title" style="font-weight: bold; font-size: 24px; margin-bottom: 10px;">To-Do List</h3>
+                                            <div th:each="tasks : ${tasks}" class="d-flex align-items-center" style="margin-bottom: 5px;">
+                                                <input type="checkbox" th:id="'task' + ${tasks.taskId}" th:checked="${tasks.state}" style="margin-right: 10px; vertical-align: middle;">
+                                                <label th:for="'task' + ${tasks.taskId}" style="vertical-align: middle;">
+                                                    <span th:text="${tasks.taskDescription}">Task Description</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card" style="border-radius:16px; min-height: 30px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                <div class="card-body" style="border-radius:16px; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                    <div id="countdown" style="font-size: 20px;font-weight: bold; color: #031961;">Remaining Time Until Upcoming Event: </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js}"></script>
+
+<!-- <script th:src="@{/assets/bundles/counterup.bundle.js}"></script> -->
+<script th:src="@{/assets/bundles/knobjs.bundle.js}"></script>
+<script th:src="@{/assets/bundles/c3.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+<script th:src="@{/assets/js/page/project-index.js}"></script>
+<script th:src="@{/assets/js/notifications.js}"></script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the event date passed from the backend
+        var eventDate = [[${eventDate}]];
+
+        // Check if an event date exists
+        if (eventDate) {
+            // Convert to JavaScript Date object
+            var upcomingEventDate = new Date(eventDate);
+
+            // Countdown function
+            function updateCountdown() {
+                var currentDate = new Date();
+                var remainingTime = upcomingEventDate - currentDate;
+
+                if (remainingTime <= 0) {
+                    document.getElementById("countdown").innerHTML = "The event is happening now!";
+                    clearInterval(countdownInterval);
+                } else {
+                    var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                    document.getElementById("countdown").innerHTML =
+                        "Remaining Time Until The Next Event: " +
+                        days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+                }
+            }
+
+            // Start countdown interval
+            var countdownInterval = setInterval(updateCountdown, 1000); // Update every second
+        } else {
+            // Handle the case where there is no event date
+            document.getElementById("countdown").innerHTML = "No upcoming events scheduled.";
+        }
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.project.btoproject.service;
 
+import com.project.btoproject.enums.Tier;
 import com.project.btoproject.model.School;
 import com.project.btoproject.repository.SchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,15 @@ public class SchoolService {
         Optional<School> existingSchool = schoolRepository.findByName(schoolName);
 
         if (existingSchool.isPresent()) {
-            return existingSchool.get();
+            School school = existingSchool.get();
+
+            // Update the address only if it's not empty and different from the current address
+            if (!address.isEmpty() && !address.equals(school.getAddress())) {
+                school.setAddress(address);
+                return schoolRepository.save(school); // Save the updated school
+            }
+
+            return school; // Return the existing school if no update is needed
         }
 
         // If the school doesn't exist, create a new one
@@ -40,6 +49,15 @@ public class SchoolService {
         newSchool.setAddress(address);
         newSchool.setFlag(false);
         return schoolRepository.save(newSchool); // Save and return the new School
+    }
+
+    public void setSchoolTier(School school, Tier tier){
+        school.setTier(tier);
+        schoolRepository.save(school);
+    }
+
+    public School findSchoolById(Long schoolId) {
+        return schoolRepository.findById(schoolId).get();
     }
 }
 

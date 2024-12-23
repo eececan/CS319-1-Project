@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+
+    <!-- Page Title -->
+    <title>Calendar</title>
+
+    <!-- Bootstrap Core and Vendor -->
+    <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/plugins/fullcalendar/fullcalendar.min.css}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <!-- Include Moment.js -->
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js}"></script>
+    <!-- Include FullCalendar.js -->
+    <script th:src="@{https://fullcalendar.io/js/fullcalendar.min.js}"></script>
+    <style>.signout-link {
+        color: white; /* Match navbar background */
+        text-decoration: none; /* Remove underline */
+        margin-left: 15px; /* Add space from notification icon */
+        font-size: 16px; /* Adjust text size for better appearance */
+        display: flex; /* Ensures proper alignment */
+        align-items: center; /* Align icon and text vertically */
+    }
+
+    .signout-link:hover {
+        color: #007bff; /* Change to primary blue on hover */
+        text-decoration: underline; /* Add underline on hover */
+    }</style>
+</head>
+
+<body class="font-montserrat offcanvas-active">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+        </h5>
+
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Calendar</h1>
+
+                    </div>
+                    <div class="right">
+                        <a class="signout-link" th:href="@{/ui/auth/logout}">
+                            <i class="fa fa-sign-out"></i> Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body mt-3">
+            <div class="container-fluid">
+                        <div class="card">
+                            <div class="card-header bline">
+                                <h3 class="card-title"></h3>
+                                <div class="card-options">
+                                    <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="calendar"
+                                ></div>
+                            </div>
+
+                        </div>
+                    </div>
+        </div>
+    </div>
+</div>
+<!-- Include jQuery -->
+<script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+
+<!-- Include Moment.js -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js}"></script>
+
+<!-- Include FullCalendar JS -->
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js}"></script>
+
+<script>
+    $(function() {
+        var calendar = $('#calendar');
+
+        // Initialize FullCalendar with AJAX event fetching
+        calendar.fullCalendar({
+            header: {
+                left: 'title',
+                center: '',
+                right: ' prev, next'
+            },
+            editable: true,
+            droppable: true,
+            eventLimit: true,
+            selectable: true,
+
+            // Use AJAX to fetch events
+            events: function(start, end, timezone, callback) {
+                $.ajax({
+                    url: '/api/events',
+                    dataType: 'json',
+                    success: function(data) {
+                        var events = data.map(event => {
+                            var title = event.title;
+                            if(event.title === 'INDIVIDUAL_TOUR') {
+                                title = 'INDT';
+                                title += ' - ' + event.student;
+                            }
+                            else {
+                                if (event.school) {
+                                    title += ' - ' + event.school;
+                                }
+                            }
+                            return {
+                                title: title,
+                                start: event.start,
+                                end: event.end,
+                                description: event.description
+
+                            };
+                        });
+
+                        // Pass the formatted events to FullCalendar
+                        callback(events);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching events: ", status, error);
+                    }
+                });
+            },
+
+            drop: function(date, jsEvent) {
+                if ($('#drop-remove').is(':checked')) {
+                    $(this).remove();
+                }
+            },
+
+            eventClick: function(calEvent, jsEvent, view) {
+                var eventModal = $('#eventEditModal');
+                eventModal.modal('show');
+                eventModal.find('input[name="event-type"]').val(calEvent.title);  // Display title with school name
+                eventModal.find('.save-btn').click(function() {
+                    calEvent.title = eventModal.find("input[name='event-type']").val();
+                    calendar.fullCalendar('updateEvent', calEvent);
+                    eventModal.modal('hide');
+                });
+            }
+        });
+    });
+
+</script>
+
+
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/bundles/fullcalendar.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+<script th:src="@{assets/js/page/calendar.js}"></script>
+</body>
+</html>

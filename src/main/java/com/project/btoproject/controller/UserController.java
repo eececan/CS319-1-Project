@@ -1,6 +1,7 @@
 package com.project.btoproject.controller;
 
 import com.project.btoproject.model.*;
+import com.project.btoproject.repository.RoleRepository;
 import com.project.btoproject.service.AllUsersService;
 import com.project.btoproject.service.UserService;
 import com.project.btoproject.service.UserService;
@@ -20,23 +21,25 @@ public class UserController {
 
     private final AllUsersService allUsersService;
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public UserController(AllUsersService allUsersService,
-                           UserService userService) {
+                          UserService userService, RoleRepository roleRepository) {
         this.allUsersService = allUsersService;
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/get-tasks")
     public List<UserTask> getTasksOfGuide(@RequestParam Long userId) {
-        User user = allUsersService.getUserById(userId);
+        User user = allUsersService.getUserById(userId).get();
         return allUsersService.seeAllTasks(user);
     }
 
     @PostMapping("/post-tasks")
     public ResponseEntity<String> postTask(@RequestParam Long userId, @RequestBody UserTask newTask) {
-        User user = allUsersService.getUserById(userId);
+        User user = allUsersService.getUserById(userId).get();
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
@@ -46,7 +49,7 @@ public class UserController {
 
     @DeleteMapping("/delete-task")
     public ResponseEntity<String> deleteTask(@RequestParam Long userId, @RequestParam Long taskId) {
-        User user = allUsersService.getUserById(userId);
+        User user = allUsersService.getUserById(userId).get();
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
@@ -59,7 +62,7 @@ public class UserController {
 
     @PatchMapping("/mark-task-complete")
     public ResponseEntity<String> markTaskAsComplete(@RequestParam Long userId, @RequestParam Long taskId) {
-        User user = allUsersService.getUserById(userId);
+        User user = allUsersService.getUserById(userId).get();
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
@@ -72,7 +75,7 @@ public class UserController {
 
     @PatchMapping("/mark-task-incomplete")
     public ResponseEntity<String> markTaskAsIncomplete(@RequestParam Long userId, @RequestParam Long taskId) {
-        User user = allUsersService.getUserById(userId);
+        User user = allUsersService.getUserById(userId).get();
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
@@ -90,6 +93,13 @@ public class UserController {
         UserDetails userDetails = (UserDetails) principal;
         String userId = userDetails.getUsername();
         userService.changePassword(Long.parseLong(userId), password);
+    }
+
+    @PostMapping("/changeRole")
+    public void changeRole(@RequestParam Long userId, @RequestParam String roleName){
+        Role role = roleRepository.findByName(roleName).get();
+
+        userService.changeRole(userId, role);
     }
 
 }

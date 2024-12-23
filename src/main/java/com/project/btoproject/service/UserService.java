@@ -1,75 +1,79 @@
 package com.project.btoproject.service;
 
-import com.project.btoproject.dto.UserAdvisorDto;
-import com.project.btoproject.dto.UserGuideDto;
-import com.project.btoproject.dto.UserGuideInTrainingDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.btoproject.dto.*;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IAllUsersRepository;
 import com.project.btoproject.repository.UserRepository;
+import com.project.btoproject.security.PasswordGenerator;
 import jakarta.transaction.Transactional;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
 
-import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserService implements IUserService {
     private final IAllUsersService allUsersService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private IUserHelperService userHelperService;
+    private final PasswordGenerator passwordGenerator;
+    private final MailService mailService;
 
-    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(IAllUsersService allUsersService, IAllUsersRepository allUsersRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, IUserHelperService userHelperService, PasswordGenerator passwordGenerator, MailService mailService) {
         this.allUsersService = allUsersService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userHelperService = userHelperService;
+        this.passwordGenerator = passwordGenerator;
+        this.mailService = mailService;
+    }
+
+    @Transactional
+    @Override
+    public void addNewUser(Map<String, Object> dtoMap, String role, UserEntity user) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (role.equals("ROLE_GUIDE")) {
+            UserGuideDto userGuideDto = objectMapper.convertValue(dtoMap, UserGuideDto.class);
+            userGuideDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationGuide(user, userGuideDto);
+        } else if (role.equals("ROLE_ADVISOR")){
+            UserAdvisorDto userAdvisorDto = objectMapper.convertValue(dtoMap, UserAdvisorDto.class);
+            userAdvisorDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationAdvisor(user, userAdvisorDto);
+        } else if (role.equals("ROLE_GUIDE_IN_TRAINING")) {
+            UserGuideInTrainingDto userGuideInTrainingDto = objectMapper.convertValue(dtoMap, UserGuideInTrainingDto.class);
+            userGuideInTrainingDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationGuideInTraining(user, userGuideInTrainingDto);
+        } else if (role.equals("ROLE_COORDINATOR")) {
+            UserCoordinatorDto coordinatorDto = objectMapper.convertValue(dtoMap, UserCoordinatorDto.class);
+            coordinatorDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationCoordinator(user, coordinatorDto);
+        }
+        else if (role.equals("ROLE_HEAD_SECRETARY")) {
+            UserHeadSecretaryDto headSecretaryDto = objectMapper.convertValue(dtoMap, UserHeadSecretaryDto.class);
+            headSecretaryDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationHeadSecretary(user, headSecretaryDto);
+        }
+        else if (role.equals("ROLE_DIRECTOR")) {
+            UserDirectorDto directorDto = objectMapper.convertValue(dtoMap, UserDirectorDto.class);
+            directorDto.setStartDate(new Date());
+            userHelperService.enterPersonalInformationDirector(user, directorDto);
+        }else {
+            System.out.println("User has no matching roles.");
+        }
     }
 
     @Override
-    public void enterPersonalInformationGuide(UserEntity userEntity, UserGuideDto userGuideDto) {
-        Guide guide = new Guide(userGuideDto.getSchedule(), userGuideDto.getDepartment(), userGuideDto.getGrade(), new ArrayList<>(), new ArrayList<>());
-        guide.setPhoneNumber(userGuideDto.getPhoneNumber());
-        guide.setDescription(userGuideDto.getDescription());
-        guide.setEmail(userGuideDto.getEmail());
-        guide.setFirstName(userGuideDto.getFirstName());
-        guide.setLastName(userGuideDto.getLastName());
-        guide.setId(userEntity.getId());
-        guide.setPassword(userEntity.getPassword());
-        guide.setPicture(userGuideDto.getPicture());
-        guide.setStartDate(new Date());
-        allUsersService.addUser(guide);
-    }
-
-    @Override
-    public void enterPersonalInformationGuideInTraining(UserEntity userEntity, UserGuideInTrainingDto userGuideInTrainingDto) {
-        GuideInTraining guideInTraining = new GuideInTraining(userGuideInTrainingDto.getSchedule(), userGuideInTrainingDto.getDepartment(), userGuideInTrainingDto.getGrade(), false, new ArrayList<>());
-        guideInTraining.setFirstName(userGuideInTrainingDto.getFirstName());
-        guideInTraining.setLastName(userGuideInTrainingDto.getLastName());
-        guideInTraining.setPhoneNumber(userGuideInTrainingDto.getPhoneNumber());
-        guideInTraining.setEmail(userGuideInTrainingDto.getEmail());
-        guideInTraining.setPicture(userGuideInTrainingDto.getPicture());
-        guideInTraining.setDescription(userGuideInTrainingDto.getDescription());
-        guideInTraining.setStartDate(new Date());
-        guideInTraining.setId(userEntity.getId());
-        guideInTraining.setPassword(userEntity.getPassword());
-        allUsersService.addUser(guideInTraining);
-    }
-
-    @Override
-    public void enterPersonalInformationAdvisor(UserEntity userEntity, UserAdvisorDto userAdvisorDto) {
-        Advisor advisor = new Advisor(userAdvisorDto.getDepartment(), userAdvisorDto.getGrade(), userAdvisorDto.getResponsibleDay(), new ArrayList<>(), new ArrayList<>());
-        advisor.setFirstName(userAdvisorDto.getFirstName());
-        advisor.setLastName(userAdvisorDto.getLastName());
-        advisor.setPhoneNumber(userAdvisorDto.getPhoneNumber());
-        advisor.setEmail(userAdvisorDto.getEmail());
-        advisor.setPicture(userAdvisorDto.getPicture());
-        advisor.setDescription(userAdvisorDto.getDescription());
-        advisor.setStartDate(new Date());
-        advisor.setId(userEntity.getId());
-        advisor.setPassword(userEntity.getPassword());
-        allUsersService.addUser(advisor);
+    public List<UserEntity> getAllUserEntities() {
+        return userRepository.findAll();
     }
 
     @Transactional
@@ -77,18 +81,10 @@ public class UserService implements IUserService {
     public void deleteUserByUsername(Long id) {
         UserEntity user = userRepository.findByUsername(id.toString())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        System.out.println("Clearing roles for user ID: " + user.getId());
         user.getRoles().clear();
         userRepository.save(user);
-
-        System.out.println("Deleting user roles for user ID: " + user.getId());
         userRepository.deleteUserRolesByUserId(user.getId());
-
-        System.out.println("Deleting user entity: " + user.getId());
         userRepository.delete(user);
-
-        System.out.println("Deleting user from all_users service: " + user.getUsername());
         allUsersService.deleteUserById(Long.parseLong(user.getUsername()));
     }
 
@@ -99,13 +95,29 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        System.out.println("Changed password for user ID: " + user.getId());
     }
 
     @Override
-    public void forgotPassword(Long id) {
-
+    public void forgotPassword(String email) throws InterruptedException {
+        String password = passwordGenerator.generatePassword(10);
+        mailService.sendForgotPasswordMail(email, password);
     }
 
+    @Transactional
+    @Override
+    public void changeRole(Long id, Role role) {
+        UserEntity user = userRepository.findByUsername(id.toString())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+        allUsersService.changeRole(id, role.getName());
+    }
+
+    @Override
+    public Optional<UserEntity> findUserByUsername(Long id) {
+        return userRepository.findByUsername(id.toString());
+    }
 
 }

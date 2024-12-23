@@ -1,0 +1,328 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"  lang="en" dir="ltr">
+<head>
+    <style>
+        .signout-link {
+            color: white; /* Match navbar background */
+            text-decoration: none; /* Remove underline */
+            margin-left: 15px; /* Add space from notification icon */
+            font-size: 16px; /* Adjust text size for better appearance */
+            display: flex; /* Ensures proper alignment */
+            align-items: center; /* Align icon and text vertically */
+        }
+
+        .signout-link:hover {
+            color: #007bff; /* Change to primary blue on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+        /* The close button */
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* When moving the mouse over the close button */
+        .closebtn:hover {
+            color: black;
+        }
+
+        /* Force Success Alert to Green */
+        .alert-success {
+            background-color: #28a745 !important;
+            color: #fff !important;
+            border-color: #28a745 !important;
+        }
+
+        /* Close Button for Green Alerts */
+        .alert-success .btn-close {
+            color: #fff;
+            opacity: 1;
+            filter: invert(1); /* Makes the close button white */
+        }
+
+        .card-body {
+            padding: 10px; /* Adjusted to reduce space inside the card */
+        }
+
+        .avatar-container {
+            margin: 0; /* Remove extra margin */
+            padding: 0; /* Remove extra padding */
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc; /* Optional border for better aesthetics */
+            display: block;
+            margin: 0; /* Ensures no additional margin */
+        }
+
+        /* Remove vertical lines between columns */
+        .table-custom th,
+        .table-custom td {
+            border: none; /* Removes the borders */
+        }
+
+        .table-custom {
+            border-collapse: collapse; /* Ensures no spacing between cells */
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+
+    <title>Member List</title>
+
+    <!-- Bootstrap Core and vandor -->
+    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/plugins/sweetalert/sweetalert.css"/>
+    <link rel="stylesheet" href="../assets/plugins/dropify/css/dropify.min.css">
+
+    <!-- Core css -->
+    <link rel="stylesheet" href="../assets/css/main.css"/>
+    <link rel="stylesheet" href="../assets/css/theme1.css"/>
+</head>
+
+<body class="font-montserrat offcanvas-active">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            Coordinator
+        </h5>
+
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Ready Guides in Training</h1>
+                    </div>
+                    <div class="right">
+
+                        <div class="right">
+                                <a class="signout-link" th:href="@{/ui/auth/logout}">
+                                    <i class="fa fa-sign-out"></i> Sign Out
+                                </a>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body mt-3">
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div th:if="${successMessage != null and successMessage != ''}"
+                         class="alert alert-success alert-dismissible fade show" role="alert">
+                        <span th:text="${successMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div th:if="${errorMessage != null and errorMessage != ''}"
+                         class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Filter Buttons -->
+
+
+        <div class="container px-3">
+            <div class="row mx-1">
+                <div class="col-lg-12">
+                    <!-- Explanation Text -->
+                    <div class="mb-4" style="margin-top: 15px;">
+                        <p style="font-size: 15px; color: #555; font-weight: bold;">
+                            This table shows guide candidates that have been in training for 6 months or more!
+                            Approve them to be a guide or reject and delete them from the system!
+                        </p>
+                    </div>
+                    <div class="card" style="background-color: #f8f9fa;">
+                        <div class="card-body">
+                            <div class="table-responsive" id="users">
+                                <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
+                                    <thead style="border-bottom: 1px solid #ddd;">
+                                    <tr>
+                                        <!-- Empty Header for Avatar Column -->
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Bilkent ID</th>
+                                        <th>Start Date</th>
+                                        <!-- Conditional Header for Actions -->
+                                        <th class="text-right" style="border-right: none;">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Check if the users list is empty -->
+                                    <tr th:if="${#lists.isEmpty(all_users)}">
+                                        <td colspan="6" style="text-align: center; color: #888;">
+                                            No users found.
+                                        </td>
+                                    </tr>
+
+                                    <!-- Loop through users and display Approve/Reject buttons -->
+                                    <tr th:each="user : ${all_users}">
+                                        <td class="text-center width40">
+                                            <div class="avatar-container">
+                                                <img class="card-img-top"
+                                                     th:src="@{/gt.png}"
+                                                     alt="Card image for Guide In Training">
+                                            </div>
+
+                                    <td>
+                                            <a th:href="@{'/ui/UserProfile/getUserProfile?userId=' + ${user.id}}"
+                                               th:text="|${user.firstName != null && !user.firstName.isEmpty() ? user.firstName : 'Unknown'} ${user.lastName != null && !user.lastName.isEmpty() ? user.lastName : 'User'}|">
+                                            </a>
+                                            <div th:text="${user.phoneNumber != null && !user.phoneNumber.isEmpty() ? user.phoneNumber : 'N/A'}"></div>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <div th:text="${user.email != null && !user.email.isEmpty() ? user.email : 'N/A'}"></div>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <div th:text="${user.id != null && !user.id.toString().isEmpty() ? user.id : 'N/A'}"></div>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <div th:text="${#dates.format(user.startDate, 'dd MMM yyyy')}"></div>
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="user-actions">
+                                                <!-- Approve Button -->
+                                                <form th:action="@{/ui/UserProfile/changeToGuide}" method="post" style="display:inline;">
+                                                    <input type="hidden" name="userId" th:value="${user.id}">
+                                                    <button type="submit"
+                                                            class="btn btn-primary btn-sm"
+                                                            title="Approve"
+                                                            style="background-color: #007bff; border-color: #007bff;">
+                                                        Approve
+                                                    </button>
+                                                </form>
+
+                                                <!-- Reject Button -->
+                                                <form th:action="@{/ui/UserProfile/rejectGuide}" method="post" style="display:inline;">
+                                                    <input type="hidden" name="userId" th:value="${user.id}">
+                                                    <button type="submit"
+                                                            class="btn btn-primary btn-sm"
+                                                            title="Reject"
+                                                            style="background-color: #007bff; border-color: #007bff;"
+                                                            onclick="return confirm('Are you sure you want to reject this user?');">
+                                                        Reject
+                                                    </button>
+                                                </form>
+                                            </div>
+
+
+
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+</div>
+
+
+<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+
+<script src="../assets/bundles/sweetalert.bundle.js"></script>
+<script src="../assets/plugins/dropify/js/dropify.min.js"></script>
+
+<script src="../assets/js/core.js"></script>
+<script src="assets/js/page/sweetalert.js"></script>
+<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

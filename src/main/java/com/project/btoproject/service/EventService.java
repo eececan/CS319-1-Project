@@ -4,16 +4,23 @@ import com.project.btoproject.enums.Status;
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IEventRepository;
 import com.project.btoproject.repository.IGuideRepository;
+import com.project.btoproject.repository.IPointRecordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,21 +28,29 @@ public class EventService implements IEventService {
 
     private IEventRepository eventRepository;
     private IGuideRepository guideRepository;
+    private IPointRecordRepository pointRecordRepository;
+    private final NotificationService notificationService;
+    private MailService mailService;
 
     @Autowired
-    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository) {
+    public EventService(IEventRepository eventRepository, IGuideRepository guideRepository, IPointRecordRepository pointRecordRepository, NotificationService notificationService, MailService mailService) {
         this.eventRepository = eventRepository;
         this.guideRepository = guideRepository;
+        this.pointRecordRepository = pointRecordRepository;
+        this.notificationService = notificationService;
+        this.mailService = mailService;
     }
-    public void approveFair(Long fairId) {
+    public void approveFair(Long fairId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(fairId);
         if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
             Fair fair = (Fair) eventOptional.get();
             if (!fair.getStatus().equals(Status.NEW_FAIR_APPLICATION)) {
                 throw new IllegalStateException("Fair is not in a state to be approved.");
             }
-            fair.setStatus(Status.NEW_FAIR_APPLICATION);
+            fair.setStatus(Status.UPCOMING_FAIR);
             eventRepository.save(fair);
+            notificationService.notifyEventApproved(fair);
+            mailService.sendApprovalMail(fair);
         }
 
     else {
@@ -43,7 +58,7 @@ public class EventService implements IEventService {
         }
     }
 
-    public void rejectFair(Long fairId) {
+    public void rejectFair(Long fairId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(fairId);
         if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
             Fair fair = (Fair) eventOptional.get();
@@ -52,12 +67,45 @@ public class EventService implements IEventService {
             }
             fair.setStatus(Status.REJECTED_FAIR);
             eventRepository.save(fair);
+            mailService.sendRejectionMail(fair);
         }
 
         else {
             throw new IllegalArgumentException("Fair not found with ID: " + fairId);
         }
     }
+    @Transactional
+    public void cancelFair(Long fairId) throws InterruptedException {
+
+        Optional<Event> eventOptional = eventRepository.findById(fairId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof Fair) {
+            Fair fair = (Fair) eventOptional.get();
+
+
+            if (!fair.getStatus().equals(Status.UPCOMING_FAIR)) {
+                throw new IllegalStateException("Fair is not in a state to be canceled.");
+            }
+
+
+            List<Guide> assignedGuides = fair.getGuides();
+            for (Guide guide : assignedGuides) {
+                guide.getEvents().remove(fair); // Remove the fair from the guide's events
+                guideRepository.save(guide);   // Save the updated guide
+            }
+
+
+            fair.getGuides().clear();
+
+            fair.setStatus(Status.CANCELED_FAIR);
+
+            eventRepository.save(fair);
+            mailService.sendCancelationMail(fair);
+        } else {
+            throw new IllegalArgumentException("Tour not found or invalid ID: " + fairId);
+        }
+    }
+
     public void approveTourByAdvisor(Long tourId) {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
@@ -69,12 +117,13 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.BTO_ACCEPTED); // Set status to advisor approved
             eventRepository.save(tour);
+            notificationService.notifyEventApproved(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
 
-    public void rejectTourByAdvisor(Long tourId) {
+    public void rejectTourByAdvisor(Long tourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
@@ -85,12 +134,13 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.BTO_REJECTED); // Set status to advisor rejected
             eventRepository.save(tour);
+            mailService.sendRejectionMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
 
-    public void approveTourBySecretary(Long tourId) {
+    public void approveTourBySecretary(Long tourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
@@ -101,12 +151,14 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.UPCOMING_TOUR); // Set status to advisor approved
             eventRepository.save(tour);
+            mailService.sendApprovalMail(tour);
+            notificationService.notifyEventApproved(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
 
-    public void rejectTourBySecretary(Long tourId) {
+    public void rejectTourBySecretary(Long tourId) throws InterruptedException {
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
@@ -117,32 +169,45 @@ public class EventService implements IEventService {
 
             tour.setStatus(Status.CANCELED_TOUR); // Set status to advisor rejected
             eventRepository.save(tour);
+            mailService.sendRejectionMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
 
-
-    public void cancelTourBySecretary(Long tourId) {
+    @Transactional
+    public void cancelTourBySecretary(Long tourId) throws InterruptedException {
+        // Fetch the event and check if it is a tour
         Optional<Event> eventOptional = eventRepository.findById(tourId);
 
         if (eventOptional.isPresent() && eventOptional.get() instanceof Tour) {
             Tour tour = (Tour) eventOptional.get();
+
+            // Ensure the tour is in a cancellable state
             if (!tour.getStatus().equals(Status.UPCOMING_TOUR)) {
                 throw new IllegalStateException("Tour is not in a state to be canceled.");
             }
 
-            tour.setStatus(Status.CANCELED_TOUR); // Set status to canceled
+            // Remove the tour from each guide's event list
+            List<Guide> assignedGuides = tour.getGuides();
+            for (Guide guide : assignedGuides) {
+                guide.getEvents().remove(tour); // Remove the tour from the guide's events
+                guideRepository.save(guide);   // Save the updated guide
+            }
+
+            // Clear the tour's guide list
+            tour.getGuides().clear();
+
+            // Set the tour's status to CANCELED_TOUR
+            tour.setStatus(Status.CANCELED_TOUR);
+
+            // Save the updated tour
             eventRepository.save(tour);
+            mailService.sendCancelationMail(tour);
         } else {
             throw new IllegalArgumentException("Tour not found or invalid ID: " + tourId);
         }
     }
-
-
-
-
-
 
     public void setStatusOfTour(Tour t, Status status) {
         Optional<Tour> tourOptional = eventRepository.findById(t.getId())
@@ -180,6 +245,7 @@ public class EventService implements IEventService {
             throw new IllegalArgumentException("Event not found.");
         }
     }
+
     public Status getStatusOfEvent(Event e) {
         Optional <Event> eventOptional = eventRepository.findById(e.getId());
 
@@ -275,6 +341,25 @@ public class EventService implements IEventService {
         return eventRepository.findLatestTourApplicationTimeStamp();
     }
 
+    @Override
+    public List<Event> findAllEventsBySchoolId(Long schoolId) {
+        List<Event> events = eventRepository.findAll();
+        List<Event> returnEvents = new ArrayList<>();
+        for (Event event : events) {
+            if (event instanceof Tour && ((Tour) event).getSchool().getId().equals(schoolId)) {
+                returnEvents.add(event);
+            }
+            else if (event instanceof Fair && ((Fair) event).getSchool().getId().equals(schoolId)) {
+                returnEvents.add(event);
+            }
+        }
+        return returnEvents;
+    }
+
+    public Date findLatestIndividualTourApplicationTimeStamp() {
+        return eventRepository.findLatestIndividualTourApplicationTimeStamp();
+    }
+
     public void saveAllTours(List<Tour> tours) {
         eventRepository.saveAll(tours); // Save tours as they are also events
     }
@@ -283,18 +368,18 @@ public class EventService implements IEventService {
         eventRepository.saveAll(fairs); // Save fairs as they are also events
     }
 
+    public void saveAllIndividualTours(List<IndividualTour> individualTours) {
+        eventRepository.saveAll(individualTours); // Save Individual Tours as they are also events
+    }
+
     public List<Tour> getAllTours() {
         return eventRepository.findAllTours();
     }
-    public List<Event> getEventsByDay(String day) {
-        DayOfWeek dayOfWeek;
-        try {
-            dayOfWeek = DayOfWeek.valueOf(day.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid day: " + day);
-        }
-        int dayNumber = dayOfWeek.getValue(); // 1 (Monday) to 7 (Sunday)
-        return eventRepository.findAllByDayOfWeek(dayNumber);
+
+    public List<Event> getEventsByDay(int dayFilter) {
+
+        String sqlDayNumber = String.valueOf((dayFilter % 8) );
+        return eventRepository.findAllByDayOfWeek(sqlDayNumber);
     }
 
     public List<Event> getAllEvents() {
@@ -314,10 +399,27 @@ public class EventService implements IEventService {
                 Status.NEW_TOUR_APPLICATION,
                 Status.BTO_ACCEPTED,
                 Status.BTO_REJECTED,
-                Status.UPCOMING_TOUR,
-                Status.CANCELED_TOUR
+                Status.UPCOMING_TOUR
         );
         return eventRepository.findToursByStatuses(applicationStatuses);
+    }
+    public List<Fair> getFairApplications() {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.UPCOMING_FAIR,
+                Status.REJECTED_FAIR
+        );
+        return eventRepository.findFairsByStatuses(applicationStatuses);
+    }
+
+
+    public List<IndividualTour> getIndividualTourApplications() {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+        return eventRepository.findIndividualToursByStatuses(applicationStatuses);
     }
 
     public List<Tour> getTours() {
@@ -329,9 +431,25 @@ public class EventService implements IEventService {
         return eventRepository.findToursByStatuses(tourStatuses);
     }
 
+    public List<IndividualTour> getIndividualTours() {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        return eventRepository.findIndividualToursByStatuses(tourStatuses);
+    }
+    public List<Fair> getFairs() {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        return eventRepository.findFairsByStatuses(tourStatuses);
+    }
+
     @Transactional
     public void assignGuideToTour(Long eventId, Long guideId) {
-
 
         // Fetch the tour and guide from the database
         Event event = eventRepository.findById(eventId)
@@ -355,8 +473,112 @@ public class EventService implements IEventService {
         System.out.println("Guide assigned to tour: " + guide.getFirstName() + " " + guide.getLastName());
         // Add the guide to the tour
         (event.getGuides()).add(guide);
+        System.out.println("Tours of the guide: " + guide.getEvents());
         eventRepository.save(event); // Save the updated tour
+        System.out.println("Tours of the guide: " + guide.getEvents());
+        notificationService.notifyGuideAssigned((Tour)event, guide);
     }
+
+    @Transactional
+    public void assignGuideToIndividualTour(Long individualTourId, Long guideId) {
+        // Fetch the individual tour and guide from the database
+        IndividualTour individualTour = eventRepository.findById(individualTourId)
+                .filter(event -> event instanceof IndividualTour)
+                .map(event -> (IndividualTour) event)
+                .orElseThrow(() -> new IllegalArgumentException("Individual Tour not found or invalid ID"));
+
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if a guide is already assigned to this individual tour
+        if (individualTour.getGuides() != null && !individualTour.getGuides().isEmpty()) {
+            Guide existingGuide = individualTour.getGuides().get(0); // Get the assigned guide
+            if (existingGuide.getId().equals(guideId)) {
+                throw new IllegalArgumentException("This guide is already assigned to this individual tour.");
+            }
+            // Clear the existing guide to allow reassignment
+            individualTour.getGuides().clear();
+
+        }
+
+        // Check if the guide has another individual tour on the same date and hour
+        boolean hasConflict = guide.getEvents().stream()
+                .filter(event -> event instanceof IndividualTour)
+                .anyMatch(existingTour -> existingTour.getDate().equals(individualTour.getDate())
+                        && ((IndividualTour) existingTour).getHour().equals(individualTour.getHour()));
+
+        if (hasConflict) {
+            throw new IllegalArgumentException("This guide is already assigned to another individual tour at the same time.");
+        }
+
+        // Assign the guide to the individual tour (add to the guides list)
+        individualTour.getGuides().add(guide);
+
+        // Save the updated individual tour
+        eventRepository.save(individualTour);
+    }
+
+    @Transactional
+    public void removeGuideFromIndividualTour(Long individualTourId, Long guideId) {
+        // Fetch the individual tour and guide from the database
+        Event event = eventRepository.findById(individualTourId)
+                .orElseThrow(() -> new IllegalArgumentException("Individual Tour not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Ensure the event is an IndividualTour
+        if (!(event instanceof IndividualTour)) {
+            throw new IllegalArgumentException("The specified event is not an Individual Tour.");
+        }
+
+        IndividualTour individualTour = (IndividualTour) event;
+
+        // Check if the guide is assigned to this individual tour
+        if (!individualTour.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is not assigned to this Individual Tour.");
+        }
+
+        // Remove the guide from the tour's guide list
+        individualTour.getGuides().remove(guide);
+
+        // Save the updated individual tour
+        eventRepository.save(individualTour);
+    }
+
+    @Transactional
+    public void cancelIndividualTour(Long individualTourId) {
+        // Fetch the event and check if it is an individual tour
+        Optional<Event> eventOptional = eventRepository.findById(individualTourId);
+
+        if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) eventOptional.get();
+
+            if (!individualTour.getStatus().equals(Status.UPCOMING_INDIVIDUAL_TOUR)) {
+                throw new IllegalStateException("Individual Tour is not in a state to be canceled.");
+            }
+
+            List<Guide> assignedGuides = individualTour.getGuides();
+            if (!assignedGuides.isEmpty()) {
+                // Remove the individual tour from the assigned guide's events list
+                Guide assignedGuide = assignedGuides.get(0); // Individual tours have only one guide
+                assignedGuide.getEvents().remove(individualTour);
+                guideRepository.save(assignedGuide); // Save the updated guide
+            }
+
+            // Clear the guide list for the individual tour
+            individualTour.getGuides().clear();
+
+            // Set the individual tour's status to CANCELED_INDIVIDUAL_TOUR
+            individualTour.setStatus(Status.CANCELED_INDIVIDUAL_TOUR);
+
+            // Save the updated individual tour
+            eventRepository.save(individualTour);
+        } else {
+            throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
+        }
+    }
+
+
 
     @Transactional
     public void increaseGuideCount(Long tourId) {
@@ -382,11 +604,87 @@ public class EventService implements IEventService {
         // Save the updated tour to the database
         eventRepository.save(tour);
     }
+    @Transactional
+    public void assignGuideToFair(Long eventId, Long guideId) {
+
+        // Fetch the tour and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Fair not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is already assigned to this tour
+        if (event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is already assigned to this fair.");
+        }
+
+        // Check if the guide has another tour on the same date and hour
+        boolean hasConflict = guide.getEvents().stream()
+                .anyMatch(existingFair -> existingFair.getDate().equals(event.getDate())
+                        && ((Fair) existingFair).getHour().equals(((Fair) event).getHour()));
+        if (hasConflict) {
+            throw new IllegalArgumentException("This guide is already assigned to another fair at the same time.");
+        }
+
+        System.out.println("Guide assigned to fair: " + guide.getFirstName() + " " + guide.getLastName());
+        // Add the guide to the tour
+        (event.getGuides()).add(guide);
+        System.out.println("Fairs of the guide: " + guide.getEvents());
+        eventRepository.save(event); // Save the updated tour
+        System.out.println("Fairs of the guide: " + guide.getEvents());
+        notificationService.notifyGuideAssigned((Fair)event, guide);
+    }
+    @Transactional
+    public void increaseGuideCountFair(Long fairId) {
+        // Fetch the tour from the database
+        Event event = eventRepository.findById(fairId)
+                .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
+
+        // Ensure the event is a tour
+        if (!(event instanceof Fair)) {
+            throw new IllegalArgumentException("The specified event is not a tour.");
+        }
+
+        Fair fair = (Fair) event;
+
+        // Check the current guide count
+        if (fair .getGuideCount() >= 3) {
+            throw new IllegalStateException("The maximum number of guides (3) is already assigned.");
+        }
+
+        // Increment the guide count
+        fair.setGuideCount(fair.getGuideCount() + 1);
+
+        // Save the updated tour to the database
+        eventRepository.save(fair);
+    }
+    @Transactional
+    public void removeGuideFromFair(Long eventId, Long guideId) {
+
+        // Fetch the event and guide from the database
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Fair not found"));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new IllegalArgumentException("Guide not found"));
+
+        // Check if the guide is assigned to this tour
+        if (!event.getGuides().contains(guide)) {
+            throw new IllegalArgumentException("This guide is not assigned to this fair.");
+        }
+
+        // Remove the guide from the tour's guide list
+        event.getGuides().remove(guide);
+
+        // Save the updated tour (cascade will handle guide changes)
+        eventRepository.save(event);
+
+        System.out.println("Guide removed from fair: " + guide.getFirstName() + " " + guide.getLastName());
+    }
 
     @Transactional
-    public void decreaseGuideCount(Long tourId) {
+    public void decreaseGuideCount(Long eventId) {
         // Fetch the tour from the database
-        Event event = eventRepository.findById(tourId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Tour not found"));
 
         // Decrease guide count but ensure it doesn't go below 1
@@ -421,8 +719,416 @@ public class EventService implements IEventService {
         System.out.println("Guide removed from tour: " + guide.getFirstName() + " " + guide.getLastName());
     }
 
+    public long getUpcomingEventsCount() {
+        List<Fair> upcomingFairs = getAllFairs().stream()
+                .filter(fair -> fair.getStatus() == Status.UPCOMING_FAIR)
+                .collect(Collectors.toList());
+
+        List<Tour> upcomingTours = getAllTours().stream()  // Get upcoming tours
+                .filter(tour -> tour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
+        List<IndividualTour> upcomingToursInd = getAllIndividualTours().stream()  // Get upcoming tours
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
+
+        return upcomingFairs.size() + upcomingTours.size() + upcomingToursInd.size();  // Sum up both
+    }
+
+    public void approveIndividualTour(Long individualTourId) throws InterruptedException {
+        Optional<Event> eventOptional = eventRepository.findById(individualTourId);
+
+        // Check if the event exists and is of type IndividualTour
+        if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) eventOptional.get();
+
+            // Ensure the current status is NEW_INDIVIDUAL_TOUR_APPLICATION
+            if (!individualTour.getStatus().equals(Status.NEW_INDIVIDUAL_TOUR_APPLICATION)) {
+                throw new IllegalStateException("Individual Tour is not in a state to be approved.");
+            }
+
+            // Set the status to advisor approved
+            individualTour.setStatus(Status.UPCOMING_INDIVIDUAL_TOUR); // Update status to approved
+            eventRepository.save(individualTour); // Save changes to the repository
+            mailService.sendApprovalMail(individualTour);
+        } else {
+            // Handle case where the event doesn't exist or is not an IndividualTour
+            throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
+        }
+    }
+
+    public void rejectIndividualTour(Long individualTourId) throws InterruptedException {
+        Optional<Event> eventOptional = eventRepository.findById(individualTourId);
+
+        // Check if the event exists and is of type IndividualTour
+        if (eventOptional.isPresent() && eventOptional.get() instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) eventOptional.get();
+
+            // Ensure the current status is NEW_INDIVIDUAL_TOUR_APPLICATION
+            if (!individualTour.getStatus().equals(Status.NEW_INDIVIDUAL_TOUR_APPLICATION)) {
+                throw new IllegalStateException("Individual Tour is not in a state to be rejected.");
+            }
+
+            // Set the status to REJECTED_INDIVIDUAL_TOUR_APPLICATION
+            individualTour.setStatus(Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION);
+            eventRepository.save(individualTour); // Save changes to the repository
+            mailService.sendRejectionMail(individualTour);
+        } else {
+            // Handle case where the event doesn't exist or is not an IndividualTour
+            throw new IllegalArgumentException("Individual Tour not found or invalid ID: " + individualTourId);
+        }
+    }
+
+    public void notifyGuidesForUpcomingEvents() {
+        List<Fair> upcomingFairs = getAllFairs().stream()
+                .filter(fair -> fair.getStatus() == Status.UPCOMING_FAIR)
+                .collect(Collectors.toList());
+
+        List<Tour> upcomingTours = getAllTours().stream()
+                .filter(tour -> tour.getStatus() == Status.UPCOMING_TOUR)
+                .collect(Collectors.toList());
+
+        List<IndividualTour> upcomingIndividualTours = getAllIndividualTours().stream()
+                .filter(individualTour -> individualTour.getStatus() == Status.UPCOMING_INDIVIDUAL_TOUR)
+                .collect(Collectors.toList());
+
+        Date now = new Date();
+
+        for (Fair fair : upcomingFairs) {
+            if (daysBetween(now, fair.getDate()) == 3) {
+                notifyGuides(fair.getGuides(), fair);
+            }
+        }
+
+        for (Tour tour : upcomingTours) {
+            if (daysBetween(now, tour.getDate()) == 3) {
+                notifyGuides(tour.getGuides(), tour);
+            }
+        }
+
+        for (IndividualTour individualTour : upcomingIndividualTours) {
+            if (daysBetween(now, individualTour.getDate()) == 3) {
+                notifyGuides(individualTour.getGuides(), individualTour);
+            }
+        }
+    }
+
+    private void notifyGuides(List<Guide> guides, Event event) {
+        for (Guide guide : guides) {
+            String message = "Reminder: You have an upcoming " + event.getEventType() +
+                    " on " + new SimpleDateFormat("dd/MM/yyyy").format(event.getDate()) +
+                    ". Please prepare accordingly.";
+            notificationService.sendNotification(guide, message);
+        }
+    }
+
+    private long daysBetween(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    public Page<Tour> getTourApplicationsPageable(int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findTourApplicationsByStatusesPageable(applicationStatuses, pageable);
+    }
+    public Page<Tour> getToursPageable(int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findToursByStatusesPageable(tourStatuses, pageable);
+    }
+    /*public List<Event> getEventsByDay(int day) {
+        return eventRepository.findAllByDayOfWeek(day);
+    }*/
+    public List<Tour> searchEventsBySchoolName(String name) {
+        return eventRepository.findAllBySchoolNameContaining(name);
+    }
+    public Page<Tour> getTourApplicationsByDayPageable(int page, int size, int dayFilter) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8) );
+        return eventRepository.findTourApplicationsByStatusesAndDayPageable(applicationStatuses, sqlDayNumber, pageable);
+    }
+
+    public Page<Tour> getToursByDayPageable(int page, int size, int dayFilter) {
+        List<Status> tourStatuses = List.of(
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8) );
+        return eventRepository.findToursByStatusesAndDayPageable(tourStatuses, sqlDayNumber, pageable);
+    }
+
+    public Page<Fair> getFairApplicationsPageable(int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairApplicationsByStatusesPageable(applicationStatuses, pageable);
+    }
+    public Page<Fair> getFairApplicationsByDayPageable(int page, int size,int day) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+
+        return eventRepository.findFairApplicationsByStatusesAndDayPageable(applicationStatuses, String.valueOf(day),pageable);
+    }
+    public Page<Fair> getFairsByDayPageable(int page, int size, int day) {
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesAndDayPageable(List.of(Status.UPCOMING_FAIR,Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR), String.valueOf(day), pageable);
+    }
+
+    public Page<IndividualTour> getIndividualTourApplicationsByDayPageable(int page, int size, int day) {
+        List<Status> individualTourStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualTourApplicationsByStatusesAndDayPageable(individualTourStatuses, String.valueOf(day), pageable);
+    }
+
+    public Page<IndividualTour> getIndividualToursByDayPageable(int page, int size, int day) {
+        List<Status> individualTourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesAndDayPageable(individualTourStatuses, String.valueOf(day), pageable);
+    }
+
+    public Page<Fair> getFairsPageable(int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesPageable(fairStatuses, pageable);
+    }
+
+    public Page<IndividualTour> getIndividualToursPageable(int page, int size) {
+        List<Status> individualTourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesPageable(individualTourStatuses, pageable);
+    }
+
+    public Page<IndividualTour> getIndividualTourApplicationsPageable(int page, int size) {
+        List<Status> individualTourStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualTourApplicationsByStatusesPageable(individualTourStatuses, pageable);
+    }
+    public Page<Tour> searchTourApplications(String searchTerm, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findTourApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
+    }
+
+    public Page<Tour> searchTours(String searchTerm, int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_TOUR,
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findToursByStatusesAndSearchTerm(tourStatuses, searchTerm, pageable);
+    }
+
+    public Page<Fair> searchFairApplications(String searchTerm, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
+    }
+
+    public Page<Fair> searchFairs(String searchTerm, int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findFairsByStatusesAndSearchTerm(fairStatuses, searchTerm, pageable);
+    }
+
+    public Page<IndividualTour> searchIndividualTourApplications(String searchTerm, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
 
 
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualTourApplicationsByStatusesAndSearchTerm(applicationStatuses, searchTerm, pageable);
+    }
+
+    public Page<IndividualTour> searchIndividualTours(String searchTerm, int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        return eventRepository.findIndividualToursByStatusesAndSearchTerm(tourStatuses, searchTerm, pageable);
+    }
+    public Page<IndividualTour> searchIndividualTourApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_INDIVIDUAL_TOUR_APPLICATION,
+                Status.REJECTED_INDIVIDUAL_TOUR_APPLICATION,
+                Status.UPCOMING_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findIndividualTourApplicationsByStatusesAndSearchTermAndDay(applicationStatuses, searchTerm, sqlDayNumber, pageable);
+    }
+
+    public Page<IndividualTour> searchIndividualToursByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_INDIVIDUAL_TOUR,
+                Status.COMPLETED_INDIVIDUAL_TOUR,
+                Status.CANCELED_INDIVIDUAL_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findIndividualToursByStatusesAndSearchTermAndDay(tourStatuses, searchTerm, sqlDayNumber, pageable);
+    }
+
+    public Page<Tour> searchToursByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> tourStatuses = List.of(
+                Status.UPCOMING_TOUR,
+                Status.COMPLETED_TOUR,
+                Status.CANCELED_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findToursByStatusesAndSearchTermAndDay(tourStatuses, searchTerm, sqlDayNumber, pageable);
+    }
+
+    public Page<Fair> searchFairsByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.UPCOMING_FAIR,
+                Status.COMPLETED_FAIR,
+                Status.CANCELED_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findFairsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
+    }
+    public Page<Fair> searchFairApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> fairStatuses = List.of(
+                Status.NEW_FAIR_APPLICATION,
+                Status.REJECTED_FAIR,
+                Status.UPCOMING_FAIR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findFairApplicationsByStatusesAndSearchTermAndDay(fairStatuses, searchTerm, sqlDayNumber, pageable);
+    }
+    public Page<Tour> searchTourApplicationsByDay(String searchTerm, int dayFilter, int page, int size) {
+        List<Status> applicationStatuses = List.of(
+                Status.NEW_TOUR_APPLICATION,
+                Status.BTO_ACCEPTED,
+                Status.BTO_REJECTED,
+                Status.UPCOMING_TOUR
+        );
+        Pageable pageable = PageRequest.of(page, size);
+        String sqlDayNumber = String.valueOf((dayFilter % 8));
+        return eventRepository.findToursByStatusesAndSearchTermAndDay(applicationStatuses, searchTerm, sqlDayNumber, pageable);
+    }
+
+    public void markEventAsCompleted(Long eventId) throws Exception {
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        if (event instanceof Tour) {
+            Tour tour = (Tour) event;
+            if (tour.getStatus() == Status.UPCOMING_TOUR) {
+                tour.setStatus(Status.COMPLETED_TOUR);
+                eventRepository.save(tour);
+                //point record TODO
+                if(event.getGuides().size() > 1) {
+                    for(Guide guide : event.getGuides()) {
+                        PointRecord pr = new PointRecord();
+                        pr.setEvent(event);
+                        pr.setGuide(guide);
+                        pr.setPoint(1);
+                        pointRecordRepository.save(pr);
+                    }
+                }
+                else {
+                    PointRecord pr = new PointRecord();
+                    pr.setEvent(event);
+                    pr.setGuide(event.getGuides().get(0));
+                    pr.setPoint(1);
+                    pointRecordRepository.save(pr);
+                }
+            } else {
+                throw new Exception("Tour cannot be marked as completed. Current status: " + tour.getStatus());
+            }
+        } else if (event instanceof IndividualTour) {
+            IndividualTour individualTour = (IndividualTour) event;
+            if (individualTour.getStatus() == Status.UPCOMING_INDIVIDUAL_TOUR) {
+                individualTour.setStatus(Status.COMPLETED_INDIVIDUAL_TOUR);
+                eventRepository.save(individualTour);
+            } else {
+                throw new Exception("Individual Tour cannot be marked as completed. Current status: " + individualTour.getStatus());
+            }
+        } else if (event instanceof Fair) {
+            Fair fair = (Fair) event;
+            if (fair.getStatus() == Status.UPCOMING_FAIR) {
+                fair.setStatus(Status.COMPLETED_FAIR);
+                eventRepository.save(fair);
+            } else {
+                throw new Exception("Fair cannot be marked as completed. Current status: " + fair.getStatus());
+            }
+        } else {
+            throw new Exception("Unknown event type.");
+        }
+    }
 }
+
+
 
 

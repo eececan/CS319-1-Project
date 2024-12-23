@@ -13,17 +13,17 @@ import java.util.List;
 @Table(name = "all_users")
 @Getter
 @Setter
-@DiscriminatorValue("COORIDNATOR")
+@DiscriminatorValue("COORDINATOR")
 public class Coordinator extends User {
 
-    @Column(name = "schedule")
-    private String schedule = "default_schedule"; // assuming Hour[] is mapped as a string
+   /* @Column(name = "schedule")
+    private String schedule = "default_schedule";  assuming Hour[] is mapped as a string*/
 
-    @Column(name = "department", nullable = false)
-    private String department = "default_department";
+    @Column(name = "department", nullable = true)
+    private String department;
 
-    @Column(name = "grade")
-    private Integer grade = 2;
+    @Column(name = "grade", nullable = true)
+    private Integer grade;
 
     //decide after discussion
 //    @OneToMany(mappedBy = "coordinator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

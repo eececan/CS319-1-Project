@@ -20,7 +20,6 @@
         "dashboard",
         "admin panel"
     ],
-    "author": "puffintheme.com",
     "license": "ISC",
     "dependencies": {
         "connect-livereload": "^0.6.1",

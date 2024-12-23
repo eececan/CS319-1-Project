@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en" dir="ltr" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+
+    <title>Tours Statistics</title>
+
+    <!-- Bootstrap Core and Vendor -->
+    <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/status-legend.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+    <style>
+        .signout-link {
+            color: white; /* Match navbar background */
+            text-decoration: none; /* Remove underline */
+            margin-left: 15px; /* Add space from notification icon */
+            font-size: 16px; /* Adjust text size for better appearance */
+            display: flex; /* Ensures proper alignment */
+            align-items: center; /* Align icon and text vertically */
+        }
+
+        .signout-link:hover {
+            color: #007bff; /* Change to primary blue on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+        /* Container for the donut chart */
+        .donut-chart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        /* Outer donut chart */
+        .donut-chart {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+               }
+
+        /* Inner hollow circle */
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px; /* Adjust for hollow size */
+            height: 120px;
+            border-radius: 50%;
+            background-color: #fff; /* Matches page background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Centered text */
+        .donut-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Chart legend */
+        .chart-legend {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .chart-legend ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .chart-legend li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+    </style>
+    <style>
+
+        .charts-container {
+            display: flex;
+            gap: 100px;
+        }
+
+        .chart-container {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            text-align: center;
+        }
+
+        .pie {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+
+        }
+
+
+        .pie-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .pie-legend {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .pie-legend span {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .red-part {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: #c80706;
+        }
+
+        .blue-part {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: #30356c ;
+        }
+
+    </style>
+    <style>
+        .legend-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+        }
+    </style>
+    <style>
+        .horizontal-bar-chart {
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .bar-chart-bars {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            margin-bottom: 10px; /* Space between bars and numbers */
+        }
+
+        .bar-chart-bar {
+            height: 20px; /* Height of the bars */
+            margin-bottom: 10px; /* Space between bars */
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 10px; /* Padding for the text inside the bar */
+            color: white;
+        }
+
+        .bar-chart-bar span {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .bar-chart-lines {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-between; /* Ensure the numbers are spaced evenly */
+        }
+
+        .bar-chart-line {
+            position: relative;
+        }
+
+        .bar-chart-line span {
+            font-size: 12px;
+            color: black;
+            text-align: center;
+            position: relative;
+            top: 10px; /* Adjust position of the number labels */
+        }
+
+        .bar-chart-lines {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: space-between; /* Spread the labels evenly across the line */
+            position: relative;
+            margin-top: 2rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            height: 2px; /* Line thickness */
+            background-color: gray;
+        }
+
+        .bar-chart-line {
+            position: relative;
+            height: 2px; /* Line thickness */
+        }
+
+        .bar-chart-line span {
+            position: absolute;
+            top: -20px; /* Adjust the position of the label above the line */
+            font-size: 12px;
+            color: black;
+            text-align: center;
+        }
+
+        /* Optional: Style for better spacing */
+        .bar-chart-lines li:first-child span {
+            left: 0;
+        }
+
+        .bar-chart-lines li:last-child span {
+            right: 0;
+        }
+
+        .bar-chart-bar {
+
+            left: 15px;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            background-color: #30356c;
+            color: white;
+            font-weight: bold;
+            padding: 10px 10px;
+            transition: width 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .tooltip {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.8); /* Darker background for the tooltip */
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+            padding: 8px 15px; /* Slightly larger padding for better look */
+            position: absolute;
+            bottom: 100%; /* Position the tooltip above the bar */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Shadow effect for the tooltip */
+            pointer-events: none; /* Prevent tooltip from blocking mouse events */
+            white-space: nowrap; /* Prevent tooltip text from wrapping */
+        }
+
+        .bar-chart-bar:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px); /* Slight lift on hover */
+        }
+
+    </style>
+    <style>
+        .tier-1 {
+            background-color: #A93226; /* Deep brick red */
+            color: white;
+        }
+        .tier-2 {
+            background-color: #ffdb37; /* Midnight blue */
+            color: #000000;
+        }
+        .tier-3 {
+            background-color: #1F618D; /* Muted sapphire blue */
+            color: white;
+        }
+    </style>
+
+    <style>
+        .styled-button {
+            background-color: #ffffff; /* Green background */
+            border: solid 1px blue;
+            color: #000000;
+            padding: 10px 10px; /* Padding for size */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Make the button inline */
+            font-size: 12px; /* Text size */
+            border-radius: 18px; /* Rounded corners */
+            cursor: pointer; /* Cursor pointer */
+            transition: background-color 0.3s ease; /* Smooth color change */
+        }
+
+        .styled-button:hover {
+            background-color: #d4defa; /* Darker green on hover */
+        }
+
+        .styled-button:focus {
+            outline: none; /* Remove focus outline */
+        }
+    </style>
+
+
+    <style>
+        .task-completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+        /* Form Wrapper */
+        .status-form {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+        .table tbody tr {
+            vertical-align: middle;
+        }
+        /* Dropdown Container */
+        .status-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Styled Dropdown */
+        .status-dropdown {
+            appearance: none; /* Remove default dropdown styles */
+            -webkit-appearance: none; /* Safari */
+            -moz-appearance: none; /* Firefox */
+            padding: 5px 26px;
+            padding-left: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            cursor: pointer;
+            background-color: #f1f5f9;
+            color: #333;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        /* Hover and Focus Effects */
+        .status-dropdown:hover,
+        .status-dropdown:focus {
+            border-color: #6c757d;
+            background-color: #e2e6ea;
+        }
+
+        /* Optional: Add a dropdown arrow icon */
+        .status-dropdown-wrapper::after {
+            content: "▼";
+            font-size: 12px;
+            color: #6c757d;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Option Styles */
+        .status-dropdown option {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+<body class="font-montserrat offcanvas-active">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+        </h5>
+
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Analytics</h1>
+                    </div>
+                    <div class="right">
+                            <a class="signout-link" th:href="@{/ui/auth/logout}">
+                                <i class="fa fa-sign-out"></i> Sign Out
+                            </a>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="container-fluid" style="padding-top: 30px">
+                <div class="row clearfix">
+                    <div class="col-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Top Schools by Tour Count</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="horizontal-bar-chart">
+                                    <!-- Bars -->
+                                    <ul class="bar-chart-bars">
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[0].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[0].tourCount}"></span>
+                                            <span th:text="${topSchools[0].schoolName}"></span>
+                                        </li>
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[1].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[1].tourCount}"></span>
+                                            <span th:text="${topSchools[1].schoolName}"></span>
+                                        </li>
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[2].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[2].tourCount}"></span>
+                                            <span th:text="${topSchools[2].schoolName}"></span>
+                                        </li>
+                                        <li class="bar-chart-bar"
+                                            th:style="'width: ' + (${topSchools[3].tourCount} / ${maxTourCount} * 100) + '%'">
+                                            <span class="tooltip" th:text="${topSchools[3].tourCount}"></span>
+                                            <span th:text="${topSchools[3].schoolName}"></span>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Numbers (Labels) -->
+                                    <ul class="bar-chart-lines" th:attr="data-start=0, data-end=${maxTourCount}, data-major-interval=${maxTourCount < 4 ? 1 : maxTourCount / 4}">
+                                        <li th:each="i : ${#numbers.sequence(0, maxTourCount, maxTourCount < 4 ? 1 : maxTourCount / 4)}"
+                                            class="bar-chart-line">
+                                            <span th:text="${i}"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix row-deck">
+                    <div class="col-xl-6 col-lg-24 col-md-24">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Private vs Public</h3>
+                            </div>
+                            <div class="donut-chart-container">
+                                <div class="donut-chart">
+                                    <div class="pie-title" style="margin-bottom: 10px; font-weight: bold; color: white">Private vs Public</div>
+                                    <div class="pie-title" style="margin-bottom: 10px; font-weight: bold; color: white">Diagram</div>
+
+                                    <!-- Donut Chart with Tooltips -->
+                                    <div class="pie"
+                                         th:style="'background: conic-gradient(' + ${privateColor} + ' 0% ' + ${privatePercentage} + '%, ' + ${publicColor} + ' ' + ${privatePercentage} + '% 100%)'"
+                                         style="width: 200px; height: 200px; margin: 0 auto; border-radius: 50%; position: relative;">
+
+                                        <!-- Tooltip for Private -->
+                                        <span class="tooltip private-tooltip"
+                                              th:text="'Private: ' + ${privatePercentage} + '%'">
+            </span>
+
+                                        <!-- Tooltip for Public -->
+                                        <span class="tooltip public-tooltip"
+                                              th:text="'Public: ' + ${publicPercentage} + '%'">
+            </span>
+
+                                    </div>
+
+                                    <!-- Legend -->
+                                    <div class="pie-legend" style="margin-top: 10px; font-size: 14px;">
+                                        <span class="red-part" style="display: inline-block; width: 10px; height: 10px; background-color: #30356c; margin-right: 5px;"></span>Private <p  th:text="${privatePercentage} + '%'"></p>
+                                        <span class="blue-part" style="display: inline-block; width: 10px; height: 10px; background-color: #c00d0a;  margin-right: 5px;"></span> Public <p th:text=" ${publicPercentage} + '%'"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-12 col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Percentages of Cities</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="donut-chart-container" >
+                                    <!-- Outer donut chart -->
+                                    <div class="donut-chart" th:style="'background: conic-gradient(' + ${cityGradient} + ');'"></div>
+
+                                    <!-- Inner hollow circle -->
+                                    <div class="donut-center">
+                                    </div>
+                                </div>
+
+                                <div class="chart-legend">
+                                    <ul>
+                                        <li th:each="city, percentage : ${topCities}" style="margin-bottom: 5px;">
+                                            <span class="legend-color" th:style="'background-color: ' + ${cityColors[city.key]}" style="display: inline-block; width: 10px; height: 10px; margin-right: 5px;"></span>
+                                            <span th:text="${city.key} + ': ' + ${city.value} + '%'" style="font-size: 14px;"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">School Statistics</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                        <table class="table table-hover table-striped text-nowrap table-vcenter mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th>School Name</th>
+                                                <th>Tour Count</th>
+                                                <th>Preference Rate</th>
+                                                <th>Tier</th>
+                                                <th>Choose Tier</th>
+                                                <th>Tours</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="schoolTour : ${tourCountDTOs}">
+                                                <td th:text="${schoolTour.schoolName}"></td>
+                                                <td th:text="${schoolTour.tourCount}"></td>
+                                                <td th:text="${schoolTour.percentage}"></td>
+                                                <td>
+   <span class="tag tag-bos"
+         th:classappend="${schoolTour.tier.name() == 'FIRST_TIER' ? 'tier-1' : (schoolTour.tier.name() == 'SECOND_TIER' ? 'tier-2' : 'tier-3')}"
+         th:text="${schoolTour.tier.name()}"></span>
+
+                                            </td>
+
+                                                <!-- Correct the binding of the tier field -->
+                                                <td>
+                                                    <form th:action="@{/ui/schools/setTierStatus}" method="post" class="status-form">
+                                                        <!-- Hidden Field to pass schoolId -->
+                                                        <input type="hidden" name="id" th:value="${schoolTour.id}" />
+
+                                                        <!-- Custom Dropdown -->
+                                                        <div class="status-dropdown-wrapper">
+                                                            <select class="status-dropdown" name="tier" onchange="this.form.submit()">
+                                                                <option value="FIRST_TIER" th:selected="${schoolTour.tier.name() == T(com.project.btoproject.enums.Tier).FIRST_TIER}">First Tier</option>
+                                                                <option value="SECOND_TIER" th:selected="${schoolTour.tier.name() == T(com.project.btoproject.enums.Tier).SECOND_TIER}">Second Tier</option>
+                                                                <option value="THIRD_TIER" th:selected="${schoolTour.tier.name() == T(com.project.btoproject.enums.Tier).THIRD_TIER}">Third Tier</option>
+                                                            </select>
+                                                        </div>
+                                                    </form>
+
+                                                </td>
+                                                <td>
+                                                    <button class="styled-button"
+                                                            th:onclick="'location.href=\'/schoolEvent?schoolId=' + ${schoolTour.id} + '\';'">
+                                                        See Tours
+                                                    </button>
+                                                </td>
+
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Include jQuery -->
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+</body>
+</html>

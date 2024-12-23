@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        .task-completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+        .signout-link {
+            color: white; /* Match navbar background */
+            text-decoration: none; /* Remove underline */
+            margin-left: 15px; /* Add space from notification icon */
+            font-size: 16px; /* Adjust text size for better appearance */
+            display: flex; /* Ensures proper alignment */
+            align-items: center; /* Align icon and text vertically */
+        }
+
+        .signout-link:hover {
+            color: #007bff; /* Change to primary blue on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+    </style>
+
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <!-- Bootstrap Core and vendor -->
+    <link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet"  >
+
+    <!-- Plugins css -->
+    <link  th:href="@{/assets/plugins/charts-c3/c3.min.css}"  rel="stylesheet">
+
+    <!-- Core css -->
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/theme1.css}" rel="stylesheet" >
+</head>
+
+<body class="font-montserrat offcanvas-active">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+        </h5>
+
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Todo List</h1>
+
+                    </div>
+                    <div class="right">
+                        <a class="signout-link" th:href="@{/ui/auth/logout}">
+                            <i class="fa fa-sign-out"></i> Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center">
+                    <ul class="nav nav-tabs page-header-tab">
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#todo-list">ToDo List</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#todo-add">Add Todo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="section-body mt-3">
+            <div class="container-fluid">
+                <div class="tab-content">
+                    <!-- Todo List -->
+                    <div class="tab-pane fade show active" id="todo-list" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-hover">
+                                    <tbody>
+                                    <tr th:each="task : ${tasks}">
+                                        <td>
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox"
+                                                       class="custom-control-input"
+                                                       th:checked="${task.state}"
+                                                       th:onchange="|toggleTask(${task.taskId}, this.checked)|"
+                                                       th:value="${task.taskId}">
+                                                <span class="custom-control-label"
+                                                      th:classappend="${task.state} ? 'task-completed' : ''"
+                                                      th:text="${task.taskName}"></span>
+                                            </label>
+
+                                            <script>
+                                                function toggleTask(taskId, isChecked) {
+                                                    var url = isChecked
+                                                        ? `/ui/task/mark-task-complete/${taskId}`
+                                                        : `/ui/task/mark-task-incomplete/${taskId}`;
+
+                                                    fetch(url, {
+                                                        method: 'GET',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        }
+                                                    })
+                                                        .then(response => {
+                                                            if (response.ok) {
+                                                                console.log("Task updated successfully.");
+
+                                                                // Locate the label dynamically and toggle the 'task-completed' class
+                                                                var checkbox = document.querySelector(`input[value="${taskId}"]`);
+                                                                var label = checkbox.closest('label').querySelector('.custom-control-label');
+                                                                if (isChecked) {
+                                                                    label.classList.add('task-completed');
+                                                                } else {
+                                                                    label.classList.remove('task-completed');
+                                                                }
+                                                            } else {
+                                                                alert("Failed to update task.");
+                                                            }
+                                                        })
+                                                        .catch(error => console.error("Error updating task:", error));
+                                                }
+
+
+                                            </script>
+
+
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="user-actions">
+                                                <!-- Form to delete task -->
+                                                <form th:action="@{/ui/task/delete-task/{taskId}(taskId=${task.taskId})}"
+                                                      method="get"
+                                                      onsubmit="return confirm('Are you sure you want to delete this task?')">
+                                                    <button type="submit" title="Delete Task" class="btn btn-link">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Todo -->
+                    <div class="tab-pane fade" id="todo-add" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Add Todo</h3>
+                                <div class="card-options ">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                </div>
+                            </div>
+                            <form th:action="@{/ui/task/post-task}" method="post" class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">Todo Name <span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" name="taskName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">Description <span class="text-danger">*</span></label>
+                                    <div class="col-md-7">
+                                        <textarea rows="4" class="form-control no-resize" name="description" placeholder="Please type what you want..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label"></label>
+                                    <div class="col-md-7">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/ui/task/todo'">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
+<script th:src="@{/assets/bundles/apexcharts.bundle.js}"></script>
+<!-- <script th:src="@{/assets/bundles/counterup.bundle.js}"></script> -->
+<script th:src="@{/assets/bundles/knobjs.bundle.js}"></script>
+<script th:src="@{/assets/bundles/c3.bundle.js}"></script>
+<script th:src="@{/assets/js/core.js}"></script>
+<script th:src="@{/assets/js/page/project-index.js}"></script>
+
+</body>
+</html>

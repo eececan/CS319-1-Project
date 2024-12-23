@@ -1,9 +1,3 @@
-/*!
- * TOAST UI Calendar
- * @version 1.12.0 | Tue Apr 23 2019
- * @author NHN FE Development Lab <dl_javascript@nhn.com>
- * @license MIT
- */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("tui-code-snippet"), require("tui-date-picker"));
@@ -1482,7 +1476,6 @@ module.exports = g;
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * @fileoverview The entry file of fullcalendar
- * @author NHN FE Development Lab
  */
 
 
@@ -1534,10 +1527,6 @@ module.exports = Calendar;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- * @fileoverview Utility module for array sort, binary search.
- * @author NHN FE Development Lab <dl_javascript@nhn.com>
- */
 
 
 var util = __webpack_require__(/*! tui-code-snippet */ "tui-code-snippet");
@@ -2544,12 +2533,6 @@ module.exports = Collection;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- * @fileoverview common/general utilities.
- * @author NHN FE Development Lab <dl_javascript@nhn.com>
- */
-
-
 var util = __webpack_require__(/*! tui-code-snippet */ "tui-code-snippet");
 var aps = Array.prototype.slice;
 

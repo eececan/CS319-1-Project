@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Long> {
     Optional<School> findByName(String name);
-    @Query("SELECT s.name, COUNT(t) FROM School s JOIN s.tours t GROUP BY s.name ORDER BY COUNT(t) DESC")
+    /*@Query("SELECT s.name, COUNT(t) FROM School s JOIN s.tours t GROUP BY s.name ORDER BY COUNT(t) DESC")
     List<Object[]> countSchoolsInTours();
 
     @Query("SELECT s.city, COUNT(t) FROM School s " +
             "JOIN s.tours t GROUP BY s.city ORDER BY COUNT(t) DESC")
-    List<Object[]> getTourCountsByState();
+    List<Object[]> getTourCountsByState();*/
 }

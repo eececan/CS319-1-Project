@@ -27,8 +27,8 @@ public class School {
     private Tier tier = Tier.THIRD_TIER;
 
     //link this to counselor tables
-    @Column(name = "counselor_id")
-    private Long counselorId;
+    /*@Column(name = "counselor_id")
+    private Long counselorId;*/
 
     @Column(name = "flag", nullable = true)
     private boolean flag;
@@ -42,9 +42,9 @@ public class School {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
+    /*@OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tour> tours = new ArrayList<>();
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Fair> fairs = new ArrayList<>();
+    private List<Fair> fairs = new ArrayList<>();*/
 }

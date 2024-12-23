@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.DayOfWeek;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,4 +21,5 @@ public class UserAdvisorDto {
     private String email;
     private String picture;
     private String description;
+    private Date startDate;
 }

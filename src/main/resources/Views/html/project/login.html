@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilkent Guides</title>
+    <title>Bilkent Information Office</title>
 
     <!-- Bootstrap Core -->
     <link rel="stylesheet" th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" />
@@ -12,134 +12,121 @@
     <!-- Custom CSS -->
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
+            display: flex;
             margin: 0;
-            background-color: #f5f5f5; /* Optional background */
-            font-family: Arial, sans-serif;
-            padding-top: 60px; /* Space for the navbar */
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif; /* Ensure font is applied */
         }
-
-        /* Navbar Styling */
-        .navbar {
+        .auth-container {
+            display: flex;
             width: 100%;
-            height: 50px;
-            background-color: #033362; /* Navy color */
-            position: fixed;
+            height: 100%;
+        }
+        .auth-left {
+            background-color: #031961; /* Blue color */
+            width: 35%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .auth-right {
+            background-color: #ffffff;
+            width: 65%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .auth-right img.background-image {
+            position: absolute;
             top: 0;
             left: 0;
-            display: flex;
-        }
-
-        .navbar h1 {
-            margin: 0;
-            font-size: 20px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        /* Auth Section */
-        .auth {
+            height: 100%;
             width: 100%;
-            max-width: 450px;
-            text-align: center;
-            padding-top: 20px; /* Add padding to avoid overlap with navbar */
-        }
-
-        /* Welcome Header */
-        .header_h1 {
-            position: relative;
-            top: 60px; /* Adjust to bring the icon closer to the form */
-            margin: 20px 0;
-            font-size: 24px;
-            color: #2b2d30;
-            text-align: center;  /* Ensures text is centered horizontally */
-        }
-
-        /* Icon container for Bilkent icon */
-        .icon-container {
-            position: absolute;
-            top: 75px; /* Adjust to bring the icon closer to the form */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 140px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .icon-container img {
-            width: 130px;
-            height: 130px;
             object-fit: cover;
+            z-index: -1; /* Ensure the background image is behind the login card */
         }
-
-        /* Card Styling */
-        .card {
-            position: relative;
-            width: 100%;
-            top: 5px; /* Adjust to bring the icon closer to the form */
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
+        .login-card {
+            width: 450px;
             background-color: #ffffff;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 80px; /* Give space for the icon */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            left: 310px;
+            z-index: 1; /* Ensure the card is above the background image */
         }
-
-        .btn-primary {
-            background-color: #033362;
-            border-color: #033362;
+        .login-card h3 {
+            color: #333;
         }
-
-        .btn-primary:hover {
-            background-color: #021e2b;
-            border-color: #021e2b;
-        }
-
-        /* Error Message Styling */
-        .error-message {
-            color: red;
+        .form-control {
             margin-bottom: 15px;
-            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .forgot-password {
+            text-align: right;
+            color: #555;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        .logo-image {
+            max-width: 100px;
+            height: 100px;
+            margin-bottom: 18px;
+        }
+        .auth-right img.background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image scales to cover the entire container */
+            z-index: 0; /* Keep the image behind other elements */
+        }
+        .alert-success {
+            background-color: #28a745 !important;
+            color: #fff !important;
+            border-color: #28a745 !important;
+        }
+
+        /* Close Button for Green Alerts */
+        .alert-success .btn-close {
+            color: #fff;
+            opacity: 1;
+            filter: invert(1); /* Makes the close button white */
         }
     </style>
 </head>
-<body class="font-montserrat">
-
-<!-- Navbar -->
-<div class="navbar">
-    <h1>Bilkent Information Office</h1>
-</div>
-
-<!-- Auth Section -->
-<div class="auth">
-    <!-- Welcome Header -->
-    <div class="header_h1">Welcome to Bilkent Information Office Management System</div>
-
-    <!-- Icon Container -->
-    <div class="icon-container">
-        <img src="/bilkent.png" alt="Bilkent Icon">
-    </div>
-
-    <!-- Card with Login Form -->
-    <div class="card">
-        <form action="/ui/auth/login" method="post">
-            <div class="card-body">
-                <div class="card-title">Login to your account</div>
-
-                <!-- Error Message -->
-                <div th:if="${errorMessage}" class="error-message">
-                    <p th:text="${errorMessage}"></p>
-                </div>
-
+<body>
+<div class="auth-container">
+    <!-- Left side (Blue Section) -->
+    <div class="auth-left">
+        <div class="login-card">
+            <div class="text-center">
+                <img src="/bilkent.png" alt="Bilkent Logo" class="logo-image">
+            </div>
+            <h3 class="mb-4 text-center">Login to your account</h3>
+            <div th:if="${successMessage != null and successMessage != ''}"
+                 class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorMessage != null and errorMessage != ''}"
+                 class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <form action="/ui/auth/login" method="post" novalidate>
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" name="username" class="form-control" id="username" placeholder="Enter your username" required>
@@ -148,18 +135,23 @@
                     <label for="password" class="form-label">Password</label>
                     <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" required>
                 </div>
-                <div class="form-label">
-                    <a href="forgot-password.html" class="float-right small">I forgot my password</a>
+                <div class="forgot-password">
+                    <a th:href="@{/ui/auth/forgotPasswordPage}" class="float-right small">I forgot my password</a>
                 </div>
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                    <button type="submit" class="btn btn-primary btn-block w-100">Log in</button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
+
+    </div>
+    <div class="auth-right">
+        <img src="/bilkent_pic.png" alt="Background Image" class="background-image">
     </div>
 </div>
-
 <script src="../assets/bundles/lib.vendor.bundle.js"></script>
 <script src="../assets/js/core.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

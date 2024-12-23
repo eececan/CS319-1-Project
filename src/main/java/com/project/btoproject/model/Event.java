@@ -21,7 +21,6 @@ import java.util.List;
 @Table(name = "event")
 public class Event {
 
-    // Constructor that sets eventType to TOUR
     public Event() {
         this.setGuideCount(0);
     }
@@ -29,9 +28,6 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    //@Column(name = "date")
-    //private DateType date;
 
     @Column(name = "date", nullable = false)
     @Temporal(TemporalType.DATE) // Store as a DATE type in the database

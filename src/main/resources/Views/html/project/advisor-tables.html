@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en" dir="ltr" th:inline="javascript">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
 
@@ -16,10 +16,22 @@
     <link rel="stylesheet" th:href="@{/assets/css/status-legend.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
     <link rel="stylesheet" th:href="@{/assets/css/theme1.css}" />
+<style> .signout-link {
+    color: white; /* Match navbar background */
+    text-decoration: none; /* Remove underline */
+    margin-left: 15px; /* Add space from notification icon */
+    font-size: 16px; /* Adjust text size for better appearance */
+    display: flex; /* Ensures proper alignment */
+    align-items: center; /* Align icon and text vertically */
+}
 
+.signout-link:hover {
+    color: #007bff; /* Change to primary blue on hover */
+    text-decoration: underline; /* Add underline on hover */
+}</style>
 </head>
 
-<body class="font-montserrat">
+<body class="font-montserrat offcanvas-active">
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
@@ -31,282 +43,83 @@
     <div id="header_top" class="header_top">
         <div class="container">
             <div class="hleft">
-                <!--<a class="header-brand" href="index.html"><i class="fa fa-soccer-ball-o brand-logo"></i></a>-->
                 <div class="dropdown">
-                    <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="../assets/images/user.png" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
-                    <!--<a href="page-search.html" class="nav-link icon xs-hide"><i class="fa fa-search"></i></a>                    -->
-                    <a href="app-calendar.html"  class="nav-link icon app_inbox xs-hide"><i class="fa fa-calendar"></i></a>
-                    <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o"></i></a>
-                   <!-- <a href="app-chat.html"  class="nav-link icon xs-hide"><i class="fa fa-comments-o"></i></a>
-                    <a href="app-filemanager.html"  class="nav-link icon app_file xs-hide"><i class="fa fa-folder-o"></i></a>
-                    <a href="javascript:void(0)" class="nav-link icon theme_btn xs-hide"><i class="fa fa-paint-brush" data-toggle="tooltip" data-placement="right" title="Themes"></i></a>-->
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
                 </div>
             </div>
             <div class="hright">
-                <!--<div class="dropdown">
-                    <a href="javascript:void(0)" class="nav-link icon settingbar"><i class="fa fa-gear fa-spin" data-toggle="tooltip" data-placement="right" title="Settings"></i></a>
+                <div class="dropdown">
                     <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
-                </div> -->           
-            </div>
-        </div>
-    </div>
-
-    <div id="rightsidebar" class="right_sidebar">
-        <a href="javascript:void(0)" class="p-3 settingbar float-right"><i class="fa fa-close"></i></a>
-        <div class="p-4">
-            <div class="mb-4">
-                <h6 class="font-14 font-weight-bold text-muted">Font Style</h6>
-                <div class="custom-controls-stacked font_setting">
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="font" value="font-opensans">
-                        <span class="custom-control-label">Open Sans Font</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="font" value="font-montserrat" checked="">
-                        <span class="custom-control-label">Montserrat Google Font</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="font" value="font-roboto">
-                        <span class="custom-control-label">Robot Google Font</span>
-                    </label>
                 </div>
             </div>
-            <hr>
-            <div class="mb-4">
-                <h6 class="font-14 font-weight-bold text-muted">Dropdown Menu Icon</h6>
-                <div class="custom-controls-stacked arrow_option">
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-a">
-                        <span class="custom-control-label">A</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-b">
-                        <span class="custom-control-label">B</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="marrow" value="arrow-c" checked="">
-                        <span class="custom-control-label">C</span>
-                    </label>
-                </div>
-                <h6 class="font-14 font-weight-bold mt-4 text-muted">SubMenu List Icon</h6>
-                <div class="custom-controls-stacked list_option">
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="listicon" value="list-a" checked="">
-                        <span class="custom-control-label">A</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="listicon" value="list-b">
-                        <span class="custom-control-label">B</span>
-                    </label>
-                    <label class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="listicon" value="list-c">
-                        <span class="custom-control-label">C</span>
-                    </label>
-                </div>
-            </div>
-            <hr>
-            <div>
-                <h6 class="font-14 font-weight-bold mt-4 text-muted">General Settings</h6>
-                <ul class="setting-list list-unstyled mt-1 setting_switch">
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Night Mode</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-darkmode">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Fix Navbar top</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-fixnavbar">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Header Dark</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-pageheader" checked="">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Min Sidebar Dark</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-min_sidebar">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Sidebar Dark</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-sidebar">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Icon Color</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-iconcolor">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Gradient Color</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-gradient">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Box Shadow</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxshadow">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">RTL Support</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-rtl">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Box Layout</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxlayout">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                </ul>
-            </div>
-            <hr>
-            <div class="form-group">
-                <label class="d-block">Storage <span class="float-right">77%</span></label>
-                <div class="progress progress-sm">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 77%;"></div>
-                </div>
-                <button type="button" class="btn btn-primary btn-block mt-3">Upgrade Storage</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="theme_div">
-        <div class="card">
-            <div class="card-body">
-                <ul class="list-group list-unstyled">
-                    <li class="list-group-item mb-2">
-                        <p>Default Theme</p>
-                        <a href="../project/index.html"><img src="../assets/images/themes/default.png" class="img-fluid" /></a>
-                    </li>
-                    <li class="list-group-item mb-2">
-                        <p>Night Mode Theme</p>
-                        <a href="../project-dark/index.html"><img src="../assets/images/themes/dark.png" class="img-fluid" /></a>
-                    </li>                    
-                    <li class="list-group-item mb-2">
-                        <p>RTL Version</p>
-                        <a href="../project-rtl/index.html"><img src="../assets/images/themes/rtl.png" class="img-fluid" /></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="user_div">
-        <h5 class="brand-name mb-4">Guide<a href="javascript:void(0)" class="user_btn"><i class="icon-logout"></i></a></h5>
-        <div class="card-body">
-            <a href="page-profile.html"><img class="card-profile-img" src="../assets/images/sm/avatar1.jpg" alt=""></a>
-            <h6 class="mb-0">Peter Richards</h6>
-            <span>peter.richard@gmail.com</span>
-            <hr>
-            <p>Activity</p>
-            <ul class="new_timeline">
-                <li>
-                    <div class="bullet pink"></div>
-                    <div class="time">11:00am</div>
-                    <div class="desc">
-                        <h3>Attendance</h3>
-                        <h4>Computer Class</h4>
-                    </div>
-                </li>
-                <li>
-                    <div class="bullet pink"></div>
-                    <div class="time">11:30am</div>
-                    <div class="desc">
-                        <h3>Added an interest</h3>
-                        <h4>“Volunteer Activities”</h4>
-                    </div>
-                </li>
-                <li>
-                    <div class="bullet green"></div>
-                    <div class="time">12:00pm</div>
-                    <div class="desc">
-                        <h3>Developer Team</h3>
-                        <h4>Hangouts</h4>
-                        <ul class="list-unstyled team-info margin-0 p-t-5">                                            
-                            <li><img src="../assets/images/xs/avatar1.jpg" alt="Avatar"></li>
-                            <li><img src="../assets/images/xs/avatar2.jpg" alt="Avatar"></li>
-                            <li><img src="../assets/images/xs/avatar3.jpg" alt="Avatar"></li>
-                            <li><img src="../assets/images/xs/avatar4.jpg" alt="Avatar"></li>                                            
-                        </ul>
-                    </div>
-                </li>
-                <li>
-                    <div class="bullet green"></div>
-                    <div class="time">2:00pm</div>
-                    <div class="desc">
-                        <h3>Responded to need</h3>
-                        <a href="javascript:void(0)">“In-Kind Opportunity”</a>
-                    </div>
-                </li>
-                <li>
-                    <div class="bullet orange"></div>
-                    <div class="time">1:30pm</div>
-                    <div class="desc">
-                        <h3>Lunch Break</h3>
-                    </div>
-                </li>
-                <li>
-                    <div class="bullet green"></div>
-                    <div class="time">2:38pm</div>
-                    <div class="desc">
-                        <h3>Finish</h3>
-                        <h4>Go to Home</h4>
-                    </div>
-                </li>
-            </ul>
         </div>
     </div>
 
     <div id="left-sidebar" class="sidebar ">
-        <h5 class="brand-name">Guide <a href="javascript:void(0)" class="menu_option float-right"><i class="icon-grid font-16" data-toggle="tooltip" data-placement="left" title="Grid & List Toggle"></i></a></h5>
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+        </h5>
+
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
-                <!--<li class="g_heading">Project</li>-->
-                <li><a href="index.html"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>                        
-                <li class="active"><a href="project-list.html"><i class="fa fa-list-ol"></i><span>Project list</span></a></li>
-                <li><a href="project-taskboard.html"><i class="fa fa-calendar-check-o"></i><span>Taskboard</span></a></li>
-                <li><a href="project-clients.html"><i class="fa fa-user"></i><span>Clients</span></a></li>
-                <li><a href="project-todo.html"><i class="fa fa-check-square-o"></i><span>Todo List</span></a></li>
-                <li class="g_heading">App</li>
-                <li><a href="app-calendar.html"><i class="fa fa-calendar"></i><span>Calendar</span></a></li>
-                <li><a href="app-contact.html"><i class="fa fa-address-book"></i><span>Contact</span></a></li>
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
             </ul>
-        </nav>        
+        </nav>
     </div>
-
     <div class="page">
-        <div id="page_top" class="section-body top_dark">
+        <div id="page_top" class="section-body top_dark mb-20">
             <div class="container-fluid">
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">Tours and Fairs</h1>                        
+                        <h1 class="page-title">Tours and Fairs</h1>
                     </div>
-                    
+                    <div class="right">
+                        <a class="signout-link" th:href="@{/ui/auth/logout}">
+                            <i class="fa fa-sign-out"></i> Sign Out
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+        <div th:replace="fragments:: searchFilterBar('eventDaySelect')"></div>
         <div class="section-body">
             <div class="container-fluid">
                 <div class="row">
@@ -321,7 +134,7 @@
 
                             </ul>
                             <div class="header-action d-md-flex">
-                                
+
                             </div>
                         </div>
                     </div>
@@ -332,6 +145,9 @@
             <div class="container-fluid">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="Tour-Applications" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -339,20 +155,21 @@
                                         <div class="status-legend table-responsive" style="overflow-x: auto;">
                                             <table class=" table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
-                                                    <tr>
-                                                        <th style="width: 1%;">Date</th>
-                                                        <th style="width: 1%;">Day</th>
-                                                        <th style="width: 1%;">Hour</th>
-                                                        <th style="width: 1%;">High School</th>
-                                                        <th style="width: 1%;">City</th>
-                                                        <th style="width: 1%;">People Count</th>
-                                                        <th style="width: 1%;">Counselor Name</th>
-                                                        <th style="width: 1%;">Contact</th>
-                                                        <th style="width: 1%;">Action</th>
-                                                    </tr>
+                                                <tr>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">High School</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">People Count</th>
+                                                    <th style="width: 1%;">Counselor Name</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Action</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
                                                 <tr id="tourApplications-row-${tour.id}" th:each="tour : ${tourApplications}"
+                                                    th:data-status="${tour.status.name()}"
                                                     th:classappend="
                                                                     ${tour.status.name() == 'BTO_ACCEPTED'} ? 'bto-approved-tour' :
                                                                     (${tour.status.name() == 'BTO_REJECTED'} ?  'bto-rejected-tour' :
@@ -373,19 +190,23 @@
                                                     <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
                                                     <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
                                                     <td>
-                                                        <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION'
-                                          and #dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                        <div th:if="${tour.status.name() == 'NEW_TOUR_APPLICATION' and #dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
                                                             <!-- responsibleDay is DayOfWeek TYPE not String !!! -->
-
                                                             <!-- Approve Button -->
-
                                                             <button class="btn btn-success"
-                                                                    th:onclick="'handleAdvisorApproval(' + ${tour.id} + ')'">
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-highschool-name="${tour.school.name}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd-MM-yyy')}"
+                                                                    onclick="handleAdvisorApproval(this)">
                                                                 Approve
                                                             </button>
 
+
                                                             <button class="btn btn-danger"
-                                                                    th:onclick="'handleAdvisorRejection(' + ${tour.id} + ')'">
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-highschool-name="${tour.school.name}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'yyyy-MM-dd')}"
+                                                                    onclick="handleAdvisorRejection(this)">
                                                                 Reject
                                                             </button>
                                                         </div>
@@ -394,24 +215,62 @@
                                                 </tbody>
                                             </table>
                                         </div>
+
+
+                                        <!--Pagination Controls for Tour Applications Latest Version-->
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${tourApplications != null and tourApplications.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${tourApplications.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(tourApplicationsPage=${tourApplications.number - 1}, tourApplicationsSize=${tourApplications.size}, dayFilter=${selectedDay})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, tourApplications.totalPages - 1)}"
+                                                        th:classappend="${i == tourApplications.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(tourApplicationsPage=${i}, tourApplicationsSize=${tourApplications.size}, dayFilter=${selectedDay})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${tourApplications.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(tourApplicationsPage=${tourApplications.number + 1}, tourApplicationsSize=${tourApplications.size}, dayFilter=${selectedDay})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
+
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                         <!-- Legend -->
                         <div class="status-legend-container">
                             <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
-                                <li class="legend-item new">New</li>
-                                <li class="legend-item approved-tour">Approved</li>
-                                <li class="legend-item bto-approved-tour">BTO Approved</li>
-                                <li class="legend-item bto-rejected-tour">BTO Rejected</li>
-                                <li class="legend-item canceled-tour">Canceled</li>
+                                <li class="legend-item new">NEW</li>
+                                <li class="legend-item approved-tour">APPROVED</li>
+                                <li class="legend-item bto-approved-tour">BTO APPROVED</li>
+                                <li class="legend-item bto-rejected-tour">BTO REJECTED</li>
                             </ul>
                         </div>
 
                     </div>
 
                     <div class="tab-pane fade" id="Tours" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -419,52 +278,64 @@
                                         <div class="table-responsive" style="overflow-x: auto;">
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
-                                                    <tr>
-                                                        <th style="width: 1%;">Date</th>
-                                                        <th style="width: 1%;">Day</th>
-                                                        <th style="width: 1%;">Hour</th>
-                                                        <th style="width: 1%;">High School</th>
-                                                        <th style="width: 1%;">City</th>
-                                                        <th style="width: 1%;">People Count</th>
-                                                        <th style="width: 1%;">Guide #</th>
-                                                        <th style="width: 1%;">Guide 1</th>
-                                                        <th style="width: 1%;">Guide 2</th>
-                                                        <th style="width: 1%;">Guide 3</th>
-                                                        <th style="width: 1%;">Counselor Name</th>
-                                                        <th style="width: 1%;">Contact</th>
-                                                    </tr>
+                                                <tr>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">High School</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">People Count</th>
+                                                    <th style="width: 1%;">Guide #</th>
+                                                    <th style="width: 1%;">Guide 1</th>
+                                                    <th style="width: 1%;">Guide 2</th>
+                                                    <th style="width: 1%;">Guide 3</th>
+                                                    <th style="width: 1%;">Counselor Name</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr id="tours-row-${tour.id}" th:each="tour : ${tours}"
-                                                        th:classappend="
+                                                <tr id="tours-row-${tour.id}" th:each="tour : ${tours}"
+                                                    th:data-status="${tour.status.name()}"
+                                                    th:classappend="
                                                                         ${tour.status.name() == 'COMPLETED_TOUR'} ? 'completed-tour' :
                                                                         (${tour.status.name() == 'CANCELED_TOUR'} ? 'canceled-tour' : '')">
-                                                        <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
-                                                        <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
-                                                        <td th:switch="${tour.hour.name()}">
-                                                            <span th:case="'NINE'">09:00</span>
-                                                            <span th:case="'ELEVEN'">11:00</span>
-                                                            <span th:case="'THIRTEEN_THIRTY'">13:30</span>
-                                                            <span th:case="'SIXTEEN'">16:00</span>
-                                                            <span th:case="*">Unknown</span>
-                                                        </td>
-                                                        <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
-                                                        <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">High School</td>
-                                                        <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
-                                                        <td style="text-align: center; vertical-align: middle;" th:text="${tour.guideCount}"></td>
+                                                    <td th:text="${#dates.format(tour.date, 'dd/MM/yyyy')}">Date</td>
+                                                    <td th:text="${#dates.format(tour.date, 'EEEE')}">Day</td>
+                                                    <td th:switch="${tour.hour.name()}">
+                                                        <span th:case="'NINE'">09:00</span>
+                                                        <span th:case="'ELEVEN'">11:00</span>
+                                                        <span th:case="'THIRTEEN_THIRTY'">13:30</span>
+                                                        <span th:case="'SIXTEEN'">16:00</span>
+                                                        <span th:case="*">Unknown</span>
+                                                    </td>
+                                                    <td th:text="${tour.school != null ? tour.school.name : 'Unknown'}">High School</td>
+                                                    <td th:text="${tour.school != null ? tour.school.city : 'Unknown'}">High School</td>
+                                                    <td style="text-align: center; vertical-align: middle;" th:text="${tour.peopleCount}"></td>
+                                                    <td style="text-align: center; vertical-align: middle;" th:text="${tour.guideCount}"></td>
 
-                                                        <!-- Logic for Guide 1 -->
-                                                        <td>
-                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
-                                                                <span>-</span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 1}">
-                                                                <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1}">
-                                                                <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
+                                                    <!-- Logic for Guide 1 -->
+                                                    <td>
+                                                        <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
+                                                            <span>-</span>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 1}">
+                                                            <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() >= 1 }">
+                                                            <span th:text="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"></span>
+                                                            <button
+                                                                    class="btn ms-2 remove-guide"
+                                                                    th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-guide-id="${tour.guides[0].id}"
+                                                                    th:data-guide-name="${tour.guides[0].firstName + ' ' + tour.guides[0].lastName}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
+                                                                -
+                                                            </button>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 1 && tour.guides.size() < 1}">
+                                                            <!-- Check if the advisor is responsible for the tour date -->
+                                                            <div th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
                                                                 <select
                                                                         class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-1'"
@@ -477,22 +348,48 @@
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+                                                            </div>
+                                                            <!-- Show "-" if the advisor is not responsible for the date -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
+                                                        </div>
+                                                    </td>
 
+                                                    <!-- Logic for Guide 2 -->
+                                                    <td>
+                                                        <div th:if="${tour.status.name() == 'CANCELED_TOUR'}">
+                                                            <span>-</span>
+                                                        </div>
+                                                        <div th:if="${tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                            <!-- Add guide slot button only when guideCount is less than 2 -->
+                                                            <button
+                                                                    class="btn btn-primary add-guide-slot" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
+                                                                    th:data-tour-id="${tour.id}">
+                                                                Add Guide Slot
+                                                            </button>
+                                                            <!-- Show "-" if the advisor is not responsible for the date -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
                                                             </div>
-                                                        </td>
-
-                                                        <!-- Logic for Guide 2 -->
-                                                        <td>
-                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount < 2}">
-                                                                <span>-</span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 2}">
-                                                                <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() >= 2}">
-                                                                <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 2}">
+                                                            <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() >= 2}">
+                                                            <span th:text="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"></span>
+                                                            <button
+                                                                    class="btn ms-2 remove-guide"
+                                                                    th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-guide-id="${tour.guides[1].id}"
+                                                                    th:data-guide-name="${tour.guides[1].firstName + ' ' + tour.guides[1].lastName}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
+                                                                -
+                                                            </button>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 2 && tour.guides.size() < 2}">
+                                                            <div class="guide-slot-wrapper" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
                                                                 <select
                                                                         class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-2'"
@@ -505,22 +402,56 @@
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
+                                                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 1}">
+                                                                    <button
+                                                                            class="btn btn-danger btn-sm remove-guide-slot"
+                                                                            th:data-tour-id="${tour.id}"
+                                                                            th:data-guide-index="2">
+                                                                        -
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Show "-" if the advisor is not responsible -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
 
-                                                            </div>
-                                                        </td>
+                                                        </div>
+                                                    </td>
 
-                                                        <!-- Logic for Guide 3 -->
-                                                        <td>
-                                                            <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount < 3}">
-                                                                <span>-</span>
+                                                    <!-- Logic for Guide 3 -->
+                                                    <td>
+                                                        <div th:if="${tour.status.name() == 'CANCELED_TOUR' || tour.guideCount == 1 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                            <span>-</span>
+                                                        </div>
+                                                        <div th:if="${tour.guideCount == 2 && tour.status.name() == 'UPCOMING_TOUR'}">
+                                                            <button
+                                                                    class="btn btn-primary add-guide-slot" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
+                                                                    th:data-tour-id="${tour.id}">
+                                                                Add Guide Slot
+                                                            </button>
+                                                            <!-- Show "-" if the advisor is not responsible for the date -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
                                                             </div>
-                                                            <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 3}">
-                                                                <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() >= 3}">
-                                                                <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
-                                                            </div>
-                                                            <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'COMPLETED_TOUR' && tour.guides.size() >= 3}">
+                                                            <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() >= 3}">
+                                                            <span th:text="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"></span>
+                                                            <button
+                                                                    class="btn ms-2 remove-guide"
+                                                                    th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
+                                                                    th:data-tour-id="${tour.id}"
+                                                                    th:data-guide-id="${tour.guides[2].id}"
+                                                                    th:data-guide-name="${tour.guides[2].firstName + ' ' + tour.guides[2].lastName}"
+                                                                    th:data-tour-date="${#dates.format(tour.date, 'dd/MM/yyyy')}">
+                                                                -
+                                                            </button>
+                                                        </div>
+                                                        <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount >= 3 && tour.guides.size() < 3}">
+                                                            <div class="guide-slot-wrapper" th:if="${#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
                                                                 <select
                                                                         class="form-select guide-dropdown"
                                                                         th:id="'guide-' + ${tour.id} + '-3'"
@@ -533,25 +464,61 @@
                                                                         Guide Name
                                                                     </option>
                                                                 </select>
-
+                                                                <div th:if="${tour.status.name() == 'UPCOMING_TOUR' && tour.guideCount > 2}">
+                                                                    <button
+                                                                            class="btn btn-danger btn-sm remove-guide-slot"
+                                                                            th:data-tour-id="${tour.id}"
+                                                                            th:data-guide-index="2">
+                                                                        -
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                        </td>
+                                                            <!-- Show "-" if the advisor is not responsible -->
+                                                            <div th:if="${!(#dates.format(tour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
+                                                        </div>
+                                                    </td>
 
-
-
-
-
-
-
-
-
-
-                                                        <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
-                                                        <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
-                                                    </tr>
+                                                    <td th:text="${tour.schoolCounselor.name}">Counselor Name</td>
+                                                    <td th:text="${tour.schoolCounselor.phoneNumber}">Contact</td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+
+
+                                        <!-- Pagination Controls for Tours Lates Version-->
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${tours != null and tours.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${tours.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(toursPage=${tours.number - 1}, toursSize=${tours.size}, dayFilter=${selectedDay})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, tours.totalPages - 1)}"
+                                                        th:classappend="${i == tours.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(toursPage=${i}, toursSize=${tours.size}, dayFilter=${selectedDay})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${tours.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(toursPage=${tours.number + 1}, toursSize=${tours.size}, dayFilter=${selectedDay})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -560,12 +527,16 @@
                         <div class="status-legend-container">
                             <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
                                 <li class="legend-item new">UPCOMING</li>
-                                <li class="legend-item completed-tour">Completed</li>
-                                <li class="legend-item canceled-tour">Canceled</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item canceled-tour">CANCELED</li>
                             </ul>
                         </div>
                     </div>
+
                     <div class="tab-pane fade" id="Fairs" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -574,39 +545,102 @@
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
                                                 <tr>
-                                                    <th>Date</th>
-                                                    <th>Day</th>
-                                                    <th class="w100">Hour</th>
-                                                    <th class="w100">Student Name</th>
-                                                    <th>Interested Field</th>
-                                                    <th>High School Name</th>
-                                                    <th>City</th>
-                                                    <th>Contact</th>
-                                                    <th>Action</th>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">High School</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">People #</th>
+                                                    <th style="width: 1%;">Guide #</th>
+                                                    <th style="width: 1%;">Guide 1</th>
+                                                    <th style="width: 1%;">Guide 2</th>
+                                                    <th style="width: 1%;">Guide 3</th>
+                                                    <th style="width: 1%;">Counselor Name</th>
+                                                    <th style="width: 1%;">Contact</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                    <td>INPUT</td>
-                                                </tr>
+                                                <tr id="fairs-row-${fair.id}" th:each="fair : ${fairs}"
+                                                    th:data-status="${fair.status.name()}"
+                                                    th:classappend="    ${fair.status.name() == 'COMPLETED_FAIR'} ? 'completed-tour' :
+                                                                        (${fair.status.name() == 'CANCELED_FAIR'} ? 'canceled-tour' : '')">
+                                                    <td th:text="${#dates.format(fair.date, 'dd/MM/yyyy')}">Date</td>
+                                                    <td th:text="${#dates.format(fair.date, 'EEEE')}">Day</td>
+                                                    <td th:text="${fair.hour}">Hour</td>
+                                                    <td th:text="${fair.school.name}">High School</td>
+                                                    <td th:text="${fair.school.city}">City</td>
+                                                    <td style="text-align: center; vertical-align: middle;" th:text="${fair.peopleCount}"></td>
+                                                    <td style="text-align: center; vertical-align: middle;" th:text="${fair.guideCount}"></td>
+                                                    <!-- Logic for Guide 1 -->
+                                                    <td>
+                                                        <span th:if="${fair.guides.size() >= 1 && fair.status.name() != 'CANCELED_FAIR'}" th:text="${fair.guides[0].firstName + ' ' + fair.guides[0].lastName}"></span>
+                                                        <span th:if="${fair.guides.size() < 1}">-</span>
+                                                    </td>
 
+                                                    <!-- Logic for Guide 2 -->
+                                                    <td>
+                                                        <span th:if="${fair.guides.size() >= 2 && fair.status.name() != 'CANCELED_FAIR'}" th:text="${fair.guides[1].firstName + ' ' + fair.guides[1].lastName}"></span>
+                                                        <span th:if="${fair.guides.size() < 2}">-</span>
+                                                    </td>
+
+                                                    <!-- Logic for Guide 3 -->
+                                                    <td>
+                                                        <span th:if="${fair.guides.size() >= 3 && fair.status.name() != 'CANCELED_FAIR'}" th:text="${fair.guides[2].firstName + ' ' + fair.guides[2].lastName}"></span>
+                                                        <span th:if="${fair.guides.size() < 3}">-</span>
+                                                    </td>
+                                                    <td th:text="${fair.schoolCounselor.name}">Counselor Name</td>
+                                                    <td th:text="${fair.schoolCounselor.phoneNumber}">Contact</td>
+
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${fairs != null and fairs.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${fairs.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(fairsPage=${fairs.number - 1}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, fairs.totalPages - 1)}"
+                                                        th:classappend="${i == fairs.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(fairsPage=${i}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${fairs.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(fairsPage=${fairs.number + 1}, fairsSize=${fairs.size}, dayFilter=${selectedDay})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item canceled-tour">CANCELED</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="Individual-Tour-Applications" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -614,41 +648,122 @@
                                         <div class="table-responsive" style="overflow-x: auto;">
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Day</th>
-                                                        <th class="w100">Hour</th>
-                                                        <th class="w100">Student Name</th>
-                                                        <th>Interested Field</th>
-                                                        <th>High School Name</th>
-                                                        <th>City</th>
-                                                        <th>Contact</th>
-                                                        <th>Action</th>
-                                                    </tr>
+                                                <tr>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">Student Name</th>
+                                                    <th style="width: 1%;">High School Name</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">Interested Field</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Action</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
+                                                <tr id="individualTourApplications-row-${individualTour.id}"
+                                                       th:each="individualTour : ${individualTourApplications}"
+                                                    th:data-status="${individualTour.status.name()}"
+                                                       th:classappend="
+                                                                    ${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'} ? 'approved-tour' :
+                                                                    (${individualTour.status.name() == 'REJECTED_INDIVIDUAL_TOUR_APPLICATION'} ? 'bto-rejected-tour')">
+                                                    <!-- Render Date -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
 
+                                                    <!-- Render Day -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                                                    <!-- Render Hour -->
+                                                    <td th:text="${individualTour.hour}">Hour</td>
+
+                                                    <!-- Render Student Name -->
+                                                    <td th:text="${individualTour.student.name}">Student Name</td>
+
+                                                    <!-- Render High School Name -->
+                                                    <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                                                    <!-- Render City -->
+                                                    <td th:text="${individualTour.student.school.city}">City</td>
+
+                                                    <!-- Render Interested Field -->
+                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                                                    <!-- Render Contact -->
+                                                    <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                                                    <!-- Render Action Buttons -->
+                                                    <td>
+                                                        <div th:if="${individualTour.status.name() == 'NEW_INDIVIDUAL_TOUR_APPLICATION' and #dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                            <button class="btn btn-success"
+                                                                    th:data-individual-tour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleIndividualTourApproval(this)">
+                                                                Approve
+                                                            </button>
+
+                                                            <!-- Reject Button -->
+                                                            <button class="btn btn-danger"
+                                                                    th:data-individual-tour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd-MM-yyyy')}"
+                                                                    onclick="handleIndividualTourRejection(this)">
+                                                                Reject
+                                                            </button>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${individualTourApplications != null and individualTourApplications.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${individualTourApplications.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualTourApplicationsPage=${individualTourApplications.number - 1}, individualTourApplicationsSize=${individualTourApplications.size}, dayFilter=${selectedDay})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTourApplications.totalPages - 1)}"
+                                                        th:classappend="${i == individualTourApplications.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualTourApplicationsPage=${i}, individualTourApplicationsSize=${individualTourApplications.size}, dayFilter=${selectedDay})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${individualTourApplications.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualTourApplicationsPage=${individualTourApplications.number + 1}, individualTourApplicationsSize=${individualTourApplications.size},dayFilter=${selectedDay})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">NEW</li>
+                                <li class="legend-item completed-tour">ACCEPTED</li>
+                                <li class="legend-item bto-rejected-tour">REJECTED</li>
+                            </ul>
+                        </div>
                     </div>
-                   
+
                     <div class="tab-pane fade" id="Individual-Tours" role="tabpanel">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -656,53 +771,160 @@
                                         <div class="table-responsive" style="overflow-x: auto;">
                                             <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                                 <thead>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Day</th>
-                                                        <th class="w100">Hour</th>
-                                                        <th class="w100">Student Name</th>
-                                                        <th>Interested Field</th>
-                                                        <th>High School Name</th>
-                                                        <th>City</th>
-                                                        <th>Contact</th>
-                                                        
-                                                        
-                                                    </tr>
+                                                <tr>
+                                                    <th style="width: 1%;">Date</th>
+                                                    <th style="width: 1%;">Day</th>
+                                                    <th style="width: 1%;">Hour</th>
+                                                    <th style="width: 1%;">Student Name</th>
+                                                    <th style="width: 1%;">High School Name</th>
+                                                    <th style="width: 1%;">City</th>
+                                                    <th style="width: 1%;">Interested Field</th>
+                                                    <th style="width: 1%;">Contact</th>
+                                                    <th style="width: 1%;">Guide</th>
+                                                    <th style="width: 1%;">Action</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                        <td>INPUT</td>
-                                                    </tr>
+                                                <tr id="individualTours-row-${individualTour.id}" th:each="individualTour : ${individualTours}"
+                                                    th:data-status="${individualTour.status.name()}"
+                                                    th:classappend="
+                                        ${individualTour.status.name() == 'COMPLETED_INDIVIDUAL_TOUR'} ? 'completed-tour' :
+                                        (${individualTour.status.name() == 'CANCELED_INDIVIDUAL_TOUR'} ? 'canceled-tour' : '')">
+                                                    <!-- Date -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">Date</td>
+
+                                                    <!-- Day -->
+                                                    <td th:text="${#dates.format(individualTour.date, 'EEEE')}">Day</td>
+
+                                                    <!-- Hour -->
+                                                    <td th:text="${individualTour.hour}">Hour</td>
+
+                                                    <!-- Student Name -->
+                                                    <td th:text="${individualTour.student.name}">Student Name</td>
+
+                                                    <!-- High School -->
+                                                    <td th:text="${individualTour.student.school.name}">High School Name</td>
+
+                                                    <!-- City -->
+                                                    <td th:text="${individualTour.student.school.city}">City</td>
+
+                                                    <!-- Interested Field -->
+                                                    <td th:text="${individualTour.interestedField}">Interested Field</td>
+
+                                                    <!-- Contact -->
+                                                    <td th:text="${individualTour.student.phoneNumber}">Contact</td>
+
+                                                    <!-- Guide -->
+                                                    <td>
+                                                        <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR' && individualTour.guides.size() == 0 }">
+                                                            <div th:if="${#dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}">
+                                                                <select class="form-select individual-guide-dropdown"
+                                                                        th:id="'individual-guide-' + ${individualTour.id}"
+                                                                        th:name="'individual-guide-' + ${individualTour.id}"
+                                                                        th:data-tour-id="${individualTour.id}"
+                                                                        th:data-studentname="${individualTour.student.name}"
+                                                                        th:data-tourdate="${#dates.format(individualTour.date, 'dd/MM/yyyy')}">
+                                                                    <option value="" disabled selected>Select Guide</option>
+                                                                    <option th:each="guide : ${guides}" th:value="${guide.id}" th:text="${guide.firstName + ' ' + guide.lastName}">
+                                                                        Guide Name
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div th:if="${!(#dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name())}">
+                                                                -
+                                                            </div>
+
+                                                        </div>
+                                                        <!-- Check if a guide is assigned -->
+                                                        <div th:if="${individualTour.guides.size() > 0 && individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR'}">
+                                                            <span th:text="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}">Guide Name</span>
+                                                            <!-- Remove button -->
+                                                            <button class="btn ms-2 remove-guide-individual"
+                                                                    th:if="${#dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}"
+                                                                    th:data-tour-id="${individualTour.id}"
+                                                                    th:data-guide-id="${individualTour.guides[0].id}"
+                                                                    th:data-guide-name="${individualTour.guides[0].firstName + ' ' + individualTour.guides[0].lastName}"
+                                                                    onclick="removeIndividualTourGuide(this)">
+                                                                -
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <!-- Actions -->
+                                                    <td>
+                                                        <div th:if="${individualTour.status.name() == 'UPCOMING_INDIVIDUAL_TOUR' and #dates.format(individualTour.date, 'EEEE').toUpperCase() == responsibleDay.name()}" >
+                                                            <button class="btn btn-danger"
+                                                                    th:data-individual-tour-id="${individualTour.id}"
+                                                                    th:data-student-name="${individualTour.student.name}"
+                                                                    th:data-tour-date="${#dates.format(individualTour.date, 'dd-MM-yyyy')}"
+                                                                    onclick="cancelIndividualTour(this)">
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
 
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="pagination-container text-center">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination d-inline-flex" th:if="${individualTours != null and individualTours.totalPages > 0}">
+                                                    <!-- Previous Button -->
+                                                    <li class="page-item" th:if="${individualTours.hasPrevious()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualToursPage=${individualTours.number - 1}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}">
+                                                            Previous
+                                                        </a>
+                                                    </li>
+                                                    <!-- Page Numbers -->
+                                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, individualTours.totalPages - 1)}"
+                                                        th:classappend="${i == individualTours.number} ? 'active'">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualToursPage=${i}, individualToursSize=${individualTours.size}, dayFilter=${selectedDay})}"
+                                                           th:text="${i + 1}">
+                                                        </a>
+                                                    </li>
+                                                    <!-- Next Button -->
+                                                    <li class="page-item" th:if="${individualTours.hasNext()}">
+                                                        <a class="page-link"
+                                                           th:href="@{/advisorTables(individualToursPage=${individualTours.number + 1}, individualToursSize=${individualTours.size},dayFilter=${selectedDay})}">
+                                                            Next
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Legend -->
+                        <div class="status-legend-container">
+                            <ul class="status-legend list-unstyled d-flex justify-content-between align-items-center">
+                                <li class="legend-item new">UPCOMING</li>
+                                <li class="legend-item completed-tour">COMPLETED</li>
+                                <li class="legend-item canceled-tour">CANCELED</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="Project-add" role="tabpanel">
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
-    </div>    
+    </div>
 </div>
+
+<!-- Notification Container -->
+<div id="notification-box" class="notification hidden"></div>
 
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Confirm Assignment</h5>
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
                 <button type="button" id="closeModalLabelButton"class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -711,6 +933,24 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="confirmButton">Yes</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelButton">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="errorModalMessage">
+                <!-- Error message will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -725,6 +965,8 @@
 <script th:src="@{/assets/bundles/lib.vendor.bundle.js}"></script>
 <script th:src="@{/assets/js/core.js}"></script>
 <script th:src="@{/assets/js/all-event-actions.js}"></script>
+<!--<script th:src="@{/assets/js/all-fair-actions.js}"></script>-->
+<script th:src="@{/assets/js/all-individual-tour-actions.js}"></script>
 
 
 

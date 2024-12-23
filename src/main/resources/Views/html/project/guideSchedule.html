@@ -1,0 +1,346 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            margin: 20px auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+            border-radius: 13px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0 !important;
+            text-align: center;
+            height: 100px;
+            padding: 18px;
+            font-size: 14px;
+            color: #606060;
+        }
+
+        th {
+            background-color: #eef1fa;
+            color: #031961;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center !important;
+        }
+        tr:hover {
+            background-color: #f1f1f1; /* Hover effect */
+            cursor: pointer;
+        }
+        td {
+            font-weight: normal;
+            background-color: #eef1fa;
+            color: #031961;
+        }
+        .full {
+            background-color: #05268c;
+            color: white;
+        }
+        .empty {
+            background-color: white;
+            color: black;
+        }
+
+        .hr-divider {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc; /* Optional border for better aesthetics */
+            display: block;
+            margin: 0 auto; /* Centers the image */
+        }
+
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* Ensures it matches the table row height */
+            overflow: hidden;
+        }
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+
+    <title>Guide Schedule</title>
+
+    <!-- Bootstrap Core and vandor -->
+    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/plugins/sweetalert/sweetalert.css"/>
+    <link rel="stylesheet" href="../assets/plugins/dropify/css/dropify.min.css">
+
+    <!-- Core css -->
+    <link rel="stylesheet" href="../assets/css/main.css"/>
+    <link rel="stylesheet" href="../assets/css/theme1.css"/>
+</head>
+
+<body class="font-montserrat offcanvas-active">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div id="header_top" class="header_top">
+        <div class="container">
+            <div class="hleft">
+                <div class="dropdown">
+                    <img class="avatar" th:src="@{/bilkent.png}" alt="User Avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; margin-top:5px;">
+                </div>
+            </div>
+            <div class="hright">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fa  fa-align-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="left-sidebar" class="sidebar ">
+        <h5 class="brand-name"
+            style="font-weight: bold; margin-left: 5px; font-size: 18px; margin-top: 10px;">
+            <span th:if="${role == 'ROLE_GUIDE'}">Guide</span>
+            <span th:if="${role == 'ROLE_GUIDE_IN_TRAINING'}">Guide in Training</span>
+            <span th:if="${role == 'ROLE_ADVISOR'}">Advisor</span>
+            <span th:if="${role == 'ROLE_COORDINATOR'}">Coordinator</span>
+            <span th:if="${role == 'ROLE_HEAD_SECRETARY'}">Head Secretary</span>
+            <span th:if="${role == 'ROLE_DIRECTOR'}">Director</span>
+        </h5>
+
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="g_heading"></li>
+                <li class="active">
+                    <a th:href="@{/dashboard}">
+                        <i class="fa fa-dashboard"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/getAllUsers}">
+                        <i class="fa fa-user"></i><span>Members</span>
+                    </a>
+                </li>
+                <li>
+                <li>
+                    <a th:href="@{/getIncidentReports}">
+                        <i class="fa fa-user"></i><span>Incident Reports</span>
+                    </a>
+                <li>
+                    <a th:href="@{/ui/task/todo}">
+                        <i class="fa fa-check-square-o"></i><span>Todo List</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/calendar}">
+                        <i class="fa fa-calendar"></i><span>Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/ui/UserProfile/profile}">
+                        <i class="fa fa-user"></i><span>My profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Guide Schedule</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="container-fluid">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="list" role="tabpanel">
+                        <div class="row clearfix">
+                            <div class="col-lg-12">
+                                <div class="table-responsive" id="users">
+                                    <table class="table table-hover table-vcenter text-nowrap table_custom border-style list">
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container ml-20" style="width: 90%; margin: 0 auto;">
+            <h2>Edit availability for tour assignment</h2>
+            <p>Blue slots indicate unavailable times, while white slots are available. Click on a slot to update your schedule.</p>
+            <table>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                    <th>Sunday</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>09.00</td>
+                    <td th:each="i : ${#numbers.sequence(0, 6)}"
+                        th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+                        th:data-guide-id="${guide.id}"
+                        th:data-position="${i}"
+                        th:data-status="${guide.schedule.charAt(i)}"
+                        th:onclick="|toggleSlot(this)|"></td>
+                </tr>
+                <tr>
+                    <td>11.00</td>
+                    <td th:each="i : ${#numbers.sequence(7, 13)}"
+                        th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+                        th:data-guide-id="${guide.id}"
+                        th:data-position="${i}"
+                        th:data-status="${guide.schedule.charAt(i)}"
+                        th:onclick="|toggleSlot(this)|"></td>
+                </tr>
+                <tr>
+                    <td>13.30</td>
+                    <td th:each="i : ${#numbers.sequence(14, 20)}"
+                        th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+                        th:data-guide-id="${guide.id}"
+                        th:data-position="${i}"
+                        th:data-status="${guide.schedule.charAt(i)}"
+                        th:onclick="|toggleSlot(this)|"></td>
+                </tr>
+                <tr>
+                    <td>16.00</td>
+                    <td th:each="i : ${#numbers.sequence(21, 27)}"
+                        th:class="${guide.schedule.charAt(i) == 'f' ? 'full' : 'empty'}"
+                        th:data-guide-id="${guide.id}"
+                        th:data-position="${i}"
+                        th:data-status="${guide.schedule.charAt(i)}"
+                        th:onclick="|toggleSlot(this)|"></td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="button"
+                    class="btn btn-primary float-left"
+                    onclick="window.location.href = '/dashboard';">
+                Save Changes
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+
+<script src="../assets/bundles/sweetalert.bundle.js"></script>
+<script src="../assets/plugins/dropify/js/dropify.min.js"></script>
+
+<script src="../assets/js/core.js"></script>
+<script src="assets/js/page/sweetalert.js"></script>
+<script>
+    $(function() {
+        "use strict";
+
+        $('.dropify').dropify();
+
+        var drEvent = $('#dropify-event').dropify();
+        drEvent.on('dropify.beforeClear', function(event, element) {
+            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+        });
+
+        drEvent.on('dropify.afterClear', function(event, element) {
+            alert('File deleted');
+        });
+
+        $('.dropify-fr').dropify({
+            messages: {
+                default: 'Glissez-déposez un fichier ici ou cliquez',
+                replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                remove: 'Supprimer',
+                error: 'Désolé, le fichier trop volumineux'
+            }
+        });
+    });
+    function toggleSlot(element) {
+        const currentStatus = element.getAttribute('data-status');
+        const guideId = element.getAttribute('data-guide-id');
+        const position = element.getAttribute('data-position');
+        let newStatus = currentStatus === 'e' ? 'f' : 'e';
+
+        if (newStatus === 'e') {
+            element.classList.remove('full');
+            element.classList.add('empty');
+            element.textContent = "Available";
+        } else {
+            element.classList.remove('empty');
+            element.classList.add('full');
+            element.textContent = "Unavailable";
+        }
+
+        const formData = new FormData();
+        formData.append('guideId', guideId);
+        formData.append('position', position);
+        formData.append('status', newStatus); // Send 'e' or 'f' as a string
+
+        fetch('/updateSchedule', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(html => {
+                // Update the status attribute to reflect the new status
+                element.setAttribute('data-status', newStatus);
+            })
+            .catch(() => alert("Failed to update schedule"));
+    }
+
+    function initializeSchedule() {
+        const slots = document.querySelectorAll('td[data-status]');
+        slots.forEach(slot => {
+            const currentStatus = slot.getAttribute('data-status');
+            if (currentStatus === 'f') {
+                slot.classList.add('full');
+                slot.classList.remove('empty');
+                slot.textContent = "Unavailable"; // Initialize as Unavailable
+            } else {
+                slot.classList.add('empty');
+                slot.classList.remove('full');
+                slot.textContent = "Available"; // Initialize as Available
+            }
+        });
+    }
+
+    window.onload = initializeSchedule;
+
+
+</script>
+</body>
+</html>

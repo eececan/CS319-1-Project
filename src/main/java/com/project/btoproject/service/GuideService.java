@@ -2,11 +2,16 @@ package com.project.btoproject.service;
 
 import com.project.btoproject.model.*;
 import com.project.btoproject.repository.IGuideRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,29 +28,6 @@ public class GuideService implements IGuideService
     public List<Event> seeAssignedEvents(Guide guide) {
         List<Event> events = guide.getEvents();
         return events;
-    }
-
-    @Override
-    @Transactional
-    public void selfAssignTour(Guide guide, Tour tour) {
-        if (!tour.getGuides().contains(guide)) {
-            tour.getGuides().add(guide);
-            guide.getEvents().add(tour);
-            guideRepository.save(guide);
-            //touru guncelle
-        }
-        //maybe add error message later
-    }
-
-    @Override
-    @Transactional
-    public void selfAssignIndividualTour(Guide guide, IndividualTour individualTour) {
-        if(individualTour.getGuide()!=null) {
-            throw new IllegalStateException("This individual tour already has a guide assigned.");
-        }
-        individualTour.setGuide(guide);
-        guide.getEvents().add(individualTour);
-        guideRepository.save(guide);
     }
 
     @Override
@@ -82,6 +64,37 @@ public class GuideService implements IGuideService
     }
 
     @Override
+    public List<Guide> getReverseGuideRankings() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingInt(this::getTotalPoints))
+                .toList();
+    }
+
+    @Override
+    public List<Guide> getGuidesByExperience() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Guide::getStartDate))
+                .toList();
+    }
+
+    @Override
+    public List<Guide> getGuidesByLowestExperience() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Guide::getStartDate).reversed())
+                .toList();
+    }
+
+    @Override
+    public List<Guide> getGuideRankingsEntity() {
+        return guideRepository.findAll()
+                .stream()
+                .sorted((g1, g2) -> Integer.compare(getTotalPoints(g2), getTotalPoints(g1)))
+                .toList();
+    }
+    @Override
     public Guide getGuideWithLowestPoints() {
         List<Long> rankings = getGuideRankings();
         Long guideId = rankings.get(rankings.size()-1);
@@ -103,8 +116,36 @@ public class GuideService implements IGuideService
     }
 
     @Override
+    public String getSchedule(Long guideId) {
+        return guideRepository.getGuideById(guideId).getSchedule();
+    }
+
+    @Override
+    public void setSchedule(Long guideId, int position, char status) {
+        Guide guide = guideRepository.getGuideById(guideId);
+        String currentSchedule = guide.getSchedule();
+        if(currentSchedule == null){
+            currentSchedule = "eeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        }
+        StringBuilder newSchedule = new StringBuilder(currentSchedule);
+        newSchedule.setCharAt(position, status);
+        guide.setSchedule(newSchedule.toString());
+        guideRepository.save(guide);
+    }
+
+    public Event getUpcomingEventOfGuide(Guide guide) {
+        List<Event> events = guide.getEvents();
+        Date today = Date.from(LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant());
+        Optional<Event> upcomingEvent = events.stream()
+                .filter(event -> event.getDate().after(today))
+                .min(Comparator.comparing(Event::getDate));
+        return upcomingEvent.orElse(null);
+    }
+    @Override
     public int getTotalPoints(Guide guide) {
-        return guide.getPoints().stream().mapToInt(PointRecord::getPoint).sum();
+        return guide.getEvents().size();
     }
 
     @Override
@@ -115,5 +156,26 @@ public class GuideService implements IGuideService
     @Override
     public Guide getGuideById(Long id) {
         return guideRepository.getGuideById(id);
+    }
+
+    @Override
+    public List<Event> getGuideTours(Guide guide) {
+        return guide.getEvents().stream()
+                .filter(event -> "TOUR".equals(event.getEventType()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> getGuideFairs(Guide guide) {
+        return guide.getEvents().stream()
+                .filter(event -> "FAIR".equals(event.getEventType()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> getGuideIndividualTours(Guide guide) {
+        return guide.getEvents().stream()
+                .filter(event -> "INDIVIDUAL_TOUR".equals(event.getEventType()))
+                .collect(Collectors.toList());
     }
 }
