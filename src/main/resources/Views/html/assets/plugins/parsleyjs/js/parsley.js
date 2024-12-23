@@ -2390,8 +2390,6 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   /**
    * inputevent - Alleviate browser bugs for input events
    * https://github.com/marcandre/inputevent
-   * @version v0.0.3 - (built Thu, Apr 14th 2016, 5:58 pm)
-   * @author Marc-Andre Lafortune <github@marc-andre.ca>
    * @license MIT
    */
 

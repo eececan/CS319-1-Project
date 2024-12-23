@@ -8,11 +8,6 @@
 	}
 }(function( $ ) {
 
-/**
- * @author  @tatocaster <kutaliatato@gmail.com>
- * Translated default messages for the jQuery validation plugin.
- * Locale: GE (Georgian; ქართული)
- */
 $.extend( $.validator.messages, {
 	required: "ეს ველი სავალდებულოა",
 	remote: "გთხოვთ შეასწოროთ.",
