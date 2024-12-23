@@ -173,22 +173,25 @@
             // Use AJAX to fetch events
             events: function(start, end, timezone, callback) {
                 $.ajax({
-                    url: '/api/events',  // The endpoint that returns events as JSON
+                    url: '/api/events',
                     dataType: 'json',
                     success: function(data) {
-                        // Process and format the events
                         var events = data.map(event => {
-                            // Update the title to include event type and school name
-                            var title = event.title;  // Event type
-                            if (event.school) {
-                                title += ' - ' + event.school;  // Append school name if available
+                            var title = event.title;
+                            if(event.title === 'INDIVIDUAL_TOUR') {
+                                title += ' - ' + event.student;
                             }
-
+                            else {
+                                if (event.school) {
+                                    title += ' - ' + event.school;
+                                }
+                            }
                             return {
                                 title: title,
                                 start: event.start,
                                 end: event.end,
-                                description: event.description  // Keep description for tooltips
+                                description: event.description
+
                             };
                         });
 
