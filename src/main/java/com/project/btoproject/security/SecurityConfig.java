@@ -55,13 +55,8 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-
                                 "/api/auth/**",
-                                "/getAllUsers",
-                                "/getAllGuides",
-                                "/getAllEvents",
                                 "/",
-                                "/ui/auth/login",
                                 "/assets/**",
                                 "/bilkent_pic.png",
                                 "/bilkent.png",
@@ -70,15 +65,11 @@ public class SecurityConfig {
                                 "/ui/assets/css/**",
                                 "/ui/assets/images/**",
                                 "/ui/assets/js/**",
-                                "/ui/auth/head-secretary-tables",
-                                "/api/tours/**",
-                                "/deleteUser/**",
-                                "/updateSchedule",
                                 "/ui/auth/**",
                                 "/ui/auth/forgotPassword",
                                 "/ui/auth/forgotPasswordPage",
                                 "/forgot-password.html",
-                                "/calendar"
+                                "/home"
 
 
                         ).permitAll()

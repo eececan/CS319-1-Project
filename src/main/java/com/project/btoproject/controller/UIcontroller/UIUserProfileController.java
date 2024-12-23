@@ -167,7 +167,7 @@ public class UIUserProfileController {
                 }
 
             }
-            if (email == null || !email.contains("bilkent@edu.tr")) {
+            if (email == null || !email.contains("@bilkent.edu.tr")) {
                 return validationService.validateAndReturn(role, dtoMap, model,
                         "The email you use must be a bilkent mail! Please enter your bilkent mail!", Long.parseLong(username), 0);
             }
@@ -541,7 +541,27 @@ public class UIUserProfileController {
             } else {
                 Role newRole = optionalRole.get();
                 userService.changeRole(userId, newRole);
-                redirectAttributes.addAttribute("successMessage", "Role has been successfully changed.");
+                if(newRole.getName().equals("ROLE_ADVISOR")){
+                    Optional<User> adv = allUsersService.getUserById(userId);
+                    if(adv.isPresent()){
+                        Advisor advisor = (Advisor) adv.get();
+                        if(advisor.getResponsibleDay() != null){
+                            redirectAttributes.addAttribute("successMessage", "Role has been successfully changed. Default available day assigned to advisor.");
+
+                        }
+                        else{
+                            redirectAttributes.addAttribute("successMessage", "Role has been successfully changed. Currently, there is no available day. Responsible day is null for now.");
+
+                        }
+                    }
+                    else{
+                        redirectAttributes.addAttribute("errorMessage", "User does not exist.");
+
+                    }
+                }
+                else{
+                    redirectAttributes.addAttribute("successMessage", "Role has been successfully changed.");
+                }
             }
         }
 
