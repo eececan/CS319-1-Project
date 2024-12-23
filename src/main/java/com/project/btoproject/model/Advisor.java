@@ -17,14 +17,14 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Advisor extends User {
 
-    @Column(name = "department", nullable = false)
+    @Column(name = "department", nullable = true)
     private String department;
 
-    @Column(name = "grade")
+    @Column(name = "grade", nullable = true)
     private Integer grade;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "responsible_day")
+    @Column(name = "responsible_day", nullable = true)
     private DayOfWeek responsibleDay;
 
     @OneToMany(mappedBy = "advisor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
