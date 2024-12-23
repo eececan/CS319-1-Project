@@ -140,8 +140,8 @@ public class UIAnalyticsController {
                 .filter(school -> SchoolType.PRIVATE == school.getSchoolType())
                 .count();
         long totalSchools = allSchools.size();
-        double privatePercentage = (double) privateSchoolCount / totalSchools * 100;
-        double publicPercentage = (double) publicSchoolCount / totalSchools * 100;
+        double privatePercentage =  Double.valueOf(String.format("%.1f", ( float)privateSchoolCount / totalSchools * 100)) ;
+        double publicPercentage = Double.valueOf(String.format("%.1f", ( float)publicSchoolCount / totalSchools * 100)) ;
         String privateColor = "#303568"; // Example: Custom color for private schools
         String publicColor = "#c00d0a"; // Example: Custom color for public schools
         model.addAttribute("privatePercentage", privatePercentage);
@@ -212,7 +212,6 @@ public class UIAnalyticsController {
         int interval = (int) (maxTourCount / 10); // Adjust interval as needed
         model.addAttribute("maxTourCount", (int) maxTourCount); // Pass as integer for cleaner output
         model.addAttribute("interval", interval);
-        System.out.println("REREREREREREGGGHEGEGEG");
         // Prepare data for the view
         model.addAttribute("cityPercentages", cityPercentages);
         model.addAttribute("cityCounts", cityCounts);

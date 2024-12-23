@@ -548,8 +548,8 @@
 
                                     <!-- Legend -->
                                     <div class="pie-legend" style="margin-top: 10px; font-size: 14px;">
-                                        <span class="red-part" style="display: inline-block; width: 10px; height: 10px; background-color: #30356c; margin-right: 5px;"></span> Private
-                                        <span class="blue-part" style="display: inline-block; width: 10px; height: 10px; background-color: #c00d0a; margin-left: 15px; margin-right: 5px;"></span> Public
+                                        <span class="red-part" style="display: inline-block; width: 10px; height: 10px; background-color: #30356c; margin-right: 5px;"></span>Private <p  th:text="${privatePercentage} + '%'"></p>
+                                        <span class="blue-part" style="display: inline-block; width: 10px; height: 10px; background-color: #c00d0a;  margin-right: 5px;"></span> Public <p th:text=" ${publicPercentage} + '%'"></p>
                                     </div>
                                 </div>
                             </div>
