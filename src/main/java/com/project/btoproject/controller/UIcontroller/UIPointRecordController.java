@@ -68,7 +68,8 @@ public class UIPointRecordController {
                     .orElse("ROLE_UNKNOWN");
             model.addAttribute("role", role);
         }
-        if(role == "ROLE_GUIDE") {
+
+        if(role.equals("ROLE_GUIDE")) {
             Guide guide = guideService.getGuideById(Long.parseLong(username));
             Long guideId = guide.getId();
             List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(guide);
@@ -95,7 +96,7 @@ public class UIPointRecordController {
             model.addAttribute("events",events);
             return "point-record-list";
         }
-        else if(role == "ROLE_GUIDE_IN_TRAINING") {
+        else if(role.equals("ROLE_GUIDE_IN_TRAINING")){
             GuideInTraining guide = guideInTrainingService.getGuideInTrainingById(Long.parseLong(username));
             Long guideId = guide.getId();
             List<Tour> tours = eventService.getAllTours().stream()
