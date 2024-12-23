@@ -295,7 +295,6 @@ public class UIAuthController {
                     return "guide-profile";
                 }
 
-
             }
            else{
                 User user = allUsersService.getUserById(parseLong(username)).get();
@@ -350,23 +349,8 @@ public class UIAuthController {
                    }
                    if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE_IN_TRAINING"))) {
                        GuideInTraining guide = (GuideInTraining) user;
-                       List<Event> event = guide.getEvents();
-                       int sum = 0;
-                       if(event != null){
-                           sum = 0;
-                           for (int i = 0; i < event.size(); i++) {
-                               System.out.println(event.get(i).getId());
-                               if (event.get(i).getEventType() == EventType.TOUR) {
-                                   if ((event.get(i).getStatus() == Status.COMPLETED_TOUR)) {
-                                       sum++;
-                                   }
-                               }
-                           }
-                           model.addAttribute("sum", sum);
-                       }
-                       else {
-                           model.addAttribute("sum", 0);
-                       }
+                       model.addAttribute("sum", 0);
+
                        model.addAttribute("role", "ROLE_GUIDE_IN_TRAINING");
                        model.addAttribute("isUser", "true");
                        model.addAttribute("guide", guide);
@@ -467,7 +451,7 @@ public class UIAuthController {
                        Long id = parseLong(username);
                        Guide userr = guideService.getGuideById(parseLong(username));
                        Event event = guideService.getUpcomingEventOfGuide(userr);
-                       List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(userr);
+                       List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(Long.parseLong(username));
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
                            sum+=pointRecords.get(0).getPoint();
@@ -500,20 +484,8 @@ public class UIAuthController {
                        // Add advisor, tours, and fairs to the model
                        List<User> users = allUsersService.getAllUsers();
                        GuideInTraining guideInTraining = guideInTrainingService.getGuideInTrainingById(parseLong(username));
-                       Guide userr = new Guide();
-                       userr.setFirstName(guideInTraining.getFirstName());
-                       userr.setLastName(guideInTraining.getLastName());
-                       userr.setEmail(guideInTraining.getEmail());
-                       userr.setPhoneNumber(guideInTraining.getPhoneNumber());
-                       userr.setPassword(guideInTraining.getPassword());
-                       userr.setStartDate(guideInTraining.getStartDate());
-                       userr.setSchedule(guideInTraining.getSchedule());
-                       userr.setEvents(guideInTraining.getEvents());
-                       userr.setGrade(guideInTraining.getGrade());
-                       userr.setDepartment(guideInTraining.getDepartment());
-                       userr.setDescription(guideInTraining.getDescription());
-                       userr.setTasks(guideInTraining.getTasks());
-                       List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(userr);
+
+                       List<PointRecord> pointRecords = pointRecordService.getPointRecordsByGuide(Long.parseLong(username));
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
                            sum+=pointRecords.get(0).getPoint();

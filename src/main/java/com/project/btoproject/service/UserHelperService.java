@@ -34,6 +34,7 @@ public class UserHelperService implements IUserHelperService {
         guide.setPassword(userEntity.getPassword());
         guide.setPicture(userGuideDto.getPicture());
         guide.setStartDate(new Date());
+        guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
         allUsersService.addUser(guide);
     }
 
@@ -50,6 +51,7 @@ public class UserHelperService implements IUserHelperService {
         guideInTraining.setStartDate(userGuideInTrainingDto.getStartDate());
         guideInTraining.setId(Long.parseLong(userEntity.getUsername()));
         guideInTraining.setPassword(userEntity.getPassword());
+        guideInTraining.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
         allUsersService.addUser(guideInTraining);
     }
 
