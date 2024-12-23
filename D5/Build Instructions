@@ -1,47 +1,48 @@
 Build Instructions
-Install PostgreSQL and pgAdmin4 
-Download and install PostgreSQL and pgAdmin4 from their official websites.
 
-Clone the Repository from GitHub:
-git clone https://github.com/eececan/CS319-1-Project.git
+1. Install PostgreSQL and pgAdmin4 
+     Download and install PostgreSQL and pgAdmin4 from their official websites.
 
-Open the source code in your preferred IDE
+2. Clone the Repository from GitHub:
+     git clone https://github.com/eececan/CS319-1-Project.git
 
-Configure Database Settings
-Update the application.properties file to match your existing database configuration, or create a new database with the following properties listed in our application.properties file:
-spring.datasource.url=jdbc:postgresql://localhost:5432/bto
-spring.datasource.username=postgres
-spring.datasource.password=btodb
+3. Open the source code in your preferred IDE
 
-     5. Run the Application Twice
-From the IDE, simply run the application twice to initialize data. The first run will initialize the roles, and the second run will initialize the default users.
+4. Configure Database Settings
+     Update the application.properties file to match your existing database configuration, or create a new database with the following properties listed in our application.properties file:
+     spring.datasource.url=jdbc:postgresql://localhost:5432/bto
+     spring.datasource.username=postgres
+     spring.datasource.password=btodb
 
-     6. Configure Mail Services (Optional)
-If you want to change the email address that sends the application/rejection/cancellation mails, you can configure the settings in application.properties file:
-spring.mail.username=<your login user to smtp server>
-spring.mail.password=<your login password to smtp server>
-If not, make sure application.properties looks like this:
-spring.mail.username=btoservice@gmail.com
-spring.mail.password=qbie hzgf eesz wkfj
+5. Run the Application Twice
+     From the IDE, simply run the application twice to initialize data. The first run will initialize the roles, and the second run will initialize the default users.
 
-     7. Access the Application
-Enter http://localhost:8080/home to your browser after running the application.
+6. Configure Mail Services (Optional)
+     If you want to change the email address that sends the application/rejection/cancellation mails, you can configure the settings in application.properties file:
+     spring.mail.username=<your login user to smtp server>
+     spring.mail.password=<your login password to smtp server>
 
-     8. Using the Default Users
+     If not, make sure application.properties looks like this:
+     spring.mail.username=btoservice@gmail.com
+     spring.mail.password=qbie hzgf eesz wkfj
 
-You can login with the default users:
+ 7. Access the Application
+     Enter http://localhost:8080/home to your browser after running the application.
 
-Coordinator:
-ID: 22200000
-Password: Password123!!!
+8. Using the Default Users
+     You can login with the default users:
 
-Director: 
-ID: 22
-Password: Password123!!!
-
-Head Secretary: 
-ID: 222
-Password: Password123!!!
-
-And can register new users by logging in with the Coordinator account and go to Members>Add New User
+     Coordinator:
+     ID: 22200000
+     Password: Password123!!!
+     
+     Director: 
+     ID: 22
+     Password: Password123!!!
+     
+     Head Secretary: 
+     ID: 222
+     Password: Password123!!!
+     
+     And can register new users by logging in with the Coordinator account and go to Members>Add New User
 
