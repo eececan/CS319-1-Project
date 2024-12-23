@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -311,9 +312,6 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
         return Optional.ofNullable(repository.findUserByEmail(email));
     }
 
-
-
-    //dogru mu checkle
     @Override
     public void changeRole(@RequestParam Long userId, String role) {
         User user = repository.findById(userId).get();
@@ -330,6 +328,12 @@ public boolean hasMissingInformation(User user, UserEntity userEntity) {
                 advisor.setId(user.getId());
                 advisor.setPassword(userEntity.getPassword());
                 advisor.setStartDate(user.getStartDate());
+                for (DayOfWeek day : DayOfWeek.values()) {
+                    String dayString = day.toString();
+                    if (responsibleDayAvailable(dayString)) {
+                        advisor.setResponsibleDay(day);
+                    }
+                }
                 repository.delete(user);
                 repository.save(advisor);
             }

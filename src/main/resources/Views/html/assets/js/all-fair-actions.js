@@ -12,7 +12,7 @@ function handleFairApproval(buttonElement) {
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
     // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to approve the fair for ${schoolName} on ${fairDate}? Note that the high school will be notified and this action cannot be undone.`;
+    confirmMessage.innerHTML = `Do you want to approve the fair for <b>${schoolName}</b> on <b>${fairDate}</b>? Note that the high school will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -76,8 +76,8 @@ function handleFairRejection(buttonElement) {
     const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to reject the fair for ${schoolName} on ${fairDate}? Note that the high school will be notified and this action cannot be undone.`;
+    // Set the modal message dynamically with bold formatting
+    confirmMessage.innerHTML = `Do you want to reject the fair for <b>${schoolName}</b> on <b>${fairDate}</b>? Note that the high school will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -143,7 +143,7 @@ function handleFairCancellation(buttonElement) {
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
     // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to cancel the fair for ${schoolName} on ${fairDate}? Note that the high school will be notified and the guides assigned to this tour will be removed. This action cannot be undone.`;
+    confirmMessage.innerHTML = `Do you want to cancel the fair for <b>${schoolName}</b> on <b>${fairDate}</b>? Note that the high school will be notified and the guides assigned to this tour will be removed. <b>This action cannot be undone.</b>`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Set the confirmation message
-            confirmMessage.innerHTML = `Are you sure you want to join the fair "${fairName}" on ${fairDate}? <br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
+            confirmMessage.innerHTML = `Are you sure you want to join the fair <strong>"${fairName}"</strong> on <strong>${fairDate}</strong>? <br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
 
             // Show the confirmation modal
             confirmModal.show();
@@ -575,7 +575,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Set the confirmation message
-            confirmMessage.innerHTML = `Are you sure you want to leave the fair "${fairName}" scheduled on ${fairDate}?`;
+            confirmMessage.innerHTML = `Are you sure you want to leave the fair <strong>"${fairName}"</strong> scheduled on <strong>${fairDate}?</strong>`;
 
             // Show the confirmation modal
             confirmModal.show();

@@ -1,8 +1,10 @@
 package com.project.btoproject.controller.UIcontroller;
 import com.project.btoproject.dto.UserDto;
+import com.project.btoproject.model.GuideInTraining;
 import com.project.btoproject.model.Role;
 import com.project.btoproject.model.User;
 import com.project.btoproject.model.UserEntity;
+import com.project.btoproject.service.GuideInTrainingService;
 import com.project.btoproject.service.IAllUsersService;
 import com.project.btoproject.service.IUserService;
 import org.springframework.security.core.Authentication;
@@ -14,7 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +28,12 @@ import java.util.stream.Collectors;
 public class UIUserController {
     private final IAllUsersService allUsersService;
     private final IUserService userService;
+    private final GuideInTrainingService guideInTrainingService;
 
-    public UIUserController(IAllUsersService userService, IUserService allUsersService) {
+    public UIUserController(IAllUsersService userService, IUserService allUsersService, GuideInTrainingService guideInTrainingService) {
         this.allUsersService = userService;
         this.userService = allUsersService;
+        this.guideInTrainingService = guideInTrainingService;
     }
 
     @GetMapping("/getAllUsers")
@@ -129,6 +136,53 @@ public class UIUserController {
         return "redirect:/getAllUsers";
     }
 
+    @GetMapping("/getGuideReadies")
+    public String getGuideReadies(
+            Model model,
+            @ModelAttribute("successMessage") String successMessage,
+            @ModelAttribute("errorMessage") String errorMessage) {
+        try {
+            // Fetch all guide in training records
+            List<GuideInTraining> guides = guideInTrainingService.getAllGuideInTrainings();
+
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+
+            // Filter guides with start dates 6 months or older
+            List<GuideInTraining> readyGuides = guides.stream()
+                    .filter(guide -> {
+                        Date startDate = guide.getStartDate();
+                        if (startDate == null) {
+                            return false; // Skip if startDate is null
+                        }
+                        // Convert Date to LocalDate
+                        LocalDate startLocalDate = startDate.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+                        // Check if the difference is 6 months or more
+                        return !startLocalDate.isAfter(currentDate.minusMonths(6));
+                    })
+                    .collect(Collectors.toList());
+
+            // Add filtered guides to the model
+            model.addAttribute("all_users", readyGuides);
+
+            // Add any success or error messages passed from the redirect
+            if (successMessage != null && !successMessage.isEmpty()) {
+                model.addAttribute("successMessage", successMessage);
+            }
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                model.addAttribute("errorMessage", errorMessage);
+            }
+
+        } catch (Exception e) {
+            // Add an error message to the model
+            model.addAttribute("errorMessage", "An error occurred while fetching the guide list.");
+        }
+
+        return "readies-list"; // Return your view name
+    }
+
 
 
     @GetMapping("/deleteUser/{id}")
@@ -143,4 +197,5 @@ public class UIUserController {
         }
         return "redirect:/getAllUsers";
     }
+
 }

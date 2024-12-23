@@ -38,6 +38,11 @@ public class GuideInTrainingService implements IGuideInTrainingService {
     }
 
     @Override
+    public List<GuideInTraining> getAllGuideInTrainings() {
+        return guideInTrainingRepository.findAll();
+    }
+
+    @Override
     public List<Event> seeAssignedEvents(Long id) {
         Optional<GuideInTraining> guideInTraining = guideInTrainingRepository.findById(id);
         if(guideInTraining.isPresent()) {

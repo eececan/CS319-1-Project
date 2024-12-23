@@ -47,7 +47,7 @@ public class UserHelperService implements IUserHelperService {
         guideInTraining.setEmail(userGuideInTrainingDto.getEmail());
         guideInTraining.setPicture(userGuideInTrainingDto.getPicture());
         guideInTraining.setDescription(userGuideInTrainingDto.getDescription());
-        guideInTraining.setStartDate(new Date());
+        guideInTraining.setStartDate(userGuideInTrainingDto.getStartDate());
         guideInTraining.setId(Long.parseLong(userEntity.getUsername()));
         guideInTraining.setPassword(userEntity.getPassword());
         allUsersService.addUser(guideInTraining);

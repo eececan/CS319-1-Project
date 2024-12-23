@@ -11,8 +11,9 @@ function handleAdvisorApproval(buttonElement) {
     const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to approve the tour for ${highSchoolName} on ${tourDate}? Note that this action cannot be undone.`;
+    // Set the modal message dynamically with bold formatting
+    confirmMessage.innerHTML = `Do you want to approve the tour for <b>${highSchoolName}</b> on <b>${tourDate}</b>? Note that this action cannot be undone.`;
+
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -63,32 +64,6 @@ function handleAdvisorApproval(buttonElement) {
     };
 }
 
-
-
-/*function handleAdvisorApproval(tourId) {
-    console.log("Approving tour with ID:", tourId);
-    fetch(`/api/tours/${tourId}/advisor/approve`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-        .then((response) => {
-            if (response.ok) {
-                alert(`Tour ID ${tourId} approved successfully!`);
-                location.reload(); // Reload the page to reflect the updated status
-            } else {
-                return response.text().then((message) => {
-                    throw new Error(message);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error("Error approving tour:", error);
-            alert(`Error: ${error.message}`);
-        });
-}*/
-
 function handleAdvisorRejection(buttonElement) {
     // Extract data from the button's data-* attributes
     const tourId = buttonElement.getAttribute("data-tour-id");
@@ -103,7 +78,7 @@ function handleAdvisorRejection(buttonElement) {
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
     // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to reject the tour application for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.`;
+    confirmMessage.innerHTML = `Do you want to reject the tour application for <b>${highSchoolName}</b> on <b>${tourDate}</b>? Note that the high school will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -167,8 +142,9 @@ function handleSecretaryApproval(buttonElement) {
     const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to approve the tour for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.`;
+    // Set the modal message dynamically with bold formatting
+    confirmMessage.innerHTML = `Do you want to approve the tour for <b>${highSchoolName}</b> on <b>${tourDate}</b>? Note that the high school will be notified and this action cannot be undone.`;
+
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -255,8 +231,8 @@ function handleTourCancellation(buttonElement) {
     const cancelButton = document.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
     const closeModalLabelButton = document.querySelector('.btn-close[data-bs-dismiss="modal"]');
 
-    // Set the modal message dynamically
-    confirmMessage.textContent = `Do you want to cancel the tour for ${highSchoolName} on ${tourDate}? Note that the high school will be notified and this action cannot be undone.`;
+    // Set the modal message dynamically with bold formatting
+    confirmMessage.innerHTML = `Do you want to cancel the tour for <b>${highSchoolName}</b> on <b>${tourDate}</b>? Note that the high school will be notified and this action cannot be undone.`;
 
     // Remove any previous event listeners to avoid conflicts
     confirmButton.replaceWith(confirmButton.cloneNode(true));
@@ -331,7 +307,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const tourHour = this.dataset.tourhour;
             const selectedOptionText = this.options[this.selectedIndex].text;
 
-            confirmMessage.textContent = `You are about to assign guide "${selectedOptionText}" to the tour for ${highSchoolName} on ${tourDate}. Are you sure?`;
+            // Set the modal message dynamically with bold formatting
+            confirmMessage.innerHTML = `You are about to assign guide <b>"${selectedOptionText}"</b> to the tour for <b>${highSchoolName}</b> on <b>${tourDate}</b>. Are you sure?`;
+
             confirmModal.show();
         });
     });
@@ -512,7 +490,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Set the confirmation message dynamically
             const guideName = this.dataset.guideName;
             const tourDate = this.dataset.tourDate;
-            confirmMessage.textContent = `Are you sure you want to remove guide "${guideName}" from the tour on ${tourDate}?`;
+            // Set the modal message dynamically with bold formatting
+            confirmMessage.innerHTML = `Are you sure you want to remove guide <b>"${guideName}"</b> from the tour on <b>${tourDate}</b>?`;
+
 
             // Show the confirmation modal
             confirmModal.show();
@@ -592,7 +572,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // Set the confirmation message
-            confirmMessage.innerHTML = `Are you sure you want to leave the tour for "${schoolName}" on ${tourDate}?<br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
+            confirmMessage.innerHTML = `Are you sure you want to join the tour for <strong>"${schoolName}"</strong> on <strong>${tourDate}</strong>?<br><strong>Caution: You cannot leave if there are less than 7 days remaining!</strong>`;
 
             // Show the confirmation modal
             confirmModal.show();
@@ -678,8 +658,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Set the confirmation message
-            confirmMessage.innerHTML = `Are you sure you want to leave the tour for "${schoolName}" on ${tourDate}?`;
+            // Set the modal message dynamically with bold formatting
+            confirmMessage.innerHTML = `Are you sure you want to leave the tour for <b>"${schoolName}"</b> on <b>${tourDate}</b>?`;
+
 
             // Show the confirmation modal
             confirmModal.show();
