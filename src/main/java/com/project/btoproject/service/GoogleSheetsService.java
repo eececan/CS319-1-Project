@@ -259,7 +259,7 @@ public class GoogleSheetsService {
 
         // Map Column F: Number of People
         tour.setPeopleCount(Integer.parseInt(row.get(5).toString()));
-        int guideCount = (int) Math.ceil(Integer.parseInt(row.get(5).toString()) / 50.0); // Calculate guide count
+        int guideCount = (int) Math.ceil(Integer.parseInt(row.get(5).toString()) / 60.0); // Calculate guide count
         if(guideCount > 3)  guideCount = 3; // Limit guide count to 3
         tour.setGuideCount(guideCount);
 
@@ -464,7 +464,7 @@ public class GoogleSheetsService {
         // Parse event details or additional notes (Column L)
         fair.setVisitorNotes(row.get(11).toString());
 
-        int guideCount = (int) Math.ceil(Integer.parseInt(row.get(10).toString()) / 50.0); // Calculate guide count
+        int guideCount = (int) Math.ceil(Integer.parseInt(row.get(10).toString()) / 60.0); // Calculate guide count
         if(guideCount > 3)  guideCount = 3; // Limit guide count to 3
         fair.setGuideCount(guideCount);
 

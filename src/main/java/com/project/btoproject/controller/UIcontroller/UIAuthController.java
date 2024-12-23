@@ -382,6 +382,7 @@ public class UIAuthController {
                        List<Fair> fairs = eventService.getAllFairs();
                        List<UserTask> tasks = allUsersService.seeAllTasks(user);
                        List<User> users = allUsersService.getAllUsers();
+                       List<Guide>guides = guideService.getAllGuides();
                        List<PointRecord> pointRecords = pointRecordService.findAllRecords();
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
@@ -395,6 +396,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("guides", guides);
                        model.addAttribute("roleUser", "Director");
                        return "Director-Dashboard";
                    }
@@ -406,6 +408,7 @@ public class UIAuthController {
                        List<Fair> fairs = eventService.getAllFairs();
                        List<UserTask> tasks = allUsersService.seeAllTasks(user);
                        List<User> users = allUsersService.getAllUsers();
+                       List<Guide>guides = guideService.getAllGuides();
                        List<PointRecord> pointRecords = pointRecordService.findAllRecords();
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
@@ -419,6 +422,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("guides", guides);
                        model.addAttribute("roleUser", "Coordinator");
                        return "Coordinator-Dashboard";// Coordinator's page
                    }else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADVISOR"))) {
@@ -432,6 +436,7 @@ public class UIAuthController {
                        List<UserTask> tasks = allUsersService.seeAllTasks(user);
                        // Add advisor, tours, and fairs to the model
                        List<User> users = allUsersService.getAllUsers();
+                       List<Guide>guides = guideService.getAllGuides();
                        List<PointRecord> pointRecords = pointRecordService.findAllRecords();
                        int sum=0;
                        for (int i = 0; i < pointRecords.size(); i++) {
@@ -445,6 +450,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("guides",guides);
                        model.addAttribute("roleUser", "Advisor");
                        return "Advisor-Dashboard"; // Advisor's page
                    } else if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_GUIDE"))) {
@@ -528,6 +534,7 @@ public class UIAuthController {
                        // Fetch associated tours and fairs
                        List<Tour> tours = eventService.getAllTours();
                        List<Fair> fairs = eventService.getAllFairs();
+                       List<Guide>guides = guideService.getAllGuides();
                        //List<UserTask> tasks = allUsersService.seeAllTasks(user);
                        // Add advisor, tours, and fairs to the model
                        List<User> users = allUsersService.getAllUsers();
@@ -544,6 +551,7 @@ public class UIAuthController {
                        model.addAttribute("advisor", advisor);
                        model.addAttribute("tours", tours);
                        model.addAttribute("fairs", fairs);
+                       model.addAttribute("guides", guides);
                 /*List<User> users = allUsersService.getAllUsers();
                 List<Tour> tours = eventService.getAllTours();
                 List<Fair> fairs = eventService.getAllFairs();

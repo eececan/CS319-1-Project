@@ -70,7 +70,9 @@ public class UICalendarController {
     public List<Map<String, Object>> getEvents() {
 
         List<Event> events = eventService.getAllEvents();
-
+        List<Tour> tours = eventService.getAllTours();
+        List<Fair> fairs = eventService.getAllFairs();
+        List<IndividualTour> individualTours = eventService.getAllIndividualTours();
         // Convert events to a format suitable for FullCalendar
         List<Map<String, Object>> eventList = events.stream().map(event -> {
             Map<String, Object> eventData = new HashMap<>();
@@ -78,6 +80,14 @@ public class UICalendarController {
             eventData.put("start", event.getDate());  // Event start date
             eventData.put("end", event.getDate());  // Optional: if you have an end date
             eventData.put("description", event.getVisitorNotes());  // Optional: description
+            if (event instanceof Tour) {
+                eventData.put("school", ((Tour) event).getSchool().getName());
+            } else if (event instanceof Fair) {
+                eventData.put("school", ((Fair) event).getSchool().getName());
+            } else if (event instanceof IndividualTour) {
+                eventData.put("school", ((IndividualTour) event).getStudent().getSchool().getName());
+                eventData.put("student", ((IndividualTour) event).getStudent().getName());
+            }
 
             return eventData;
         }).collect(Collectors.toList());
