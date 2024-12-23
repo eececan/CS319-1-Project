@@ -134,13 +134,13 @@ public class DataInitializer {
         if (!roleRepository.findByName("ROLE_ADVISOR").isEmpty()) {
             if (advisorRepository.findByFirstNameAndLastName("Furkan", "Akyol").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("11");
-                registerDto.setPassword("11");
+                registerDto.setUsername("22200011");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_ADVISOR");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(11L)
+                UserEntity user = userService.findUserByUsername(22200011L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserAdvisorDto advisorDto = new UserAdvisorDto();
@@ -158,13 +158,13 @@ public class DataInitializer {
             }
             if (advisorRepository.findByFirstNameAndLastName("Mehmet", "Akyol").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("12");
-                registerDto.setPassword("12");
+                registerDto.setUsername("22200012");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_ADVISOR");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(12L)
+                UserEntity user = userService.findUserByUsername(22200012L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserAdvisorDto advisorDto = new UserAdvisorDto();
@@ -173,69 +173,214 @@ public class DataInitializer {
                 advisorDto.setDescription("Mehmet Akyol added as an advisor as an example.");
                 advisorDto.setPhoneNumber("0123456789");
                 advisorDto.setResponsibleDay(DayOfWeek.TUESDAY);
-                advisorDto.setEmail("afurkan.akyol@ug.bilkent.edu.tr");
+                advisorDto.setEmail("mehmet.akyol@ug.bilkent.edu.tr");
                 advisorDto.setGrade(4);
                 advisorDto.setPicture("picture.jpg");
                 advisorDto.setDepartment("CS");
                 advisorDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
             }
-            // Repeat for other advisor initialization code
+            if (advisorRepository.findByFirstNameAndLastName("Ali", "Akyol").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200013");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_ADVISOR");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200013L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserAdvisorDto advisorDto = new UserAdvisorDto();
+                advisorDto.setFirstName("Ali");
+                advisorDto.setLastName("Akyol");
+                advisorDto.setDescription("Ali Akyol added as an advisor as an example.");
+                advisorDto.setPhoneNumber("0123456789");
+                advisorDto.setResponsibleDay(DayOfWeek.WEDNESDAY);
+                advisorDto.setEmail("ali.akyol@ug.bilkent.edu.tr");
+                advisorDto.setGrade(4);
+                advisorDto.setPicture("picture.jpg");
+                advisorDto.setDepartment("CS");
+                advisorDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
+            }
+            if (advisorRepository.findByFirstNameAndLastName("Ömer", "Akyol").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200014");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_ADVISOR");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200014L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserAdvisorDto advisorDto = new UserAdvisorDto();
+                advisorDto.setFirstName("Ömer");
+                advisorDto.setLastName("Akyol");
+                advisorDto.setDescription("Ömer Akyol added as an advisor as an example.");
+                advisorDto.setPhoneNumber("0123456789");
+                advisorDto.setResponsibleDay(DayOfWeek.THURSDAY);
+                advisorDto.setEmail("omer.akyol@ug.bilkent.edu.tr");
+                advisorDto.setGrade(4);
+                advisorDto.setPicture("picture.jpg");
+                advisorDto.setDepartment("CS");
+                advisorDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
+            }
+            if (advisorRepository.findByFirstNameAndLastName("Mert", "Akyol").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200015");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_ADVISOR");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200015L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserAdvisorDto advisorDto = new UserAdvisorDto();
+                advisorDto.setFirstName("Mert");
+                advisorDto.setLastName("Akyol");
+                advisorDto.setDescription("Mert Akyol added as an advisor as an example.");
+                advisorDto.setPhoneNumber("0123456789");
+                advisorDto.setResponsibleDay(DayOfWeek.FRIDAY);
+                advisorDto.setEmail("mert.akyol@ug.bilkent.edu.tr");
+                advisorDto.setGrade(4);
+                advisorDto.setPicture("picture.jpg");
+                advisorDto.setDepartment("CS");
+                advisorDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationAdvisor(user, advisorDto);
+            }
         }
     }
 
     @Transactional
     public void initializeGuideData() {
         if (!roleRepository.findByName("ROLE_GUIDE").isEmpty()) {
-            if (guideRepository.findByFirstNameAndLastName("Aycakeeeee", "Atac").isEmpty()) {
+            if (guideRepository.findByFirstNameAndLastName("Ayca", "Atac").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("23");
-                registerDto.setPassword("23");
+                registerDto.setUsername("22200001");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_GUIDE");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(23L)
+                UserEntity user = userService.findUserByUsername(22200001L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserGuideDto guideDto = new UserGuideDto();
                 guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
-                guideDto.setFirstName("Aycakeeeee");
+                guideDto.setFirstName("Ayca");
                 guideDto.setLastName("Atac");
                 guideDto.setDescription("Ayca Atac added as a guide as an example.");
                 guideDto.setPhoneNumber("05370527736");
-                guideDto.setEmail("cccandan.atac@ug.bilkent.edu.tr");
+                guideDto.setEmail("candan.atac@ug.bilkent.edu.tr");
                 guideDto.setGrade(3);
                 guideDto.setPicture("picture.jpg");
                 guideDto.setDepartment("CS");
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuide(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Ece", "Cann").isEmpty()) {
+            if (guideRepository.findByFirstNameAndLastName("Emel", "Atac").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("42");
-                registerDto.setPassword("42");
+                registerDto.setUsername("22200002");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_GUIDE");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(42L)
+                UserEntity user = userService.findUserByUsername(22200002L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserGuideDto guideDto = new UserGuideDto();
+                guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                guideDto.setFirstName("Emel");
+                guideDto.setLastName("Atac");
+                guideDto.setDescription("Emel Atac added as a guide as an example.");
+                guideDto.setPhoneNumber("05370527736");
+                guideDto.setEmail("emel.atac@ug.bilkent.edu.tr");
+                guideDto.setGrade(3);
+                guideDto.setPicture("picture.jpg");
+                guideDto.setDepartment("CS");
+                guideDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationGuide(user, guideDto);
+            }
+            if (guideRepository.findByFirstNameAndLastName("Ece", "Atac").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200003");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_GUIDE");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200003L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserGuideDto guideDto = new UserGuideDto();
                 guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
                 guideDto.setFirstName("Ece");
-                guideDto.setLastName("Cann");
-                guideDto.setDescription("Ece Cann added as a guide as an example.");
+                guideDto.setLastName("Atac");
+                guideDto.setDescription("Ece Atac added as a guide as an example.");
                 guideDto.setPhoneNumber("05370527736");
-                guideDto.setEmail("ece.cann@ug.bilkent.edu.tr");
+                guideDto.setEmail("ece.atac@ug.bilkent.edu.tr");
                 guideDto.setGrade(3);
                 guideDto.setPicture("picture.jpg");
                 guideDto.setDepartment("CS");
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuide(user, guideDto);
             }
-            // Repeat for other guide initialization code
+
+            if (guideRepository.findByFirstNameAndLastName("Candan", "Atac").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200004");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_GUIDE");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200004L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserGuideDto guideDto = new UserGuideDto();
+                guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                guideDto.setFirstName("Candan");
+                guideDto.setLastName("Atac");
+                guideDto.setDescription("Candan Atac added as a guide as an example.");
+                guideDto.setPhoneNumber("05370527736");
+                guideDto.setEmail("ccandan.atac@ug.bilkent.edu.tr");
+                guideDto.setGrade(3);
+                guideDto.setPicture("picture.jpg");
+                guideDto.setDepartment("CS");
+                guideDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationGuide(user, guideDto);
+            }
+
+            if (guideRepository.findByFirstNameAndLastName("Onur", "Atac").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200005");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_GUIDE");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200005L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserGuideDto guideDto = new UserGuideDto();
+                guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                guideDto.setFirstName("Onur");
+                guideDto.setLastName("Atac");
+                guideDto.setDescription("Onur Atac added as a guide as an example.");
+                guideDto.setPhoneNumber("05370527736");
+                guideDto.setEmail("onur.atac@ug.bilkent.edu.tr");
+                guideDto.setGrade(3);
+                guideDto.setPicture("picture.jpg");
+                guideDto.setDepartment("CS");
+                guideDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationGuide(user, guideDto);
+            }
+
         }
     }
 
@@ -244,13 +389,13 @@ public class DataInitializer {
         if (!roleRepository.findByName("ROLE_GUIDE_IN_TRAINING").isEmpty()) {
             if (guideRepository.findByFirstNameAndLastName("Ece", "Can").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("3");
-                registerDto.setPassword("3");
+                registerDto.setUsername("22200021");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(3L)
+                UserEntity user = userService.findUserByUsername(22200021L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
@@ -266,59 +411,77 @@ public class DataInitializer {
                 guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
-            if (guideRepository.findByFirstNameAndLastName("Alminacan", "Dag").isEmpty()) {
+            if (guideRepository.findByFirstNameAndLastName("Kadriye", "Can").isEmpty()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("21");
-                registerDto.setPassword("21");
+                registerDto.setUsername("22200022");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(21L)
+                UserEntity user = userService.findUserByUsername(22200022L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
                 guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
-                guideDto.setFirstName("Almina");
-                guideDto.setLastName("Dag");
-                guideDto.setDescription("Almina Dag added as a guide in training as an example.");
+                guideDto.setFirstName("Kadriye");
+                guideDto.setLastName("Can");
+                guideDto.setDescription("Kadriye can added as a guide in training as an example.");
                 guideDto.setPhoneNumber("05371127736");
-                guideDto.setEmail("alminacandag@ug.bilkent.edu.tr");
+                guideDto.setEmail("kadriyecan@ug.bilkent.edu.tr");
                 guideDto.setGrade(3);
                 guideDto.setPicture("picture.jpg");
                 guideDto.setDepartment("CS");
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date()); // Set the current date
-                calendar.add(Calendar.MONTH, -7); // Subtract 7 months
-                Date sevenMonthsAgo = calendar.getTime();
-                guideDto.setStartDate(sevenMonthsAgo);
-
+                guideDto.setStartDate(new Date());
                 userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
             }
-            // Repeat for other guide in training initialization code
+            if (guideRepository.findByFirstNameAndLastName("Poyraz", "Can").isEmpty()) {
+                RegisterDto registerDto = new RegisterDto();
+                registerDto.setUsername("22200023");
+                registerDto.setPassword("Password123!!!");
+                registerDto.setRole("ROLE_GUIDE_IN_TRAINING");
+
+                authService.register(registerDto);
+
+                UserEntity user = userService.findUserByUsername(22200023L)
+                        .orElseThrow(() -> new IllegalStateException("User not found"));
+
+                UserGuideInTrainingDto guideDto = new UserGuideInTrainingDto();
+                guideDto.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                guideDto.setFirstName("Poyraz");
+                guideDto.setLastName("Can");
+                guideDto.setDescription("Poyraz can added as a guide in training as an example.");
+                guideDto.setPhoneNumber("05371127736");
+                guideDto.setEmail("poyrazcan@ug.bilkent.edu.tr");
+                guideDto.setGrade(3);
+                guideDto.setPicture("picture.jpg");
+                guideDto.setDepartment("CS");
+                guideDto.setStartDate(new Date());
+                userHelperService.enterPersonalInformationGuideInTraining(user, guideDto);
+            }
         }
     }
 
     @Transactional
     public void initializeCoordinatorData() {
         if (!roleRepository.findByName("ROLE_COORDINATOR").isEmpty()) {
-            if (coordinatorService.getCoordinatorById(4L) == null) {
+            if (coordinatorService.getCoordinatorById(22200000L) == null) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("4");
-                registerDto.setPassword("4");
+                registerDto.setUsername("22200000");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_COORDINATOR");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(4L)
+                UserEntity user = userService.findUserByUsername(22200000L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserCoordinatorDto coordinatorDto = new UserCoordinatorDto();
-                coordinatorDto.setFirstName("Ceren");
-                coordinatorDto.setLastName("Celik");
-                coordinatorDto.setDescription("Ceren celik added as a coordinator as an example.");
+                coordinatorDto.setFirstName("Boray");
+                coordinatorDto.setLastName("Guvenc");
+                coordinatorDto.setDescription("Buray Guvenc added as a coordinator as an example.");
                 coordinatorDto.setPhoneNumber("0537113327736");
-                coordinatorDto.setEmail("ceren.celik@ug.bilkent.edu.tr");
+                coordinatorDto.setEmail("buray.guvenc@ug.bilkent.edu.tr");
                 coordinatorDto.setGrade(3);
                 coordinatorDto.setPicture("picture.jpg");
                 coordinatorDto.setDepartment("CS");
@@ -331,15 +494,15 @@ public class DataInitializer {
     @Transactional
     public void initializeHeadSecretaryData() {
         if (!roleRepository.findByName("ROLE_HEAD_SECRETARY").isEmpty()) {
-            if (!headSecretaryService.getHeadSecretaryById(5L).isPresent()) {
+            if (!headSecretaryService.getHeadSecretaryById(222L).isPresent()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("5");
-                registerDto.setPassword("5");
+                registerDto.setUsername("222");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_HEAD_SECRETARY");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(5L)
+                UserEntity user = userService.findUserByUsername(222L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserHeadSecretaryDto secretaryDto = new UserHeadSecretaryDto();
@@ -358,15 +521,15 @@ public class DataInitializer {
     @Transactional
     public void initializeDirectorData() {
         if (!roleRepository.findByName("ROLE_DIRECTOR").isEmpty()) {
-            if (!directorService.getDirectorById(6L).isPresent()) {
+            if (!directorService.getDirectorById(22L).isPresent()) {
                 RegisterDto registerDto = new RegisterDto();
-                registerDto.setUsername("6");
-                registerDto.setPassword("6");
+                registerDto.setUsername("22");
+                registerDto.setPassword("Password123!!!");
                 registerDto.setRole("ROLE_DIRECTOR");
 
                 authService.register(registerDto);
 
-                UserEntity user = userService.findUserByUsername(6L)
+                UserEntity user = userService.findUserByUsername(22L)
                         .orElseThrow(() -> new IllegalStateException("User not found"));
 
                 UserDirectorDto directorDto = new UserDirectorDto();
