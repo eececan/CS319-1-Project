@@ -153,6 +153,12 @@ public class UIUserProfileController {
         }
 
         if (!allUsersService.hasUserWithId(Long.parseLong(username))) {
+            String firstName = dtoMap.get("firstName").toString();
+            String lastName = dtoMap.get("lastName").toString();
+            if(firstName.isEmpty() || lastName.isEmpty()){
+                return validationService.validateAndReturn(role, dtoMap, model,
+                        "First or last name cannot be empty. Please fill the name fields!", Long.parseLong(username), 0);
+            }
             String email = dtoMap.get("email").toString();
             if (email == null || email.trim().isEmpty()) {
                 return validationService.validateAndReturn(role, dtoMap, model,
@@ -516,6 +522,36 @@ public class UIUserProfileController {
             }
         }
     }
+
+    @PostMapping("/changeToGuide")
+    public String changeToGuide(@RequestParam Long userId, RedirectAttributes redirectAttributes){
+        Optional<UserEntity> optionalUser = userService.findUserByUsername(userId);
+
+        if (optionalUser.isEmpty()) {
+            redirectAttributes.addAttribute("errorMessage", "User not found.");
+        }
+        else {
+            Role role = roleRepository.findByName("ROLE_GUIDE").get();
+            userService.changeRole(userId, role);
+            redirectAttributes.addAttribute("successMessage", "The user's role is successfully changed to Guide.");
+        }
+        return "redirect:/getGuideReadies";
+    }
+
+    @PostMapping("/rejectGuide")
+    public String rejectGuide(@RequestParam Long userId, RedirectAttributes redirectAttributes){
+        Optional<UserEntity> optionalUser = userService.findUserByUsername(userId);
+
+        if (optionalUser.isEmpty()) {
+            redirectAttributes.addAttribute("errorMessage", "User not found.");
+        }
+        else {
+            userService.deleteUserByUsername(userId);
+            redirectAttributes.addAttribute("successMessage", "Guide in training user has been deleted from the system.");
+        }
+        return "redirect:/getGuideReadies";
+    }
+
 
     @PostMapping("/changeRole")
     public String changeRole(@RequestParam Long userId, @RequestParam String roleName, RedirectAttributes redirectAttributes) {
