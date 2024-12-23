@@ -173,7 +173,7 @@ public class UIUserProfileController {
                 }
 
             }
-            if (email == null || !email.contains("@bilkent.edu.tr")) {
+            if (email == null || !email.contains("bilkent.edu.tr")) {
                 return validationService.validateAndReturn(role, dtoMap, model,
                         "The email you use must be a bilkent mail! Please enter your bilkent mail!", Long.parseLong(username), 0);
             }
@@ -296,7 +296,7 @@ public class UIUserProfileController {
 
                 User allUser = allUsersService.getUserById(Long.parseLong(username)).get();
                 model.addAttribute("user", allUser);
-                Guide guide = (Guide) allUser;
+                GuideInTraining guide = (GuideInTraining) allUser;
                 if(((Guide) allUser).getSchedule() == null){
                     guide.setSchedule("eeeeeeeeeeeeeeeeeeeeeeeeeeee");
                 }

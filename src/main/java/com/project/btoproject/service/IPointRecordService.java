@@ -8,7 +8,7 @@ import java.util.List;
 public interface IPointRecordService {
     void saveRecord(PointRecord record);
     PointRecord findRecordById(Long id);
-    List<PointRecord> getPointRecordsByGuide(Guide guide);
+    List<PointRecord> getPointRecordsByGuide(Long userId);
     List<PointRecord> findAllRecords();
 
 }

@@ -371,18 +371,6 @@
                     </div>
                     <div class="col-lg-8 col-md-12">
                         <div class="row">
-                            <div class="col-xl-4 col-lg-4 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body widgets1">
-                                        <div class="details">
-                                            <h6 class="mb-0 font600">Tour History</h6>
-                                            <span class="mb-0">
-                                        <span th:text="${sum != null ? sum : 0}"></span>
-                                    </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane active show" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                     <div th:if="${successMessage != null and successMessage != ''}"
@@ -448,6 +436,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="card-footer text-right">
                                                 <!-- Alert Message -->
                                                 <div id="alertMessage"
@@ -481,8 +470,21 @@
                                                 <!-- Update Profile Button -->
                                                 <button type="submit" class="btn btn-primary">Update Profile</button>
                                             </div>
+
                                         </div>
                                     </form>
+                                    <div th:if="${role == 'ROLE_GUIDE' || role == 'ROLE_GUIDE_IN_TRAINING'}" class="card mt-3" style="height: 65px;">
+                                        <a th:href="@{'/getRecordsOfGuideById?userId=' + ${user.id}}" style="text-decoration: none; color: inherit;">
+                                            <div class="card-body widgets1 d-flex align-items-center justify-content-center">
+                                                <div class="details text-center">
+                                                    <h6 class="mb-0" style="font-size: 1.8rem;">View Event Records</h6>
+                                                    <span class="mb-0" style="font-size: 1.6rem;">
+
+                    </span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -25,8 +25,8 @@ public class PointRecordService implements IPointRecordService {
     }
 
     @Override
-    public List<PointRecord> getPointRecordsByGuide(Guide guide) {
-        return pointRecordRepository.getPointRecordsByGuideId(guide.getId());
+    public List<PointRecord> getPointRecordsByGuide(Long userId) {
+        return pointRecordRepository.getPointRecordsByGuideId(userId);
     }
 
     @Override
